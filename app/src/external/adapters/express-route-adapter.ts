@@ -1,18 +1,16 @@
-import { TokenInfoResponse } from '../../usecases/auth/get-token-info/get-token-info'
-import { Request, Response } from 'express'
-import AhreasController from '../../presentation/adapters/controllers/ahreas-controller'
-import { HttpRequest } from '../../presentation/adapters/controllers/ports/http'
+import BaseController from "@/presentation/controllers/base-controller";
+import { HttpRequest } from "@/presentation/controllers/ports/http";
+import { Request, Response } from "express";
 
-export const adaptRoute = (controller: AhreasController) => {
+export const adaptRoute = (controller: BaseController) => {
   return async (req: Request, res: Response) => {
     const httpRequest: HttpRequest = {
       body: req.body,
       query: req.query,
       params: req.params,
       headers: req.headers,
-      user: res.locals.user as TokenInfoResponse,
-    }
-    const httpResponse = await controller.handle(httpRequest)
-    res.status(httpResponse.statusCode).json(httpResponse.body)
-  }
-}
+    };
+    const httpResponse = await controller.handle(httpRequest);
+    res.status(httpResponse.statusCode).json(httpResponse.body);
+  };
+};
