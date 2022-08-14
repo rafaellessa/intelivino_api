@@ -1,0 +1,51 @@
+version: "3.8"
+services:
+  intelivino_api:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: ${TARGET:-dev}
+    environment:
+      API_PORT: ${API_PORT}
+      DB_SERVER: intelivino_mysql
+      DB_PORT: 3306
+      DB_USER: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+      DB_DATABASE: ${MYSQL_DATABASE}
+      DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@mysql_ahreas_backend:3306/${MYSQL_DATABASE}?connection_limit=100&pool_timeout=10
+      RABBITMQ_HOST: intelivino_rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+    volumes:
+      - ./app:/opt/node_app/app:delegated
+    ports:
+      - ${API_PORT:-8000}:${API_PORT:-8000}
+      - ${PRISMA_STUDIO_PORT:-5555}:${PRISMA_STUDIO_PORT:-5555}
+    depends_on:
+      - intelivino_mysql
+    networks:
+      - "intelivino_network"
+  intelivino_mysql:
+    image: mysql:8
+    ports: 
+      - 3306:3306
+    command: --default-authentication-plugin=mysql_native_password
+    environment: 
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    volumes:
+      - intelivino_mysql_volume:/var/lib/mysql
+    networks:
+      - "intelivino_network"
+volumes:
+  intelivino_mysql_volume:
+    driver: local
+
+networks:
+  intelivino_network:
+    external: true
+
+      
+
+    
