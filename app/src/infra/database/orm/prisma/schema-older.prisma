@@ -1,0 +1,791 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL_OLDDER")
+}
+
+model activities {
+  id                  Int                   @id @default(autoincrement()) @db.UnsignedInt
+  nome                String                @db.VarChar(255)
+  created_at          DateTime?             @db.Timestamp(0)
+  updated_at          DateTime?             @db.Timestamp(0)
+  activities_business activities_business[]
+}
+
+model activities_business {
+  id          Int         @id @default(autoincrement()) @db.UnsignedInt
+  activity_id Int?        @db.UnsignedInt
+  business_id Int?        @db.UnsignedInt
+  created_at  DateTime?   @db.Timestamp(0)
+  updated_at  DateTime?   @db.Timestamp(0)
+  activities  activities? @relation(fields: [activity_id], references: [id], onUpdate: NoAction, map: "activities_business_activity_id_foreign")
+  business    business?   @relation(fields: [business_id], references: [id], onUpdate: NoAction, map: "activities_business_business_id_foreign")
+
+  @@index([activity_id], map: "activities_business_activity_id_foreign")
+  @@index([business_id], map: "activities_business_business_id_foreign")
+}
+
+model albums {
+  id          Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_id     Int?      @db.UnsignedInt
+  description String?   @db.VarChar(255)
+  type        String?   @db.VarChar(255)
+  type_id     Int?      @db.UnsignedInt
+  created_at  DateTime? @db.Timestamp(0)
+  updated_at  DateTime? @db.Timestamp(0)
+  users       users?    @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "albums_user_id_foreign")
+  photos      photos[]
+
+  @@index([user_id], map: "albums_user_id_foreign")
+}
+
+model api_postswp {
+  id               Int       @id @default(autoincrement())
+  created          DateTime? @db.DateTime(0)
+  post_id          Int
+  post_title       String    @db.VarChar(99)
+  post_subtitle    String    @db.Text
+  post_image       String?   @db.VarChar(199)
+  post_exerpt      String?   @db.Text
+  post_date        DateTime  @db.DateTime(0)
+  post_text        String    @db.Text
+  post_nome_vinho  String?   @db.VarChar(99)
+  post_ano         String?   @db.VarChar(99)
+  post_uva         String?   @db.VarChar(99)
+  post_pais        String?   @db.VarChar(99)
+  post_regiao      String?   @db.VarChar(99)
+  post_tipo_vinho  String?   @db.VarChar(99)
+  post_valor       String?   @db.VarChar(16)
+  post_teor        String?   @db.VarChar(16)
+  post_loja        String?   @db.VarChar(99)
+  post_texto_geral String?   @db.Text
+
+  @@index([post_id], map: "post_id")
+  @@index([post_nome_vinho], map: "post_nome_vinho")
+  @@index([post_pais], map: "post_pais")
+  @@index([post_regiao], map: "post_regiao")
+  @@index([post_tipo_vinho], map: "post_tipo_vinho")
+  @@index([post_title], map: "post_title")
+}
+
+model banners {
+  id           Int       @id @default(autoincrement()) @db.UnsignedInt
+  order        String?   @db.VarChar(255)
+  active       String?   @default("1") @db.VarChar(255)
+  link         String?   @db.VarChar(255)
+  description  String?   @db.VarChar(255)
+  base_url     String?   @db.VarChar(255)
+  image_url    String?   @db.VarChar(255)
+  image_width  String?   @db.VarChar(255)
+  image_height String?   @db.VarChar(255)
+  created_at   DateTime? @db.Timestamp(0)
+  updated_at   DateTime? @db.Timestamp(0)
+  sorteio_id   Int?      @db.UnsignedInt
+}
+
+model business {
+  id                  Int                   @id @default(autoincrement()) @db.UnsignedInt
+  user_id             Int?                  @db.UnsignedInt
+  cnpj                String?               @db.VarChar(255)
+  cpf                 String?               @db.VarChar(255)
+  fone                String?               @db.VarChar(255)
+  intelivino_market   String?               @db.VarChar(255)
+  logotipo_url        String?               @db.VarChar(255)
+  main_contact_fone   String?               @db.VarChar(255)
+  main_contact_name   String?               @db.VarChar(255)
+  person_type         String?               @db.VarChar(255)
+  self_delivery       String?               @db.VarChar(255)
+  website             String?               @db.VarChar(255)
+  whatsapp            String?               @db.VarChar(255)
+  created_at          DateTime?             @db.Timestamp(0)
+  updated_at          DateTime?             @db.Timestamp(0)
+  razao_social        String?               @db.VarChar(255)
+  user_id_parent      Int?
+  description         String?               @db.VarChar(255)
+  obs                 String?               @db.VarChar(255)
+  status              Boolean?
+  facebook_url        String?               @db.VarChar(255)
+  instagram_url       String?               @db.VarChar(255)
+  cor_texto_cabecalho String?               @db.VarChar(255)
+  banner_catalogo_url String?               @db.VarChar(255)
+  users               users?                @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "business_user_id_foreign")
+  activities_business activities_business[]
+  deliveries_business deliveries_business[]
+
+  @@index([user_id], map: "business_user_id_foreign")
+}
+
+model campaigns {
+  id                                    Int                    @id @default(autoincrement()) @db.UnsignedInt
+  name                                  String?                @db.VarChar(255)
+  info                                  String?                @db.VarChar(5000)
+  description                           String?                @db.VarChar(255)
+  discount                              Decimal?               @db.Decimal(8, 2)
+  date_start                            DateTime?              @db.Date
+  date_end                              DateTime?              @db.Date
+  status                                Boolean?
+  user_id                               Int?                   @db.UnsignedInt
+  type                                  Int?
+  user_id_parent                        Int?                   @db.UnsignedInt
+  created_at                            DateTime?              @db.Timestamp(0)
+  updated_at                            DateTime?              @db.Timestamp(0)
+  campaigns_types                       campaigns_types?       @relation(fields: [type], references: [id], onUpdate: NoAction, map: "campaigns_type_foreign")
+  users_campaigns_user_idTousers        users?                 @relation("campaigns_user_idTousers", fields: [user_id], references: [id], onUpdate: NoAction, map: "campaigns_user_id_foreign")
+  users_campaigns_user_id_parentTousers users?                 @relation("campaigns_user_id_parentTousers", fields: [user_id_parent], references: [id], onUpdate: NoAction, map: "campaigns_user_id_parent_foreign")
+  campaigns_indicacoes                  campaigns_indicacoes[]
+
+  @@index([type], map: "campaigns_type_foreign")
+  @@index([user_id], map: "campaigns_user_id_foreign")
+  @@index([user_id_parent], map: "campaigns_user_id_parent_foreign")
+}
+
+model campaigns_indicacoes {
+  id           Int         @id @default(autoincrement()) @db.UnsignedInt
+  campaign_id  Int?        @db.UnsignedInt
+  indicacao_id Int?        @db.UnsignedInt
+  status       Boolean?
+  obs          String?     @db.VarChar(255)
+  created_at   DateTime?   @db.Timestamp(0)
+  updated_at   DateTime?   @db.Timestamp(0)
+  campaigns    campaigns?  @relation(fields: [campaign_id], references: [id], onUpdate: NoAction, map: "campaigns_indicacoes_campaign_id_foreign")
+  indicacoes   indicacoes? @relation(fields: [indicacao_id], references: [id], onUpdate: NoAction, map: "campaigns_indicacoes_indicacao_id_foreign")
+
+  @@index([campaign_id], map: "campaigns_indicacoes_campaign_id_foreign")
+  @@index([indicacao_id], map: "campaigns_indicacoes_indicacao_id_foreign")
+}
+
+model campaigns_types {
+  id        Int         @id @default(autoincrement())
+  descricao String      @db.Text
+  campaigns campaigns[]
+}
+
+model categories {
+  id                      Int                       @id @default(autoincrement()) @db.UnsignedInt
+  wp_parent_id            Int?                      @db.UnsignedInt
+  wp_category_id          Int?                      @db.UnsignedInt
+  name                    String                    @db.VarChar(255)
+  cat                     Boolean?
+  dog                     Boolean?
+  menu                    Int?
+  menu_sequence           Int?
+  created_at              DateTime?                 @db.Timestamp(0)
+  updated_at              DateTime?                 @db.Timestamp(0)
+  tipo                    String?                   @db.VarChar(255)
+  final                   String?                   @db.VarChar(255)
+  categories_history      categories_history[]
+  experiencias_indicacoes experiencias_indicacoes[]
+  pratos_indicacoes       pratos_indicacoes[]
+  valores_indicacoes      valores_indicacoes[]
+}
+
+model categories_devices {
+  id          Int       @id @default(autoincrement()) @db.UnsignedInt
+  category_id Int?      @db.UnsignedInt
+  device_id   Int?      @db.UnsignedInt
+  created_at  DateTime? @db.Timestamp(0)
+  updated_at  DateTime? @db.Timestamp(0)
+  devices     devices?  @relation(fields: [device_id], references: [id], onUpdate: NoAction, map: "categories_devices_device_id_foreign")
+
+  @@index([device_id], map: "categories_devices_device_id_foreign")
+}
+
+model categories_history {
+  id          Int         @id @default(autoincrement()) @db.UnsignedInt
+  history_id  Int?        @db.UnsignedInt
+  category_id Int?        @db.UnsignedInt
+  created_at  DateTime?   @db.Timestamp(0)
+  updated_at  DateTime?   @db.Timestamp(0)
+  categories  categories? @relation(fields: [category_id], references: [id], onUpdate: NoAction, map: "categories_history_category_id_foreign")
+  history     history?    @relation(fields: [history_id], references: [id], onUpdate: NoAction, map: "categories_history_history_id_foreign")
+
+  @@index([category_id], map: "categories_history_category_id_foreign")
+  @@index([history_id], map: "categories_history_history_id_foreign")
+}
+
+model categories_users {
+  id          Int       @id @default(autoincrement()) @db.UnsignedInt
+  category_id Int?      @db.UnsignedInt
+  user_id     Int?      @db.UnsignedInt
+  created_at  DateTime? @db.Timestamp(0)
+  updated_at  DateTime? @db.Timestamp(0)
+  users       users?    @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "categories_users_user_id_foreign")
+
+  @@index([user_id], map: "categories_users_user_id_foreign")
+}
+
+model deliveries {
+  id                  Int                   @id @default(autoincrement()) @db.UnsignedInt
+  nome                String                @db.VarChar(255)
+  created_at          DateTime?             @db.Timestamp(0)
+  updated_at          DateTime?             @db.Timestamp(0)
+  deliveries_business deliveries_business[]
+}
+
+model deliveries_business {
+  id          Int         @id @default(autoincrement()) @db.UnsignedInt
+  delivery_id Int?        @db.UnsignedInt
+  business_id Int?        @db.UnsignedInt
+  created_at  DateTime?   @db.Timestamp(0)
+  updated_at  DateTime?   @db.Timestamp(0)
+  business    business?   @relation(fields: [business_id], references: [id], onUpdate: NoAction, map: "deliveries_business_business_id_foreign")
+  deliveries  deliveries? @relation(fields: [delivery_id], references: [id], onUpdate: NoAction, map: "deliveries_business_delivery_id_foreign")
+
+  @@index([business_id], map: "deliveries_business_business_id_foreign")
+  @@index([delivery_id], map: "deliveries_business_delivery_id_foreign")
+}
+
+model devices {
+  id                    Int                     @id @default(autoincrement()) @db.UnsignedInt
+  saas_client_id        Int?                    @db.UnsignedInt
+  installation_id       String                  @unique(map: "devices_installation_id_unique") @db.VarChar(255)
+  platform              String                  @db.VarChar(255)
+  version               String?                 @db.VarChar(255)
+  token_notification    String                  @db.VarChar(255)
+  favorites             String?                 @db.LongText
+  user_id               Int?                    @db.UnsignedInt
+  created_at            DateTime?               @db.Timestamp(0)
+  updated_at            DateTime?               @db.Timestamp(0)
+  saas_client           saas_client?            @relation(fields: [saas_client_id], references: [id], onUpdate: NoAction, map: "devices_saas_client_id_foreign")
+  users                 users?                  @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "devices_user_id_foreign")
+  categories_devices    categories_devices[]
+  devices_notifications devices_notifications[]
+  history               history[]
+
+  @@index([saas_client_id], map: "devices_saas_client_id_foreign")
+  @@index([user_id], map: "devices_user_id_foreign")
+}
+
+model devices_notifications {
+  id               Int            @id @default(autoincrement()) @db.UnsignedInt
+  device_id        Int?           @db.UnsignedInt
+  notification_id  Int?           @db.UnsignedInt
+  notification_ref String?        @db.VarChar(300)
+  post_id          Int?           @db.UnsignedInt
+  send             Boolean?
+  created_at       DateTime?      @db.Timestamp(0)
+  updated_at       DateTime?      @db.Timestamp(0)
+  business         Boolean?       @default(false)
+  queue            String?        @db.VarChar(30)
+  devices          devices?       @relation(fields: [device_id], references: [id], onUpdate: NoAction, map: "devices_notifications_device_id_foreign")
+  notifications    notifications? @relation(fields: [notification_id], references: [id], onUpdate: NoAction, map: "devices_notifications_notification_id_foreign")
+
+  @@index([device_id], map: "devices_notifications_device_id_foreign")
+  @@index([notification_id], map: "devices_notifications_notification_id_foreign")
+}
+
+model experiencias_indicacoes {
+  id           Int         @id @default(autoincrement()) @db.UnsignedInt
+  category_id  Int?        @db.UnsignedInt
+  indicacao_id Int?        @db.UnsignedInt
+  created_at   DateTime?   @db.Timestamp(0)
+  updated_at   DateTime?   @db.Timestamp(0)
+  categories   categories? @relation(fields: [category_id], references: [id], onUpdate: NoAction, map: "experiencias_indicacoes_category_id_foreign")
+  indicacoes   indicacoes? @relation(fields: [indicacao_id], references: [id], onUpdate: NoAction, map: "experiencias_indicacoes_indicacao_id_foreign")
+
+  @@index([category_id], map: "experiencias_indicacoes_category_id_foreign")
+  @@index([indicacao_id], map: "experiencias_indicacoes_indicacao_id_foreign")
+}
+
+model history {
+  id                 Int                  @id @default(autoincrement()) @db.UnsignedInt
+  user_id            Int?                 @db.UnsignedInt
+  device_id          Int?                 @db.UnsignedInt
+  post_id            Int?                 @db.UnsignedInt
+  category_id        Int?                 @db.UnsignedInt
+  push               Boolean?
+  latitude           String?              @db.VarChar(15)
+  longitude          String?              @db.VarChar(15)
+  created_at         DateTime?            @db.Timestamp(0)
+  updated_at         DateTime?            @db.Timestamp(0)
+  devices            devices?             @relation(fields: [device_id], references: [id], onUpdate: NoAction, map: "history_device_id_foreign")
+  users              users?               @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "history_user_id_foreign")
+  categories_history categories_history[]
+
+  @@index([device_id], map: "history_device_id_foreign")
+  @@index([user_id], map: "history_user_id_foreign")
+}
+
+model indicacoes {
+  id                      Int                       @id @default(autoincrement()) @db.UnsignedInt
+  user_id                 Int?                      @db.UnsignedInt
+  loja_id                 Int?                      @db.UnsignedInt
+  tipo_indicacao_id       Int?                      @db.UnsignedInt
+  codigo_interno          String?                   @db.VarChar(255)
+  nome                    String?                   @db.VarChar(255)
+  meta_pais_id            Int?                      @db.UnsignedInt
+  meta_regiao_id          Int?                      @db.UnsignedInt
+  vinicola_id             Int?                      @db.UnsignedInt
+  meta_tipo_vinho_id      Int?                      @db.UnsignedInt
+  safra                   String?                   @db.Char(4)
+  porcentagem_alcool      Decimal?                  @db.Decimal(8, 2)
+  uva_id                  Int?                      @db.UnsignedInt
+  descricao               String?                   @db.VarChar(255)
+  preco                   Decimal?                  @db.Decimal(8, 2)
+  preco_promocional       Decimal?                  @db.Decimal(8, 2)
+  motor_venda_id          Int?                      @db.UnsignedInt
+  link                    String?                   @db.VarChar(255)
+  status_indicacao_id     Int?                      @db.UnsignedInt
+  data_postagem           DateTime?                 @db.Date
+  created_at              DateTime?                 @db.Timestamp(0)
+  updated_at              DateTime?                 @db.Timestamp(0)
+  estoque                 Int?                      @default(0)
+  busca_index             String?                   @db.LongText
+  deleted_at              DateTime?                 @db.Timestamp(0)
+  sem_safra               Boolean?
+  ordem                   String?                   @db.VarChar(255)
+  destaque                String?                   @db.VarChar(255)
+  cod_ref                 String?                   @db.VarChar(255)
+  campaigns_indicacoes    campaigns_indicacoes[]
+  experiencias_indicacoes experiencias_indicacoes[]
+  indicacoes_uvas         indicacoes_uvas[]
+  pedidos_indicacoes      pedidos_indicacoes[]
+  pratos_indicacoes       pratos_indicacoes[]
+  valores_indicacoes      valores_indicacoes[]
+
+  @@index([loja_id], map: "indicacoes_loja_id_foreign")
+  @@index([meta_pais_id], map: "indicacoes_meta_pais_id_foreign")
+  @@index([meta_regiao_id], map: "indicacoes_meta_regiao_id_foreign")
+  @@index([meta_tipo_vinho_id], map: "indicacoes_meta_tipo_vinho_id_foreign")
+  @@index([motor_venda_id], map: "indicacoes_motor_venda_id_foreign")
+  @@index([status_indicacao_id], map: "indicacoes_status_indicacao_id_foreign")
+  @@index([tipo_indicacao_id], map: "indicacoes_tipo_indicacao_id_foreign")
+  @@index([user_id], map: "indicacoes_user_id_foreign")
+  @@index([uva_id], map: "indicacoes_uva_id_foreign")
+  @@index([vinicola_id], map: "indicacoes_vinicola_id_foreign")
+}
+
+model indicacoes_uvas {
+  id           Int         @id @default(autoincrement()) @db.UnsignedInt
+  indicacao_id Int?        @db.UnsignedInt
+  uva_id       Int?        @db.UnsignedInt
+  created_at   DateTime?   @db.Timestamp(0)
+  updated_at   DateTime?   @db.Timestamp(0)
+  indicacoes   indicacoes? @relation(fields: [indicacao_id], references: [id], onUpdate: NoAction, map: "indicacoes_uvas_indicacao_id_foreign")
+  uvas         uvas?       @relation(fields: [uva_id], references: [id], onUpdate: NoAction, map: "indicacoes_uvas_uva_id_foreign")
+
+  @@index([indicacao_id], map: "indicacoes_uvas_indicacao_id_foreign")
+  @@index([uva_id], map: "indicacoes_uvas_uva_id_foreign")
+}
+
+model lojas {
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
+  nome       String    @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+}
+
+model meta_atividades_vinicolas {
+  id        Int      @id @default(autoincrement())
+  created   DateTime @db.DateTime(0)
+  status    Int      @default(1)
+  descricao String   @db.VarChar(85)
+  valor     String   @db.VarChar(65)
+}
+
+model meta_bairros {
+  id           Int      @id @default(autoincrement())
+  municipio_id Int
+  created      DateTime @db.DateTime(0)
+  status       Int      @default(1)
+  campo        String   @db.VarChar(45)
+  descricao    String   @db.VarChar(85)
+  valor        String   @db.VarChar(65)
+}
+
+model meta_categorias {
+  id             Int     @unique(map: "id")
+  title          String  @db.VarChar(240)
+  master_id      Int?
+  alias          String  @db.VarChar(90)
+  categorization String? @db.VarChar(25)
+}
+
+model meta_estados {
+  id        Int      @id @default(autoincrement())
+  pais_id   Int
+  created   DateTime @db.DateTime(0)
+  status    Int      @default(1)
+  campo     String   @db.VarChar(45)
+  descricao String   @db.VarChar(85)
+  valor     String   @db.VarChar(65)
+}
+
+model meta_municipios {
+  id        Int      @id @default(autoincrement())
+  estado_id Int
+  created   DateTime @db.DateTime(0)
+  status    Int      @default(1)
+  campo     String   @db.VarChar(45)
+  descricao String   @db.VarChar(85)
+  valor     String   @db.VarChar(65)
+}
+
+model meta_paises {
+  id        Int      @id @default(autoincrement())
+  created   DateTime @db.DateTime(0)
+  status    Int      @default(1)
+  campo     String   @db.VarChar(85)
+  valor     String   @db.VarChar(65)
+  descricao String?  @db.VarChar(65)
+}
+
+model meta_regioes {
+  id             Int      @id @default(autoincrement())
+  created        DateTime @db.DateTime(0)
+  status         Int      @default(1)
+  meta_pais_id   Int?
+  meta_estado_id Int?
+  campo          String   @db.VarChar(45)
+  descricao      String   @db.VarChar(85)
+  valor          String   @db.VarChar(65)
+}
+
+model meta_regioes_business {
+  id             Int      @id @default(autoincrement())
+  created        DateTime @db.DateTime(0)
+  status         Int      @default(1)
+  meta_pais_id   Int?
+  meta_estado_id Int?
+  campo          String   @db.VarChar(45)
+  descricao      String   @db.VarChar(85)
+  valor          String   @db.VarChar(65)
+}
+
+model meta_subregioes {
+  id              Int      @id @default(autoincrement())
+  created         DateTime @db.DateTime(0)
+  status          Int      @default(1)
+  regiao_id       Int
+  campo           String   @db.VarChar(45)
+  descricao       String   @db.VarChar(85)
+  valor           String   @db.VarChar(65)
+  flag_intelivino Int?     @default(1)
+  flag_business   Int?     @default(0)
+}
+
+model meta_tipos_vinhos {
+  id        Int      @id @default(autoincrement())
+  created   DateTime @db.DateTime(0)
+  status    Int      @default(1)
+  descricao String   @db.VarChar(85)
+  valor     String   @db.VarChar(65)
+}
+
+model migrations {
+  id        Int    @id @default(autoincrement()) @db.UnsignedInt
+  migration String @db.VarChar(255)
+  batch     Int
+}
+
+model motores_vendas {
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
+  nome       String    @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+}
+
+model notifications {
+  id                    Int                     @id @default(autoincrement()) @db.UnsignedInt
+  category_id           Int?                    @db.UnsignedInt
+  post_id               Int?                    @db.UnsignedInt
+  title                 String                  @db.VarChar(255)
+  message               String                  @db.VarChar(255)
+  created_at            DateTime?               @db.Timestamp(0)
+  updated_at            DateTime?               @db.Timestamp(0)
+  devices_notifications devices_notifications[]
+}
+
+model pedidos {
+  id                 Int                  @id @default(autoincrement()) @db.UnsignedInt
+  user_id            Int?                 @db.UnsignedInt
+  nome               String?              @db.VarChar(255)
+  email              String?              @db.VarChar(255)
+  telefone_celular   String?              @db.VarChar(255)
+  telefone_fixo      String?              @db.VarChar(255)
+  cep                String?              @db.VarChar(255)
+  estado             String?              @db.VarChar(255)
+  cidade             String?              @db.VarChar(255)
+  bairro             String?              @db.VarChar(255)
+  endereco           String?              @db.VarChar(255)
+  numero             String?              @db.VarChar(255)
+  complemento        String?              @db.VarChar(255)
+  obs_endereco       String?              @db.VarChar(255)
+  obs_gerais         String?              @db.VarChar(255)
+  status             Boolean              @default(true)
+  uid                Int?
+  created_at         DateTime?            @db.Timestamp(0)
+  updated_at         DateTime?            @db.Timestamp(0)
+  users              users?               @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "pedidos_user_id_foreign")
+  pedidos_indicacoes pedidos_indicacoes[]
+
+  @@index([user_id], map: "pedidos_user_id_foreign")
+}
+
+model pedidos_indicacoes {
+  id           Int         @id @default(autoincrement()) @db.UnsignedInt
+  indicacao_id Int?        @db.UnsignedInt
+  pedido_id    Int?        @db.UnsignedInt
+  qtd          Int?
+  valor        Decimal?    @db.Decimal(8, 2)
+  total        Decimal?    @db.Decimal(8, 2)
+  created_at   DateTime?   @db.Timestamp(0)
+  updated_at   DateTime?   @db.Timestamp(0)
+  indicacoes   indicacoes? @relation(fields: [indicacao_id], references: [id], onUpdate: NoAction, map: "pedidos_indicacoes_indicacao_id_foreign")
+  pedidos      pedidos?    @relation(fields: [pedido_id], references: [id], onUpdate: NoAction, map: "pedidos_indicacoes_pedido_id_foreign")
+
+  @@index([indicacao_id], map: "pedidos_indicacoes_indicacao_id_foreign")
+  @@index([pedido_id], map: "pedidos_indicacoes_pedido_id_foreign")
+}
+
+model permissions {
+  id                Int                 @id @default(autoincrement()) @db.UnsignedInt
+  name              String?             @db.VarChar(255)
+  description       String?             @db.VarChar(255)
+  created_at        DateTime?           @db.Timestamp(0)
+  updated_at        DateTime?           @db.Timestamp(0)
+  permissions_roles permissions_roles[]
+}
+
+model permissions_roles {
+  id            Int          @id @default(autoincrement()) @db.UnsignedInt
+  permission_id Int?         @db.UnsignedInt
+  role_id       Int?         @db.UnsignedInt
+  created_at    DateTime?    @db.Timestamp(0)
+  updated_at    DateTime?    @db.Timestamp(0)
+  permissions   permissions? @relation(fields: [permission_id], references: [id], onUpdate: NoAction, map: "permissions_roles_permission_id_foreign")
+  roles         roles?       @relation(fields: [role_id], references: [id], onUpdate: NoAction, map: "permissions_roles_role_id_foreign")
+
+  @@index([permission_id], map: "permissions_roles_permission_id_foreign")
+  @@index([role_id], map: "permissions_roles_role_id_foreign")
+}
+
+model photos {
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
+  album_id   Int?      @db.UnsignedInt
+  base_url   String?   @db.VarChar(255)
+  photo_url  String?   @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  width      String?   @db.VarChar(6)
+  height     String?   @db.VarChar(6)
+  albums     albums?   @relation(fields: [album_id], references: [id], onUpdate: NoAction, map: "photos_album_id_foreign")
+
+  @@index([album_id], map: "photos_album_id_foreign")
+}
+
+model planos {
+  id                    Int            @id @default(autoincrement()) @db.UnsignedInt
+  descricao             String?        @db.VarChar(255)
+  nome                  String?        @db.VarChar(255)
+  valor_plano           Decimal?       @db.Decimal(8, 2)
+  max_rotulos           Int?
+  max_users             Int?
+  normal_indications    Int            @default(0)
+  highlight_indications Int            @default(0)
+  status                Boolean?
+  created_at            DateTime?      @db.Timestamp(0)
+  updated_at            DateTime?      @db.Timestamp(0)
+  planos_users          planos_users[]
+}
+
+model planos_users {
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_id    Int?      @db.UnsignedInt
+  plano_id   Int?      @db.UnsignedInt
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  planos     planos?   @relation(fields: [plano_id], references: [id], onUpdate: NoAction, map: "planos_users_plano_id_foreign")
+  users      users?    @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "planos_users_user_id_foreign")
+
+  @@index([plano_id], map: "planos_users_plano_id_foreign")
+  @@index([user_id], map: "planos_users_user_id_foreign")
+}
+
+model pratos_indicacoes {
+  id           Int         @id @default(autoincrement()) @db.UnsignedInt
+  category_id  Int?        @db.UnsignedInt
+  indicacao_id Int?        @db.UnsignedInt
+  created_at   DateTime?   @db.Timestamp(0)
+  updated_at   DateTime?   @db.Timestamp(0)
+  categories   categories? @relation(fields: [category_id], references: [id], onUpdate: NoAction, map: "pratos_indicacoes_category_id_foreign")
+  indicacoes   indicacoes? @relation(fields: [indicacao_id], references: [id], onUpdate: NoAction, map: "pratos_indicacoes_indicacao_id_foreign")
+
+  @@index([category_id], map: "pratos_indicacoes_category_id_foreign")
+  @@index([indicacao_id], map: "pratos_indicacoes_indicacao_id_foreign")
+}
+
+model roles {
+  id                Int                 @id @default(autoincrement()) @db.UnsignedInt
+  role              String              @unique(map: "roles_role_unique") @db.VarChar(255)
+  description       String?             @db.VarChar(255)
+  created_at        DateTime?           @db.Timestamp(0)
+  updated_at        DateTime?           @db.Timestamp(0)
+  permissions_roles permissions_roles[]
+  users_roles       users_roles[]
+}
+
+model saas_client {
+  id                Int           @id @default(autoincrement()) @db.UnsignedInt
+  name              String        @db.VarChar(255)
+  email             String        @db.VarChar(255)
+  token             String        @db.VarChar(255)
+  site_wp           String        @db.VarChar(255)
+  master            Int?
+  saas_client_id    Int?          @db.UnsignedInt
+  created_at        DateTime?     @db.Timestamp(0)
+  updated_at        DateTime?     @db.Timestamp(0)
+  saas_client       saas_client?  @relation("saas_clientTosaas_client", fields: [saas_client_id], references: [id], onUpdate: NoAction, map: "saas_client_saas_client_id_foreign")
+  devices           devices[]
+  other_saas_client saas_client[] @relation("saas_clientTosaas_client")
+
+  @@index([saas_client_id], map: "saas_client_saas_client_id_foreign")
+}
+
+model sorteios {
+  id             Int              @id @default(autoincrement()) @db.UnsignedInt
+  nome           String?          @db.VarChar(255)
+  descricao      String?          @db.VarChar(255)
+  data_inicial   DateTime?        @db.Date
+  data_final     DateTime?        @db.Date
+  ativo          Boolean?
+  created_at     DateTime?        @db.Timestamp(0)
+  updated_at     DateTime?        @db.Timestamp(0)
+  sorteios_users sorteios_users[]
+}
+
+model sorteios_users {
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
+  sorteio_id Int?      @db.UnsignedInt
+  user_id    Int?      @db.UnsignedInt
+  cod        String    @unique(map: "sorteios_users_cod_unique") @db.VarChar(255)
+  vencedor   Boolean?
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  sorteios   sorteios? @relation(fields: [sorteio_id], references: [id], onUpdate: NoAction, map: "sorteios_users_sorteio_id_foreign")
+  users      users?    @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "sorteios_users_user_id_foreign")
+
+  @@index([sorteio_id], map: "sorteios_users_sorteio_id_foreign")
+  @@index([user_id], map: "sorteios_users_user_id_foreign")
+}
+
+model status_indicacoes {
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
+  nome       String    @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+}
+
+model tipos_indicacoes {
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
+  nome       String    @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+}
+
+model users {
+  id                                        Int                @id @default(autoincrement()) @db.UnsignedInt
+  name                                      String?            @db.VarChar(255)
+  email                                     String?            @db.VarChar(255)
+  password                                  String?            @db.VarChar(255)
+  birthday                                  DateTime?          @db.Date
+  state                                     String?            @db.VarChar(255)
+  city                                      String?            @db.VarChar(255)
+  favorites                                 String?            @db.LongText
+  cat                                       Int?               @db.TinyInt
+  dog                                       Int?               @db.TinyInt
+  photo                                     String?            @db.LongText
+  google                                    String?            @db.VarChar(255)
+  facebook                                  String?            @db.VarChar(255)
+  apple                                     String?            @db.VarChar(255)
+  created_at                                DateTime?          @db.Timestamp(0)
+  updated_at                                DateTime?          @db.Timestamp(0)
+  notification                              Int?               @db.TinyInt
+  rdstation_sync                            Boolean?
+  rdstation_id                              String?            @db.VarChar(255)
+  rdstation_error                           String?            @db.VarChar(255)
+  address_cep                               String?            @db.VarChar(255)
+  address_complement                        String?            @db.VarChar(255)
+  address_country                           String?            @db.VarChar(255)
+  address_neighborhood                      String?            @db.VarChar(255)
+  address_number                            String?            @db.VarChar(255)
+  address_street                            String?            @db.VarChar(255)
+  name_business                             String?            @db.VarChar(255)
+  name_business_slug                        String?            @db.VarChar(255)
+  plano_id                                  Int?
+  cod_ref                                   String?            @db.VarChar(255)
+  albums                                    albums[]
+  business                                  business[]
+  campaigns_campaigns_user_idTousers        campaigns[]        @relation("campaigns_user_idTousers")
+  campaigns_campaigns_user_id_parentTousers campaigns[]        @relation("campaigns_user_id_parentTousers")
+  categories_users                          categories_users[]
+  devices                                   devices[]
+  history                                   history[]
+  pedidos                                   pedidos[]
+  planos_users                              planos_users[]
+  sorteios_users                            sorteios_users[]
+  users_roles                               users_roles[]
+}
+
+model users_roles {
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_id    Int?      @db.UnsignedInt
+  role_id    Int?      @db.UnsignedInt
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  roles      roles?    @relation(fields: [role_id], references: [id], onUpdate: NoAction, map: "users_roles_role_id_foreign")
+  users      users?    @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "users_roles_user_id_foreign")
+
+  @@index([role_id], map: "users_roles_role_id_foreign")
+  @@index([user_id], map: "users_roles_user_id_foreign")
+}
+
+model uvas {
+  id              Int               @id @default(autoincrement()) @db.UnsignedInt
+  nome            String            @db.VarChar(255)
+  created_at      DateTime?         @db.Timestamp(0)
+  updated_at      DateTime?         @db.Timestamp(0)
+  indicacoes_uvas indicacoes_uvas[]
+}
+
+model valores_indicacoes {
+  id           Int         @id @default(autoincrement()) @db.UnsignedInt
+  category_id  Int?        @db.UnsignedInt
+  indicacao_id Int?        @db.UnsignedInt
+  created_at   DateTime?   @db.Timestamp(0)
+  updated_at   DateTime?   @db.Timestamp(0)
+  categories   categories? @relation(fields: [category_id], references: [id], onUpdate: NoAction, map: "valores_indicacoes_category_id_foreign")
+  indicacoes   indicacoes? @relation(fields: [indicacao_id], references: [id], onUpdate: NoAction, map: "valores_indicacoes_indicacao_id_foreign")
+
+  @@index([category_id], map: "valores_indicacoes_category_id_foreign")
+  @@index([indicacao_id], map: "valores_indicacoes_indicacao_id_foreign")
+}
+
+model videos {
+  id          Int       @id @default(autoincrement()) @db.UnsignedInt
+  order       String?   @db.VarChar(255)
+  active      String?   @default("1") @db.VarChar(255)
+  link        String?   @db.VarChar(255)
+  description String?   @db.VarChar(255)
+  created_at  DateTime? @db.Timestamp(0)
+  updated_at  DateTime? @db.Timestamp(0)
+}
+
+model vinhos_doc {
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
+  nome       String    @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+}
+
+model vinicolas {
+  id         Int       @id @default(autoincrement()) @db.UnsignedInt
+  user_id    Int?
+  nome       String    @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+}
