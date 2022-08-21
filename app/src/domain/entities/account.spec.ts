@@ -12,7 +12,7 @@ describe('account', () => {
   it('Should create one account if pass correct attributes', () => {
     const mockedAccount = createAccountMock()
     const account = new Account(mockedAccount)
-    expect(account.email).toBe(mockedAccount.email)
+    expect(account.email.value).toBe(mockedAccount.email)
   })
 
   it('Should not create one account if pass incorrect CPF', () => {
@@ -26,7 +26,7 @@ describe('account', () => {
     const account = new Account(mockedAccount)
     const subscriptionMocked = createSubscriptionMock()
     account.addSubscription(new Subscription(subscriptionMocked))
-    expect(account.email).toBe(mockedAccount.email)
+    expect(account.email.value).toBe(mockedAccount.email)
     expect(account.subscriptions[0]?.price).toBe(subscriptionMocked.plan.price)
     expect(account.getSubscriptionActive()).toBeTruthy()
   })
@@ -41,7 +41,7 @@ describe('account', () => {
     account.addSubscription(new Subscription(mockedSubscription))
     account.addUsers(new AccountUser(createPersonMock()))
     account.addUsers(new AccountUser(createPersonMock()))
-    expect(account.email).toBe(mockedAccount.email)
+    expect(account.email.value).toBe(mockedAccount.email)
     expect(account.subscriptions[0]?.price).toBe(mockedSubscription.plan.price)
     expect(account.getSubscriptionActive()).toBeTruthy()
     expect(account.users).toHaveLength(2)
@@ -57,7 +57,7 @@ describe('account', () => {
     account.addSubscription(new Subscription(mockedSubscription))
     account.addUsers(new AccountUser(createPersonMock()))
     account.addUsers(new AccountUser(createPersonMock()))
-    expect(account.email).toBe(mockedAccount.email)
+    expect(account.email.value).toBe(mockedAccount.email)
     expect(account.subscriptions[0]?.price).toBe(mockedSubscription.plan.price)
     expect(account.getSubscriptionActive()).toBeTruthy()
     expect(account.users).toHaveLength(2)
@@ -122,7 +122,7 @@ describe('account', () => {
         due: new Date('2020-01-01T10:00:00'),
       })
     )
-    expect(account.email).toBe(mockedAccount.email)
+    expect(account.email.value).toBe(mockedAccount.email)
     expect(account.subscriptions[0]?.price).toBe(39.9)
     expect(account.getSubscriptionActive()).toBeFalsy()
   })
