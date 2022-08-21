@@ -1,20 +1,16 @@
-export type LabelProps = {
-  name: string
-  price: number
-  promotionalPrice?: number
-  photo?: string
-}
-export default class Label {
-  name: string
-  price: number
-  promotionalPrice?: number
-  photo?: string
+import Item, { ItemProps } from './item'
+export type LabelProps = ItemProps
+export default class Label extends Item {
   grapes: string[]
-  constructor({ name, price, promotionalPrice, photo }: LabelProps) {
-    this.name = name
-    this.price = price
-    this.promotionalPrice = promotionalPrice
-    this.photo = photo
+  constructor({
+    id,
+    name,
+    description,
+    price,
+    promotionalPrice,
+    photo,
+  }: LabelProps) {
+    super({ id, name, description, price, promotionalPrice, photo })
     this.grapes = []
   }
 
