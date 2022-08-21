@@ -25,6 +25,7 @@ export default class Order {
   }
 
   addItem(item: Item, quantity: number) {
+    if (!item.stock) throw new Error('Item out of stock')
     if (this.isItemDuplicated(item)) throw new Error('Duplicated Item')
     this.orderItems.push(
       new OrderItem({ itemId: item.id, price: item.price, quantity })
