@@ -47,6 +47,5 @@ export default class Order {
     }, 0)
     if (this.coupon) total -= this.coupon.calculateDiscount(total)
     return total
-    // total += this.freight.getTotal()
   }
 }
