@@ -1,9 +1,11 @@
 import request from 'supertest'
 import app from '../config/app'
 import { faker } from '@faker-js/faker'
+import { describe, test, vi } from 'vitest'
 
 describe('Body parser Middleware', () => {
-  jest.setTimeout(10000)
+  vi.useFakeTimers()
+  setTimeout(() => {}, 10000)
   test('should parse body as json', async () => {
     const fakeName = faker.name.firstName()
     app.post('/test_body_parser', (req, res) => {
