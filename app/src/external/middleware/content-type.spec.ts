@@ -1,8 +1,10 @@
 import request from 'supertest'
 import app from '../config/app'
+import { describe, test, vi } from 'vitest'
 
 describe('Content Type Middleware', () => {
-  jest.setTimeout(10000)
+  vi.useFakeTimers()
+  setTimeout(() => {}, 10000)
   test('should return default content type as json', async () => {
     app.get('/test_content_type', (_req, res) => {
       res.send('')

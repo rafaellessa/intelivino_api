@@ -8,6 +8,7 @@ import { faker } from '@faker-js/faker'
 import { createPersonMock } from '../mocks/person'
 import Label from './label'
 import { createLabelMock } from '../mocks/label'
+import { describe, it, expect } from 'vitest'
 describe('account', () => {
   it('Should create one account if pass correct attributes', () => {
     const mockedAccount = createAccountMock()

@@ -1,5 +1,6 @@
 import Coupon from './coupon'
 import OrderCoupon from './order-coupon'
+import { describe, it, expect } from 'vitest'
 
 describe('OrderCoupon', () => {
   it('Should create one coupon', () => {

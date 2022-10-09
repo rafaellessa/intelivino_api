@@ -2,6 +2,7 @@ import { createCampaignMock } from '../mocks/campaign'
 import Campaign from './campaign'
 import Label from './label'
 import { createLabelMock } from '../mocks/label'
+import { describe, it, expect } from 'vitest'
 
 describe('Campaign', () => {
   it('Should create one campaign', () => {

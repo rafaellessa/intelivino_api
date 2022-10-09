@@ -1,5 +1,6 @@
 import { createCouponMock } from '../mocks/coupon'
 import Coupon from './coupon'
+import { describe, it, expect } from 'vitest'
 
 describe('entities', () => {
   it('Should create a valid coupon', () => {

@@ -1,4 +1,5 @@
 import Cpf from './cpf'
+import { expect, test } from 'vitest'
 
 test('Deve validar um cpf válido', function () {
   const cpf = new Cpf('935.411.347-80')

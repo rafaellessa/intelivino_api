@@ -1,5 +1,6 @@
 import Plan from './plan'
 import Subscription from './subscription'
+import { describe, it, expect } from 'vitest'
 describe('Subscription', () => {
   it('Should create one subscription', () => {
     const plan = new Plan({

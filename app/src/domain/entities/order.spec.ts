@@ -4,6 +4,7 @@ import Coupon from './coupon'
 import Label from './label'
 import Order from './order'
 import { faker } from '@faker-js/faker'
+import { describe, it, expect } from 'vitest'
 describe('Order', () => {
   it('Should create a new order', () => {
     const orderMocked = createOrderMock()
