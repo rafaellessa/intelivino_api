@@ -8,11 +8,15 @@
     "coverage": "vitest run --coverage",
     "dev": "ts-node-dev -r tsconfig-paths/register --respawn --ignore-watch node_modules src/external/server.ts"
   },
+  "prisma": {
+    "schema": "./src/infra/database/orm/prisma/schema.prisma",
+    "seed": "ts-node ./src/infra/database/orm/prisma/seeds/seed.ts"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@prisma/client": "^4.2.1",
+    "@prisma/client": "4.2.1",
     "axios": "^0.27.2",
     "express": "^4.18.1",
     "nodemon": "^2.0.19",
