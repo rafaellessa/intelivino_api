@@ -2,7 +2,7 @@ version: "3.8"
 services:
   intelivino_api:
     build:
-      context: .
+      context: ./intelivino-api
       dockerfile: ./Dockerfile
       target: ${TARGET:-dev}
     environment:
@@ -20,7 +20,7 @@ services:
       RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
       RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
     volumes:
-      - ./app:/opt/node_app/app:delegated
+      - ./intelivino-api/code:/opt/node_app/app:delegated
     ports:
       - ${API_PORT:-8000}:${API_PORT:-8000}
       - ${PRISMA_STUDIO_PORT:-5555}:${PRISMA_STUDIO_PORT:-5555}
