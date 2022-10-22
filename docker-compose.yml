@@ -13,7 +13,7 @@ services:
       DB_PASSWORD: ${MYSQL_PASSWORD}
       DB_DATABASE: ${MYSQL_DATABASE}
       DATABASE_URL_OLDDER: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@intelivino_mysql:3306/${MYSQL_DATABASE_OLDER}?connection_limit=100&pool_timeout=10
-      DATABASE_URL_UPGRADED: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@intelivino_mysql:3306/${MYSQL_DATABASE_UPDGRADED}?connection_limit=100&pool_timeout=10
+      DATABASE_URL_WP: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@intelivino_mysql:3306/${MYSQL_DATABASE_WP}?connection_limit=100&pool_timeout=10
       DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@intelivino_mysql:3306/${MYSQL_DATABASE}?connection_limit=100&pool_timeout=10
       RABBITMQ_HOST: intelivino_rabbitmq
       RABBITMQ_PORT: 5672
