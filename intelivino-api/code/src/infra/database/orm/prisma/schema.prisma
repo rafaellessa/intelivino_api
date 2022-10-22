@@ -4,6 +4,7 @@
 generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl"]
+  output        = "./client"
 }
 
 datasource db {
@@ -27,11 +28,11 @@ model Account {
   gender             GenderType
   campaign           Campaign[]
   plan_id            Int
-  plan               Plan               @relation(fields: [plan_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  plan               Plan                @relation(fields: [plan_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   subscription       Subscription[]
   created_at         DateTime            @default(now()) @db.Timestamp(3)
   updated_at         DateTime            @updatedAt @db.Timestamp(3)
-  uuid               String              @unique
+  uuid               String              @unique @default(uuid())
   order              Order[]
   account_activities AccountActivities[]
 
@@ -45,7 +46,7 @@ model AccountActivities {
   activitie    Activities @relation(fields: [activitie_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   created_at   DateTime   @default(now()) @db.Timestamp(3)
   updated_at   DateTime   @updatedAt @db.Timestamp(3)
-  uuid         String     @unique
+  uuid         String     @unique @default(uuid())
 
   @@id([account_id, activitie_id])
   @@map("account_activities")
@@ -57,7 +58,7 @@ model Activities {
   slug               String
   created_at         DateTime            @default(now()) @db.Timestamp(3)
   updated_at         DateTime            @updatedAt @db.Timestamp(3)
-  uuid               String              @unique
+  uuid               String              @unique @default(uuid())
   account_activities AccountActivities[]
 
   @@map("activities")
@@ -81,7 +82,7 @@ model AccountUser {
   created_at             DateTime     @default(now()) @db.Timestamp(3)
   updated_at             DateTime     @updatedAt @db.Timestamp(3)
   lastLogin              DateTime     @default(now()) @db.Timestamp(3)
-  uuid                   String       @unique
+  uuid                   String       @unique @default(uuid())
   device_user            DeviceUser[]
 
   @@map("account_user")
@@ -111,7 +112,7 @@ model Campaign {
   account_id          Int
   created_at          DateTime        @default(now()) @db.Timestamp(3)
   updated_at          DateTime        @updatedAt @db.Timestamp(3)
-  uuid                String          @unique
+  uuid                String          @unique @default(uuid())
   label_campaign      LabelCampaign[]
 
   @@map("campaign")
@@ -133,7 +134,7 @@ model Coupon {
   expiration_date DateTime
   created_at      DateTime @default(now()) @db.Timestamp(3)
   updated_at      DateTime @updatedAt @db.Timestamp(3)
-  uuid            String   @unique
+  uuid            String   @unique @default(uuid())
 
   @@map("coupon")
 }
@@ -158,7 +159,7 @@ model Label {
   stock              Boolean         @default(true)
   created_at         DateTime        @default(now()) @db.Timestamp(3)
   updated_at         DateTime        @updatedAt @db.Timestamp(3)
-  uuid               String          @unique
+  uuid               String          @unique @default(uuid())
   label_grape        LabelGrape[]
   order_label        OrderLabel[]
   label_campaign     LabelCampaign[]
@@ -173,7 +174,7 @@ model LabelCampaign {
   campaign    Campaign @relation(fields: [campaign_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   created_at  DateTime @default(now()) @db.Timestamp(3)
   updated_at  DateTime @updatedAt @db.Timestamp(3)
-  uuid        String   @unique
+  uuid        String   @unique @default(uuid())
 
   @@id([label_id, campaign_id])
   @@map("label_campaign")
@@ -186,7 +187,7 @@ model LabelGrape {
   grape      Grape    @relation(fields: [grape_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   created_at DateTime @default(now()) @db.Timestamp(3)
   updated_at DateTime @updatedAt @db.Timestamp(3)
-  uuid       String   @unique
+  uuid       String   @unique @default(uuid())
 
   @@id([label_id, grape_id])
   @@map("label_grape")
@@ -198,7 +199,7 @@ model Grape {
   LabelGrape LabelGrape[]
   created_at DateTime     @default(now()) @db.Timestamp(3)
   updatedAt  DateTime     @updatedAt @db.Timestamp(3)
-  uuid       String       @unique
+  uuid       String       @unique @default(uuid())
 
   @@map("grape")
 }
@@ -209,7 +210,7 @@ model LabelType {
   labels     Label[]
   created_at DateTime @default(now()) @db.Timestamp(3)
   updated_at DateTime @updatedAt @db.Timestamp(3)
-  uuid       String   @unique
+  uuid       String   @unique @default(uuid())
 
   @@map("label_type")
 }
@@ -222,7 +223,7 @@ model Country {
   labels     Label[]
   created_at DateTime @default(now()) @db.Timestamp(3)
   updated_at DateTime @updatedAt @db.Timestamp(3)
-  uuid       String   @unique
+  uuid       String   @unique @default(uuid())
 
   @@map("country")
 }
@@ -237,7 +238,7 @@ model State {
   cities     City[]
   created_at DateTime @default(now()) @db.Timestamp(3)
   updated_at DateTime @updatedAt @db.Timestamp(3)
-  uuid       String   @unique
+  uuid       String   @unique @default(uuid())
 
   @@map("state")
 }
@@ -250,7 +251,7 @@ model City {
   state      State    @relation(fields: [state_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   created_at DateTime @default(now()) @db.Timestamp(3)
   updated_at DateTime @updatedAt @db.Timestamp(3)
-  uuid       String   @unique
+  uuid       String   @unique @default(uuid())
 
   @@map("city")
 }
@@ -265,7 +266,7 @@ model Region {
   labels     Label[]
   created_at DateTime    @default(now()) @db.Timestamp(3)
   updated_at DateTime    @updatedAt @db.Timestamp(3)
-  uuid       String      @unique
+  uuid       String      @unique @default(uuid())
 
   @@map("region")
 }
@@ -278,7 +279,7 @@ model SubRegion {
   region     Region   @relation(fields: [region_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   created_at DateTime @default(now()) @db.Timestamp(3)
   updated_at DateTime @updatedAt @db.Timestamp(3)
-  uuid       String   @unique
+  uuid       String   @unique @default(uuid())
 
   @@map("sub_region")
 }
@@ -290,7 +291,7 @@ model WineType {
   labels     Label[]
   created_at DateTime @default(now()) @db.Timestamp(3)
   updated_at DateTime @updatedAt @db.Timestamp(3)
-  uuid       String   @unique
+  uuid       String   @unique @default(uuid())
 
   @@map("wine_type")
 }
@@ -306,9 +307,10 @@ model Order {
   coupon_id   Int?
   created_at  DateTime     @default(now()) @db.Timestamp(3)
   updated_at  DateTime     @updatedAt @db.Timestamp(3)
-  uuid        String       @unique
+  uuid        String       @unique @default(uuid())
   order_label OrderLabel[]
   invoice     Invoice[]
+
   @@map("order")
 }
 
@@ -332,7 +334,7 @@ model People {
   created_at             DateTime       @default(now()) @db.Timestamp(3)
   updated_at             DateTime       @updatedAt @db.Timestamp(3)
   lastLogin              DateTime       @default(now()) @db.Timestamp(3)
-  uuid                   String         @unique
+  uuid                   String         @unique @default(uuid())
   order                  Order[]
   invoice                Invoice[]
   device_people          DevicePeople[]
@@ -347,7 +349,7 @@ model OrderLabel {
   label      Label    @relation(fields: [label_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   created_at DateTime @default(now()) @db.Timestamp(3)
   updated_at DateTime @updatedAt @db.Timestamp(3)
-  uuid       String   @unique
+  uuid       String   @unique @default(uuid())
   quantity   Int
 
   @@id([order_id, label_id])
@@ -362,7 +364,7 @@ model Invoice {
   people     People   @relation(fields: [people_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   created_at DateTime @default(now()) @db.Timestamp(3)
   updated_at DateTime @updatedAt @db.Timestamp(3)
-  uuid       String   @unique
+  uuid       String   @unique @default(uuid())
 
   @@map("invoice")
 }
@@ -375,7 +377,7 @@ model Device {
   token_notification  String
   created_at          DateTime             @default(now()) @db.Timestamp(3)
   updated_at          DateTime             @updatedAt @db.Timestamp(3)
-  uuid                String               @unique
+  uuid                String               @unique @default(uuid())
   device_people       DevicePeople[]
   device_user_account DeviceUser[]
   push_notification   PushNotification[]
@@ -397,7 +399,7 @@ model DevicePeople {
   people     People   @relation(fields: [people_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   created_at DateTime @default(now()) @db.Timestamp(3)
   updated_at DateTime @updatedAt @db.Timestamp(3)
-  uuid       String   @unique
+  uuid       String   @unique @default(uuid())
 
   @@id([device_id, people_id])
   @@map("device_people")
@@ -410,7 +412,7 @@ model DeviceUser {
   user_account    AccountUser @relation(fields: [user_account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   created_at      DateTime    @default(now()) @db.Timestamp(3)
   updated_at      DateTime    @updatedAt @db.Timestamp(3)
-  uuid            String      @unique
+  uuid            String      @unique @default(uuid())
 
   @@id([device_id, user_account_id])
   @@map("device_user")
@@ -422,7 +424,7 @@ model Notifications {
   message             String
   created_at          DateTime             @default(now()) @db.Timestamp(3)
   updated_at          DateTime             @updatedAt @db.Timestamp(3)
-  uuid                String               @unique
+  uuid                String               @unique @default(uuid())
   type                TypeNotification
   sms_notification    SmsNotification[]
   email_notification  EmailNotification[]
@@ -451,7 +453,7 @@ model EmailNotification {
   error_description String?
   created_at        DateTime              @default(now()) @db.Timestamp(3)
   updated_at        DateTime              @updatedAt @db.Timestamp(3)
-  uuid              String                @unique
+  uuid              String                @unique @default(uuid())
 
   @@map("email_notification")
 }
@@ -468,7 +470,7 @@ model SmsNotification {
   send            String?
   created_at      DateTime      @default(now()) @db.Timestamp(3)
   updated_at      DateTime      @updatedAt @db.Timestamp(3)
-  uuid            String        @unique
+  uuid            String        @unique @default(uuid())
 
   @@map("sms_notification")
 }
@@ -484,7 +486,7 @@ model PushNotification {
   device          Device        @relation(fields: [device_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   created_at      DateTime      @default(now()) @db.Timestamp(3)
   updated_at      DateTime      @updatedAt @db.Timestamp(3)
-  uuid            String        @unique
+  uuid            String        @unique @default(uuid())
 
   @@map("push_notification")
 }
@@ -507,7 +509,7 @@ model DeviceNotification {
   notification    Notifications @relation(fields: [notification_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   created_at      DateTime      @default(now()) @db.Timestamp(3)
   updated_at      DateTime      @updatedAt @db.Timestamp(3)
-  uuid            String        @unique
+  uuid            String        @unique @default(uuid())
 
   @@id([device_id, notification_id])
   @@map("device_notification")
@@ -526,7 +528,7 @@ model Plan {
   account          Account[]
   created_at       DateTime       @default(now()) @db.Timestamp(3)
   updated_at       DateTime       @updatedAt @db.Timestamp(3)
-  uuid             String         @unique
+  uuid             String         @unique @default(uuid())
   subscription     Subscription[]
 
   @@map("plan")
@@ -538,7 +540,7 @@ model PaymentCycle {
   slug       String
   created_at DateTime @default(now()) @db.Timestamp(3)
   updated_at DateTime @updatedAt @db.Timestamp(3)
-  uuid       String   @unique
+  uuid       String   @unique @default(uuid())
   plans      Plan[]
 
   @@map("payment_cycle")
@@ -554,7 +556,7 @@ model Subscription {
   price      Float
   created_at DateTime @default(now()) @db.Timestamp(3)
   updated_at DateTime @updatedAt @db.Timestamp(3)
-  uuid       String   @unique
+  uuid       String   @unique @default(uuid())
 
   @@map("subscription")
 }

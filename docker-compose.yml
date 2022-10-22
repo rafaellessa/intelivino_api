@@ -23,7 +23,36 @@ services:
       - ./intelivino-api/code:/opt/node_app/app:delegated
     ports:
       - ${API_PORT:-8000}:${API_PORT:-8000}
-      - ${PRISMA_STUDIO_PORT:-5555}:${PRISMA_STUDIO_PORT:-5555}
+      - ${PRISMA_STUDIO_PORT:-5556}:${PRISMA_STUDIO_PORT:-5556}
+    depends_on:
+      - intelivino_mysql
+    networks:
+      - "intelivino_network"
+
+  intelivino_migration:
+    build:
+      context: ./intelivino-migration
+      dockerfile: ./Dockerfile
+      target: ${TARGET:-dev}
+    environment:
+      API_PORT: ${API_MIGRATION_PORT}
+      DB_SERVER: intelivino_mysql
+      DB_PORT: 3306
+      DB_USER: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+      DB_DATABASE: ${MYSQL_DATABASE}
+      DATABASE_URL_OLDDER: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@intelivino_mysql:3306/${MYSQL_DATABASE_OLDER}?connection_limit=100&pool_timeout=10
+      DATABASE_URL_WP: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@intelivino_mysql:3306/${MYSQL_DATABASE_WP}?connection_limit=100&pool_timeout=10
+      DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@intelivino_mysql:3306/${MYSQL_DATABASE}?connection_limit=100&pool_timeout=10
+      RABBITMQ_HOST: intelivino_rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+    volumes:
+      - ./intelivino-migration/code:/opt/node_app/app:delegated
+    ports:
+      - ${API_MIGRATION_PORT:-8001}:${API_MIGRATION_PORT:-8001}
+      - ${PRISMA_STUDIO_PORT:-5557}:${PRISMA_STUDIO_PORT:-5557}
     depends_on:
       - intelivino_mysql
     networks:
