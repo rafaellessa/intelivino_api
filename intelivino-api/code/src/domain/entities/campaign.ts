@@ -1,7 +1,7 @@
 import Label from './label'
 
 export type CampaignProps = {
-  accountId: number
+  accountId: string
   percentageDiscount: number
   startDate: Date
   expirationDate: Date
@@ -9,7 +9,7 @@ export type CampaignProps = {
 
 export default class Campaign {
   labels: Label[]
-  accountId: number
+  accountId: string
   percentageDiscount: number
   startDate: Date
   expirationDate: Date

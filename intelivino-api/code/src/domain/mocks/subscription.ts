@@ -4,7 +4,7 @@ import { createPlanMock } from './plan'
 
 export const createSubscriptionMock = (): SubscriptionProps => {
   return {
-    accountId: faker.datatype.number(),
+    accountId: faker.datatype.uuid(),
     due: faker.date.future(),
     plan: createPlanMock(),
   }

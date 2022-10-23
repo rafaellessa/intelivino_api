@@ -1,5 +1,5 @@
 export type ItemProps = {
-  id: number
+  id: string
   name: string
   description: string
   price: number
@@ -9,7 +9,7 @@ export type ItemProps = {
   stock: boolean
 }
 export default abstract class Item {
-  id: number
+  id: string
   name: string
   description: string
   price: number

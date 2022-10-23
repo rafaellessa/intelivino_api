@@ -10,7 +10,7 @@ export enum ItemComercialType {
 
 export const createItemMock = (): ItemProps => {
   return {
-    id: faker.datatype.number(),
+    id: faker.datatype.uuid(),
     name: faker.name.firstName(),
     description: faker.datatype.string(),
     price: Number(faker.commerce.price()),

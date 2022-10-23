@@ -1,12 +1,12 @@
 import Plan from './plan'
 export type SubscriptionProps = {
-  accountId: number
+  accountId: string
   plan: Plan
   due: Date
 }
 
 export default class Subscription {
-  accountId: number
+  accountId: string
   plan: Plan
   dateAcquisition: Date
   price: number

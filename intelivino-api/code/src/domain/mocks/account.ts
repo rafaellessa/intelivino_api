@@ -6,7 +6,7 @@ import { createAddressMock } from './address'
 
 export const createAccountMock = (): AccountProps => {
   return {
-    id: faker.datatype.number(),
+    id: faker.datatype.uuid(),
     address: new Address(createAddressMock()),
     phone: faker.phone.number('55 ## #####-####'),
     logo: '',

@@ -6,7 +6,7 @@ export const createCampaignMock = (
   expirationDate: Date
 ): CampaignProps => {
   return {
-    accountId: faker.datatype.number(),
+    accountId: faker.datatype.uuid(),
     expirationDate,
     percentageDiscount: 10,
     startDate,

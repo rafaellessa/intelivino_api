@@ -1,11 +1,11 @@
 export type OrderItemProps = {
-  itemId: number
+  itemId: string
   price: number
   quantity: number
 }
 
 export default class OrderItem {
-  itemId: number
+  itemId: string
   price: number
   quantity: number
   constructor({ itemId, price, quantity }: OrderItemProps) {
