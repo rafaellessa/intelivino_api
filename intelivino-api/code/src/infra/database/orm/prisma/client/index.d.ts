@@ -207,6 +207,7 @@ export type Country = {
   id: number
   name: string
   slug: string
+  value: string
   created_at: Date
   updated_at: Date
   uuid: string
@@ -14595,6 +14596,7 @@ export namespace Prisma {
     id: number | null
     name: string | null
     slug: string | null
+    value: string | null
     created_at: Date | null
     updated_at: Date | null
     uuid: string | null
@@ -14604,6 +14606,7 @@ export namespace Prisma {
     id: number | null
     name: string | null
     slug: string | null
+    value: string | null
     created_at: Date | null
     updated_at: Date | null
     uuid: string | null
@@ -14613,6 +14616,7 @@ export namespace Prisma {
     id: number
     name: number
     slug: number
+    value: number
     created_at: number
     updated_at: number
     uuid: number
@@ -14632,6 +14636,7 @@ export namespace Prisma {
     id?: true
     name?: true
     slug?: true
+    value?: true
     created_at?: true
     updated_at?: true
     uuid?: true
@@ -14641,6 +14646,7 @@ export namespace Prisma {
     id?: true
     name?: true
     slug?: true
+    value?: true
     created_at?: true
     updated_at?: true
     uuid?: true
@@ -14650,6 +14656,7 @@ export namespace Prisma {
     id?: true
     name?: true
     slug?: true
+    value?: true
     created_at?: true
     updated_at?: true
     uuid?: true
@@ -14752,6 +14759,7 @@ export namespace Prisma {
     id: number
     name: string
     slug: string
+    value: string
     created_at: Date
     updated_at: Date
     uuid: string
@@ -14780,6 +14788,7 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     slug?: boolean
+    value?: boolean
     states?: boolean | StateFindManyArgs
     labels?: boolean | LabelFindManyArgs
     created_at?: boolean
@@ -35620,6 +35629,7 @@ export namespace Prisma {
     id: 'id',
     name: 'name',
     slug: 'slug',
+    value: 'value',
     created_at: 'created_at',
     updated_at: 'updated_at',
     uuid: 'uuid'
@@ -36813,6 +36823,7 @@ export namespace Prisma {
     id?: IntFilter | number
     name?: StringFilter | string
     slug?: StringFilter | string
+    value?: StringFilter | string
     states?: StateListRelationFilter
     labels?: LabelListRelationFilter
     created_at?: DateTimeFilter | Date | string
@@ -36824,6 +36835,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
+    value?: SortOrder
     states?: StateOrderByRelationAggregateInput
     labels?: LabelOrderByRelationAggregateInput
     created_at?: SortOrder
@@ -36840,6 +36852,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
+    value?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     uuid?: SortOrder
@@ -36857,6 +36870,7 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter | number
     name?: StringWithAggregatesFilter | string
     slug?: StringWithAggregatesFilter | string
+    value?: StringWithAggregatesFilter | string
     created_at?: DateTimeWithAggregatesFilter | Date | string
     updated_at?: DateTimeWithAggregatesFilter | Date | string
     uuid?: StringWithAggregatesFilter | string
@@ -39176,6 +39190,7 @@ export namespace Prisma {
   export type CountryCreateInput = {
     name: string
     slug: string
+    value: string
     states?: StateCreateNestedManyWithoutCountryInput
     labels?: LabelCreateNestedManyWithoutCountryInput
     created_at?: Date | string
@@ -39187,6 +39202,7 @@ export namespace Prisma {
     id?: number
     name: string
     slug: string
+    value: string
     states?: StateUncheckedCreateNestedManyWithoutCountryInput
     labels?: LabelUncheckedCreateNestedManyWithoutCountryInput
     created_at?: Date | string
@@ -39197,6 +39213,7 @@ export namespace Prisma {
   export type CountryUpdateInput = {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
     states?: StateUpdateManyWithoutCountryNestedInput
     labels?: LabelUpdateManyWithoutCountryNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39208,6 +39225,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
     states?: StateUncheckedUpdateManyWithoutCountryNestedInput
     labels?: LabelUncheckedUpdateManyWithoutCountryNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39219,6 +39237,7 @@ export namespace Prisma {
     id?: number
     name: string
     slug: string
+    value: string
     created_at?: Date | string
     updated_at?: Date | string
     uuid?: string
@@ -39227,6 +39246,7 @@ export namespace Prisma {
   export type CountryUpdateManyMutationInput = {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     uuid?: StringFieldUpdateOperationsInput | string
@@ -39236,6 +39256,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     uuid?: StringFieldUpdateOperationsInput | string
@@ -41805,6 +41826,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
+    value?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     uuid?: SortOrder
@@ -41818,6 +41840,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
+    value?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     uuid?: SortOrder
@@ -41827,6 +41850,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
+    value?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     uuid?: SortOrder
@@ -46250,6 +46274,7 @@ export namespace Prisma {
   export type CountryCreateWithoutLabelsInput = {
     name: string
     slug: string
+    value: string
     states?: StateCreateNestedManyWithoutCountryInput
     created_at?: Date | string
     updated_at?: Date | string
@@ -46260,6 +46285,7 @@ export namespace Prisma {
     id?: number
     name: string
     slug: string
+    value: string
     states?: StateUncheckedCreateNestedManyWithoutCountryInput
     created_at?: Date | string
     updated_at?: Date | string
@@ -46421,6 +46447,7 @@ export namespace Prisma {
   export type CountryUpdateWithoutLabelsInput = {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
     states?: StateUpdateManyWithoutCountryNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -46431,6 +46458,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
     states?: StateUncheckedUpdateManyWithoutCountryNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -47103,6 +47131,7 @@ export namespace Prisma {
   export type CountryCreateWithoutStatesInput = {
     name: string
     slug: string
+    value: string
     labels?: LabelCreateNestedManyWithoutCountryInput
     created_at?: Date | string
     updated_at?: Date | string
@@ -47113,6 +47142,7 @@ export namespace Prisma {
     id?: number
     name: string
     slug: string
+    value: string
     labels?: LabelUncheckedCreateNestedManyWithoutCountryInput
     created_at?: Date | string
     updated_at?: Date | string
@@ -47190,6 +47220,7 @@ export namespace Prisma {
   export type CountryUpdateWithoutStatesInput = {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
     labels?: LabelUpdateManyWithoutCountryNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -47200,6 +47231,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
     labels?: LabelUncheckedUpdateManyWithoutCountryNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string

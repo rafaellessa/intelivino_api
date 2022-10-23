@@ -1,4 +1,4 @@
-import app from "@/external/config/app";
+import app from "../external/config/app";
 
 const port = process.env.API_PORT;
 app.listen(port, () => {

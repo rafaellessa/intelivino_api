@@ -24,6 +24,7 @@ services:
     ports:
       - ${API_PORT:-8000}:${API_PORT:-8000}
       - ${PRISMA_STUDIO_PORT:-5556}:${PRISMA_STUDIO_PORT:-5556}
+      - "9230:9229"
     depends_on:
       - intelivino_mysql
     networks:
@@ -53,6 +54,7 @@ services:
     ports:
       - ${API_MIGRATION_PORT:-8001}:${API_MIGRATION_PORT:-8001}
       - ${PRISMA_STUDIO_PORT:-5557}:${PRISMA_STUDIO_PORT:-5557}
+      - "9231:9229"
     depends_on:
       - intelivino_mysql
     networks:

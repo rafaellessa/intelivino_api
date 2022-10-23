@@ -180,6 +180,7 @@ exports.Prisma.CountryScalarFieldEnum = makeEnum({
   id: 'id',
   name: 'name',
   slug: 'slug',
+  value: 'value',
   created_at: 'created_at',
   updated_at: 'updated_at',
   uuid: 'uuid'

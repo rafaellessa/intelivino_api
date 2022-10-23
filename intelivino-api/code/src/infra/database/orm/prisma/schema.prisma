@@ -219,6 +219,7 @@ model Country {
   id         Int      @id @default(autoincrement())
   name       String
   slug       String
+  value      String
   states     State[]
   labels     Label[]
   created_at DateTime @default(now()) @db.Timestamp(3)
