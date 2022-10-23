@@ -8,7 +8,7 @@ export type ItemProps = {
   comercialType: string
   stock: boolean
 }
-export default abstract class Item {
+export abstract class Item {
   id: string
   name: string
   description: string

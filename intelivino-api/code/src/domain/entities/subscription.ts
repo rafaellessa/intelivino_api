@@ -1,11 +1,12 @@
-import Plan from './plan'
+import { Plan } from './plan'
+
 export type SubscriptionProps = {
   accountId: string
   plan: Plan
   due: Date
 }
 
-export default class Subscription {
+export class Subscription {
   accountId: string
   plan: Plan
   dateAcquisition: Date

@@ -1,4 +1,4 @@
-export default class OrderCode {
+export class OrderCode {
   value: string
   constructor(date: Date, sequence: number) {
     this.value = this.generateCode(date, sequence)

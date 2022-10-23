@@ -1,4 +1,4 @@
-export default class CpfGenerator {
+export class CpfGenerator {
   generate() {
     const num1 = this.generateRandomNumber()
     const num2 = this.generateRandomNumber()

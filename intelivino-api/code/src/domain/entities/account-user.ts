@@ -1,6 +1,7 @@
-import Person, { PersonProps } from './person'
-import Role from './role'
-export default class AccountUser extends Person {
+import { Person, PersonProps } from './person'
+import { Role } from './role'
+
+export class AccountUser extends Person {
   roles: Role[]
   constructor(accountUser: PersonProps) {
     super({ ...accountUser })

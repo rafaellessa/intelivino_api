@@ -1,4 +1,4 @@
-export default class Permission {
+export class Permission {
   constructor(
     readonly id: number,
     readonly name: string,

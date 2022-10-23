@@ -1,8 +1,9 @@
-import Item, { ItemProps } from './item'
+import { ItemProps, Item } from './item'
+
 export type LabelProps = ItemProps & {
   type: string
 }
-export default class Label extends Item {
+export class Label extends Item {
   grapes: string[]
   type: string
   constructor({

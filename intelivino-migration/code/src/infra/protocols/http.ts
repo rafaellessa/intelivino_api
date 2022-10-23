@@ -41,6 +41,6 @@ export type HttpResponseType<R> = {
   status: StatusCodeResponse
 }
 
-export default interface HttpClient {
+export interface HttpClient {
   request<R>(params: HttpRequestType): Promise<HttpResponseType<R>>
 }

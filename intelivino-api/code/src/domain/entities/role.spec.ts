@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker'
-import Role from './role'
+import { Role } from './role'
 import { describe, it, expect } from 'vitest'
 describe('Role', () => {
   it('Should create role', () => {

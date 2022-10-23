@@ -1,8 +1,7 @@
-import { createCampaignMock } from '../mocks/campaign'
-import Campaign from './campaign'
-import Label from './label'
-import { createLabelMock } from '../mocks/label'
 import { describe, it, expect } from 'vitest'
+import { createCampaignMock, createLabelMock } from '../mocks'
+import { Campaign } from './campaign'
+import { Label } from './label'
 
 describe('Campaign', () => {
   it('Should create one campaign', () => {

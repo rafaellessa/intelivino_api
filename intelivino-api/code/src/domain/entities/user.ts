@@ -1,13 +1,13 @@
-import Person, { PersonProps } from './person'
+import { PersonProps, Person } from './person'
 
 export type UserProps = PersonProps & {
   password: string
   photo?: string
   gender: 'F' | 'M' | 'ND'
-  birthdate: string
-  googleId: string
-  appleId: string
-  facebookId: string
+  birthdate?: string
+  googleId?: string
+  appleId?: string
+  facebookId?: string
   lastLogin: Date
 }
 
@@ -15,10 +15,10 @@ export class User extends Person {
   password: string
   photo?: string
   gender: 'F' | 'M' | 'ND'
-  birthdate: string
-  googleId: string
-  appleId: string
-  facebookId: string
+  birthdate?: string
+  googleId?: string
+  appleId?: string
+  facebookId?: string
   lastLogin: Date
   constructor({
     id,

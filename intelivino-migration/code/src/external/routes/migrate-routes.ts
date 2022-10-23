@@ -1,7 +1,7 @@
 import { MigrateRepository } from "../../infra/repositories/migrate-repository";
 import { Router } from "express";
 
-export default (router: Router): void => {
+export (router: Router): void => {
   const migrateRepository = new MigrateRepository();
   router.get("/migrate/uvas", (_req, response) => {
     response.setHeader("Content-Type", "application/json");

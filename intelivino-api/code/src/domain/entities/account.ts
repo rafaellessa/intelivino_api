@@ -1,15 +1,17 @@
-import Person, { PersonProps } from './person'
-import Subscription from './subscription'
-import AccountUser from './account-user'
-import Label from './label'
+import { AccountConfiguration } from './account-configuration'
+import { AccountUser } from './account-user'
+import { Label } from './label'
+import { PersonProps, Person } from './person'
+import { Subscription } from './subscription'
 export type AccountProps = PersonProps & {
   logo: string
 }
-export default class Account extends Person {
+export class Account extends Person {
   logo: string
   subscriptions: Subscription[]
   users?: AccountUser[]
   labels?: Label[]
+  accountConfiguration?: AccountConfiguration
   constructor({
     id,
     address,
@@ -58,5 +60,9 @@ export default class Account extends Person {
 
   getSubscriptionActive() {
     return this.subscriptions.find((sub) => sub.isActive === true)
+  }
+
+  addConfiguration(configuration: AccountConfiguration) {
+    this.accountConfiguration = configuration
   }
 }

@@ -1,5 +1,5 @@
 import { createLabelMock } from '../mocks/label'
-import Label from './label'
+import { Label } from './label'
 import { describe, it, expect } from 'vitest'
 
 describe('Label', () => {

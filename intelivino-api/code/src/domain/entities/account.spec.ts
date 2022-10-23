@@ -1,14 +1,13 @@
-import { createAccountMock } from '../mocks/account'
-import Account from './account'
-import Plan from './plan'
-import Subscription from './subscription'
-import { createSubscriptionMock } from '../mocks/subscription'
-import AccountUser from './account-user'
 import { faker } from '@faker-js/faker'
-import { createPersonMock } from '../mocks/person'
-import Label from './label'
-import { createLabelMock } from '../mocks/label'
 import { describe, it, expect } from 'vitest'
+import { createAccountMock, createLabelMock } from '../mocks'
+import { createPersonMock } from '../mocks/person'
+import { createSubscriptionMock } from '../mocks/subscription'
+import { Account } from './account'
+import { AccountUser } from './account-user'
+import { Label } from './label'
+import { Plan } from './plan'
+import { Subscription } from './subscription'
 describe('account', () => {
   it('Should create one account if pass correct attributes', () => {
     const mockedAccount = createAccountMock()

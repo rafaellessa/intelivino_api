@@ -1,4 +1,4 @@
-export default class Cpf {
+export class Cpf {
   readonly value: string
   private FIRST_DIGIT_FACTOR = 10
   private SECOND_DIGIT_FACTOR = 11

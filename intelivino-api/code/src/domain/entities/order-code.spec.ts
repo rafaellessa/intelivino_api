@@ -1,4 +1,4 @@
-import OrderCode from './order-code'
+import { OrderCode } from './order-code'
 import { describe, it, expect } from 'vitest'
 
 describe('OrderCode', () => {

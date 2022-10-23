@@ -1,5 +1,5 @@
-import { HttpRequestType, HttpResponseType } from '@/infra/protocols/http'
-import AxiosAdapter from './axios-adapter'
+import { HttpRequestType, HttpResponseType } from '../../infra/protocols/http'
+import { AxiosAdapter } from './axios-adapter'
 import { describe, it, expect, vi } from 'vitest'
 
 interface SutType<R> {

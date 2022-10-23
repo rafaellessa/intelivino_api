@@ -1,15 +1,15 @@
-import OrderItem from './order-item'
-import Cpf from './cpf'
-import Item from './item'
-import Coupon from './coupon'
-import OrderCoupon from './order-coupon'
-import OrderCode from './order-code'
+import { Coupon } from './coupon'
+import { Cpf } from './cpf'
+import { Item } from './item'
+import { OrderCode } from './order-code'
+import { OrderCoupon } from './order-coupon'
+import { OrderItem } from './order-item'
 
 export type OrderProps = {
   cpf: string
   sequence: number
 }
-export default class Order {
+export class Order {
   cpf: Cpf
   orderItems: OrderItem[]
   code: OrderCode

@@ -1,6 +1,6 @@
-import { OrderProps } from '../entities/order'
-import CpfGenerator from '../utils/cpf-generator'
 import { faker } from '@faker-js/faker'
+import { OrderProps } from '../entities'
+import { CpfGenerator } from '../utils/cpf-generator'
 
 export const createOrderMock = (): OrderProps => {
   return {

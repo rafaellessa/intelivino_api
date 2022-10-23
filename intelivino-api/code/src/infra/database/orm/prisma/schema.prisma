@@ -12,32 +12,50 @@ datasource db {
 }
 
 model Account {
-  id                 String              @id @default(uuid())
-  name               String
-  cpf_cnpj           String              @unique
-  phone              String?
-  whatsapp           String?
-  logo               String?
-  person_type        PersonType
-  site               String?
-  social_reason      String?
-  facebook_url       String?
-  instagram_url      String?
-  banner             String?
-  gender             GenderType
-  campaign           Campaign[]
-  plan_id            String?
-  plan               Plan?               @relation(fields: [plan_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  subscription       Subscription[]
-  created_at         DateTime            @default(now()) @db.Timestamp(3)
-  updated_at         DateTime            @updatedAt @db.Timestamp(3)
-  order              Order[]
-  account_activities AccountActivities[]
-  account_users      AccountUser[]
-  domain             String              @unique
-  StockLabel         StockLabel[]
+  id                    String                @id @default(uuid())
+  name                  String
+  cpf_cnpj              String                @unique
+  email                                     String @unique
+  phone                 String?
+  whatsapp              String?
+  logo                  String?
+  person_type           PersonType
+  site                  String?
+  social_reason         String?
+  facebook_url          String?
+  instagram_url         String?
+  banner                String?
+  gender                GenderType
+  campaign              Campaign[]
+  street                 String
+  number                 String
+  district               String
+  country                String
+  state                  String
+  complement String?
+  zipcode                String
+  plan_id               String?
+  plan                  Plan?                 @relation(fields: [plan_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  subscription          Subscription[]
+  created_at            DateTime              @default(now()) @db.Timestamp(3)
+  updated_at            DateTime              @updatedAt @db.Timestamp(3)
+  order                 Order[]
+  account_activities    AccountActivities[]
+  account_users         AccountUser[]
+  domain                String                @unique
+  StockLabel            StockLabel[]
+  account_configuration AccountConfiguration?
+  isActive              Boolean               @default(false)
 
   @@map("account")
+}
+
+model AccountConfiguration {
+  id                String  @id @default(uuid())
+  account_id        String  @unique
+  account           Account @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  banner_market_url String?
+  header_color      String?
 }
 
 model AccountActivities {
@@ -75,7 +93,8 @@ model User {
   district               String
   country                String
   state                  String
-  additional_information String?
+  complement String?
+  city String
   zipcode                String
   photo                  String?
   gender                 GenderType    @default(ND)

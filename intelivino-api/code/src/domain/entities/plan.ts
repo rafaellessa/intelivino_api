@@ -5,7 +5,7 @@ export type PlanProps = {
   maxLabels: number
 }
 
-export default class Plan {
+export class Plan {
   name: string
   price: number
   maxUsers: number

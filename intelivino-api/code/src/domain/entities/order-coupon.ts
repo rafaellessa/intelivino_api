@@ -3,7 +3,7 @@ export type OrderCouponProps = {
   percentage: number
 }
 
-export default class OrderCoupon {
+export class OrderCoupon {
   code: string
   percentage: number
   constructor({ code, percentage }: OrderCouponProps) {

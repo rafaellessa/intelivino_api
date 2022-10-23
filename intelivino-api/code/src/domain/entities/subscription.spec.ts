@@ -1,6 +1,7 @@
-import Plan from './plan'
-import Subscription from './subscription'
+import { faker } from '@faker-js/faker'
 import { describe, it, expect } from 'vitest'
+import { Plan } from './plan'
+import { Subscription } from './subscription'
 describe('Subscription', () => {
   it('Should create one subscription', () => {
     const plan = new Plan({
@@ -9,12 +10,13 @@ describe('Subscription', () => {
       maxUsers: 5,
       maxLabels: 10,
     })
+    const accountId = faker.datatype.uuid()
     const subscription = new Subscription({
-      accountId: 1,
+      accountId,
       plan,
       due: new Date('2020-01-01T10:00:00'),
     })
-    expect(subscription.accountId).toBe(1)
+    expect(subscription.accountId).toBe(accountId)
     expect(subscription.price).toBe(39.9)
   })
 })

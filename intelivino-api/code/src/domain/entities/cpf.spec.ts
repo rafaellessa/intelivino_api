@@ -1,4 +1,4 @@
-import Cpf from './cpf'
+import { Cpf } from './cpf'
 import { expect, test } from 'vitest'
 
 test('Deve validar um cpf válido', function () {

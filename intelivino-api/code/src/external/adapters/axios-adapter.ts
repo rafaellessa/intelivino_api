@@ -1,11 +1,12 @@
-import axios, { AxiosInstance, AxiosResponse } from 'axios'
-import HttpClient, {
+import {
+  HttpClient,
   HttpRequestType,
   HttpResponseType,
   StatusCodeResponse,
 } from '../../infra/protocols/http'
+import axios, { AxiosInstance, AxiosResponse } from 'axios'
 
-export default class AxiosAdapter implements HttpClient {
+export class AxiosAdapter implements HttpClient {
   api: AxiosInstance
 
   constructor(readonly baseUrl?: string) {

@@ -1,7 +1,6 @@
-import { AccountProps } from '../entities/account'
 import { faker } from '@faker-js/faker'
-import CpfGenerator from '../utils/cpf-generator'
-import Address from '../entities/address'
+import { AccountProps, Address } from '../entities'
+import { CpfGenerator } from '../utils/cpf-generator'
 import { createAddressMock } from './address'
 
 export const createAccountMock = (): AccountProps => {

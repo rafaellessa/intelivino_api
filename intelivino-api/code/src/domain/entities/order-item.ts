@@ -4,7 +4,7 @@ export type OrderItemProps = {
   quantity: number
 }
 
-export default class OrderItem {
+export class OrderItem {
   itemId: string
   price: number
   quantity: number

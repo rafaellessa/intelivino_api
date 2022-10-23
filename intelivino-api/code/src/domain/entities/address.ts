@@ -8,7 +8,7 @@ export type AddressProps = {
   zipcode: string
   additionalInformation?: string | null
 }
-export default class Address {
+export class Address {
   street: string
   number: string
   district: string

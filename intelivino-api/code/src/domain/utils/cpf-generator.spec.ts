@@ -1,6 +1,6 @@
-import CpfGenerator from './cpf-generator'
-import Cpf from '../entities/cpf'
 import { describe, it, expect } from 'vitest'
+import { Cpf } from '../entities'
+import { CpfGenerator } from './cpf-generator'
 describe('CpfGenerator', () => {
   it('Should generate one valid CPF', () => {
     const cpfGenerator = new CpfGenerator()

@@ -1,6 +1,6 @@
-import Address, { AddressProps } from './address'
-import Cpf from './cpf'
-import Email from './email'
+import { AddressProps, Address } from './address'
+import { Cpf } from './cpf'
+import { Email } from './email'
 
 export type PersonProps = {
   id: string
@@ -11,7 +11,7 @@ export type PersonProps = {
   whatsapp?: string
   address: AddressProps
 }
-export default abstract class Person {
+export abstract class Person {
   id: string
   name: string
   email: Email

@@ -1,4 +1,4 @@
-export default class Email {
+export class Email {
   value: string
   constructor(readonly email: string) {
     if (!this.validate(email)) throw new Error('Invalid Email')

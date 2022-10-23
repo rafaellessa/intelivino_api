@@ -4,7 +4,7 @@ export type CouponProps = {
   expirationDate: Date
 }
 
-export default class Coupon {
+export class Coupon {
   code: string
   percentage: number
   expirationDate: Date

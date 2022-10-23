@@ -1,4 +1,4 @@
-import Label from './label'
+import { Label } from './label'
 
 export type CampaignProps = {
   accountId: string
@@ -7,7 +7,7 @@ export type CampaignProps = {
   expirationDate: Date
 }
 
-export default class Campaign {
+export class Campaign {
   labels: Label[]
   accountId: string
   percentageDiscount: number
