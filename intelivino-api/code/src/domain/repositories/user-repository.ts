@@ -7,10 +7,12 @@ export type CreateUserDto = {
   email: string
   password: string
   whatsapp?: string
+  phone?: string
   cpfCnpj?: string
   street: string
   number: string
   district: string
+  city: string
   country: string
   state: string
   complement?: string

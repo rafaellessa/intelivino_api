@@ -1,6 +1,7 @@
-import { AccountRepository, UserRepository } from '@/domain/repositories'
+import { AccountRepository, UserRepository } from '../../../domain/repositories'
 import { FactoryRepository } from './factory-repository'
 import { AccountRepositoryMemory } from '../memory/account-repository-memory'
+import { UserRepositoryMemory } from '../memory/user-repository-memory'
 
 export class FactoryRepositoryMemory implements FactoryRepository {
   constructor() {}
@@ -8,6 +9,6 @@ export class FactoryRepositoryMemory implements FactoryRepository {
     return AccountRepositoryMemory.getInstance()
   }
   makeUserRepository(): UserRepository {
-    throw new Error('Method not implemented.')
+    return UserRepositoryMemory.getInstance()
   }
 }

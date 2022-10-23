@@ -1,9 +1,12 @@
-import { Account, Address } from '@/domain/entities'
-import { Failure } from '@/domain/errors'
-import { AccountCreateDto, AccountRepository } from '@/domain/repositories'
-import { Either, left } from '@/shared/either'
+import { Account, Address } from '../../../domain/entities'
+import { Failure } from '../../../domain/errors'
+import {
+  AccountCreateDto,
+  AccountRepository,
+} from '../../../domain/repositories'
+import { Either, left, right } from '../../../shared/either'
 import { faker } from '@faker-js/faker'
-import { right } from '../../../shared/either'
+
 import { EntityNotFound } from '../../errors/entity-not-found'
 
 export class AccountRepositoryMemory implements AccountRepository {
