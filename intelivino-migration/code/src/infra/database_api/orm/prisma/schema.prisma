@@ -4,7 +4,6 @@
 generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl"]
-  output = "./client"
 }
 
 datasource db {
@@ -13,32 +12,51 @@ datasource db {
 }
 
 model Account {
-  id                 String              @id @default(uuid())
-  name               String
-  cpf_cnpj           String              @unique
-  phone              String?
-  whatsapp           String?
-  logo               String?
-  person_type        PersonType
-  site               String?
-  social_reason      String?
-  facebook_url       String?
-  instagram_url      String?
-  banner             String?
-  gender             GenderType
-  campaign           Campaign[]
-  plan_id            String?
-  plan               Plan?               @relation(fields: [plan_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  subscription       Subscription[]
-  created_at         DateTime            @default(now()) @db.Timestamp(3)
-  updated_at         DateTime            @updatedAt @db.Timestamp(3)
-  order              Order[]
-  account_activities AccountActivities[]
-  account_users      AccountUser[]
-  domain             String              @unique
-  StockLabel         StockLabel[]
+  id                    String                @id @default(uuid())
+  name                  String
+  cpf_cnpj              String?               @unique
+  market_name           String
+  email                 String                @unique
+  phone                 String?
+  whatsapp              String?
+  logo                  String?
+  person_type           PersonType
+  site                  String?
+  social_reason         String?
+  facebook_url          String?
+  instagram_url         String?
+  banner                String?
+  gender                GenderType
+  campaign              Campaign[]
+  street                String
+  number                String
+  district              String
+  country               String
+  state                 String
+  complement            String?
+  zipcode               String
+  plan_id               String?
+  plan                  Plan?                 @relation(fields: [plan_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  subscription          Subscription[]
+  created_at            DateTime              @default(now()) @db.Timestamp(3)
+  updated_at            DateTime              @updatedAt @db.Timestamp(3)
+  order                 Order[]
+  account_activities    AccountActivities[]
+  account_users         AccountUser[]
+  domain                String                @unique
+  StockLabel            StockLabel[]
+  account_configuration AccountConfiguration?
+  isActive              Boolean               @default(false)
 
   @@map("account")
+}
+
+model AccountConfiguration {
+  id                String  @id @default(uuid())
+  account_id        String  @unique
+  account           Account @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  banner_market_url String?
+  header_color      String?
 }
 
 model AccountActivities {
@@ -65,30 +83,32 @@ model Activities {
 }
 
 model User {
-  id                     String        @id @default(uuid())
-  name                   String
-  email                  String        @unique
-  password               String
-  whatsapp               String?
-  cpf_cnpj               String?       @unique
-  street                 String
-  number                 String
-  district               String
-  country                String
-  state                  String
-  additional_information String?
-  zipcode                String
-  photo                  String?
-  gender                 GenderType    @default(ND)
-  birthdate              String?
-  google_id              String?
-  apple_id               String?
-  facebook_id            String?
-  created_at             DateTime      @default(now()) @db.Timestamp(3)
-  updated_at             DateTime      @updatedAt @db.Timestamp(3)
-  lastLogin              DateTime      @default(now()) @db.Timestamp(3)
-  device_user            DeviceUser[]
-  account_user           AccountUser[]
+  id           String        @id @default(uuid())
+  name         String
+  email        String        @unique
+  password     String
+  whatsapp     String?
+  phone        String?
+  cpf_cnpj     String?       @unique
+  street       String
+  number       String
+  district     String
+  country      String
+  state        String
+  complement   String?
+  city         String
+  zipcode      String
+  photo        String?
+  gender       GenderType    @default(ND)
+  birthdate    String?
+  google_id    String?
+  apple_id     String?
+  facebook_id  String?
+  created_at   DateTime      @default(now()) @db.Timestamp(3)
+  updated_at   DateTime      @updatedAt @db.Timestamp(3)
+  lastLogin    DateTime      @default(now()) @db.Timestamp(3)
+  device_user  DeviceUser[]
+  account_user AccountUser[]
 
   @@map("users")
 }
@@ -172,14 +192,30 @@ model CampaignType {
 }
 
 model Coupon {
-  id              String    @id @default(uuid())
-  code            String    @unique
-  percentage      Float
+  id              String             @id @default(uuid())
+  code            String
+  dicountType     CouponDiscountType
+  discountValue   Float
+  couponUseType   CouponUseType
+  initalDate      DateTime           @default(now()) @db.Timestamp(3)
   expiration_date DateTime?
-  created_at      DateTime  @default(now()) @db.Timestamp(3)
-  updated_at      DateTime  @updatedAt @db.Timestamp(3)
+  minValue        Float?
+  maxValue        Float?
+  created_at      DateTime           @default(now()) @db.Timestamp(3)
+  updated_at      DateTime           @updatedAt @db.Timestamp(3)
 
   @@map("coupon")
+}
+
+enum CouponDiscountType {
+  PERCENTAGE
+  VALUE
+}
+
+enum CouponUseType {
+  UNLIMITED
+  UNIQUE_BY_USER
+  UNIQUE
 }
 
 model Label {
