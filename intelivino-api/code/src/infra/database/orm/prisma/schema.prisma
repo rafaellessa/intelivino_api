@@ -14,7 +14,8 @@ datasource db {
 model Account {
   id                    String                @id @default(uuid())
   name                  String
-  cpf_cnpj              String                @unique
+  cpf_cnpj              String?               @unique
+  market_name           String
   email                 String                @unique
   phone                 String?
   whatsapp              String?
@@ -196,7 +197,7 @@ model Coupon {
   dicountType     CouponDiscountType
   discountValue   Float
   couponUseType   CouponUseType
-  initalDate      DateTime          @default(now()) @db.Timestamp(3)
+  initalDate      DateTime           @default(now()) @db.Timestamp(3)
   expiration_date DateTime?
   minValue        Float?
   maxValue        Float?

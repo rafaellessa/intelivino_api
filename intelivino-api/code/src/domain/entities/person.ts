@@ -15,7 +15,7 @@ export abstract class Person {
   id: string
   name: string
   email: Email
-  cpf?: Cpf
+  cpf?: Cpf | null
   phone?: string
   whatsapp?: string
   address: Address

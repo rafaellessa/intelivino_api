@@ -1,10 +1,11 @@
 import { AccountConfiguration } from './account-configuration'
 import { AccountUser } from './account-user'
 import { Label } from './label'
-import { PersonProps, Person } from './person'
+import { Person, PersonProps } from './person'
 import { Subscription } from './subscription'
 export type AccountProps = PersonProps & {
   logo: string
+  marketName: string
 }
 export class Account extends Person {
   logo: string
@@ -12,6 +13,7 @@ export class Account extends Person {
   users?: AccountUser[]
   labels?: Label[]
   accountConfiguration?: AccountConfiguration
+  marketName: string
   constructor({
     id,
     address,
@@ -21,12 +23,14 @@ export class Account extends Person {
     name,
     phone,
     whatsapp,
+    marketName,
   }: AccountProps) {
     super({ id, address, cpf, email, name, phone, whatsapp })
     this.logo = logo
     this.subscriptions = []
     this.users = []
     this.labels = []
+    this.marketName = marketName
   }
 
   addSubscription(subscription: Subscription) {

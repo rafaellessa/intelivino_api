@@ -13,5 +13,6 @@ export const createAccountMock = (): AccountProps => {
     cpf: new CpfGenerator().generate(),
     email: faker.internet.email(),
     name: faker.name.firstName(),
+    marketName: faker.name.firstName(),
   }
 }

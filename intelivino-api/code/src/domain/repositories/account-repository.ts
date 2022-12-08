@@ -4,6 +4,7 @@ import { Failure } from '../errors'
 
 export interface AccountCreateDto {
   name: string
+  marketName: string
   cpfCnpj: string
   phone?: string
   whatsapp?: string
@@ -34,6 +35,7 @@ export interface AccountCreateDto {
 
 export interface AccountUpdateDto {
   name?: string
+  marketName?: string
   cpfCnpj?: string
   phone?: string
   whatsapp?: string

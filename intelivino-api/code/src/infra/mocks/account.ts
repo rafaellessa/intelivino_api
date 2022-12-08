@@ -28,4 +28,5 @@ export const mockCreateAccount = (): AccountCreateDto => ({
   socialReasons: faker.company.name(),
   site: faker.internet.url(),
   whatsapp: faker.phone.number('55 ## #####-####'),
+  marketName: faker.name.firstName(),
 })
