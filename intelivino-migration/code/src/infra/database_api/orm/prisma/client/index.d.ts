@@ -19,7 +19,9 @@ type UnwrapTuple<Tuple extends readonly unknown[]> = {
 export type Account = {
   id: string
   name: string
-  cpf_cnpj: string
+  cpf_cnpj: string | null
+  market_name: string
+  email: string
   phone: string | null
   whatsapp: string | null
   logo: string | null
@@ -30,10 +32,29 @@ export type Account = {
   instagram_url: string | null
   banner: string | null
   gender: GenderType
+  street: string
+  number: string
+  district: string
+  country: string
+  state: string
+  complement: string | null
+  zipcode: string
   plan_id: string | null
   created_at: Date
   updated_at: Date
   domain: string
+  isActive: boolean
+}
+
+/**
+ * Model AccountConfiguration
+ * 
+ */
+export type AccountConfiguration = {
+  id: string
+  account_id: string
+  banner_market_url: string | null
+  header_color: string | null
 }
 
 /**
@@ -69,13 +90,15 @@ export type User = {
   email: string
   password: string
   whatsapp: string | null
+  phone: string | null
   cpf_cnpj: string | null
   street: string
   number: string
   district: string
   country: string
   state: string
-  additional_information: string | null
+  complement: string | null
+  city: string
   zipcode: string
   photo: string | null
   gender: GenderType
@@ -159,8 +182,13 @@ export type CampaignType = {
 export type Coupon = {
   id: string
   code: string
-  percentage: number
+  dicount_type: CouponDiscountType
+  discount_value: number
+  couponUse_type: CouponUseType
+  inital_date: Date
   expiration_date: Date | null
+  min_value: number | null
+  max_value: number | null
   created_at: Date
   updated_at: Date
 }
@@ -525,6 +553,23 @@ export type StockHistory = {
 // Based on
 // https://github.com/microsoft/TypeScript/issues/3192#issuecomment-261720275
 
+export const CouponDiscountType: {
+  PERCENTAGE: 'PERCENTAGE',
+  VALUE: 'VALUE'
+};
+
+export type CouponDiscountType = (typeof CouponDiscountType)[keyof typeof CouponDiscountType]
+
+
+export const CouponUseType: {
+  UNLIMITED: 'UNLIMITED',
+  UNIQUE_BY_USER: 'UNIQUE_BY_USER',
+  UNIQUE: 'UNIQUE'
+};
+
+export type CouponUseType = (typeof CouponUseType)[keyof typeof CouponUseType]
+
+
 export const EmailTypeNotification: {
   html: 'html',
   text: 'text'
@@ -716,6 +761,16 @@ export class PrismaClient<
     * ```
     */
   get account(): Prisma.AccountDelegate<GlobalReject>;
+
+  /**
+   * `prisma.accountConfiguration`: Exposes CRUD operations for the **AccountConfiguration** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AccountConfigurations
+    * const accountConfigurations = await prisma.accountConfiguration.findMany()
+    * ```
+    */
+  get accountConfiguration(): Prisma.AccountConfigurationDelegate<GlobalReject>;
 
   /**
    * `prisma.accountActivities`: Exposes CRUD operations for the **AccountActivities** model.
@@ -1565,6 +1620,7 @@ export namespace Prisma {
 
   export const ModelName: {
     Account: 'Account',
+    AccountConfiguration: 'AccountConfiguration',
     AccountActivities: 'AccountActivities',
     Activities: 'Activities',
     User: 'User',
@@ -2753,6 +2809,8 @@ export namespace Prisma {
     id: string | null
     name: string | null
     cpf_cnpj: string | null
+    market_name: string | null
+    email: string | null
     phone: string | null
     whatsapp: string | null
     logo: string | null
@@ -2763,16 +2821,26 @@ export namespace Prisma {
     instagram_url: string | null
     banner: string | null
     gender: GenderType | null
+    street: string | null
+    number: string | null
+    district: string | null
+    country: string | null
+    state: string | null
+    complement: string | null
+    zipcode: string | null
     plan_id: string | null
     created_at: Date | null
     updated_at: Date | null
     domain: string | null
+    isActive: boolean | null
   }
 
   export type AccountMaxAggregateOutputType = {
     id: string | null
     name: string | null
     cpf_cnpj: string | null
+    market_name: string | null
+    email: string | null
     phone: string | null
     whatsapp: string | null
     logo: string | null
@@ -2783,16 +2851,26 @@ export namespace Prisma {
     instagram_url: string | null
     banner: string | null
     gender: GenderType | null
+    street: string | null
+    number: string | null
+    district: string | null
+    country: string | null
+    state: string | null
+    complement: string | null
+    zipcode: string | null
     plan_id: string | null
     created_at: Date | null
     updated_at: Date | null
     domain: string | null
+    isActive: boolean | null
   }
 
   export type AccountCountAggregateOutputType = {
     id: number
     name: number
     cpf_cnpj: number
+    market_name: number
+    email: number
     phone: number
     whatsapp: number
     logo: number
@@ -2803,10 +2881,18 @@ export namespace Prisma {
     instagram_url: number
     banner: number
     gender: number
+    street: number
+    number: number
+    district: number
+    country: number
+    state: number
+    complement: number
+    zipcode: number
     plan_id: number
     created_at: number
     updated_at: number
     domain: number
+    isActive: number
     _all: number
   }
 
@@ -2815,6 +2901,8 @@ export namespace Prisma {
     id?: true
     name?: true
     cpf_cnpj?: true
+    market_name?: true
+    email?: true
     phone?: true
     whatsapp?: true
     logo?: true
@@ -2825,16 +2913,26 @@ export namespace Prisma {
     instagram_url?: true
     banner?: true
     gender?: true
+    street?: true
+    number?: true
+    district?: true
+    country?: true
+    state?: true
+    complement?: true
+    zipcode?: true
     plan_id?: true
     created_at?: true
     updated_at?: true
     domain?: true
+    isActive?: true
   }
 
   export type AccountMaxAggregateInputType = {
     id?: true
     name?: true
     cpf_cnpj?: true
+    market_name?: true
+    email?: true
     phone?: true
     whatsapp?: true
     logo?: true
@@ -2845,16 +2943,26 @@ export namespace Prisma {
     instagram_url?: true
     banner?: true
     gender?: true
+    street?: true
+    number?: true
+    district?: true
+    country?: true
+    state?: true
+    complement?: true
+    zipcode?: true
     plan_id?: true
     created_at?: true
     updated_at?: true
     domain?: true
+    isActive?: true
   }
 
   export type AccountCountAggregateInputType = {
     id?: true
     name?: true
     cpf_cnpj?: true
+    market_name?: true
+    email?: true
     phone?: true
     whatsapp?: true
     logo?: true
@@ -2865,10 +2973,18 @@ export namespace Prisma {
     instagram_url?: true
     banner?: true
     gender?: true
+    street?: true
+    number?: true
+    district?: true
+    country?: true
+    state?: true
+    complement?: true
+    zipcode?: true
     plan_id?: true
     created_at?: true
     updated_at?: true
     domain?: true
+    isActive?: true
     _all?: true
   }
 
@@ -2953,7 +3069,9 @@ export namespace Prisma {
   export type AccountGroupByOutputType = {
     id: string
     name: string
-    cpf_cnpj: string
+    cpf_cnpj: string | null
+    market_name: string
+    email: string
     phone: string | null
     whatsapp: string | null
     logo: string | null
@@ -2964,10 +3082,18 @@ export namespace Prisma {
     instagram_url: string | null
     banner: string | null
     gender: GenderType
+    street: string
+    number: string
+    district: string
+    country: string
+    state: string
+    complement: string | null
+    zipcode: string
     plan_id: string | null
     created_at: Date
     updated_at: Date
     domain: string
+    isActive: boolean
     _count: AccountCountAggregateOutputType | null
     _min: AccountMinAggregateOutputType | null
     _max: AccountMaxAggregateOutputType | null
@@ -2991,6 +3117,8 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     cpf_cnpj?: boolean
+    market_name?: boolean
+    email?: boolean
     phone?: boolean
     whatsapp?: boolean
     logo?: boolean
@@ -3002,6 +3130,13 @@ export namespace Prisma {
     banner?: boolean
     gender?: boolean
     campaign?: boolean | CampaignFindManyArgs
+    street?: boolean
+    number?: boolean
+    district?: boolean
+    country?: boolean
+    state?: boolean
+    complement?: boolean
+    zipcode?: boolean
     plan_id?: boolean
     plan?: boolean | PlanArgs
     subscription?: boolean | SubscriptionFindManyArgs
@@ -3012,6 +3147,8 @@ export namespace Prisma {
     account_users?: boolean | AccountUserFindManyArgs
     domain?: boolean
     StockLabel?: boolean | StockLabelFindManyArgs
+    account_configuration?: boolean | AccountConfigurationArgs
+    isActive?: boolean
     _count?: boolean | AccountCountOutputTypeArgs
   }
 
@@ -3023,6 +3160,7 @@ export namespace Prisma {
     account_activities?: boolean | AccountActivitiesFindManyArgs
     account_users?: boolean | AccountUserFindManyArgs
     StockLabel?: boolean | StockLabelFindManyArgs
+    account_configuration?: boolean | AccountConfigurationArgs
     _count?: boolean | AccountCountOutputTypeArgs
   }
 
@@ -3044,6 +3182,7 @@ export namespace Prisma {
         P extends 'account_activities' ? Array < AccountActivitiesGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
         P extends 'account_users' ? Array < AccountUserGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
         P extends 'StockLabel' ? Array < StockLabelGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
+        P extends 'account_configuration' ? AccountConfigurationGetPayload<Exclude<S['include'], undefined | null>[P]> | null :
         P extends '_count' ? AccountCountOutputTypeGetPayload<Exclude<S['include'], undefined | null>[P]> :  never
   } 
     : 'select' extends U
@@ -3056,6 +3195,7 @@ export namespace Prisma {
         P extends 'account_activities' ? Array < AccountActivitiesGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
         P extends 'account_users' ? Array < AccountUserGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
         P extends 'StockLabel' ? Array < StockLabelGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
+        P extends 'account_configuration' ? AccountConfigurationGetPayload<Exclude<S['select'], undefined | null>[P]> | null :
         P extends '_count' ? AccountCountOutputTypeGetPayload<Exclude<S['select'], undefined | null>[P]> :  P extends keyof Account ? Account[P] : never
   } 
     : Account
@@ -3445,6 +3585,8 @@ export namespace Prisma {
 
     StockLabel<T extends StockLabelFindManyArgs = {}>(args?: Subset<T, StockLabelFindManyArgs>): CheckSelect<T, PrismaPromise<Array<StockLabel>| Null>, PrismaPromise<Array<StockLabelGetPayload<T>>| Null>>;
 
+    account_configuration<T extends AccountConfigurationArgs = {}>(args?: Subset<T, AccountConfigurationArgs>): CheckSelect<T, Prisma__AccountConfigurationClient<AccountConfiguration | Null>, Prisma__AccountConfigurationClient<AccountConfigurationGetPayload<T> | Null>>;
+
     private get _document();
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -3795,6 +3937,923 @@ export namespace Prisma {
      * 
     **/
     include?: AccountInclude | null
+  }
+
+
+
+  /**
+   * Model AccountConfiguration
+   */
+
+
+  export type AggregateAccountConfiguration = {
+    _count: AccountConfigurationCountAggregateOutputType | null
+    _min: AccountConfigurationMinAggregateOutputType | null
+    _max: AccountConfigurationMaxAggregateOutputType | null
+  }
+
+  export type AccountConfigurationMinAggregateOutputType = {
+    id: string | null
+    account_id: string | null
+    banner_market_url: string | null
+    header_color: string | null
+  }
+
+  export type AccountConfigurationMaxAggregateOutputType = {
+    id: string | null
+    account_id: string | null
+    banner_market_url: string | null
+    header_color: string | null
+  }
+
+  export type AccountConfigurationCountAggregateOutputType = {
+    id: number
+    account_id: number
+    banner_market_url: number
+    header_color: number
+    _all: number
+  }
+
+
+  export type AccountConfigurationMinAggregateInputType = {
+    id?: true
+    account_id?: true
+    banner_market_url?: true
+    header_color?: true
+  }
+
+  export type AccountConfigurationMaxAggregateInputType = {
+    id?: true
+    account_id?: true
+    banner_market_url?: true
+    header_color?: true
+  }
+
+  export type AccountConfigurationCountAggregateInputType = {
+    id?: true
+    account_id?: true
+    banner_market_url?: true
+    header_color?: true
+    _all?: true
+  }
+
+  export type AccountConfigurationAggregateArgs = {
+    /**
+     * Filter which AccountConfiguration to aggregate.
+     * 
+    **/
+    where?: AccountConfigurationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AccountConfigurations to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<AccountConfigurationOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     * 
+    **/
+    cursor?: AccountConfigurationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AccountConfigurations from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AccountConfigurations.
+     * 
+    **/
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AccountConfigurations
+    **/
+    _count?: true | AccountConfigurationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AccountConfigurationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AccountConfigurationMaxAggregateInputType
+  }
+
+  export type GetAccountConfigurationAggregateType<T extends AccountConfigurationAggregateArgs> = {
+        [P in keyof T & keyof AggregateAccountConfiguration]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAccountConfiguration[P]>
+      : GetScalarType<T[P], AggregateAccountConfiguration[P]>
+  }
+
+
+
+
+  export type AccountConfigurationGroupByArgs = {
+    where?: AccountConfigurationWhereInput
+    orderBy?: Enumerable<AccountConfigurationOrderByWithAggregationInput>
+    by: Array<AccountConfigurationScalarFieldEnum>
+    having?: AccountConfigurationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AccountConfigurationCountAggregateInputType | true
+    _min?: AccountConfigurationMinAggregateInputType
+    _max?: AccountConfigurationMaxAggregateInputType
+  }
+
+
+  export type AccountConfigurationGroupByOutputType = {
+    id: string
+    account_id: string
+    banner_market_url: string | null
+    header_color: string | null
+    _count: AccountConfigurationCountAggregateOutputType | null
+    _min: AccountConfigurationMinAggregateOutputType | null
+    _max: AccountConfigurationMaxAggregateOutputType | null
+  }
+
+  type GetAccountConfigurationGroupByPayload<T extends AccountConfigurationGroupByArgs> = PrismaPromise<
+    Array<
+      PickArray<AccountConfigurationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AccountConfigurationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AccountConfigurationGroupByOutputType[P]>
+            : GetScalarType<T[P], AccountConfigurationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AccountConfigurationSelect = {
+    id?: boolean
+    account_id?: boolean
+    account?: boolean | AccountArgs
+    banner_market_url?: boolean
+    header_color?: boolean
+  }
+
+  export type AccountConfigurationInclude = {
+    account?: boolean | AccountArgs
+  }
+
+  export type AccountConfigurationGetPayload<
+    S extends boolean | null | undefined | AccountConfigurationArgs,
+    U = keyof S
+      > = S extends true
+        ? AccountConfiguration
+    : S extends undefined
+    ? never
+    : S extends AccountConfigurationArgs | AccountConfigurationFindManyArgs
+    ?'include' extends U
+    ? AccountConfiguration  & {
+    [P in TrueKeys<S['include']>]:
+        P extends 'account' ? AccountGetPayload<Exclude<S['include'], undefined | null>[P]> :  never
+  } 
+    : 'select' extends U
+    ? {
+    [P in TrueKeys<S['select']>]:
+        P extends 'account' ? AccountGetPayload<Exclude<S['select'], undefined | null>[P]> :  P extends keyof AccountConfiguration ? AccountConfiguration[P] : never
+  } 
+    : AccountConfiguration
+  : AccountConfiguration
+
+
+  type AccountConfigurationCountArgs = Merge<
+    Omit<AccountConfigurationFindManyArgs, 'select' | 'include'> & {
+      select?: AccountConfigurationCountAggregateInputType | true
+    }
+  >
+
+  export interface AccountConfigurationDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
+    /**
+     * Find zero or one AccountConfiguration that matches the filter.
+     * @param {AccountConfigurationFindUniqueArgs} args - Arguments to find a AccountConfiguration
+     * @example
+     * // Get one AccountConfiguration
+     * const accountConfiguration = await prisma.accountConfiguration.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUnique<T extends AccountConfigurationFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args: SelectSubset<T, AccountConfigurationFindUniqueArgs>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'AccountConfiguration'> extends True ? CheckSelect<T, Prisma__AccountConfigurationClient<AccountConfiguration>, Prisma__AccountConfigurationClient<AccountConfigurationGetPayload<T>>> : CheckSelect<T, Prisma__AccountConfigurationClient<AccountConfiguration | null, null>, Prisma__AccountConfigurationClient<AccountConfigurationGetPayload<T> | null, null>>
+
+    /**
+     * Find the first AccountConfiguration that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountConfigurationFindFirstArgs} args - Arguments to find a AccountConfiguration
+     * @example
+     * // Get one AccountConfiguration
+     * const accountConfiguration = await prisma.accountConfiguration.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirst<T extends AccountConfigurationFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args?: SelectSubset<T, AccountConfigurationFindFirstArgs>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'AccountConfiguration'> extends True ? CheckSelect<T, Prisma__AccountConfigurationClient<AccountConfiguration>, Prisma__AccountConfigurationClient<AccountConfigurationGetPayload<T>>> : CheckSelect<T, Prisma__AccountConfigurationClient<AccountConfiguration | null, null>, Prisma__AccountConfigurationClient<AccountConfigurationGetPayload<T> | null, null>>
+
+    /**
+     * Find zero or more AccountConfigurations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountConfigurationFindManyArgs=} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AccountConfigurations
+     * const accountConfigurations = await prisma.accountConfiguration.findMany()
+     * 
+     * // Get first 10 AccountConfigurations
+     * const accountConfigurations = await prisma.accountConfiguration.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const accountConfigurationWithIdOnly = await prisma.accountConfiguration.findMany({ select: { id: true } })
+     * 
+    **/
+    findMany<T extends AccountConfigurationFindManyArgs>(
+      args?: SelectSubset<T, AccountConfigurationFindManyArgs>
+    ): CheckSelect<T, PrismaPromise<Array<AccountConfiguration>>, PrismaPromise<Array<AccountConfigurationGetPayload<T>>>>
+
+    /**
+     * Create a AccountConfiguration.
+     * @param {AccountConfigurationCreateArgs} args - Arguments to create a AccountConfiguration.
+     * @example
+     * // Create one AccountConfiguration
+     * const AccountConfiguration = await prisma.accountConfiguration.create({
+     *   data: {
+     *     // ... data to create a AccountConfiguration
+     *   }
+     * })
+     * 
+    **/
+    create<T extends AccountConfigurationCreateArgs>(
+      args: SelectSubset<T, AccountConfigurationCreateArgs>
+    ): CheckSelect<T, Prisma__AccountConfigurationClient<AccountConfiguration>, Prisma__AccountConfigurationClient<AccountConfigurationGetPayload<T>>>
+
+    /**
+     * Create many AccountConfigurations.
+     *     @param {AccountConfigurationCreateManyArgs} args - Arguments to create many AccountConfigurations.
+     *     @example
+     *     // Create many AccountConfigurations
+     *     const accountConfiguration = await prisma.accountConfiguration.createMany({
+     *       data: {
+     *         // ... provide data here
+     *       }
+     *     })
+     *     
+    **/
+    createMany<T extends AccountConfigurationCreateManyArgs>(
+      args?: SelectSubset<T, AccountConfigurationCreateManyArgs>
+    ): PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a AccountConfiguration.
+     * @param {AccountConfigurationDeleteArgs} args - Arguments to delete one AccountConfiguration.
+     * @example
+     * // Delete one AccountConfiguration
+     * const AccountConfiguration = await prisma.accountConfiguration.delete({
+     *   where: {
+     *     // ... filter to delete one AccountConfiguration
+     *   }
+     * })
+     * 
+    **/
+    delete<T extends AccountConfigurationDeleteArgs>(
+      args: SelectSubset<T, AccountConfigurationDeleteArgs>
+    ): CheckSelect<T, Prisma__AccountConfigurationClient<AccountConfiguration>, Prisma__AccountConfigurationClient<AccountConfigurationGetPayload<T>>>
+
+    /**
+     * Update one AccountConfiguration.
+     * @param {AccountConfigurationUpdateArgs} args - Arguments to update one AccountConfiguration.
+     * @example
+     * // Update one AccountConfiguration
+     * const accountConfiguration = await prisma.accountConfiguration.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    update<T extends AccountConfigurationUpdateArgs>(
+      args: SelectSubset<T, AccountConfigurationUpdateArgs>
+    ): CheckSelect<T, Prisma__AccountConfigurationClient<AccountConfiguration>, Prisma__AccountConfigurationClient<AccountConfigurationGetPayload<T>>>
+
+    /**
+     * Delete zero or more AccountConfigurations.
+     * @param {AccountConfigurationDeleteManyArgs} args - Arguments to filter AccountConfigurations to delete.
+     * @example
+     * // Delete a few AccountConfigurations
+     * const { count } = await prisma.accountConfiguration.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+    **/
+    deleteMany<T extends AccountConfigurationDeleteManyArgs>(
+      args?: SelectSubset<T, AccountConfigurationDeleteManyArgs>
+    ): PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AccountConfigurations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountConfigurationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AccountConfigurations
+     * const accountConfiguration = await prisma.accountConfiguration.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    updateMany<T extends AccountConfigurationUpdateManyArgs>(
+      args: SelectSubset<T, AccountConfigurationUpdateManyArgs>
+    ): PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one AccountConfiguration.
+     * @param {AccountConfigurationUpsertArgs} args - Arguments to update or create a AccountConfiguration.
+     * @example
+     * // Update or create a AccountConfiguration
+     * const accountConfiguration = await prisma.accountConfiguration.upsert({
+     *   create: {
+     *     // ... data to create a AccountConfiguration
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AccountConfiguration we want to update
+     *   }
+     * })
+    **/
+    upsert<T extends AccountConfigurationUpsertArgs>(
+      args: SelectSubset<T, AccountConfigurationUpsertArgs>
+    ): CheckSelect<T, Prisma__AccountConfigurationClient<AccountConfiguration>, Prisma__AccountConfigurationClient<AccountConfigurationGetPayload<T>>>
+
+    /**
+     * Find one AccountConfiguration that matches the filter or throw
+     * `NotFoundError` if no matches were found.
+     * @param {AccountConfigurationFindUniqueOrThrowArgs} args - Arguments to find a AccountConfiguration
+     * @example
+     * // Get one AccountConfiguration
+     * const accountConfiguration = await prisma.accountConfiguration.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends AccountConfigurationFindUniqueOrThrowArgs>(
+      args?: SelectSubset<T, AccountConfigurationFindUniqueOrThrowArgs>
+    ): CheckSelect<T, Prisma__AccountConfigurationClient<AccountConfiguration>, Prisma__AccountConfigurationClient<AccountConfigurationGetPayload<T>>>
+
+    /**
+     * Find the first AccountConfiguration that matches the filter or
+     * throw `NotFoundError` if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountConfigurationFindFirstOrThrowArgs} args - Arguments to find a AccountConfiguration
+     * @example
+     * // Get one AccountConfiguration
+     * const accountConfiguration = await prisma.accountConfiguration.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends AccountConfigurationFindFirstOrThrowArgs>(
+      args?: SelectSubset<T, AccountConfigurationFindFirstOrThrowArgs>
+    ): CheckSelect<T, Prisma__AccountConfigurationClient<AccountConfiguration>, Prisma__AccountConfigurationClient<AccountConfigurationGetPayload<T>>>
+
+    /**
+     * Count the number of AccountConfigurations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountConfigurationCountArgs} args - Arguments to filter AccountConfigurations to count.
+     * @example
+     * // Count the number of AccountConfigurations
+     * const count = await prisma.accountConfiguration.count({
+     *   where: {
+     *     // ... the filter for the AccountConfigurations we want to count
+     *   }
+     * })
+    **/
+    count<T extends AccountConfigurationCountArgs>(
+      args?: Subset<T, AccountConfigurationCountArgs>,
+    ): PrismaPromise<
+      T extends _Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AccountConfigurationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AccountConfiguration.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountConfigurationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AccountConfigurationAggregateArgs>(args: Subset<T, AccountConfigurationAggregateArgs>): PrismaPromise<GetAccountConfigurationAggregateType<T>>
+
+    /**
+     * Group by AccountConfiguration.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountConfigurationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AccountConfigurationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AccountConfigurationGroupByArgs['orderBy'] }
+        : { orderBy?: AccountConfigurationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends TupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AccountConfigurationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAccountConfigurationGroupByPayload<T> : PrismaPromise<InputErrors>
+
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AccountConfiguration.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export class Prisma__AccountConfigurationClient<T, Null = never> implements PrismaPromise<T> {
+    [prisma]: true;
+    private readonly _dmmf;
+    private readonly _fetcher;
+    private readonly _queryType;
+    private readonly _rootField;
+    private readonly _clientMethod;
+    private readonly _args;
+    private readonly _dataPath;
+    private readonly _errorFormat;
+    private readonly _measurePerformance?;
+    private _isList;
+    private _callsite;
+    private _requestPromise?;
+    constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
+    readonly [Symbol.toStringTag]: 'PrismaClientPromise';
+
+    account<T extends AccountArgs = {}>(args?: Subset<T, AccountArgs>): CheckSelect<T, Prisma__AccountClient<Account | Null>, Prisma__AccountClient<AccountGetPayload<T> | Null>>;
+
+    private get _document();
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): Promise<T>;
+  }
+
+
+
+  // Custom InputTypes
+
+  /**
+   * AccountConfiguration base type for findUnique actions
+   */
+  export type AccountConfigurationFindUniqueArgsBase = {
+    /**
+     * Select specific fields to fetch from the AccountConfiguration
+     * 
+    **/
+    select?: AccountConfigurationSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: AccountConfigurationInclude | null
+    /**
+     * Filter, which AccountConfiguration to fetch.
+     * 
+    **/
+    where: AccountConfigurationWhereUniqueInput
+  }
+
+  /**
+   * AccountConfiguration: findUnique
+   */
+  export interface AccountConfigurationFindUniqueArgs extends AccountConfigurationFindUniqueArgsBase {
+   /**
+    * Throw an Error if query returns no results
+    * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
+    */
+    rejectOnNotFound?: RejectOnNotFound
+  }
+      
+
+  /**
+   * AccountConfiguration base type for findFirst actions
+   */
+  export type AccountConfigurationFindFirstArgsBase = {
+    /**
+     * Select specific fields to fetch from the AccountConfiguration
+     * 
+    **/
+    select?: AccountConfigurationSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: AccountConfigurationInclude | null
+    /**
+     * Filter, which AccountConfiguration to fetch.
+     * 
+    **/
+    where?: AccountConfigurationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AccountConfigurations to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<AccountConfigurationOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AccountConfigurations.
+     * 
+    **/
+    cursor?: AccountConfigurationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AccountConfigurations from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AccountConfigurations.
+     * 
+    **/
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AccountConfigurations.
+     * 
+    **/
+    distinct?: Enumerable<AccountConfigurationScalarFieldEnum>
+  }
+
+  /**
+   * AccountConfiguration: findFirst
+   */
+  export interface AccountConfigurationFindFirstArgs extends AccountConfigurationFindFirstArgsBase {
+   /**
+    * Throw an Error if query returns no results
+    * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
+    */
+    rejectOnNotFound?: RejectOnNotFound
+  }
+      
+
+  /**
+   * AccountConfiguration findMany
+   */
+  export type AccountConfigurationFindManyArgs = {
+    /**
+     * Select specific fields to fetch from the AccountConfiguration
+     * 
+    **/
+    select?: AccountConfigurationSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: AccountConfigurationInclude | null
+    /**
+     * Filter, which AccountConfigurations to fetch.
+     * 
+    **/
+    where?: AccountConfigurationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AccountConfigurations to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<AccountConfigurationOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AccountConfigurations.
+     * 
+    **/
+    cursor?: AccountConfigurationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AccountConfigurations from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AccountConfigurations.
+     * 
+    **/
+    skip?: number
+    distinct?: Enumerable<AccountConfigurationScalarFieldEnum>
+  }
+
+
+  /**
+   * AccountConfiguration create
+   */
+  export type AccountConfigurationCreateArgs = {
+    /**
+     * Select specific fields to fetch from the AccountConfiguration
+     * 
+    **/
+    select?: AccountConfigurationSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: AccountConfigurationInclude | null
+    /**
+     * The data needed to create a AccountConfiguration.
+     * 
+    **/
+    data: XOR<AccountConfigurationCreateInput, AccountConfigurationUncheckedCreateInput>
+  }
+
+
+  /**
+   * AccountConfiguration createMany
+   */
+  export type AccountConfigurationCreateManyArgs = {
+    /**
+     * The data used to create many AccountConfigurations.
+     * 
+    **/
+    data: Enumerable<AccountConfigurationCreateManyInput>
+    skipDuplicates?: boolean
+  }
+
+
+  /**
+   * AccountConfiguration update
+   */
+  export type AccountConfigurationUpdateArgs = {
+    /**
+     * Select specific fields to fetch from the AccountConfiguration
+     * 
+    **/
+    select?: AccountConfigurationSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: AccountConfigurationInclude | null
+    /**
+     * The data needed to update a AccountConfiguration.
+     * 
+    **/
+    data: XOR<AccountConfigurationUpdateInput, AccountConfigurationUncheckedUpdateInput>
+    /**
+     * Choose, which AccountConfiguration to update.
+     * 
+    **/
+    where: AccountConfigurationWhereUniqueInput
+  }
+
+
+  /**
+   * AccountConfiguration updateMany
+   */
+  export type AccountConfigurationUpdateManyArgs = {
+    /**
+     * The data used to update AccountConfigurations.
+     * 
+    **/
+    data: XOR<AccountConfigurationUpdateManyMutationInput, AccountConfigurationUncheckedUpdateManyInput>
+    /**
+     * Filter which AccountConfigurations to update
+     * 
+    **/
+    where?: AccountConfigurationWhereInput
+  }
+
+
+  /**
+   * AccountConfiguration upsert
+   */
+  export type AccountConfigurationUpsertArgs = {
+    /**
+     * Select specific fields to fetch from the AccountConfiguration
+     * 
+    **/
+    select?: AccountConfigurationSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: AccountConfigurationInclude | null
+    /**
+     * The filter to search for the AccountConfiguration to update in case it exists.
+     * 
+    **/
+    where: AccountConfigurationWhereUniqueInput
+    /**
+     * In case the AccountConfiguration found by the `where` argument doesn't exist, create a new AccountConfiguration with this data.
+     * 
+    **/
+    create: XOR<AccountConfigurationCreateInput, AccountConfigurationUncheckedCreateInput>
+    /**
+     * In case the AccountConfiguration was found with the provided `where` argument, update it with this data.
+     * 
+    **/
+    update: XOR<AccountConfigurationUpdateInput, AccountConfigurationUncheckedUpdateInput>
+  }
+
+
+  /**
+   * AccountConfiguration delete
+   */
+  export type AccountConfigurationDeleteArgs = {
+    /**
+     * Select specific fields to fetch from the AccountConfiguration
+     * 
+    **/
+    select?: AccountConfigurationSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: AccountConfigurationInclude | null
+    /**
+     * Filter which AccountConfiguration to delete.
+     * 
+    **/
+    where: AccountConfigurationWhereUniqueInput
+  }
+
+
+  /**
+   * AccountConfiguration deleteMany
+   */
+  export type AccountConfigurationDeleteManyArgs = {
+    /**
+     * Filter which AccountConfigurations to delete
+     * 
+    **/
+    where?: AccountConfigurationWhereInput
+  }
+
+
+  /**
+   * AccountConfiguration: findUniqueOrThrow
+   */
+  export type AccountConfigurationFindUniqueOrThrowArgs = AccountConfigurationFindUniqueArgsBase
+      
+
+  /**
+   * AccountConfiguration: findFirstOrThrow
+   */
+  export type AccountConfigurationFindFirstOrThrowArgs = AccountConfigurationFindFirstArgsBase
+      
+
+  /**
+   * AccountConfiguration without action
+   */
+  export type AccountConfigurationArgs = {
+    /**
+     * Select specific fields to fetch from the AccountConfiguration
+     * 
+    **/
+    select?: AccountConfigurationSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: AccountConfigurationInclude | null
   }
 
 
@@ -5668,13 +6727,15 @@ export namespace Prisma {
     email: string | null
     password: string | null
     whatsapp: string | null
+    phone: string | null
     cpf_cnpj: string | null
     street: string | null
     number: string | null
     district: string | null
     country: string | null
     state: string | null
-    additional_information: string | null
+    complement: string | null
+    city: string | null
     zipcode: string | null
     photo: string | null
     gender: GenderType | null
@@ -5693,13 +6754,15 @@ export namespace Prisma {
     email: string | null
     password: string | null
     whatsapp: string | null
+    phone: string | null
     cpf_cnpj: string | null
     street: string | null
     number: string | null
     district: string | null
     country: string | null
     state: string | null
-    additional_information: string | null
+    complement: string | null
+    city: string | null
     zipcode: string | null
     photo: string | null
     gender: GenderType | null
@@ -5718,13 +6781,15 @@ export namespace Prisma {
     email: number
     password: number
     whatsapp: number
+    phone: number
     cpf_cnpj: number
     street: number
     number: number
     district: number
     country: number
     state: number
-    additional_information: number
+    complement: number
+    city: number
     zipcode: number
     photo: number
     gender: number
@@ -5745,13 +6810,15 @@ export namespace Prisma {
     email?: true
     password?: true
     whatsapp?: true
+    phone?: true
     cpf_cnpj?: true
     street?: true
     number?: true
     district?: true
     country?: true
     state?: true
-    additional_information?: true
+    complement?: true
+    city?: true
     zipcode?: true
     photo?: true
     gender?: true
@@ -5770,13 +6837,15 @@ export namespace Prisma {
     email?: true
     password?: true
     whatsapp?: true
+    phone?: true
     cpf_cnpj?: true
     street?: true
     number?: true
     district?: true
     country?: true
     state?: true
-    additional_information?: true
+    complement?: true
+    city?: true
     zipcode?: true
     photo?: true
     gender?: true
@@ -5795,13 +6864,15 @@ export namespace Prisma {
     email?: true
     password?: true
     whatsapp?: true
+    phone?: true
     cpf_cnpj?: true
     street?: true
     number?: true
     district?: true
     country?: true
     state?: true
-    additional_information?: true
+    complement?: true
+    city?: true
     zipcode?: true
     photo?: true
     gender?: true
@@ -5899,13 +6970,15 @@ export namespace Prisma {
     email: string
     password: string
     whatsapp: string | null
+    phone: string | null
     cpf_cnpj: string | null
     street: string
     number: string
     district: string
     country: string
     state: string
-    additional_information: string | null
+    complement: string | null
+    city: string
     zipcode: string
     photo: string | null
     gender: GenderType
@@ -5941,13 +7014,15 @@ export namespace Prisma {
     email?: boolean
     password?: boolean
     whatsapp?: boolean
+    phone?: boolean
     cpf_cnpj?: boolean
     street?: boolean
     number?: boolean
     district?: boolean
     country?: boolean
     state?: boolean
-    additional_information?: boolean
+    complement?: boolean
+    city?: boolean
     zipcode?: boolean
     photo?: boolean
     gender?: boolean
@@ -12308,18 +13383,27 @@ export namespace Prisma {
   }
 
   export type CouponAvgAggregateOutputType = {
-    percentage: number | null
+    discount_value: number | null
+    min_value: number | null
+    max_value: number | null
   }
 
   export type CouponSumAggregateOutputType = {
-    percentage: number | null
+    discount_value: number | null
+    min_value: number | null
+    max_value: number | null
   }
 
   export type CouponMinAggregateOutputType = {
     id: string | null
     code: string | null
-    percentage: number | null
+    dicount_type: CouponDiscountType | null
+    discount_value: number | null
+    couponUse_type: CouponUseType | null
+    inital_date: Date | null
     expiration_date: Date | null
+    min_value: number | null
+    max_value: number | null
     created_at: Date | null
     updated_at: Date | null
   }
@@ -12327,8 +13411,13 @@ export namespace Prisma {
   export type CouponMaxAggregateOutputType = {
     id: string | null
     code: string | null
-    percentage: number | null
+    dicount_type: CouponDiscountType | null
+    discount_value: number | null
+    couponUse_type: CouponUseType | null
+    inital_date: Date | null
     expiration_date: Date | null
+    min_value: number | null
+    max_value: number | null
     created_at: Date | null
     updated_at: Date | null
   }
@@ -12336,8 +13425,13 @@ export namespace Prisma {
   export type CouponCountAggregateOutputType = {
     id: number
     code: number
-    percentage: number
+    dicount_type: number
+    discount_value: number
+    couponUse_type: number
+    inital_date: number
     expiration_date: number
+    min_value: number
+    max_value: number
     created_at: number
     updated_at: number
     _all: number
@@ -12345,18 +13439,27 @@ export namespace Prisma {
 
 
   export type CouponAvgAggregateInputType = {
-    percentage?: true
+    discount_value?: true
+    min_value?: true
+    max_value?: true
   }
 
   export type CouponSumAggregateInputType = {
-    percentage?: true
+    discount_value?: true
+    min_value?: true
+    max_value?: true
   }
 
   export type CouponMinAggregateInputType = {
     id?: true
     code?: true
-    percentage?: true
+    dicount_type?: true
+    discount_value?: true
+    couponUse_type?: true
+    inital_date?: true
     expiration_date?: true
+    min_value?: true
+    max_value?: true
     created_at?: true
     updated_at?: true
   }
@@ -12364,8 +13467,13 @@ export namespace Prisma {
   export type CouponMaxAggregateInputType = {
     id?: true
     code?: true
-    percentage?: true
+    dicount_type?: true
+    discount_value?: true
+    couponUse_type?: true
+    inital_date?: true
     expiration_date?: true
+    min_value?: true
+    max_value?: true
     created_at?: true
     updated_at?: true
   }
@@ -12373,8 +13481,13 @@ export namespace Prisma {
   export type CouponCountAggregateInputType = {
     id?: true
     code?: true
-    percentage?: true
+    dicount_type?: true
+    discount_value?: true
+    couponUse_type?: true
+    inital_date?: true
     expiration_date?: true
+    min_value?: true
+    max_value?: true
     created_at?: true
     updated_at?: true
     _all?: true
@@ -12475,8 +13588,13 @@ export namespace Prisma {
   export type CouponGroupByOutputType = {
     id: string
     code: string
-    percentage: number
+    dicount_type: CouponDiscountType
+    discount_value: number
+    couponUse_type: CouponUseType
+    inital_date: Date
     expiration_date: Date | null
+    min_value: number | null
+    max_value: number | null
     created_at: Date
     updated_at: Date
     _count: CouponCountAggregateOutputType | null
@@ -12503,8 +13621,13 @@ export namespace Prisma {
   export type CouponSelect = {
     id?: boolean
     code?: boolean
-    percentage?: boolean
+    dicount_type?: boolean
+    discount_value?: boolean
+    couponUse_type?: boolean
+    inital_date?: boolean
     expiration_date?: boolean
+    min_value?: boolean
+    max_value?: boolean
     created_at?: boolean
     updated_at?: boolean
   }
@@ -38101,10 +39224,22 @@ export namespace Prisma {
   export type AccountActivitiesScalarFieldEnum = (typeof AccountActivitiesScalarFieldEnum)[keyof typeof AccountActivitiesScalarFieldEnum]
 
 
+  export const AccountConfigurationScalarFieldEnum: {
+    id: 'id',
+    account_id: 'account_id',
+    banner_market_url: 'banner_market_url',
+    header_color: 'header_color'
+  };
+
+  export type AccountConfigurationScalarFieldEnum = (typeof AccountConfigurationScalarFieldEnum)[keyof typeof AccountConfigurationScalarFieldEnum]
+
+
   export const AccountScalarFieldEnum: {
     id: 'id',
     name: 'name',
     cpf_cnpj: 'cpf_cnpj',
+    market_name: 'market_name',
+    email: 'email',
     phone: 'phone',
     whatsapp: 'whatsapp',
     logo: 'logo',
@@ -38115,10 +39250,18 @@ export namespace Prisma {
     instagram_url: 'instagram_url',
     banner: 'banner',
     gender: 'gender',
+    street: 'street',
+    number: 'number',
+    district: 'district',
+    country: 'country',
+    state: 'state',
+    complement: 'complement',
+    zipcode: 'zipcode',
     plan_id: 'plan_id',
     created_at: 'created_at',
     updated_at: 'updated_at',
-    domain: 'domain'
+    domain: 'domain',
+    isActive: 'isActive'
   };
 
   export type AccountScalarFieldEnum = (typeof AccountScalarFieldEnum)[keyof typeof AccountScalarFieldEnum]
@@ -38196,8 +39339,13 @@ export namespace Prisma {
   export const CouponScalarFieldEnum: {
     id: 'id',
     code: 'code',
-    percentage: 'percentage',
+    dicount_type: 'dicount_type',
+    discount_value: 'discount_value',
+    couponUse_type: 'couponUse_type',
+    inital_date: 'inital_date',
     expiration_date: 'expiration_date',
+    min_value: 'min_value',
+    max_value: 'max_value',
     created_at: 'created_at',
     updated_at: 'updated_at'
   };
@@ -38544,13 +39692,15 @@ export namespace Prisma {
     email: 'email',
     password: 'password',
     whatsapp: 'whatsapp',
+    phone: 'phone',
     cpf_cnpj: 'cpf_cnpj',
     street: 'street',
     number: 'number',
     district: 'district',
     country: 'country',
     state: 'state',
-    additional_information: 'additional_information',
+    complement: 'complement',
+    city: 'city',
     zipcode: 'zipcode',
     photo: 'photo',
     gender: 'gender',
@@ -38588,7 +39738,9 @@ export namespace Prisma {
     NOT?: Enumerable<AccountWhereInput>
     id?: StringFilter | string
     name?: StringFilter | string
-    cpf_cnpj?: StringFilter | string
+    cpf_cnpj?: StringNullableFilter | string | null
+    market_name?: StringFilter | string
+    email?: StringFilter | string
     phone?: StringNullableFilter | string | null
     whatsapp?: StringNullableFilter | string | null
     logo?: StringNullableFilter | string | null
@@ -38600,6 +39752,13 @@ export namespace Prisma {
     banner?: StringNullableFilter | string | null
     gender?: EnumGenderTypeFilter | GenderType
     campaign?: CampaignListRelationFilter
+    street?: StringFilter | string
+    number?: StringFilter | string
+    district?: StringFilter | string
+    country?: StringFilter | string
+    state?: StringFilter | string
+    complement?: StringNullableFilter | string | null
+    zipcode?: StringFilter | string
     plan_id?: StringNullableFilter | string | null
     plan?: XOR<PlanRelationFilter, PlanWhereInput> | null
     subscription?: SubscriptionListRelationFilter
@@ -38610,12 +39769,16 @@ export namespace Prisma {
     account_users?: AccountUserListRelationFilter
     domain?: StringFilter | string
     StockLabel?: StockLabelListRelationFilter
+    account_configuration?: XOR<AccountConfigurationRelationFilter, AccountConfigurationWhereInput> | null
+    isActive?: BoolFilter | boolean
   }
 
   export type AccountOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
     cpf_cnpj?: SortOrder
+    market_name?: SortOrder
+    email?: SortOrder
     phone?: SortOrder
     whatsapp?: SortOrder
     logo?: SortOrder
@@ -38627,6 +39790,13 @@ export namespace Prisma {
     banner?: SortOrder
     gender?: SortOrder
     campaign?: CampaignOrderByRelationAggregateInput
+    street?: SortOrder
+    number?: SortOrder
+    district?: SortOrder
+    country?: SortOrder
+    state?: SortOrder
+    complement?: SortOrder
+    zipcode?: SortOrder
     plan_id?: SortOrder
     plan?: PlanOrderByWithRelationInput
     subscription?: SubscriptionOrderByRelationAggregateInput
@@ -38637,11 +39807,14 @@ export namespace Prisma {
     account_users?: AccountUserOrderByRelationAggregateInput
     domain?: SortOrder
     StockLabel?: StockLabelOrderByRelationAggregateInput
+    account_configuration?: AccountConfigurationOrderByWithRelationInput
+    isActive?: SortOrder
   }
 
   export type AccountWhereUniqueInput = {
     id?: string
     cpf_cnpj?: string
+    email?: string
     domain?: string
   }
 
@@ -38649,6 +39822,8 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     cpf_cnpj?: SortOrder
+    market_name?: SortOrder
+    email?: SortOrder
     phone?: SortOrder
     whatsapp?: SortOrder
     logo?: SortOrder
@@ -38659,10 +39834,18 @@ export namespace Prisma {
     instagram_url?: SortOrder
     banner?: SortOrder
     gender?: SortOrder
+    street?: SortOrder
+    number?: SortOrder
+    district?: SortOrder
+    country?: SortOrder
+    state?: SortOrder
+    complement?: SortOrder
+    zipcode?: SortOrder
     plan_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     domain?: SortOrder
+    isActive?: SortOrder
     _count?: AccountCountOrderByAggregateInput
     _max?: AccountMaxOrderByAggregateInput
     _min?: AccountMinOrderByAggregateInput
@@ -38674,7 +39857,9 @@ export namespace Prisma {
     NOT?: Enumerable<AccountScalarWhereWithAggregatesInput>
     id?: StringWithAggregatesFilter | string
     name?: StringWithAggregatesFilter | string
-    cpf_cnpj?: StringWithAggregatesFilter | string
+    cpf_cnpj?: StringNullableWithAggregatesFilter | string | null
+    market_name?: StringWithAggregatesFilter | string
+    email?: StringWithAggregatesFilter | string
     phone?: StringNullableWithAggregatesFilter | string | null
     whatsapp?: StringNullableWithAggregatesFilter | string | null
     logo?: StringNullableWithAggregatesFilter | string | null
@@ -38685,10 +39870,62 @@ export namespace Prisma {
     instagram_url?: StringNullableWithAggregatesFilter | string | null
     banner?: StringNullableWithAggregatesFilter | string | null
     gender?: EnumGenderTypeWithAggregatesFilter | GenderType
+    street?: StringWithAggregatesFilter | string
+    number?: StringWithAggregatesFilter | string
+    district?: StringWithAggregatesFilter | string
+    country?: StringWithAggregatesFilter | string
+    state?: StringWithAggregatesFilter | string
+    complement?: StringNullableWithAggregatesFilter | string | null
+    zipcode?: StringWithAggregatesFilter | string
     plan_id?: StringNullableWithAggregatesFilter | string | null
     created_at?: DateTimeWithAggregatesFilter | Date | string
     updated_at?: DateTimeWithAggregatesFilter | Date | string
     domain?: StringWithAggregatesFilter | string
+    isActive?: BoolWithAggregatesFilter | boolean
+  }
+
+  export type AccountConfigurationWhereInput = {
+    AND?: Enumerable<AccountConfigurationWhereInput>
+    OR?: Enumerable<AccountConfigurationWhereInput>
+    NOT?: Enumerable<AccountConfigurationWhereInput>
+    id?: StringFilter | string
+    account_id?: StringFilter | string
+    account?: XOR<AccountRelationFilter, AccountWhereInput>
+    banner_market_url?: StringNullableFilter | string | null
+    header_color?: StringNullableFilter | string | null
+  }
+
+  export type AccountConfigurationOrderByWithRelationInput = {
+    id?: SortOrder
+    account_id?: SortOrder
+    account?: AccountOrderByWithRelationInput
+    banner_market_url?: SortOrder
+    header_color?: SortOrder
+  }
+
+  export type AccountConfigurationWhereUniqueInput = {
+    id?: string
+    account_id?: string
+  }
+
+  export type AccountConfigurationOrderByWithAggregationInput = {
+    id?: SortOrder
+    account_id?: SortOrder
+    banner_market_url?: SortOrder
+    header_color?: SortOrder
+    _count?: AccountConfigurationCountOrderByAggregateInput
+    _max?: AccountConfigurationMaxOrderByAggregateInput
+    _min?: AccountConfigurationMinOrderByAggregateInput
+  }
+
+  export type AccountConfigurationScalarWhereWithAggregatesInput = {
+    AND?: Enumerable<AccountConfigurationScalarWhereWithAggregatesInput>
+    OR?: Enumerable<AccountConfigurationScalarWhereWithAggregatesInput>
+    NOT?: Enumerable<AccountConfigurationScalarWhereWithAggregatesInput>
+    id?: StringWithAggregatesFilter | string
+    account_id?: StringWithAggregatesFilter | string
+    banner_market_url?: StringNullableWithAggregatesFilter | string | null
+    header_color?: StringNullableWithAggregatesFilter | string | null
   }
 
   export type AccountActivitiesWhereInput = {
@@ -38792,13 +40029,15 @@ export namespace Prisma {
     email?: StringFilter | string
     password?: StringFilter | string
     whatsapp?: StringNullableFilter | string | null
+    phone?: StringNullableFilter | string | null
     cpf_cnpj?: StringNullableFilter | string | null
     street?: StringFilter | string
     number?: StringFilter | string
     district?: StringFilter | string
     country?: StringFilter | string
     state?: StringFilter | string
-    additional_information?: StringNullableFilter | string | null
+    complement?: StringNullableFilter | string | null
+    city?: StringFilter | string
     zipcode?: StringFilter | string
     photo?: StringNullableFilter | string | null
     gender?: EnumGenderTypeFilter | GenderType
@@ -38819,13 +40058,15 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     whatsapp?: SortOrder
+    phone?: SortOrder
     cpf_cnpj?: SortOrder
     street?: SortOrder
     number?: SortOrder
     district?: SortOrder
     country?: SortOrder
     state?: SortOrder
-    additional_information?: SortOrder
+    complement?: SortOrder
+    city?: SortOrder
     zipcode?: SortOrder
     photo?: SortOrder
     gender?: SortOrder
@@ -38852,13 +40093,15 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     whatsapp?: SortOrder
+    phone?: SortOrder
     cpf_cnpj?: SortOrder
     street?: SortOrder
     number?: SortOrder
     district?: SortOrder
     country?: SortOrder
     state?: SortOrder
-    additional_information?: SortOrder
+    complement?: SortOrder
+    city?: SortOrder
     zipcode?: SortOrder
     photo?: SortOrder
     gender?: SortOrder
@@ -38883,13 +40126,15 @@ export namespace Prisma {
     email?: StringWithAggregatesFilter | string
     password?: StringWithAggregatesFilter | string
     whatsapp?: StringNullableWithAggregatesFilter | string | null
+    phone?: StringNullableWithAggregatesFilter | string | null
     cpf_cnpj?: StringNullableWithAggregatesFilter | string | null
     street?: StringWithAggregatesFilter | string
     number?: StringWithAggregatesFilter | string
     district?: StringWithAggregatesFilter | string
     country?: StringWithAggregatesFilter | string
     state?: StringWithAggregatesFilter | string
-    additional_information?: StringNullableWithAggregatesFilter | string | null
+    complement?: StringNullableWithAggregatesFilter | string | null
+    city?: StringWithAggregatesFilter | string
     zipcode?: StringWithAggregatesFilter | string
     photo?: StringNullableWithAggregatesFilter | string | null
     gender?: EnumGenderTypeWithAggregatesFilter | GenderType
@@ -39172,8 +40417,13 @@ export namespace Prisma {
     NOT?: Enumerable<CouponWhereInput>
     id?: StringFilter | string
     code?: StringFilter | string
-    percentage?: FloatFilter | number
+    dicount_type?: EnumCouponDiscountTypeFilter | CouponDiscountType
+    discount_value?: FloatFilter | number
+    couponUse_type?: EnumCouponUseTypeFilter | CouponUseType
+    inital_date?: DateTimeFilter | Date | string
     expiration_date?: DateTimeNullableFilter | Date | string | null
+    min_value?: FloatNullableFilter | number | null
+    max_value?: FloatNullableFilter | number | null
     created_at?: DateTimeFilter | Date | string
     updated_at?: DateTimeFilter | Date | string
   }
@@ -39181,22 +40431,31 @@ export namespace Prisma {
   export type CouponOrderByWithRelationInput = {
     id?: SortOrder
     code?: SortOrder
-    percentage?: SortOrder
+    dicount_type?: SortOrder
+    discount_value?: SortOrder
+    couponUse_type?: SortOrder
+    inital_date?: SortOrder
     expiration_date?: SortOrder
+    min_value?: SortOrder
+    max_value?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
 
   export type CouponWhereUniqueInput = {
     id?: string
-    code?: string
   }
 
   export type CouponOrderByWithAggregationInput = {
     id?: SortOrder
     code?: SortOrder
-    percentage?: SortOrder
+    dicount_type?: SortOrder
+    discount_value?: SortOrder
+    couponUse_type?: SortOrder
+    inital_date?: SortOrder
     expiration_date?: SortOrder
+    min_value?: SortOrder
+    max_value?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     _count?: CouponCountOrderByAggregateInput
@@ -39212,8 +40471,13 @@ export namespace Prisma {
     NOT?: Enumerable<CouponScalarWhereWithAggregatesInput>
     id?: StringWithAggregatesFilter | string
     code?: StringWithAggregatesFilter | string
-    percentage?: FloatWithAggregatesFilter | number
+    dicount_type?: EnumCouponDiscountTypeWithAggregatesFilter | CouponDiscountType
+    discount_value?: FloatWithAggregatesFilter | number
+    couponUse_type?: EnumCouponUseTypeWithAggregatesFilter | CouponUseType
+    inital_date?: DateTimeWithAggregatesFilter | Date | string
     expiration_date?: DateTimeNullableWithAggregatesFilter | Date | string | null
+    min_value?: FloatNullableWithAggregatesFilter | number | null
+    max_value?: FloatNullableWithAggregatesFilter | number | null
     created_at?: DateTimeWithAggregatesFilter | Date | string
     updated_at?: DateTimeWithAggregatesFilter | Date | string
   }
@@ -40685,7 +41949,9 @@ export namespace Prisma {
   export type AccountCreateInput = {
     id?: string
     name: string
-    cpf_cnpj: string
+    cpf_cnpj?: string | null
+    market_name: string
+    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -40697,6 +41963,13 @@ export namespace Prisma {
     banner?: string | null
     gender: GenderType
     campaign?: CampaignCreateNestedManyWithoutAccountInput
+    street: string
+    number: string
+    district: string
+    country: string
+    state: string
+    complement?: string | null
+    zipcode: string
     plan?: PlanCreateNestedOneWithoutAccountInput
     subscription?: SubscriptionCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -40706,12 +41979,16 @@ export namespace Prisma {
     account_users?: AccountUserCreateNestedManyWithoutAccountInput
     domain: string
     StockLabel?: StockLabelCreateNestedManyWithoutAccountInput
+    account_configuration?: AccountConfigurationCreateNestedOneWithoutAccountInput
+    isActive?: boolean
   }
 
   export type AccountUncheckedCreateInput = {
     id?: string
     name: string
-    cpf_cnpj: string
+    cpf_cnpj?: string | null
+    market_name: string
+    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -40723,6 +42000,13 @@ export namespace Prisma {
     banner?: string | null
     gender: GenderType
     campaign?: CampaignUncheckedCreateNestedManyWithoutAccountInput
+    street: string
+    number: string
+    district: string
+    country: string
+    state: string
+    complement?: string | null
+    zipcode: string
     plan_id?: string | null
     subscription?: SubscriptionUncheckedCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -40732,12 +42016,16 @@ export namespace Prisma {
     account_users?: AccountUserUncheckedCreateNestedManyWithoutAccountInput
     domain: string
     StockLabel?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
+    account_configuration?: AccountConfigurationUncheckedCreateNestedOneWithoutAccountInput
+    isActive?: boolean
   }
 
   export type AccountUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    cpf_cnpj?: StringFieldUpdateOperationsInput | string
+    cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
+    market_name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -40749,6 +42037,13 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
     campaign?: CampaignUpdateManyWithoutAccountNestedInput
+    street?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    district?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    zipcode?: StringFieldUpdateOperationsInput | string
     plan?: PlanUpdateOneWithoutAccountNestedInput
     subscription?: SubscriptionUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40758,12 +42053,16 @@ export namespace Prisma {
     account_users?: AccountUserUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
     StockLabel?: StockLabelUpdateManyWithoutAccountNestedInput
+    account_configuration?: AccountConfigurationUpdateOneWithoutAccountNestedInput
+    isActive?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type AccountUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    cpf_cnpj?: StringFieldUpdateOperationsInput | string
+    cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
+    market_name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -40775,6 +42074,13 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
     campaign?: CampaignUncheckedUpdateManyWithoutAccountNestedInput
+    street?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    district?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    zipcode?: StringFieldUpdateOperationsInput | string
     plan_id?: NullableStringFieldUpdateOperationsInput | string | null
     subscription?: SubscriptionUncheckedUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40784,12 +42090,16 @@ export namespace Prisma {
     account_users?: AccountUserUncheckedUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
     StockLabel?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
+    account_configuration?: AccountConfigurationUncheckedUpdateOneWithoutAccountNestedInput
+    isActive?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type AccountCreateManyInput = {
     id?: string
     name: string
-    cpf_cnpj: string
+    cpf_cnpj?: string | null
+    market_name: string
+    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -40800,16 +42110,26 @@ export namespace Prisma {
     instagram_url?: string | null
     banner?: string | null
     gender: GenderType
+    street: string
+    number: string
+    district: string
+    country: string
+    state: string
+    complement?: string | null
+    zipcode: string
     plan_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
     domain: string
+    isActive?: boolean
   }
 
   export type AccountUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    cpf_cnpj?: StringFieldUpdateOperationsInput | string
+    cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
+    market_name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -40820,15 +42140,25 @@ export namespace Prisma {
     instagram_url?: NullableStringFieldUpdateOperationsInput | string | null
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
+    street?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    district?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    zipcode?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     domain?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type AccountUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    cpf_cnpj?: StringFieldUpdateOperationsInput | string
+    cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
+    market_name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -40839,10 +42169,66 @@ export namespace Prisma {
     instagram_url?: NullableStringFieldUpdateOperationsInput | string | null
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
+    street?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    district?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    zipcode?: StringFieldUpdateOperationsInput | string
     plan_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     domain?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type AccountConfigurationCreateInput = {
+    id?: string
+    account: AccountCreateNestedOneWithoutAccount_configurationInput
+    banner_market_url?: string | null
+    header_color?: string | null
+  }
+
+  export type AccountConfigurationUncheckedCreateInput = {
+    id?: string
+    account_id: string
+    banner_market_url?: string | null
+    header_color?: string | null
+  }
+
+  export type AccountConfigurationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    account?: AccountUpdateOneRequiredWithoutAccount_configurationNestedInput
+    banner_market_url?: NullableStringFieldUpdateOperationsInput | string | null
+    header_color?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type AccountConfigurationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    account_id?: StringFieldUpdateOperationsInput | string
+    banner_market_url?: NullableStringFieldUpdateOperationsInput | string | null
+    header_color?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type AccountConfigurationCreateManyInput = {
+    id?: string
+    account_id: string
+    banner_market_url?: string | null
+    header_color?: string | null
+  }
+
+  export type AccountConfigurationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    banner_market_url?: NullableStringFieldUpdateOperationsInput | string | null
+    header_color?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type AccountConfigurationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    account_id?: StringFieldUpdateOperationsInput | string
+    banner_market_url?: NullableStringFieldUpdateOperationsInput | string | null
+    header_color?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type AccountActivitiesCreateInput = {
@@ -40958,13 +42344,15 @@ export namespace Prisma {
     email: string
     password: string
     whatsapp?: string | null
+    phone?: string | null
     cpf_cnpj?: string | null
     street: string
     number: string
     district: string
     country: string
     state: string
-    additional_information?: string | null
+    complement?: string | null
+    city: string
     zipcode: string
     photo?: string | null
     gender?: GenderType
@@ -40985,13 +42373,15 @@ export namespace Prisma {
     email: string
     password: string
     whatsapp?: string | null
+    phone?: string | null
     cpf_cnpj?: string | null
     street: string
     number: string
     district: string
     country: string
     state: string
-    additional_information?: string | null
+    complement?: string | null
+    city: string
     zipcode: string
     photo?: string | null
     gender?: GenderType
@@ -41012,13 +42402,15 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
     district?: StringFieldUpdateOperationsInput | string
     country?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
-    additional_information?: NullableStringFieldUpdateOperationsInput | string | null
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
@@ -41039,13 +42431,15 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
     district?: StringFieldUpdateOperationsInput | string
     country?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
-    additional_information?: NullableStringFieldUpdateOperationsInput | string | null
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
@@ -41066,13 +42460,15 @@ export namespace Prisma {
     email: string
     password: string
     whatsapp?: string | null
+    phone?: string | null
     cpf_cnpj?: string | null
     street: string
     number: string
     district: string
     country: string
     state: string
-    additional_information?: string | null
+    complement?: string | null
+    city: string
     zipcode: string
     photo?: string | null
     gender?: GenderType
@@ -41091,13 +42487,15 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
     district?: StringFieldUpdateOperationsInput | string
     country?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
-    additional_information?: NullableStringFieldUpdateOperationsInput | string | null
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
@@ -41116,13 +42514,15 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
     district?: StringFieldUpdateOperationsInput | string
     country?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
-    additional_information?: NullableStringFieldUpdateOperationsInput | string | null
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
@@ -41433,8 +42833,13 @@ export namespace Prisma {
   export type CouponCreateInput = {
     id?: string
     code: string
-    percentage: number
+    dicount_type: CouponDiscountType
+    discount_value: number
+    couponUse_type: CouponUseType
+    inital_date?: Date | string
     expiration_date?: Date | string | null
+    min_value?: number | null
+    max_value?: number | null
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -41442,8 +42847,13 @@ export namespace Prisma {
   export type CouponUncheckedCreateInput = {
     id?: string
     code: string
-    percentage: number
+    dicount_type: CouponDiscountType
+    discount_value: number
+    couponUse_type: CouponUseType
+    inital_date?: Date | string
     expiration_date?: Date | string | null
+    min_value?: number | null
+    max_value?: number | null
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -41451,8 +42861,13 @@ export namespace Prisma {
   export type CouponUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     code?: StringFieldUpdateOperationsInput | string
-    percentage?: FloatFieldUpdateOperationsInput | number
+    dicount_type?: EnumCouponDiscountTypeFieldUpdateOperationsInput | CouponDiscountType
+    discount_value?: FloatFieldUpdateOperationsInput | number
+    couponUse_type?: EnumCouponUseTypeFieldUpdateOperationsInput | CouponUseType
+    inital_date?: DateTimeFieldUpdateOperationsInput | Date | string
     expiration_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    min_value?: NullableFloatFieldUpdateOperationsInput | number | null
+    max_value?: NullableFloatFieldUpdateOperationsInput | number | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -41460,8 +42875,13 @@ export namespace Prisma {
   export type CouponUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     code?: StringFieldUpdateOperationsInput | string
-    percentage?: FloatFieldUpdateOperationsInput | number
+    dicount_type?: EnumCouponDiscountTypeFieldUpdateOperationsInput | CouponDiscountType
+    discount_value?: FloatFieldUpdateOperationsInput | number
+    couponUse_type?: EnumCouponUseTypeFieldUpdateOperationsInput | CouponUseType
+    inital_date?: DateTimeFieldUpdateOperationsInput | Date | string
     expiration_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    min_value?: NullableFloatFieldUpdateOperationsInput | number | null
+    max_value?: NullableFloatFieldUpdateOperationsInput | number | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -41469,8 +42889,13 @@ export namespace Prisma {
   export type CouponCreateManyInput = {
     id?: string
     code: string
-    percentage: number
+    dicount_type: CouponDiscountType
+    discount_value: number
+    couponUse_type: CouponUseType
+    inital_date?: Date | string
     expiration_date?: Date | string | null
+    min_value?: number | null
+    max_value?: number | null
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -41478,8 +42903,13 @@ export namespace Prisma {
   export type CouponUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     code?: StringFieldUpdateOperationsInput | string
-    percentage?: FloatFieldUpdateOperationsInput | number
+    dicount_type?: EnumCouponDiscountTypeFieldUpdateOperationsInput | CouponDiscountType
+    discount_value?: FloatFieldUpdateOperationsInput | number
+    couponUse_type?: EnumCouponUseTypeFieldUpdateOperationsInput | CouponUseType
+    inital_date?: DateTimeFieldUpdateOperationsInput | Date | string
     expiration_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    min_value?: NullableFloatFieldUpdateOperationsInput | number | null
+    max_value?: NullableFloatFieldUpdateOperationsInput | number | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -41487,8 +42917,13 @@ export namespace Prisma {
   export type CouponUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     code?: StringFieldUpdateOperationsInput | string
-    percentage?: FloatFieldUpdateOperationsInput | number
+    dicount_type?: EnumCouponDiscountTypeFieldUpdateOperationsInput | CouponDiscountType
+    discount_value?: FloatFieldUpdateOperationsInput | number
+    couponUse_type?: EnumCouponUseTypeFieldUpdateOperationsInput | CouponUseType
+    inital_date?: DateTimeFieldUpdateOperationsInput | Date | string
     expiration_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    min_value?: NullableFloatFieldUpdateOperationsInput | number | null
+    max_value?: NullableFloatFieldUpdateOperationsInput | number | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -43400,6 +44835,16 @@ export namespace Prisma {
     none?: StockLabelWhereInput
   }
 
+  export type AccountConfigurationRelationFilter = {
+    is?: AccountConfigurationWhereInput | null
+    isNot?: AccountConfigurationWhereInput | null
+  }
+
+  export type BoolFilter = {
+    equals?: boolean
+    not?: NestedBoolFilter | boolean
+  }
+
   export type CampaignOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -43428,6 +44873,8 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     cpf_cnpj?: SortOrder
+    market_name?: SortOrder
+    email?: SortOrder
     phone?: SortOrder
     whatsapp?: SortOrder
     logo?: SortOrder
@@ -43438,16 +44885,26 @@ export namespace Prisma {
     instagram_url?: SortOrder
     banner?: SortOrder
     gender?: SortOrder
+    street?: SortOrder
+    number?: SortOrder
+    district?: SortOrder
+    country?: SortOrder
+    state?: SortOrder
+    complement?: SortOrder
+    zipcode?: SortOrder
     plan_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     domain?: SortOrder
+    isActive?: SortOrder
   }
 
   export type AccountMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
     cpf_cnpj?: SortOrder
+    market_name?: SortOrder
+    email?: SortOrder
     phone?: SortOrder
     whatsapp?: SortOrder
     logo?: SortOrder
@@ -43458,16 +44915,26 @@ export namespace Prisma {
     instagram_url?: SortOrder
     banner?: SortOrder
     gender?: SortOrder
+    street?: SortOrder
+    number?: SortOrder
+    district?: SortOrder
+    country?: SortOrder
+    state?: SortOrder
+    complement?: SortOrder
+    zipcode?: SortOrder
     plan_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     domain?: SortOrder
+    isActive?: SortOrder
   }
 
   export type AccountMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
     cpf_cnpj?: SortOrder
+    market_name?: SortOrder
+    email?: SortOrder
     phone?: SortOrder
     whatsapp?: SortOrder
     logo?: SortOrder
@@ -43478,10 +44945,18 @@ export namespace Prisma {
     instagram_url?: SortOrder
     banner?: SortOrder
     gender?: SortOrder
+    street?: SortOrder
+    number?: SortOrder
+    district?: SortOrder
+    country?: SortOrder
+    state?: SortOrder
+    complement?: SortOrder
+    zipcode?: SortOrder
     plan_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     domain?: SortOrder
+    isActive?: SortOrder
   }
 
   export type StringWithAggregatesFilter = {
@@ -43552,9 +45027,38 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter
   }
 
+  export type BoolWithAggregatesFilter = {
+    equals?: boolean
+    not?: NestedBoolWithAggregatesFilter | boolean
+    _count?: NestedIntFilter
+    _min?: NestedBoolFilter
+    _max?: NestedBoolFilter
+  }
+
   export type AccountRelationFilter = {
     is?: AccountWhereInput
     isNot?: AccountWhereInput
+  }
+
+  export type AccountConfigurationCountOrderByAggregateInput = {
+    id?: SortOrder
+    account_id?: SortOrder
+    banner_market_url?: SortOrder
+    header_color?: SortOrder
+  }
+
+  export type AccountConfigurationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    account_id?: SortOrder
+    banner_market_url?: SortOrder
+    header_color?: SortOrder
+  }
+
+  export type AccountConfigurationMinOrderByAggregateInput = {
+    id?: SortOrder
+    account_id?: SortOrder
+    banner_market_url?: SortOrder
+    header_color?: SortOrder
   }
 
   export type ActivitiesRelationFilter = {
@@ -43628,13 +45132,15 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     whatsapp?: SortOrder
+    phone?: SortOrder
     cpf_cnpj?: SortOrder
     street?: SortOrder
     number?: SortOrder
     district?: SortOrder
     country?: SortOrder
     state?: SortOrder
-    additional_information?: SortOrder
+    complement?: SortOrder
+    city?: SortOrder
     zipcode?: SortOrder
     photo?: SortOrder
     gender?: SortOrder
@@ -43653,13 +45159,15 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     whatsapp?: SortOrder
+    phone?: SortOrder
     cpf_cnpj?: SortOrder
     street?: SortOrder
     number?: SortOrder
     district?: SortOrder
     country?: SortOrder
     state?: SortOrder
-    additional_information?: SortOrder
+    complement?: SortOrder
+    city?: SortOrder
     zipcode?: SortOrder
     photo?: SortOrder
     gender?: SortOrder
@@ -43678,13 +45186,15 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     whatsapp?: SortOrder
+    phone?: SortOrder
     cpf_cnpj?: SortOrder
     street?: SortOrder
     number?: SortOrder
     district?: SortOrder
     country?: SortOrder
     state?: SortOrder
-    additional_information?: SortOrder
+    complement?: SortOrder
+    city?: SortOrder
     zipcode?: SortOrder
     photo?: SortOrder
     gender?: SortOrder
@@ -43927,6 +45437,13 @@ export namespace Prisma {
     slug?: SortOrder
   }
 
+  export type EnumCouponDiscountTypeFilter = {
+    equals?: CouponDiscountType
+    in?: Enumerable<CouponDiscountType>
+    notIn?: Enumerable<CouponDiscountType>
+    not?: NestedEnumCouponDiscountTypeFilter | CouponDiscountType
+  }
+
   export type FloatFilter = {
     equals?: number
     in?: Enumerable<number>
@@ -43938,24 +45455,43 @@ export namespace Prisma {
     not?: NestedFloatFilter | number
   }
 
+  export type EnumCouponUseTypeFilter = {
+    equals?: CouponUseType
+    in?: Enumerable<CouponUseType>
+    notIn?: Enumerable<CouponUseType>
+    not?: NestedEnumCouponUseTypeFilter | CouponUseType
+  }
+
   export type CouponCountOrderByAggregateInput = {
     id?: SortOrder
     code?: SortOrder
-    percentage?: SortOrder
+    dicount_type?: SortOrder
+    discount_value?: SortOrder
+    couponUse_type?: SortOrder
+    inital_date?: SortOrder
     expiration_date?: SortOrder
+    min_value?: SortOrder
+    max_value?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
 
   export type CouponAvgOrderByAggregateInput = {
-    percentage?: SortOrder
+    discount_value?: SortOrder
+    min_value?: SortOrder
+    max_value?: SortOrder
   }
 
   export type CouponMaxOrderByAggregateInput = {
     id?: SortOrder
     code?: SortOrder
-    percentage?: SortOrder
+    dicount_type?: SortOrder
+    discount_value?: SortOrder
+    couponUse_type?: SortOrder
+    inital_date?: SortOrder
     expiration_date?: SortOrder
+    min_value?: SortOrder
+    max_value?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -43963,14 +45499,31 @@ export namespace Prisma {
   export type CouponMinOrderByAggregateInput = {
     id?: SortOrder
     code?: SortOrder
-    percentage?: SortOrder
+    dicount_type?: SortOrder
+    discount_value?: SortOrder
+    couponUse_type?: SortOrder
+    inital_date?: SortOrder
     expiration_date?: SortOrder
+    min_value?: SortOrder
+    max_value?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
 
   export type CouponSumOrderByAggregateInput = {
-    percentage?: SortOrder
+    discount_value?: SortOrder
+    min_value?: SortOrder
+    max_value?: SortOrder
+  }
+
+  export type EnumCouponDiscountTypeWithAggregatesFilter = {
+    equals?: CouponDiscountType
+    in?: Enumerable<CouponDiscountType>
+    notIn?: Enumerable<CouponDiscountType>
+    not?: NestedEnumCouponDiscountTypeWithAggregatesFilter | CouponDiscountType
+    _count?: NestedIntFilter
+    _min?: NestedEnumCouponDiscountTypeFilter
+    _max?: NestedEnumCouponDiscountTypeFilter
   }
 
   export type FloatWithAggregatesFilter = {
@@ -43987,6 +45540,16 @@ export namespace Prisma {
     _sum?: NestedFloatFilter
     _min?: NestedFloatFilter
     _max?: NestedFloatFilter
+  }
+
+  export type EnumCouponUseTypeWithAggregatesFilter = {
+    equals?: CouponUseType
+    in?: Enumerable<CouponUseType>
+    notIn?: Enumerable<CouponUseType>
+    not?: NestedEnumCouponUseTypeWithAggregatesFilter | CouponUseType
+    _count?: NestedIntFilter
+    _min?: NestedEnumCouponUseTypeFilter
+    _max?: NestedEnumCouponUseTypeFilter
   }
 
   export type LabelTypeRelationFilter = {
@@ -44018,11 +45581,6 @@ export namespace Prisma {
     gt?: Decimal | DecimalJsLike | number | string
     gte?: Decimal | DecimalJsLike | number | string
     not?: NestedDecimalNullableFilter | Decimal | DecimalJsLike | number | string | null
-  }
-
-  export type BoolFilter = {
-    equals?: boolean
-    not?: NestedBoolFilter | boolean
   }
 
   export type LabelGrapeListRelationFilter = {
@@ -44135,14 +45693,6 @@ export namespace Prisma {
     _sum?: NestedDecimalNullableFilter
     _min?: NestedDecimalNullableFilter
     _max?: NestedDecimalNullableFilter
-  }
-
-  export type BoolWithAggregatesFilter = {
-    equals?: boolean
-    not?: NestedBoolWithAggregatesFilter | boolean
-    _count?: NestedIntFilter
-    _min?: NestedBoolFilter
-    _max?: NestedBoolFilter
   }
 
   export type LabelRelationFilter = {
@@ -45234,6 +46784,12 @@ export namespace Prisma {
     connect?: Enumerable<StockLabelWhereUniqueInput>
   }
 
+  export type AccountConfigurationCreateNestedOneWithoutAccountInput = {
+    create?: XOR<AccountConfigurationCreateWithoutAccountInput, AccountConfigurationUncheckedCreateWithoutAccountInput>
+    connectOrCreate?: AccountConfigurationCreateOrConnectWithoutAccountInput
+    connect?: AccountConfigurationWhereUniqueInput
+  }
+
   export type CampaignUncheckedCreateNestedManyWithoutAccountInput = {
     create?: XOR<Enumerable<CampaignCreateWithoutAccountInput>, Enumerable<CampaignUncheckedCreateWithoutAccountInput>>
     connectOrCreate?: Enumerable<CampaignCreateOrConnectWithoutAccountInput>
@@ -45274,6 +46830,12 @@ export namespace Prisma {
     connectOrCreate?: Enumerable<StockLabelCreateOrConnectWithoutAccountInput>
     createMany?: StockLabelCreateManyAccountInputEnvelope
     connect?: Enumerable<StockLabelWhereUniqueInput>
+  }
+
+  export type AccountConfigurationUncheckedCreateNestedOneWithoutAccountInput = {
+    create?: XOR<AccountConfigurationCreateWithoutAccountInput, AccountConfigurationUncheckedCreateWithoutAccountInput>
+    connectOrCreate?: AccountConfigurationCreateOrConnectWithoutAccountInput
+    connect?: AccountConfigurationWhereUniqueInput
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -45390,6 +46952,20 @@ export namespace Prisma {
     deleteMany?: Enumerable<StockLabelScalarWhereInput>
   }
 
+  export type AccountConfigurationUpdateOneWithoutAccountNestedInput = {
+    create?: XOR<AccountConfigurationCreateWithoutAccountInput, AccountConfigurationUncheckedCreateWithoutAccountInput>
+    connectOrCreate?: AccountConfigurationCreateOrConnectWithoutAccountInput
+    upsert?: AccountConfigurationUpsertWithoutAccountInput
+    disconnect?: boolean
+    delete?: boolean
+    connect?: AccountConfigurationWhereUniqueInput
+    update?: XOR<AccountConfigurationUpdateWithoutAccountInput, AccountConfigurationUncheckedUpdateWithoutAccountInput>
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
   export type CampaignUncheckedUpdateManyWithoutAccountNestedInput = {
     create?: XOR<Enumerable<CampaignCreateWithoutAccountInput>, Enumerable<CampaignUncheckedCreateWithoutAccountInput>>
     connectOrCreate?: Enumerable<CampaignCreateOrConnectWithoutAccountInput>
@@ -45472,6 +47048,30 @@ export namespace Prisma {
     update?: Enumerable<StockLabelUpdateWithWhereUniqueWithoutAccountInput>
     updateMany?: Enumerable<StockLabelUpdateManyWithWhereWithoutAccountInput>
     deleteMany?: Enumerable<StockLabelScalarWhereInput>
+  }
+
+  export type AccountConfigurationUncheckedUpdateOneWithoutAccountNestedInput = {
+    create?: XOR<AccountConfigurationCreateWithoutAccountInput, AccountConfigurationUncheckedCreateWithoutAccountInput>
+    connectOrCreate?: AccountConfigurationCreateOrConnectWithoutAccountInput
+    upsert?: AccountConfigurationUpsertWithoutAccountInput
+    disconnect?: boolean
+    delete?: boolean
+    connect?: AccountConfigurationWhereUniqueInput
+    update?: XOR<AccountConfigurationUpdateWithoutAccountInput, AccountConfigurationUncheckedUpdateWithoutAccountInput>
+  }
+
+  export type AccountCreateNestedOneWithoutAccount_configurationInput = {
+    create?: XOR<AccountCreateWithoutAccount_configurationInput, AccountUncheckedCreateWithoutAccount_configurationInput>
+    connectOrCreate?: AccountCreateOrConnectWithoutAccount_configurationInput
+    connect?: AccountWhereUniqueInput
+  }
+
+  export type AccountUpdateOneRequiredWithoutAccount_configurationNestedInput = {
+    create?: XOR<AccountCreateWithoutAccount_configurationInput, AccountUncheckedCreateWithoutAccount_configurationInput>
+    connectOrCreate?: AccountCreateOrConnectWithoutAccount_configurationInput
+    upsert?: AccountUpsertWithoutAccount_configurationInput
+    connect?: AccountWhereUniqueInput
+    update?: XOR<AccountUpdateWithoutAccount_configurationInput, AccountUncheckedUpdateWithoutAccount_configurationInput>
   }
 
   export type AccountCreateNestedOneWithoutAccount_activitiesInput = {
@@ -45948,12 +47548,20 @@ export namespace Prisma {
     deleteMany?: Enumerable<CampaignScalarWhereInput>
   }
 
+  export type EnumCouponDiscountTypeFieldUpdateOperationsInput = {
+    set?: CouponDiscountType
+  }
+
   export type FloatFieldUpdateOperationsInput = {
     set?: number
     increment?: number
     decrement?: number
     multiply?: number
     divide?: number
+  }
+
+  export type EnumCouponUseTypeFieldUpdateOperationsInput = {
+    set?: CouponUseType
   }
 
   export type LabelTypeCreateNestedOneWithoutLabelsInput = {
@@ -46088,10 +47696,6 @@ export namespace Prisma {
     decrement?: Decimal | DecimalJsLike | number | string
     multiply?: Decimal | DecimalJsLike | number | string
     divide?: Decimal | DecimalJsLike | number | string
-  }
-
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
   }
 
   export type LabelGrapeUpdateManyWithoutLabelNestedInput = {
@@ -47617,6 +49221,11 @@ export namespace Prisma {
     not?: NestedDateTimeFilter | Date | string
   }
 
+  export type NestedBoolFilter = {
+    equals?: boolean
+    not?: NestedBoolFilter | boolean
+  }
+
   export type NestedStringWithAggregatesFilter = {
     equals?: string
     in?: Enumerable<string>
@@ -47707,6 +49316,14 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter
   }
 
+  export type NestedBoolWithAggregatesFilter = {
+    equals?: boolean
+    not?: NestedBoolWithAggregatesFilter | boolean
+    _count?: NestedIntFilter
+    _min?: NestedBoolFilter
+    _max?: NestedBoolFilter
+  }
+
   export type NestedFloatNullableFilter = {
     equals?: number | null
     in?: Enumerable<number> | null
@@ -47759,6 +49376,13 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter
   }
 
+  export type NestedEnumCouponDiscountTypeFilter = {
+    equals?: CouponDiscountType
+    in?: Enumerable<CouponDiscountType>
+    notIn?: Enumerable<CouponDiscountType>
+    not?: NestedEnumCouponDiscountTypeFilter | CouponDiscountType
+  }
+
   export type NestedFloatFilter = {
     equals?: number
     in?: Enumerable<number>
@@ -47768,6 +49392,23 @@ export namespace Prisma {
     gt?: number
     gte?: number
     not?: NestedFloatFilter | number
+  }
+
+  export type NestedEnumCouponUseTypeFilter = {
+    equals?: CouponUseType
+    in?: Enumerable<CouponUseType>
+    notIn?: Enumerable<CouponUseType>
+    not?: NestedEnumCouponUseTypeFilter | CouponUseType
+  }
+
+  export type NestedEnumCouponDiscountTypeWithAggregatesFilter = {
+    equals?: CouponDiscountType
+    in?: Enumerable<CouponDiscountType>
+    notIn?: Enumerable<CouponDiscountType>
+    not?: NestedEnumCouponDiscountTypeWithAggregatesFilter | CouponDiscountType
+    _count?: NestedIntFilter
+    _min?: NestedEnumCouponDiscountTypeFilter
+    _max?: NestedEnumCouponDiscountTypeFilter
   }
 
   export type NestedFloatWithAggregatesFilter = {
@@ -47786,6 +49427,16 @@ export namespace Prisma {
     _max?: NestedFloatFilter
   }
 
+  export type NestedEnumCouponUseTypeWithAggregatesFilter = {
+    equals?: CouponUseType
+    in?: Enumerable<CouponUseType>
+    notIn?: Enumerable<CouponUseType>
+    not?: NestedEnumCouponUseTypeWithAggregatesFilter | CouponUseType
+    _count?: NestedIntFilter
+    _min?: NestedEnumCouponUseTypeFilter
+    _max?: NestedEnumCouponUseTypeFilter
+  }
+
   export type NestedDecimalNullableFilter = {
     equals?: Decimal | DecimalJsLike | number | string | null
     in?: Enumerable<Decimal> | Enumerable<DecimalJsLike> | Enumerable<number> | Enumerable<string> | null
@@ -47795,11 +49446,6 @@ export namespace Prisma {
     gt?: Decimal | DecimalJsLike | number | string
     gte?: Decimal | DecimalJsLike | number | string
     not?: NestedDecimalNullableFilter | Decimal | DecimalJsLike | number | string | null
-  }
-
-  export type NestedBoolFilter = {
-    equals?: boolean
-    not?: NestedBoolFilter | boolean
   }
 
   export type NestedDecimalNullableWithAggregatesFilter = {
@@ -47816,14 +49462,6 @@ export namespace Prisma {
     _sum?: NestedDecimalNullableFilter
     _min?: NestedDecimalNullableFilter
     _max?: NestedDecimalNullableFilter
-  }
-
-  export type NestedBoolWithAggregatesFilter = {
-    equals?: boolean
-    not?: NestedBoolWithAggregatesFilter | boolean
-    _count?: NestedIntFilter
-    _min?: NestedBoolFilter
-    _max?: NestedBoolFilter
   }
 
   export type NestedIntNullableWithAggregatesFilter = {
@@ -48102,6 +49740,23 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type AccountConfigurationCreateWithoutAccountInput = {
+    id?: string
+    banner_market_url?: string | null
+    header_color?: string | null
+  }
+
+  export type AccountConfigurationUncheckedCreateWithoutAccountInput = {
+    id?: string
+    banner_market_url?: string | null
+    header_color?: string | null
+  }
+
+  export type AccountConfigurationCreateOrConnectWithoutAccountInput = {
+    where: AccountConfigurationWhereUniqueInput
+    create: XOR<AccountConfigurationCreateWithoutAccountInput, AccountConfigurationUncheckedCreateWithoutAccountInput>
+  }
+
   export type CampaignUpsertWithWhereUniqueWithoutAccountInput = {
     where: CampaignWhereUniqueInput
     update: XOR<CampaignUpdateWithoutAccountInput, CampaignUncheckedUpdateWithoutAccountInput>
@@ -48302,10 +49957,29 @@ export namespace Prisma {
     max_quantity?: IntFilter | number
   }
 
-  export type AccountCreateWithoutAccount_activitiesInput = {
+  export type AccountConfigurationUpsertWithoutAccountInput = {
+    update: XOR<AccountConfigurationUpdateWithoutAccountInput, AccountConfigurationUncheckedUpdateWithoutAccountInput>
+    create: XOR<AccountConfigurationCreateWithoutAccountInput, AccountConfigurationUncheckedCreateWithoutAccountInput>
+  }
+
+  export type AccountConfigurationUpdateWithoutAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    banner_market_url?: NullableStringFieldUpdateOperationsInput | string | null
+    header_color?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type AccountConfigurationUncheckedUpdateWithoutAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    banner_market_url?: NullableStringFieldUpdateOperationsInput | string | null
+    header_color?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type AccountCreateWithoutAccount_configurationInput = {
     id?: string
     name: string
-    cpf_cnpj: string
+    cpf_cnpj?: string | null
+    market_name: string
+    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -48317,20 +49991,31 @@ export namespace Prisma {
     banner?: string | null
     gender: GenderType
     campaign?: CampaignCreateNestedManyWithoutAccountInput
+    street: string
+    number: string
+    district: string
+    country: string
+    state: string
+    complement?: string | null
+    zipcode: string
     plan?: PlanCreateNestedOneWithoutAccountInput
     subscription?: SubscriptionCreateNestedManyWithoutAccountInput
     created_at?: Date | string
     updated_at?: Date | string
     order?: OrderCreateNestedManyWithoutAccountInput
+    account_activities?: AccountActivitiesCreateNestedManyWithoutAccountInput
     account_users?: AccountUserCreateNestedManyWithoutAccountInput
     domain: string
     StockLabel?: StockLabelCreateNestedManyWithoutAccountInput
+    isActive?: boolean
   }
 
-  export type AccountUncheckedCreateWithoutAccount_activitiesInput = {
+  export type AccountUncheckedCreateWithoutAccount_configurationInput = {
     id?: string
     name: string
-    cpf_cnpj: string
+    cpf_cnpj?: string | null
+    market_name: string
+    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -48342,6 +50027,167 @@ export namespace Prisma {
     banner?: string | null
     gender: GenderType
     campaign?: CampaignUncheckedCreateNestedManyWithoutAccountInput
+    street: string
+    number: string
+    district: string
+    country: string
+    state: string
+    complement?: string | null
+    zipcode: string
+    plan_id?: string | null
+    subscription?: SubscriptionUncheckedCreateNestedManyWithoutAccountInput
+    created_at?: Date | string
+    updated_at?: Date | string
+    order?: OrderUncheckedCreateNestedManyWithoutAccountInput
+    account_activities?: AccountActivitiesUncheckedCreateNestedManyWithoutAccountInput
+    account_users?: AccountUserUncheckedCreateNestedManyWithoutAccountInput
+    domain: string
+    StockLabel?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
+    isActive?: boolean
+  }
+
+  export type AccountCreateOrConnectWithoutAccount_configurationInput = {
+    where: AccountWhereUniqueInput
+    create: XOR<AccountCreateWithoutAccount_configurationInput, AccountUncheckedCreateWithoutAccount_configurationInput>
+  }
+
+  export type AccountUpsertWithoutAccount_configurationInput = {
+    update: XOR<AccountUpdateWithoutAccount_configurationInput, AccountUncheckedUpdateWithoutAccount_configurationInput>
+    create: XOR<AccountCreateWithoutAccount_configurationInput, AccountUncheckedCreateWithoutAccount_configurationInput>
+  }
+
+  export type AccountUpdateWithoutAccount_configurationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
+    market_name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    person_type?: EnumPersonTypeFieldUpdateOperationsInput | PersonType
+    site?: NullableStringFieldUpdateOperationsInput | string | null
+    social_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    facebook_url?: NullableStringFieldUpdateOperationsInput | string | null
+    instagram_url?: NullableStringFieldUpdateOperationsInput | string | null
+    banner?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
+    campaign?: CampaignUpdateManyWithoutAccountNestedInput
+    street?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    district?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    zipcode?: StringFieldUpdateOperationsInput | string
+    plan?: PlanUpdateOneWithoutAccountNestedInput
+    subscription?: SubscriptionUpdateManyWithoutAccountNestedInput
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    order?: OrderUpdateManyWithoutAccountNestedInput
+    account_activities?: AccountActivitiesUpdateManyWithoutAccountNestedInput
+    account_users?: AccountUserUpdateManyWithoutAccountNestedInput
+    domain?: StringFieldUpdateOperationsInput | string
+    StockLabel?: StockLabelUpdateManyWithoutAccountNestedInput
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type AccountUncheckedUpdateWithoutAccount_configurationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
+    market_name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    person_type?: EnumPersonTypeFieldUpdateOperationsInput | PersonType
+    site?: NullableStringFieldUpdateOperationsInput | string | null
+    social_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    facebook_url?: NullableStringFieldUpdateOperationsInput | string | null
+    instagram_url?: NullableStringFieldUpdateOperationsInput | string | null
+    banner?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
+    campaign?: CampaignUncheckedUpdateManyWithoutAccountNestedInput
+    street?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    district?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    zipcode?: StringFieldUpdateOperationsInput | string
+    plan_id?: NullableStringFieldUpdateOperationsInput | string | null
+    subscription?: SubscriptionUncheckedUpdateManyWithoutAccountNestedInput
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    order?: OrderUncheckedUpdateManyWithoutAccountNestedInput
+    account_activities?: AccountActivitiesUncheckedUpdateManyWithoutAccountNestedInput
+    account_users?: AccountUserUncheckedUpdateManyWithoutAccountNestedInput
+    domain?: StringFieldUpdateOperationsInput | string
+    StockLabel?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type AccountCreateWithoutAccount_activitiesInput = {
+    id?: string
+    name: string
+    cpf_cnpj?: string | null
+    market_name: string
+    email: string
+    phone?: string | null
+    whatsapp?: string | null
+    logo?: string | null
+    person_type: PersonType
+    site?: string | null
+    social_reason?: string | null
+    facebook_url?: string | null
+    instagram_url?: string | null
+    banner?: string | null
+    gender: GenderType
+    campaign?: CampaignCreateNestedManyWithoutAccountInput
+    street: string
+    number: string
+    district: string
+    country: string
+    state: string
+    complement?: string | null
+    zipcode: string
+    plan?: PlanCreateNestedOneWithoutAccountInput
+    subscription?: SubscriptionCreateNestedManyWithoutAccountInput
+    created_at?: Date | string
+    updated_at?: Date | string
+    order?: OrderCreateNestedManyWithoutAccountInput
+    account_users?: AccountUserCreateNestedManyWithoutAccountInput
+    domain: string
+    StockLabel?: StockLabelCreateNestedManyWithoutAccountInput
+    account_configuration?: AccountConfigurationCreateNestedOneWithoutAccountInput
+    isActive?: boolean
+  }
+
+  export type AccountUncheckedCreateWithoutAccount_activitiesInput = {
+    id?: string
+    name: string
+    cpf_cnpj?: string | null
+    market_name: string
+    email: string
+    phone?: string | null
+    whatsapp?: string | null
+    logo?: string | null
+    person_type: PersonType
+    site?: string | null
+    social_reason?: string | null
+    facebook_url?: string | null
+    instagram_url?: string | null
+    banner?: string | null
+    gender: GenderType
+    campaign?: CampaignUncheckedCreateNestedManyWithoutAccountInput
+    street: string
+    number: string
+    district: string
+    country: string
+    state: string
+    complement?: string | null
+    zipcode: string
     plan_id?: string | null
     subscription?: SubscriptionUncheckedCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -48350,6 +50196,8 @@ export namespace Prisma {
     account_users?: AccountUserUncheckedCreateNestedManyWithoutAccountInput
     domain: string
     StockLabel?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
+    account_configuration?: AccountConfigurationUncheckedCreateNestedOneWithoutAccountInput
+    isActive?: boolean
   }
 
   export type AccountCreateOrConnectWithoutAccount_activitiesInput = {
@@ -48386,7 +50234,9 @@ export namespace Prisma {
   export type AccountUpdateWithoutAccount_activitiesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    cpf_cnpj?: StringFieldUpdateOperationsInput | string
+    cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
+    market_name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -48398,6 +50248,13 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
     campaign?: CampaignUpdateManyWithoutAccountNestedInput
+    street?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    district?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    zipcode?: StringFieldUpdateOperationsInput | string
     plan?: PlanUpdateOneWithoutAccountNestedInput
     subscription?: SubscriptionUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -48406,12 +50263,16 @@ export namespace Prisma {
     account_users?: AccountUserUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
     StockLabel?: StockLabelUpdateManyWithoutAccountNestedInput
+    account_configuration?: AccountConfigurationUpdateOneWithoutAccountNestedInput
+    isActive?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type AccountUncheckedUpdateWithoutAccount_activitiesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    cpf_cnpj?: StringFieldUpdateOperationsInput | string
+    cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
+    market_name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -48423,6 +50284,13 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
     campaign?: CampaignUncheckedUpdateManyWithoutAccountNestedInput
+    street?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    district?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    zipcode?: StringFieldUpdateOperationsInput | string
     plan_id?: NullableStringFieldUpdateOperationsInput | string | null
     subscription?: SubscriptionUncheckedUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -48431,6 +50299,8 @@ export namespace Prisma {
     account_users?: AccountUserUncheckedUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
     StockLabel?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
+    account_configuration?: AccountConfigurationUncheckedUpdateOneWithoutAccountNestedInput
+    isActive?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ActivitiesUpsertWithoutAccount_activitiesInput = {
@@ -48579,7 +50449,9 @@ export namespace Prisma {
   export type AccountCreateWithoutAccount_usersInput = {
     id?: string
     name: string
-    cpf_cnpj: string
+    cpf_cnpj?: string | null
+    market_name: string
+    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -48591,6 +50463,13 @@ export namespace Prisma {
     banner?: string | null
     gender: GenderType
     campaign?: CampaignCreateNestedManyWithoutAccountInput
+    street: string
+    number: string
+    district: string
+    country: string
+    state: string
+    complement?: string | null
+    zipcode: string
     plan?: PlanCreateNestedOneWithoutAccountInput
     subscription?: SubscriptionCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -48599,12 +50478,16 @@ export namespace Prisma {
     account_activities?: AccountActivitiesCreateNestedManyWithoutAccountInput
     domain: string
     StockLabel?: StockLabelCreateNestedManyWithoutAccountInput
+    account_configuration?: AccountConfigurationCreateNestedOneWithoutAccountInput
+    isActive?: boolean
   }
 
   export type AccountUncheckedCreateWithoutAccount_usersInput = {
     id?: string
     name: string
-    cpf_cnpj: string
+    cpf_cnpj?: string | null
+    market_name: string
+    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -48616,6 +50499,13 @@ export namespace Prisma {
     banner?: string | null
     gender: GenderType
     campaign?: CampaignUncheckedCreateNestedManyWithoutAccountInput
+    street: string
+    number: string
+    district: string
+    country: string
+    state: string
+    complement?: string | null
+    zipcode: string
     plan_id?: string | null
     subscription?: SubscriptionUncheckedCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -48624,6 +50514,8 @@ export namespace Prisma {
     account_activities?: AccountActivitiesUncheckedCreateNestedManyWithoutAccountInput
     domain: string
     StockLabel?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
+    account_configuration?: AccountConfigurationUncheckedCreateNestedOneWithoutAccountInput
+    isActive?: boolean
   }
 
   export type AccountCreateOrConnectWithoutAccount_usersInput = {
@@ -48637,13 +50529,15 @@ export namespace Prisma {
     email: string
     password: string
     whatsapp?: string | null
+    phone?: string | null
     cpf_cnpj?: string | null
     street: string
     number: string
     district: string
     country: string
     state: string
-    additional_information?: string | null
+    complement?: string | null
+    city: string
     zipcode: string
     photo?: string | null
     gender?: GenderType
@@ -48663,13 +50557,15 @@ export namespace Prisma {
     email: string
     password: string
     whatsapp?: string | null
+    phone?: string | null
     cpf_cnpj?: string | null
     street: string
     number: string
     district: string
     country: string
     state: string
-    additional_information?: string | null
+    complement?: string | null
+    city: string
     zipcode: string
     photo?: string | null
     gender?: GenderType
@@ -48713,7 +50609,9 @@ export namespace Prisma {
   export type AccountUpdateWithoutAccount_usersInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    cpf_cnpj?: StringFieldUpdateOperationsInput | string
+    cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
+    market_name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -48725,6 +50623,13 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
     campaign?: CampaignUpdateManyWithoutAccountNestedInput
+    street?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    district?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    zipcode?: StringFieldUpdateOperationsInput | string
     plan?: PlanUpdateOneWithoutAccountNestedInput
     subscription?: SubscriptionUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -48733,12 +50638,16 @@ export namespace Prisma {
     account_activities?: AccountActivitiesUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
     StockLabel?: StockLabelUpdateManyWithoutAccountNestedInput
+    account_configuration?: AccountConfigurationUpdateOneWithoutAccountNestedInput
+    isActive?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type AccountUncheckedUpdateWithoutAccount_usersInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    cpf_cnpj?: StringFieldUpdateOperationsInput | string
+    cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
+    market_name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -48750,6 +50659,13 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
     campaign?: CampaignUncheckedUpdateManyWithoutAccountNestedInput
+    street?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    district?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    zipcode?: StringFieldUpdateOperationsInput | string
     plan_id?: NullableStringFieldUpdateOperationsInput | string | null
     subscription?: SubscriptionUncheckedUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -48758,6 +50674,8 @@ export namespace Prisma {
     account_activities?: AccountActivitiesUncheckedUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
     StockLabel?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
+    account_configuration?: AccountConfigurationUncheckedUpdateOneWithoutAccountNestedInput
+    isActive?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type UserUpsertWithoutAccount_userInput = {
@@ -48771,13 +50689,15 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
     district?: StringFieldUpdateOperationsInput | string
     country?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
-    additional_information?: NullableStringFieldUpdateOperationsInput | string | null
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
@@ -48797,13 +50717,15 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
     district?: StringFieldUpdateOperationsInput | string
     country?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
-    additional_information?: NullableStringFieldUpdateOperationsInput | string | null
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
@@ -49030,7 +50952,9 @@ export namespace Prisma {
   export type AccountCreateWithoutCampaignInput = {
     id?: string
     name: string
-    cpf_cnpj: string
+    cpf_cnpj?: string | null
+    market_name: string
+    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -49041,6 +50965,13 @@ export namespace Prisma {
     instagram_url?: string | null
     banner?: string | null
     gender: GenderType
+    street: string
+    number: string
+    district: string
+    country: string
+    state: string
+    complement?: string | null
+    zipcode: string
     plan?: PlanCreateNestedOneWithoutAccountInput
     subscription?: SubscriptionCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -49050,12 +50981,16 @@ export namespace Prisma {
     account_users?: AccountUserCreateNestedManyWithoutAccountInput
     domain: string
     StockLabel?: StockLabelCreateNestedManyWithoutAccountInput
+    account_configuration?: AccountConfigurationCreateNestedOneWithoutAccountInput
+    isActive?: boolean
   }
 
   export type AccountUncheckedCreateWithoutCampaignInput = {
     id?: string
     name: string
-    cpf_cnpj: string
+    cpf_cnpj?: string | null
+    market_name: string
+    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -49066,6 +51001,13 @@ export namespace Prisma {
     instagram_url?: string | null
     banner?: string | null
     gender: GenderType
+    street: string
+    number: string
+    district: string
+    country: string
+    state: string
+    complement?: string | null
+    zipcode: string
     plan_id?: string | null
     subscription?: SubscriptionUncheckedCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -49075,6 +51017,8 @@ export namespace Prisma {
     account_users?: AccountUserUncheckedCreateNestedManyWithoutAccountInput
     domain: string
     StockLabel?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
+    account_configuration?: AccountConfigurationUncheckedCreateNestedOneWithoutAccountInput
+    isActive?: boolean
   }
 
   export type AccountCreateOrConnectWithoutCampaignInput = {
@@ -49129,7 +51073,9 @@ export namespace Prisma {
   export type AccountUpdateWithoutCampaignInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    cpf_cnpj?: StringFieldUpdateOperationsInput | string
+    cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
+    market_name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -49140,6 +51086,13 @@ export namespace Prisma {
     instagram_url?: NullableStringFieldUpdateOperationsInput | string | null
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
+    street?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    district?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    zipcode?: StringFieldUpdateOperationsInput | string
     plan?: PlanUpdateOneWithoutAccountNestedInput
     subscription?: SubscriptionUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -49149,12 +51102,16 @@ export namespace Prisma {
     account_users?: AccountUserUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
     StockLabel?: StockLabelUpdateManyWithoutAccountNestedInput
+    account_configuration?: AccountConfigurationUpdateOneWithoutAccountNestedInput
+    isActive?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type AccountUncheckedUpdateWithoutCampaignInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    cpf_cnpj?: StringFieldUpdateOperationsInput | string
+    cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
+    market_name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -49165,6 +51122,13 @@ export namespace Prisma {
     instagram_url?: NullableStringFieldUpdateOperationsInput | string | null
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
+    street?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    district?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    zipcode?: StringFieldUpdateOperationsInput | string
     plan_id?: NullableStringFieldUpdateOperationsInput | string | null
     subscription?: SubscriptionUncheckedUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -49174,6 +51138,8 @@ export namespace Prisma {
     account_users?: AccountUserUncheckedUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
     StockLabel?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
+    account_configuration?: AccountConfigurationUncheckedUpdateOneWithoutAccountNestedInput
+    isActive?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type LabelCampaignUpsertWithWhereUniqueWithoutCampaignInput = {
@@ -50728,7 +52694,9 @@ export namespace Prisma {
   export type AccountCreateWithoutOrderInput = {
     id?: string
     name: string
-    cpf_cnpj: string
+    cpf_cnpj?: string | null
+    market_name: string
+    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -50740,6 +52708,13 @@ export namespace Prisma {
     banner?: string | null
     gender: GenderType
     campaign?: CampaignCreateNestedManyWithoutAccountInput
+    street: string
+    number: string
+    district: string
+    country: string
+    state: string
+    complement?: string | null
+    zipcode: string
     plan?: PlanCreateNestedOneWithoutAccountInput
     subscription?: SubscriptionCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -50748,12 +52723,16 @@ export namespace Prisma {
     account_users?: AccountUserCreateNestedManyWithoutAccountInput
     domain: string
     StockLabel?: StockLabelCreateNestedManyWithoutAccountInput
+    account_configuration?: AccountConfigurationCreateNestedOneWithoutAccountInput
+    isActive?: boolean
   }
 
   export type AccountUncheckedCreateWithoutOrderInput = {
     id?: string
     name: string
-    cpf_cnpj: string
+    cpf_cnpj?: string | null
+    market_name: string
+    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -50765,6 +52744,13 @@ export namespace Prisma {
     banner?: string | null
     gender: GenderType
     campaign?: CampaignUncheckedCreateNestedManyWithoutAccountInput
+    street: string
+    number: string
+    district: string
+    country: string
+    state: string
+    complement?: string | null
+    zipcode: string
     plan_id?: string | null
     subscription?: SubscriptionUncheckedCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -50773,6 +52759,8 @@ export namespace Prisma {
     account_users?: AccountUserUncheckedCreateNestedManyWithoutAccountInput
     domain: string
     StockLabel?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
+    account_configuration?: AccountConfigurationUncheckedCreateNestedOneWithoutAccountInput
+    isActive?: boolean
   }
 
   export type AccountCreateOrConnectWithoutOrderInput = {
@@ -50834,7 +52822,9 @@ export namespace Prisma {
   export type AccountUpdateWithoutOrderInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    cpf_cnpj?: StringFieldUpdateOperationsInput | string
+    cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
+    market_name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -50846,6 +52836,13 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
     campaign?: CampaignUpdateManyWithoutAccountNestedInput
+    street?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    district?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    zipcode?: StringFieldUpdateOperationsInput | string
     plan?: PlanUpdateOneWithoutAccountNestedInput
     subscription?: SubscriptionUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50854,12 +52851,16 @@ export namespace Prisma {
     account_users?: AccountUserUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
     StockLabel?: StockLabelUpdateManyWithoutAccountNestedInput
+    account_configuration?: AccountConfigurationUpdateOneWithoutAccountNestedInput
+    isActive?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type AccountUncheckedUpdateWithoutOrderInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    cpf_cnpj?: StringFieldUpdateOperationsInput | string
+    cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
+    market_name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -50871,6 +52872,13 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
     campaign?: CampaignUncheckedUpdateManyWithoutAccountNestedInput
+    street?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    district?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    zipcode?: StringFieldUpdateOperationsInput | string
     plan_id?: NullableStringFieldUpdateOperationsInput | string | null
     subscription?: SubscriptionUncheckedUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50879,6 +52887,8 @@ export namespace Prisma {
     account_users?: AccountUserUncheckedUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
     StockLabel?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
+    account_configuration?: AccountConfigurationUncheckedUpdateOneWithoutAccountNestedInput
+    isActive?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type OrderLabelUpsertWithWhereUniqueWithoutOrderInput = {
@@ -51375,13 +53385,15 @@ export namespace Prisma {
     email: string
     password: string
     whatsapp?: string | null
+    phone?: string | null
     cpf_cnpj?: string | null
     street: string
     number: string
     district: string
     country: string
     state: string
-    additional_information?: string | null
+    complement?: string | null
+    city: string
     zipcode: string
     photo?: string | null
     gender?: GenderType
@@ -51401,13 +53413,15 @@ export namespace Prisma {
     email: string
     password: string
     whatsapp?: string | null
+    phone?: string | null
     cpf_cnpj?: string | null
     street: string
     number: string
     district: string
     country: string
     state: string
-    additional_information?: string | null
+    complement?: string | null
+    city: string
     zipcode: string
     photo?: string | null
     gender?: GenderType
@@ -51468,13 +53482,15 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
     district?: StringFieldUpdateOperationsInput | string
     country?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
-    additional_information?: NullableStringFieldUpdateOperationsInput | string | null
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
@@ -51494,13 +53510,15 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
     district?: StringFieldUpdateOperationsInput | string
     country?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
-    additional_information?: NullableStringFieldUpdateOperationsInput | string | null
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
@@ -52175,7 +54193,9 @@ export namespace Prisma {
   export type AccountCreateWithoutPlanInput = {
     id?: string
     name: string
-    cpf_cnpj: string
+    cpf_cnpj?: string | null
+    market_name: string
+    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -52187,6 +54207,13 @@ export namespace Prisma {
     banner?: string | null
     gender: GenderType
     campaign?: CampaignCreateNestedManyWithoutAccountInput
+    street: string
+    number: string
+    district: string
+    country: string
+    state: string
+    complement?: string | null
+    zipcode: string
     subscription?: SubscriptionCreateNestedManyWithoutAccountInput
     created_at?: Date | string
     updated_at?: Date | string
@@ -52195,12 +54222,16 @@ export namespace Prisma {
     account_users?: AccountUserCreateNestedManyWithoutAccountInput
     domain: string
     StockLabel?: StockLabelCreateNestedManyWithoutAccountInput
+    account_configuration?: AccountConfigurationCreateNestedOneWithoutAccountInput
+    isActive?: boolean
   }
 
   export type AccountUncheckedCreateWithoutPlanInput = {
     id?: string
     name: string
-    cpf_cnpj: string
+    cpf_cnpj?: string | null
+    market_name: string
+    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -52212,6 +54243,13 @@ export namespace Prisma {
     banner?: string | null
     gender: GenderType
     campaign?: CampaignUncheckedCreateNestedManyWithoutAccountInput
+    street: string
+    number: string
+    district: string
+    country: string
+    state: string
+    complement?: string | null
+    zipcode: string
     subscription?: SubscriptionUncheckedCreateNestedManyWithoutAccountInput
     created_at?: Date | string
     updated_at?: Date | string
@@ -52220,6 +54258,8 @@ export namespace Prisma {
     account_users?: AccountUserUncheckedCreateNestedManyWithoutAccountInput
     domain: string
     StockLabel?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
+    account_configuration?: AccountConfigurationUncheckedCreateNestedOneWithoutAccountInput
+    isActive?: boolean
   }
 
   export type AccountCreateOrConnectWithoutPlanInput = {
@@ -52303,7 +54343,9 @@ export namespace Prisma {
     NOT?: Enumerable<AccountScalarWhereInput>
     id?: StringFilter | string
     name?: StringFilter | string
-    cpf_cnpj?: StringFilter | string
+    cpf_cnpj?: StringNullableFilter | string | null
+    market_name?: StringFilter | string
+    email?: StringFilter | string
     phone?: StringNullableFilter | string | null
     whatsapp?: StringNullableFilter | string | null
     logo?: StringNullableFilter | string | null
@@ -52314,10 +54356,18 @@ export namespace Prisma {
     instagram_url?: StringNullableFilter | string | null
     banner?: StringNullableFilter | string | null
     gender?: EnumGenderTypeFilter | GenderType
+    street?: StringFilter | string
+    number?: StringFilter | string
+    district?: StringFilter | string
+    country?: StringFilter | string
+    state?: StringFilter | string
+    complement?: StringNullableFilter | string | null
+    zipcode?: StringFilter | string
     plan_id?: StringNullableFilter | string | null
     created_at?: DateTimeFilter | Date | string
     updated_at?: DateTimeFilter | Date | string
     domain?: StringFilter | string
+    isActive?: BoolFilter | boolean
   }
 
   export type SubscriptionUpsertWithWhereUniqueWithoutPlanInput = {
@@ -52442,7 +54492,9 @@ export namespace Prisma {
   export type AccountCreateWithoutSubscriptionInput = {
     id?: string
     name: string
-    cpf_cnpj: string
+    cpf_cnpj?: string | null
+    market_name: string
+    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -52454,6 +54506,13 @@ export namespace Prisma {
     banner?: string | null
     gender: GenderType
     campaign?: CampaignCreateNestedManyWithoutAccountInput
+    street: string
+    number: string
+    district: string
+    country: string
+    state: string
+    complement?: string | null
+    zipcode: string
     plan?: PlanCreateNestedOneWithoutAccountInput
     created_at?: Date | string
     updated_at?: Date | string
@@ -52462,12 +54521,16 @@ export namespace Prisma {
     account_users?: AccountUserCreateNestedManyWithoutAccountInput
     domain: string
     StockLabel?: StockLabelCreateNestedManyWithoutAccountInput
+    account_configuration?: AccountConfigurationCreateNestedOneWithoutAccountInput
+    isActive?: boolean
   }
 
   export type AccountUncheckedCreateWithoutSubscriptionInput = {
     id?: string
     name: string
-    cpf_cnpj: string
+    cpf_cnpj?: string | null
+    market_name: string
+    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -52479,6 +54542,13 @@ export namespace Prisma {
     banner?: string | null
     gender: GenderType
     campaign?: CampaignUncheckedCreateNestedManyWithoutAccountInput
+    street: string
+    number: string
+    district: string
+    country: string
+    state: string
+    complement?: string | null
+    zipcode: string
     plan_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
@@ -52487,6 +54557,8 @@ export namespace Prisma {
     account_users?: AccountUserUncheckedCreateNestedManyWithoutAccountInput
     domain: string
     StockLabel?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
+    account_configuration?: AccountConfigurationUncheckedCreateNestedOneWithoutAccountInput
+    isActive?: boolean
   }
 
   export type AccountCreateOrConnectWithoutSubscriptionInput = {
@@ -52535,7 +54607,9 @@ export namespace Prisma {
   export type AccountUpdateWithoutSubscriptionInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    cpf_cnpj?: StringFieldUpdateOperationsInput | string
+    cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
+    market_name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52547,6 +54621,13 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
     campaign?: CampaignUpdateManyWithoutAccountNestedInput
+    street?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    district?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    zipcode?: StringFieldUpdateOperationsInput | string
     plan?: PlanUpdateOneWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -52555,12 +54636,16 @@ export namespace Prisma {
     account_users?: AccountUserUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
     StockLabel?: StockLabelUpdateManyWithoutAccountNestedInput
+    account_configuration?: AccountConfigurationUpdateOneWithoutAccountNestedInput
+    isActive?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type AccountUncheckedUpdateWithoutSubscriptionInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    cpf_cnpj?: StringFieldUpdateOperationsInput | string
+    cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
+    market_name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52572,6 +54657,13 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
     campaign?: CampaignUncheckedUpdateManyWithoutAccountNestedInput
+    street?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    district?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    zipcode?: StringFieldUpdateOperationsInput | string
     plan_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -52580,6 +54672,8 @@ export namespace Prisma {
     account_users?: AccountUserUncheckedUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
     StockLabel?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
+    account_configuration?: AccountConfigurationUncheckedUpdateOneWithoutAccountNestedInput
+    isActive?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type LabelCreateWithoutStockLabelInput = {
@@ -52634,7 +54728,9 @@ export namespace Prisma {
   export type AccountCreateWithoutStockLabelInput = {
     id?: string
     name: string
-    cpf_cnpj: string
+    cpf_cnpj?: string | null
+    market_name: string
+    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -52646,6 +54742,13 @@ export namespace Prisma {
     banner?: string | null
     gender: GenderType
     campaign?: CampaignCreateNestedManyWithoutAccountInput
+    street: string
+    number: string
+    district: string
+    country: string
+    state: string
+    complement?: string | null
+    zipcode: string
     plan?: PlanCreateNestedOneWithoutAccountInput
     subscription?: SubscriptionCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -52654,12 +54757,16 @@ export namespace Prisma {
     account_activities?: AccountActivitiesCreateNestedManyWithoutAccountInput
     account_users?: AccountUserCreateNestedManyWithoutAccountInput
     domain: string
+    account_configuration?: AccountConfigurationCreateNestedOneWithoutAccountInput
+    isActive?: boolean
   }
 
   export type AccountUncheckedCreateWithoutStockLabelInput = {
     id?: string
     name: string
-    cpf_cnpj: string
+    cpf_cnpj?: string | null
+    market_name: string
+    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -52671,6 +54778,13 @@ export namespace Prisma {
     banner?: string | null
     gender: GenderType
     campaign?: CampaignUncheckedCreateNestedManyWithoutAccountInput
+    street: string
+    number: string
+    district: string
+    country: string
+    state: string
+    complement?: string | null
+    zipcode: string
     plan_id?: string | null
     subscription?: SubscriptionUncheckedCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -52679,6 +54793,8 @@ export namespace Prisma {
     account_activities?: AccountActivitiesUncheckedCreateNestedManyWithoutAccountInput
     account_users?: AccountUserUncheckedCreateNestedManyWithoutAccountInput
     domain: string
+    account_configuration?: AccountConfigurationUncheckedCreateNestedOneWithoutAccountInput
+    isActive?: boolean
   }
 
   export type AccountCreateOrConnectWithoutStockLabelInput = {
@@ -52743,7 +54859,9 @@ export namespace Prisma {
   export type AccountUpdateWithoutStockLabelInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    cpf_cnpj?: StringFieldUpdateOperationsInput | string
+    cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
+    market_name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52755,6 +54873,13 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
     campaign?: CampaignUpdateManyWithoutAccountNestedInput
+    street?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    district?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    zipcode?: StringFieldUpdateOperationsInput | string
     plan?: PlanUpdateOneWithoutAccountNestedInput
     subscription?: SubscriptionUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -52763,12 +54888,16 @@ export namespace Prisma {
     account_activities?: AccountActivitiesUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
+    account_configuration?: AccountConfigurationUpdateOneWithoutAccountNestedInput
+    isActive?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type AccountUncheckedUpdateWithoutStockLabelInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    cpf_cnpj?: StringFieldUpdateOperationsInput | string
+    cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
+    market_name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -52780,6 +54909,13 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
     campaign?: CampaignUncheckedUpdateManyWithoutAccountNestedInput
+    street?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    district?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    zipcode?: StringFieldUpdateOperationsInput | string
     plan_id?: NullableStringFieldUpdateOperationsInput | string | null
     subscription?: SubscriptionUncheckedUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -52788,6 +54924,8 @@ export namespace Prisma {
     account_activities?: AccountActivitiesUncheckedUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUncheckedUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
+    account_configuration?: AccountConfigurationUncheckedUpdateOneWithoutAccountNestedInput
+    isActive?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type LabelCreateWithoutStockHistoryInput = {
@@ -54130,7 +56268,9 @@ export namespace Prisma {
   export type AccountCreateManyPlanInput = {
     id?: string
     name: string
-    cpf_cnpj: string
+    cpf_cnpj?: string | null
+    market_name: string
+    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -54141,9 +56281,17 @@ export namespace Prisma {
     instagram_url?: string | null
     banner?: string | null
     gender: GenderType
+    street: string
+    number: string
+    district: string
+    country: string
+    state: string
+    complement?: string | null
+    zipcode: string
     created_at?: Date | string
     updated_at?: Date | string
     domain: string
+    isActive?: boolean
   }
 
   export type SubscriptionCreateManyPlanInput = {
@@ -54158,7 +56306,9 @@ export namespace Prisma {
   export type AccountUpdateWithoutPlanInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    cpf_cnpj?: StringFieldUpdateOperationsInput | string
+    cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
+    market_name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -54170,6 +56320,13 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
     campaign?: CampaignUpdateManyWithoutAccountNestedInput
+    street?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    district?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    zipcode?: StringFieldUpdateOperationsInput | string
     subscription?: SubscriptionUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -54178,12 +56335,16 @@ export namespace Prisma {
     account_users?: AccountUserUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
     StockLabel?: StockLabelUpdateManyWithoutAccountNestedInput
+    account_configuration?: AccountConfigurationUpdateOneWithoutAccountNestedInput
+    isActive?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type AccountUncheckedUpdateWithoutPlanInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    cpf_cnpj?: StringFieldUpdateOperationsInput | string
+    cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
+    market_name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -54195,6 +56356,13 @@ export namespace Prisma {
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
     campaign?: CampaignUncheckedUpdateManyWithoutAccountNestedInput
+    street?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    district?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    zipcode?: StringFieldUpdateOperationsInput | string
     subscription?: SubscriptionUncheckedUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -54203,12 +56371,16 @@ export namespace Prisma {
     account_users?: AccountUserUncheckedUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
     StockLabel?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
+    account_configuration?: AccountConfigurationUncheckedUpdateOneWithoutAccountNestedInput
+    isActive?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type AccountUncheckedUpdateManyWithoutAccountInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    cpf_cnpj?: StringFieldUpdateOperationsInput | string
+    cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
+    market_name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -54219,9 +56391,17 @@ export namespace Prisma {
     instagram_url?: NullableStringFieldUpdateOperationsInput | string | null
     banner?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
+    street?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    district?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    zipcode?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     domain?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type SubscriptionUpdateWithoutPlanInput = {

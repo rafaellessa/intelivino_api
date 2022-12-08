@@ -95,10 +95,19 @@ exports.Prisma.AccountActivitiesScalarFieldEnum = makeEnum({
   updated_at: 'updated_at'
 });
 
+exports.Prisma.AccountConfigurationScalarFieldEnum = makeEnum({
+  id: 'id',
+  account_id: 'account_id',
+  banner_market_url: 'banner_market_url',
+  header_color: 'header_color'
+});
+
 exports.Prisma.AccountScalarFieldEnum = makeEnum({
   id: 'id',
   name: 'name',
   cpf_cnpj: 'cpf_cnpj',
+  market_name: 'market_name',
+  email: 'email',
   phone: 'phone',
   whatsapp: 'whatsapp',
   logo: 'logo',
@@ -109,10 +118,18 @@ exports.Prisma.AccountScalarFieldEnum = makeEnum({
   instagram_url: 'instagram_url',
   banner: 'banner',
   gender: 'gender',
+  street: 'street',
+  number: 'number',
+  district: 'district',
+  country: 'country',
+  state: 'state',
+  complement: 'complement',
+  zipcode: 'zipcode',
   plan_id: 'plan_id',
   created_at: 'created_at',
   updated_at: 'updated_at',
-  domain: 'domain'
+  domain: 'domain',
+  isActive: 'isActive'
 });
 
 exports.Prisma.AccountUserScalarFieldEnum = makeEnum({
@@ -169,8 +186,13 @@ exports.Prisma.CountryScalarFieldEnum = makeEnum({
 exports.Prisma.CouponScalarFieldEnum = makeEnum({
   id: 'id',
   code: 'code',
-  percentage: 'percentage',
+  dicount_type: 'dicount_type',
+  discount_value: 'discount_value',
+  couponUse_type: 'couponUse_type',
+  inital_date: 'inital_date',
   expiration_date: 'expiration_date',
+  min_value: 'min_value',
+  max_value: 'max_value',
   created_at: 'created_at',
   updated_at: 'updated_at'
 });
@@ -430,13 +452,15 @@ exports.Prisma.UserScalarFieldEnum = makeEnum({
   email: 'email',
   password: 'password',
   whatsapp: 'whatsapp',
+  phone: 'phone',
   cpf_cnpj: 'cpf_cnpj',
   street: 'street',
   number: 'number',
   district: 'district',
   country: 'country',
   state: 'state',
-  additional_information: 'additional_information',
+  complement: 'complement',
+  city: 'city',
   zipcode: 'zipcode',
   photo: 'photo',
   gender: 'gender',
@@ -456,6 +480,17 @@ exports.Prisma.WineTypeScalarFieldEnum = makeEnum({
   created_at: 'created_at',
   updated_at: 'updated_at'
 });
+exports.CouponDiscountType = makeEnum({
+  PERCENTAGE: 'PERCENTAGE',
+  VALUE: 'VALUE'
+});
+
+exports.CouponUseType = makeEnum({
+  UNLIMITED: 'UNLIMITED',
+  UNIQUE_BY_USER: 'UNIQUE_BY_USER',
+  UNIQUE: 'UNIQUE'
+});
+
 exports.EmailTypeNotification = makeEnum({
   html: 'html',
   text: 'text'
@@ -485,6 +520,7 @@ exports.TypeNotification = makeEnum({
 
 exports.Prisma.ModelName = makeEnum({
   Account: 'Account',
+  AccountConfiguration: 'AccountConfiguration',
   AccountActivities: 'AccountActivities',
   Activities: 'Activities',
   User: 'User',

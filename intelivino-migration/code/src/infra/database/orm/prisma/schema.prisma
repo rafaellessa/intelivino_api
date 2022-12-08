@@ -716,6 +716,7 @@ model users {
   name_business_slug                        String?            @db.VarChar(255)
   plano_id                                  Int?
   cod_ref                                   String?            @db.VarChar(255)
+  show_catalog_prices                       Int?               @default(1) @db.TinyInt
   albums                                    albums[]
   business                                  business[]
   campaigns_campaigns_user_idTousers        campaigns[]        @relation("campaigns_user_idTousers")

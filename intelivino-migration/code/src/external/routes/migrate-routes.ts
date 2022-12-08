@@ -14,4 +14,10 @@ export default (router: Router): void => {
     migrateRepository.migrateCountry()
     response.send({})
   })
+
+  router.get('/migrate/accounts', (_req, response) => {
+    response.setHeader('Content-Type', 'application/json')
+    migrateRepository.migrateAccounts()
+    response.send({})
+  })
 }

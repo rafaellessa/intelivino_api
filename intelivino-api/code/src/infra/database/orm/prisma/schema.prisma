@@ -13,6 +13,7 @@ datasource db {
 
 model Account {
   id                    String                @id @default(uuid())
+  external_id           String
   name                  String
   cpf_cnpj              String?               @unique
   market_name           String
@@ -194,13 +195,13 @@ model CampaignType {
 model Coupon {
   id              String             @id @default(uuid())
   code            String
-  dicount_type     CouponDiscountType
-  discount_value   Float
-  couponUse_type   CouponUseType
-  inital_date      DateTime           @default(now()) @db.Timestamp(3)
+  dicount_type    CouponDiscountType
+  discount_value  Float
+  couponUse_type  CouponUseType
+  inital_date     DateTime           @default(now()) @db.Timestamp(3)
   expiration_date DateTime?
-  min_value        Float?
-  max_value        Float?
+  min_value       Float?
+  max_value       Float?
   created_at      DateTime           @default(now()) @db.Timestamp(3)
   updated_at      DateTime           @updatedAt @db.Timestamp(3)
 
