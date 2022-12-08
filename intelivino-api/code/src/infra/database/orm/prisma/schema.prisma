@@ -194,13 +194,13 @@ model CampaignType {
 model Coupon {
   id              String             @id @default(uuid())
   code            String
-  dicountType     CouponDiscountType
-  discountValue   Float
-  couponUseType   CouponUseType
-  initalDate      DateTime           @default(now()) @db.Timestamp(3)
+  dicount_type     CouponDiscountType
+  discount_value   Float
+  couponUse_type   CouponUseType
+  inital_date      DateTime           @default(now()) @db.Timestamp(3)
   expiration_date DateTime?
-  minValue        Float?
-  maxValue        Float?
+  min_value        Float?
+  max_value        Float?
   created_at      DateTime           @default(now()) @db.Timestamp(3)
   updated_at      DateTime           @updatedAt @db.Timestamp(3)
 
