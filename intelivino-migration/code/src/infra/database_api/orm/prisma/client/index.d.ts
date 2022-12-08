@@ -117,6 +117,7 @@ export type User = {
  * 
  */
 export type AccountUser = {
+  id: string
   account_id: string
   user_id: string
   role_id: string
@@ -162,6 +163,7 @@ export type Campaign = {
   expiration_date: Date | null
   type_id: string
   account_id: string
+  account_user_id: string
   created_at: Date
   updated_at: Date
 }
@@ -1971,6 +1973,55 @@ export namespace Prisma {
      * 
     **/
     select?: UserCountOutputTypeSelect | null
+  }
+
+
+
+  /**
+   * Count Type AccountUserCountOutputType
+   */
+
+
+  export type AccountUserCountOutputType = {
+    campaigns: number
+  }
+
+  export type AccountUserCountOutputTypeSelect = {
+    campaigns?: boolean
+  }
+
+  export type AccountUserCountOutputTypeGetPayload<
+    S extends boolean | null | undefined | AccountUserCountOutputTypeArgs,
+    U = keyof S
+      > = S extends true
+        ? AccountUserCountOutputType
+    : S extends undefined
+    ? never
+    : S extends AccountUserCountOutputTypeArgs
+    ?'include' extends U
+    ? AccountUserCountOutputType 
+    : 'select' extends U
+    ? {
+    [P in TrueKeys<S['select']>]:
+    P extends keyof AccountUserCountOutputType ? AccountUserCountOutputType[P] : never
+  } 
+    : AccountUserCountOutputType
+  : AccountUserCountOutputType
+
+
+
+
+  // Custom InputTypes
+
+  /**
+   * AccountUserCountOutputType without action
+   */
+  export type AccountUserCountOutputTypeArgs = {
+    /**
+     * Select specific fields to fetch from the AccountUserCountOutputType
+     * 
+    **/
+    select?: AccountUserCountOutputTypeSelect | null
   }
 
 
@@ -7852,18 +7903,21 @@ export namespace Prisma {
   }
 
   export type AccountUserMinAggregateOutputType = {
+    id: string | null
     account_id: string | null
     user_id: string | null
     role_id: string | null
   }
 
   export type AccountUserMaxAggregateOutputType = {
+    id: string | null
     account_id: string | null
     user_id: string | null
     role_id: string | null
   }
 
   export type AccountUserCountAggregateOutputType = {
+    id: number
     account_id: number
     user_id: number
     role_id: number
@@ -7872,18 +7926,21 @@ export namespace Prisma {
 
 
   export type AccountUserMinAggregateInputType = {
+    id?: true
     account_id?: true
     user_id?: true
     role_id?: true
   }
 
   export type AccountUserMaxAggregateInputType = {
+    id?: true
     account_id?: true
     user_id?: true
     role_id?: true
   }
 
   export type AccountUserCountAggregateInputType = {
+    id?: true
     account_id?: true
     user_id?: true
     role_id?: true
@@ -7969,6 +8026,7 @@ export namespace Prisma {
 
 
   export type AccountUserGroupByOutputType = {
+    id: string
     account_id: string
     user_id: string
     role_id: string
@@ -7992,18 +8050,23 @@ export namespace Prisma {
 
 
   export type AccountUserSelect = {
+    id?: boolean
     account_id?: boolean
     account?: boolean | AccountArgs
     user_id?: boolean
     user?: boolean | UserArgs
     role_id?: boolean
     role?: boolean | RoleArgs
+    campaigns?: boolean | CampaignFindManyArgs
+    _count?: boolean | AccountUserCountOutputTypeArgs
   }
 
   export type AccountUserInclude = {
     account?: boolean | AccountArgs
     user?: boolean | UserArgs
     role?: boolean | RoleArgs
+    campaigns?: boolean | CampaignFindManyArgs
+    _count?: boolean | AccountUserCountOutputTypeArgs
   }
 
   export type AccountUserGetPayload<
@@ -8019,14 +8082,18 @@ export namespace Prisma {
     [P in TrueKeys<S['include']>]:
         P extends 'account' ? AccountGetPayload<Exclude<S['include'], undefined | null>[P]> :
         P extends 'user' ? UserGetPayload<Exclude<S['include'], undefined | null>[P]> :
-        P extends 'role' ? RoleGetPayload<Exclude<S['include'], undefined | null>[P]> :  never
+        P extends 'role' ? RoleGetPayload<Exclude<S['include'], undefined | null>[P]> :
+        P extends 'campaigns' ? Array < CampaignGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
+        P extends '_count' ? AccountUserCountOutputTypeGetPayload<Exclude<S['include'], undefined | null>[P]> :  never
   } 
     : 'select' extends U
     ? {
     [P in TrueKeys<S['select']>]:
         P extends 'account' ? AccountGetPayload<Exclude<S['select'], undefined | null>[P]> :
         P extends 'user' ? UserGetPayload<Exclude<S['select'], undefined | null>[P]> :
-        P extends 'role' ? RoleGetPayload<Exclude<S['select'], undefined | null>[P]> :  P extends keyof AccountUser ? AccountUser[P] : never
+        P extends 'role' ? RoleGetPayload<Exclude<S['select'], undefined | null>[P]> :
+        P extends 'campaigns' ? Array < CampaignGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
+        P extends '_count' ? AccountUserCountOutputTypeGetPayload<Exclude<S['select'], undefined | null>[P]> :  P extends keyof AccountUser ? AccountUser[P] : never
   } 
     : AccountUser
   : AccountUser
@@ -8083,8 +8150,8 @@ export namespace Prisma {
      * // Get first 10 AccountUsers
      * const accountUsers = await prisma.accountUser.findMany({ take: 10 })
      * 
-     * // Only select the `account_id`
-     * const accountUserWithAccount_idOnly = await prisma.accountUser.findMany({ select: { account_id: true } })
+     * // Only select the `id`
+     * const accountUserWithIdOnly = await prisma.accountUser.findMany({ select: { id: true } })
      * 
     **/
     findMany<T extends AccountUserFindManyArgs>(
@@ -8406,6 +8473,8 @@ export namespace Prisma {
     user<T extends UserArgs = {}>(args?: Subset<T, UserArgs>): CheckSelect<T, Prisma__UserClient<User | Null>, Prisma__UserClient<UserGetPayload<T> | Null>>;
 
     role<T extends RoleArgs = {}>(args?: Subset<T, RoleArgs>): CheckSelect<T, Prisma__RoleClient<Role | Null>, Prisma__RoleClient<RoleGetPayload<T> | Null>>;
+
+    campaigns<T extends CampaignFindManyArgs = {}>(args?: Subset<T, CampaignFindManyArgs>): CheckSelect<T, PrismaPromise<Array<Campaign>| Null>, PrismaPromise<Array<CampaignGetPayload<T>>| Null>>;
 
     private get _document();
     /**
@@ -11514,6 +11583,7 @@ export namespace Prisma {
     expiration_date: Date | null
     type_id: string | null
     account_id: string | null
+    account_user_id: string | null
     created_at: Date | null
     updated_at: Date | null
   }
@@ -11527,6 +11597,7 @@ export namespace Prisma {
     expiration_date: Date | null
     type_id: string | null
     account_id: string | null
+    account_user_id: string | null
     created_at: Date | null
     updated_at: Date | null
   }
@@ -11540,6 +11611,7 @@ export namespace Prisma {
     expiration_date: number
     type_id: number
     account_id: number
+    account_user_id: number
     created_at: number
     updated_at: number
     _all: number
@@ -11563,6 +11635,7 @@ export namespace Prisma {
     expiration_date?: true
     type_id?: true
     account_id?: true
+    account_user_id?: true
     created_at?: true
     updated_at?: true
   }
@@ -11576,6 +11649,7 @@ export namespace Prisma {
     expiration_date?: true
     type_id?: true
     account_id?: true
+    account_user_id?: true
     created_at?: true
     updated_at?: true
   }
@@ -11589,6 +11663,7 @@ export namespace Prisma {
     expiration_date?: true
     type_id?: true
     account_id?: true
+    account_user_id?: true
     created_at?: true
     updated_at?: true
     _all?: true
@@ -11695,6 +11770,7 @@ export namespace Prisma {
     expiration_date: Date | null
     type_id: string
     account_id: string
+    account_user_id: string
     created_at: Date
     updated_at: Date
     _count: CampaignCountAggregateOutputType | null
@@ -11729,6 +11805,8 @@ export namespace Prisma {
     campaign_type?: boolean | CampaignTypeArgs
     account?: boolean | AccountArgs
     account_id?: boolean
+    account_user_id?: boolean
+    account_user?: boolean | AccountUserArgs
     created_at?: boolean
     updated_at?: boolean
     label_campaign?: boolean | LabelCampaignFindManyArgs
@@ -11738,6 +11816,7 @@ export namespace Prisma {
   export type CampaignInclude = {
     campaign_type?: boolean | CampaignTypeArgs
     account?: boolean | AccountArgs
+    account_user?: boolean | AccountUserArgs
     label_campaign?: boolean | LabelCampaignFindManyArgs
     _count?: boolean | CampaignCountOutputTypeArgs
   }
@@ -11755,6 +11834,7 @@ export namespace Prisma {
     [P in TrueKeys<S['include']>]:
         P extends 'campaign_type' ? CampaignTypeGetPayload<Exclude<S['include'], undefined | null>[P]> :
         P extends 'account' ? AccountGetPayload<Exclude<S['include'], undefined | null>[P]> :
+        P extends 'account_user' ? AccountUserGetPayload<Exclude<S['include'], undefined | null>[P]> :
         P extends 'label_campaign' ? Array < LabelCampaignGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
         P extends '_count' ? CampaignCountOutputTypeGetPayload<Exclude<S['include'], undefined | null>[P]> :  never
   } 
@@ -11763,6 +11843,7 @@ export namespace Prisma {
     [P in TrueKeys<S['select']>]:
         P extends 'campaign_type' ? CampaignTypeGetPayload<Exclude<S['select'], undefined | null>[P]> :
         P extends 'account' ? AccountGetPayload<Exclude<S['select'], undefined | null>[P]> :
+        P extends 'account_user' ? AccountUserGetPayload<Exclude<S['select'], undefined | null>[P]> :
         P extends 'label_campaign' ? Array < LabelCampaignGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
         P extends '_count' ? CampaignCountOutputTypeGetPayload<Exclude<S['select'], undefined | null>[P]> :  P extends keyof Campaign ? Campaign[P] : never
   } 
@@ -12142,6 +12223,8 @@ export namespace Prisma {
     campaign_type<T extends CampaignTypeArgs = {}>(args?: Subset<T, CampaignTypeArgs>): CheckSelect<T, Prisma__CampaignTypeClient<CampaignType | Null>, Prisma__CampaignTypeClient<CampaignTypeGetPayload<T> | Null>>;
 
     account<T extends AccountArgs = {}>(args?: Subset<T, AccountArgs>): CheckSelect<T, Prisma__AccountClient<Account | Null>, Prisma__AccountClient<AccountGetPayload<T> | Null>>;
+
+    account_user<T extends AccountUserArgs = {}>(args?: Subset<T, AccountUserArgs>): CheckSelect<T, Prisma__AccountUserClient<AccountUser | Null>, Prisma__AccountUserClient<AccountUserGetPayload<T> | Null>>;
 
     label_campaign<T extends LabelCampaignFindManyArgs = {}>(args?: Subset<T, LabelCampaignFindManyArgs>): CheckSelect<T, PrismaPromise<Array<LabelCampaign>| Null>, PrismaPromise<Array<LabelCampaignGetPayload<T>>| Null>>;
 
@@ -39312,6 +39395,7 @@ export namespace Prisma {
 
 
   export const AccountUserScalarFieldEnum: {
+    id: 'id',
     account_id: 'account_id',
     user_id: 'user_id',
     role_id: 'role_id'
@@ -39340,6 +39424,7 @@ export namespace Prisma {
     expiration_date: 'expiration_date',
     type_id: 'type_id',
     account_id: 'account_id',
+    account_user_id: 'account_user_id',
     created_at: 'created_at',
     updated_at: 'updated_at'
   };
@@ -40201,28 +40286,34 @@ export namespace Prisma {
     AND?: Enumerable<AccountUserWhereInput>
     OR?: Enumerable<AccountUserWhereInput>
     NOT?: Enumerable<AccountUserWhereInput>
+    id?: StringFilter | string
     account_id?: StringFilter | string
     account?: XOR<AccountRelationFilter, AccountWhereInput>
     user_id?: StringFilter | string
     user?: XOR<UserRelationFilter, UserWhereInput>
     role_id?: StringFilter | string
     role?: XOR<RoleRelationFilter, RoleWhereInput>
+    campaigns?: CampaignListRelationFilter
   }
 
   export type AccountUserOrderByWithRelationInput = {
+    id?: SortOrder
     account_id?: SortOrder
     account?: AccountOrderByWithRelationInput
     user_id?: SortOrder
     user?: UserOrderByWithRelationInput
     role_id?: SortOrder
     role?: RoleOrderByWithRelationInput
+    campaigns?: CampaignOrderByRelationAggregateInput
   }
 
   export type AccountUserWhereUniqueInput = {
-    account_id_user_id?: AccountUserAccount_idUser_idCompoundUniqueInput
+    id?: string
+    account_id_user_id_id?: AccountUserAccount_idUser_idIdCompoundUniqueInput
   }
 
   export type AccountUserOrderByWithAggregationInput = {
+    id?: SortOrder
     account_id?: SortOrder
     user_id?: SortOrder
     role_id?: SortOrder
@@ -40235,6 +40326,7 @@ export namespace Prisma {
     AND?: Enumerable<AccountUserScalarWhereWithAggregatesInput>
     OR?: Enumerable<AccountUserScalarWhereWithAggregatesInput>
     NOT?: Enumerable<AccountUserScalarWhereWithAggregatesInput>
+    id?: StringWithAggregatesFilter | string
     account_id?: StringWithAggregatesFilter | string
     user_id?: StringWithAggregatesFilter | string
     role_id?: StringWithAggregatesFilter | string
@@ -40364,6 +40456,8 @@ export namespace Prisma {
     campaign_type?: XOR<CampaignTypeRelationFilter, CampaignTypeWhereInput>
     account?: XOR<AccountRelationFilter, AccountWhereInput>
     account_id?: StringFilter | string
+    account_user_id?: StringFilter | string
+    account_user?: XOR<AccountUserRelationFilter, AccountUserWhereInput>
     created_at?: DateTimeFilter | Date | string
     updated_at?: DateTimeFilter | Date | string
     label_campaign?: LabelCampaignListRelationFilter
@@ -40380,6 +40474,8 @@ export namespace Prisma {
     campaign_type?: CampaignTypeOrderByWithRelationInput
     account?: AccountOrderByWithRelationInput
     account_id?: SortOrder
+    account_user_id?: SortOrder
+    account_user?: AccountUserOrderByWithRelationInput
     created_at?: SortOrder
     updated_at?: SortOrder
     label_campaign?: LabelCampaignOrderByRelationAggregateInput
@@ -40398,6 +40494,7 @@ export namespace Prisma {
     expiration_date?: SortOrder
     type_id?: SortOrder
     account_id?: SortOrder
+    account_user_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     _count?: CampaignCountOrderByAggregateInput
@@ -40419,6 +40516,7 @@ export namespace Prisma {
     expiration_date?: DateTimeNullableWithAggregatesFilter | Date | string | null
     type_id?: StringWithAggregatesFilter | string
     account_id?: StringWithAggregatesFilter | string
+    account_user_id?: StringWithAggregatesFilter | string
     created_at?: DateTimeWithAggregatesFilter | Date | string
     updated_at?: DateTimeWithAggregatesFilter | Date | string
   }
@@ -42594,40 +42692,50 @@ export namespace Prisma {
   }
 
   export type AccountUserCreateInput = {
+    id?: string
     account: AccountCreateNestedOneWithoutAccount_usersInput
     user: UserCreateNestedOneWithoutAccount_userInput
     role: RoleCreateNestedOneWithoutAccountUserInput
+    campaigns?: CampaignCreateNestedManyWithoutAccount_userInput
   }
 
   export type AccountUserUncheckedCreateInput = {
+    id?: string
     account_id: string
     user_id: string
     role_id: string
+    campaigns?: CampaignUncheckedCreateNestedManyWithoutAccount_userInput
   }
 
   export type AccountUserUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
     account?: AccountUpdateOneRequiredWithoutAccount_usersNestedInput
     user?: UserUpdateOneRequiredWithoutAccount_userNestedInput
     role?: RoleUpdateOneRequiredWithoutAccountUserNestedInput
+    campaigns?: CampaignUpdateManyWithoutAccount_userNestedInput
   }
 
   export type AccountUserUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
     account_id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
     role_id?: StringFieldUpdateOperationsInput | string
+    campaigns?: CampaignUncheckedUpdateManyWithoutAccount_userNestedInput
   }
 
   export type AccountUserCreateManyInput = {
+    id?: string
     account_id: string
     user_id: string
     role_id: string
   }
 
   export type AccountUserUpdateManyMutationInput = {
-
+    id?: StringFieldUpdateOperationsInput | string
   }
 
   export type AccountUserUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
     account_id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
     role_id?: StringFieldUpdateOperationsInput | string
@@ -42758,6 +42866,7 @@ export namespace Prisma {
     expiration_date?: Date | string | null
     campaign_type: CampaignTypeCreateNestedOneWithoutCampaignInput
     account: AccountCreateNestedOneWithoutCampaignInput
+    account_user: AccountUserCreateNestedOneWithoutCampaignsInput
     created_at?: Date | string
     updated_at?: Date | string
     label_campaign?: LabelCampaignCreateNestedManyWithoutCampaignInput
@@ -42772,6 +42881,7 @@ export namespace Prisma {
     expiration_date?: Date | string | null
     type_id: string
     account_id: string
+    account_user_id: string
     created_at?: Date | string
     updated_at?: Date | string
     label_campaign?: LabelCampaignUncheckedCreateNestedManyWithoutCampaignInput
@@ -42786,6 +42896,7 @@ export namespace Prisma {
     expiration_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     campaign_type?: CampaignTypeUpdateOneRequiredWithoutCampaignNestedInput
     account?: AccountUpdateOneRequiredWithoutCampaignNestedInput
+    account_user?: AccountUserUpdateOneRequiredWithoutCampaignsNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     label_campaign?: LabelCampaignUpdateManyWithoutCampaignNestedInput
@@ -42800,6 +42911,7 @@ export namespace Prisma {
     expiration_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     type_id?: StringFieldUpdateOperationsInput | string
     account_id?: StringFieldUpdateOperationsInput | string
+    account_user_id?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     label_campaign?: LabelCampaignUncheckedUpdateManyWithoutCampaignNestedInput
@@ -42814,6 +42926,7 @@ export namespace Prisma {
     expiration_date?: Date | string | null
     type_id: string
     account_id: string
+    account_user_id: string
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -42838,6 +42951,7 @@ export namespace Prisma {
     expiration_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     type_id?: StringFieldUpdateOperationsInput | string
     account_id?: StringFieldUpdateOperationsInput | string
+    account_user_id?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -45338,24 +45452,28 @@ export namespace Prisma {
     isNot?: RoleWhereInput
   }
 
-  export type AccountUserAccount_idUser_idCompoundUniqueInput = {
+  export type AccountUserAccount_idUser_idIdCompoundUniqueInput = {
     account_id: string
     user_id: string
+    id: string
   }
 
   export type AccountUserCountOrderByAggregateInput = {
+    id?: SortOrder
     account_id?: SortOrder
     user_id?: SortOrder
     role_id?: SortOrder
   }
 
   export type AccountUserMaxOrderByAggregateInput = {
+    id?: SortOrder
     account_id?: SortOrder
     user_id?: SortOrder
     role_id?: SortOrder
   }
 
   export type AccountUserMinOrderByAggregateInput = {
+    id?: SortOrder
     account_id?: SortOrder
     user_id?: SortOrder
     role_id?: SortOrder
@@ -45442,6 +45560,11 @@ export namespace Prisma {
     isNot?: CampaignTypeWhereInput
   }
 
+  export type AccountUserRelationFilter = {
+    is?: AccountUserWhereInput
+    isNot?: AccountUserWhereInput
+  }
+
   export type LabelCampaignListRelationFilter = {
     every?: LabelCampaignWhereInput
     some?: LabelCampaignWhereInput
@@ -45461,6 +45584,7 @@ export namespace Prisma {
     expiration_date?: SortOrder
     type_id?: SortOrder
     account_id?: SortOrder
+    account_user_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -45478,6 +45602,7 @@ export namespace Prisma {
     expiration_date?: SortOrder
     type_id?: SortOrder
     account_id?: SortOrder
+    account_user_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -45491,6 +45616,7 @@ export namespace Prisma {
     expiration_date?: SortOrder
     type_id?: SortOrder
     account_id?: SortOrder
+    account_user_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -47327,6 +47453,20 @@ export namespace Prisma {
     connect?: RoleWhereUniqueInput
   }
 
+  export type CampaignCreateNestedManyWithoutAccount_userInput = {
+    create?: XOR<Enumerable<CampaignCreateWithoutAccount_userInput>, Enumerable<CampaignUncheckedCreateWithoutAccount_userInput>>
+    connectOrCreate?: Enumerable<CampaignCreateOrConnectWithoutAccount_userInput>
+    createMany?: CampaignCreateManyAccount_userInputEnvelope
+    connect?: Enumerable<CampaignWhereUniqueInput>
+  }
+
+  export type CampaignUncheckedCreateNestedManyWithoutAccount_userInput = {
+    create?: XOR<Enumerable<CampaignCreateWithoutAccount_userInput>, Enumerable<CampaignUncheckedCreateWithoutAccount_userInput>>
+    connectOrCreate?: Enumerable<CampaignCreateOrConnectWithoutAccount_userInput>
+    createMany?: CampaignCreateManyAccount_userInputEnvelope
+    connect?: Enumerable<CampaignWhereUniqueInput>
+  }
+
   export type AccountUpdateOneRequiredWithoutAccount_usersNestedInput = {
     create?: XOR<AccountCreateWithoutAccount_usersInput, AccountUncheckedCreateWithoutAccount_usersInput>
     connectOrCreate?: AccountCreateOrConnectWithoutAccount_usersInput
@@ -47349,6 +47489,34 @@ export namespace Prisma {
     upsert?: RoleUpsertWithoutAccountUserInput
     connect?: RoleWhereUniqueInput
     update?: XOR<RoleUpdateWithoutAccountUserInput, RoleUncheckedUpdateWithoutAccountUserInput>
+  }
+
+  export type CampaignUpdateManyWithoutAccount_userNestedInput = {
+    create?: XOR<Enumerable<CampaignCreateWithoutAccount_userInput>, Enumerable<CampaignUncheckedCreateWithoutAccount_userInput>>
+    connectOrCreate?: Enumerable<CampaignCreateOrConnectWithoutAccount_userInput>
+    upsert?: Enumerable<CampaignUpsertWithWhereUniqueWithoutAccount_userInput>
+    createMany?: CampaignCreateManyAccount_userInputEnvelope
+    set?: Enumerable<CampaignWhereUniqueInput>
+    disconnect?: Enumerable<CampaignWhereUniqueInput>
+    delete?: Enumerable<CampaignWhereUniqueInput>
+    connect?: Enumerable<CampaignWhereUniqueInput>
+    update?: Enumerable<CampaignUpdateWithWhereUniqueWithoutAccount_userInput>
+    updateMany?: Enumerable<CampaignUpdateManyWithWhereWithoutAccount_userInput>
+    deleteMany?: Enumerable<CampaignScalarWhereInput>
+  }
+
+  export type CampaignUncheckedUpdateManyWithoutAccount_userNestedInput = {
+    create?: XOR<Enumerable<CampaignCreateWithoutAccount_userInput>, Enumerable<CampaignUncheckedCreateWithoutAccount_userInput>>
+    connectOrCreate?: Enumerable<CampaignCreateOrConnectWithoutAccount_userInput>
+    upsert?: Enumerable<CampaignUpsertWithWhereUniqueWithoutAccount_userInput>
+    createMany?: CampaignCreateManyAccount_userInputEnvelope
+    set?: Enumerable<CampaignWhereUniqueInput>
+    disconnect?: Enumerable<CampaignWhereUniqueInput>
+    delete?: Enumerable<CampaignWhereUniqueInput>
+    connect?: Enumerable<CampaignWhereUniqueInput>
+    update?: Enumerable<CampaignUpdateWithWhereUniqueWithoutAccount_userInput>
+    updateMany?: Enumerable<CampaignUpdateManyWithWhereWithoutAccount_userInput>
+    deleteMany?: Enumerable<CampaignScalarWhereInput>
   }
 
   export type RolePermissionCreateNestedManyWithoutPermissionInput = {
@@ -47517,6 +47685,12 @@ export namespace Prisma {
     connect?: AccountWhereUniqueInput
   }
 
+  export type AccountUserCreateNestedOneWithoutCampaignsInput = {
+    create?: XOR<AccountUserCreateWithoutCampaignsInput, AccountUserUncheckedCreateWithoutCampaignsInput>
+    connectOrCreate?: AccountUserCreateOrConnectWithoutCampaignsInput
+    connect?: AccountUserWhereUniqueInput
+  }
+
   export type LabelCampaignCreateNestedManyWithoutCampaignInput = {
     create?: XOR<Enumerable<LabelCampaignCreateWithoutCampaignInput>, Enumerable<LabelCampaignUncheckedCreateWithoutCampaignInput>>
     connectOrCreate?: Enumerable<LabelCampaignCreateOrConnectWithoutCampaignInput>
@@ -47553,6 +47727,14 @@ export namespace Prisma {
     upsert?: AccountUpsertWithoutCampaignInput
     connect?: AccountWhereUniqueInput
     update?: XOR<AccountUpdateWithoutCampaignInput, AccountUncheckedUpdateWithoutCampaignInput>
+  }
+
+  export type AccountUserUpdateOneRequiredWithoutCampaignsNestedInput = {
+    create?: XOR<AccountUserCreateWithoutCampaignsInput, AccountUserUncheckedCreateWithoutCampaignsInput>
+    connectOrCreate?: AccountUserCreateOrConnectWithoutCampaignsInput
+    upsert?: AccountUserUpsertWithoutCampaignsInput
+    connect?: AccountUserWhereUniqueInput
+    update?: XOR<AccountUserUpdateWithoutCampaignsInput, AccountUserUncheckedUpdateWithoutCampaignsInput>
   }
 
   export type LabelCampaignUpdateManyWithoutCampaignNestedInput = {
@@ -49624,6 +49806,7 @@ export namespace Prisma {
     start_date?: Date | string | null
     expiration_date?: Date | string | null
     campaign_type: CampaignTypeCreateNestedOneWithoutCampaignInput
+    account_user: AccountUserCreateNestedOneWithoutCampaignsInput
     created_at?: Date | string
     updated_at?: Date | string
     label_campaign?: LabelCampaignCreateNestedManyWithoutCampaignInput
@@ -49637,6 +49820,7 @@ export namespace Prisma {
     start_date?: Date | string | null
     expiration_date?: Date | string | null
     type_id: string
+    account_user_id: string
     created_at?: Date | string
     updated_at?: Date | string
     label_campaign?: LabelCampaignUncheckedCreateNestedManyWithoutCampaignInput
@@ -49768,13 +49952,17 @@ export namespace Prisma {
   }
 
   export type AccountUserCreateWithoutAccountInput = {
+    id?: string
     user: UserCreateNestedOneWithoutAccount_userInput
     role: RoleCreateNestedOneWithoutAccountUserInput
+    campaigns?: CampaignCreateNestedManyWithoutAccount_userInput
   }
 
   export type AccountUserUncheckedCreateWithoutAccountInput = {
+    id?: string
     user_id: string
     role_id: string
+    campaigns?: CampaignUncheckedCreateNestedManyWithoutAccount_userInput
   }
 
   export type AccountUserCreateOrConnectWithoutAccountInput = {
@@ -49854,6 +50042,7 @@ export namespace Prisma {
     expiration_date?: DateTimeNullableFilter | Date | string | null
     type_id?: StringFilter | string
     account_id?: StringFilter | string
+    account_user_id?: StringFilter | string
     created_at?: DateTimeFilter | Date | string
     updated_at?: DateTimeFilter | Date | string
   }
@@ -49995,6 +50184,7 @@ export namespace Prisma {
     AND?: Enumerable<AccountUserScalarWhereInput>
     OR?: Enumerable<AccountUserScalarWhereInput>
     NOT?: Enumerable<AccountUserScalarWhereInput>
+    id?: StringFilter | string
     account_id?: StringFilter | string
     user_id?: StringFilter | string
     role_id?: StringFilter | string
@@ -50462,13 +50652,17 @@ export namespace Prisma {
   }
 
   export type AccountUserCreateWithoutUserInput = {
+    id?: string
     account: AccountCreateNestedOneWithoutAccount_usersInput
     role: RoleCreateNestedOneWithoutAccountUserInput
+    campaigns?: CampaignCreateNestedManyWithoutAccount_userInput
   }
 
   export type AccountUserUncheckedCreateWithoutUserInput = {
+    id?: string
     account_id: string
     role_id: string
+    campaigns?: CampaignUncheckedCreateNestedManyWithoutAccount_userInput
   }
 
   export type AccountUserCreateOrConnectWithoutUserInput = {
@@ -50680,6 +50874,44 @@ export namespace Prisma {
     create: XOR<RoleCreateWithoutAccountUserInput, RoleUncheckedCreateWithoutAccountUserInput>
   }
 
+  export type CampaignCreateWithoutAccount_userInput = {
+    id?: string
+    name: string
+    description?: string | null
+    percentage_discount?: number | null
+    start_date?: Date | string | null
+    expiration_date?: Date | string | null
+    campaign_type: CampaignTypeCreateNestedOneWithoutCampaignInput
+    account: AccountCreateNestedOneWithoutCampaignInput
+    created_at?: Date | string
+    updated_at?: Date | string
+    label_campaign?: LabelCampaignCreateNestedManyWithoutCampaignInput
+  }
+
+  export type CampaignUncheckedCreateWithoutAccount_userInput = {
+    id?: string
+    name: string
+    description?: string | null
+    percentage_discount?: number | null
+    start_date?: Date | string | null
+    expiration_date?: Date | string | null
+    type_id: string
+    account_id: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    label_campaign?: LabelCampaignUncheckedCreateNestedManyWithoutCampaignInput
+  }
+
+  export type CampaignCreateOrConnectWithoutAccount_userInput = {
+    where: CampaignWhereUniqueInput
+    create: XOR<CampaignCreateWithoutAccount_userInput, CampaignUncheckedCreateWithoutAccount_userInput>
+  }
+
+  export type CampaignCreateManyAccount_userInputEnvelope = {
+    data: Enumerable<CampaignCreateManyAccount_userInput>
+    skipDuplicates?: boolean
+  }
+
   export type AccountUpsertWithoutAccount_usersInput = {
     update: XOR<AccountUpdateWithoutAccount_usersInput, AccountUncheckedUpdateWithoutAccount_usersInput>
     create: XOR<AccountCreateWithoutAccount_usersInput, AccountUncheckedCreateWithoutAccount_usersInput>
@@ -50837,6 +51069,22 @@ export namespace Prisma {
     RolePermission?: RolePermissionUncheckedUpdateManyWithoutRoleNestedInput
   }
 
+  export type CampaignUpsertWithWhereUniqueWithoutAccount_userInput = {
+    where: CampaignWhereUniqueInput
+    update: XOR<CampaignUpdateWithoutAccount_userInput, CampaignUncheckedUpdateWithoutAccount_userInput>
+    create: XOR<CampaignCreateWithoutAccount_userInput, CampaignUncheckedCreateWithoutAccount_userInput>
+  }
+
+  export type CampaignUpdateWithWhereUniqueWithoutAccount_userInput = {
+    where: CampaignWhereUniqueInput
+    data: XOR<CampaignUpdateWithoutAccount_userInput, CampaignUncheckedUpdateWithoutAccount_userInput>
+  }
+
+  export type CampaignUpdateManyWithWhereWithoutAccount_userInput = {
+    where: CampaignScalarWhereInput
+    data: XOR<CampaignUpdateManyMutationInput, CampaignUncheckedUpdateManyWithoutCampaignsInput>
+  }
+
   export type RolePermissionCreateWithoutPermissionInput = {
     role: RoleCreateNestedOneWithoutRolePermissionInput
   }
@@ -50962,13 +51210,17 @@ export namespace Prisma {
   }
 
   export type AccountUserCreateWithoutRoleInput = {
+    id?: string
     account: AccountCreateNestedOneWithoutAccount_usersInput
     user: UserCreateNestedOneWithoutAccount_userInput
+    campaigns?: CampaignCreateNestedManyWithoutAccount_userInput
   }
 
   export type AccountUserUncheckedCreateWithoutRoleInput = {
+    id?: string
     account_id: string
     user_id: string
+    campaigns?: CampaignUncheckedCreateNestedManyWithoutAccount_userInput
   }
 
   export type AccountUserCreateOrConnectWithoutRoleInput = {
@@ -51109,6 +51361,25 @@ export namespace Prisma {
     create: XOR<AccountCreateWithoutCampaignInput, AccountUncheckedCreateWithoutCampaignInput>
   }
 
+  export type AccountUserCreateWithoutCampaignsInput = {
+    id?: string
+    account: AccountCreateNestedOneWithoutAccount_usersInput
+    user: UserCreateNestedOneWithoutAccount_userInput
+    role: RoleCreateNestedOneWithoutAccountUserInput
+  }
+
+  export type AccountUserUncheckedCreateWithoutCampaignsInput = {
+    id?: string
+    account_id: string
+    user_id: string
+    role_id: string
+  }
+
+  export type AccountUserCreateOrConnectWithoutCampaignsInput = {
+    where: AccountUserWhereUniqueInput
+    create: XOR<AccountUserCreateWithoutCampaignsInput, AccountUserUncheckedCreateWithoutCampaignsInput>
+  }
+
   export type LabelCampaignCreateWithoutCampaignInput = {
     label: LabelCreateNestedOneWithoutLabel_campaignInput
     created_at?: Date | string
@@ -51227,6 +51498,25 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
   }
 
+  export type AccountUserUpsertWithoutCampaignsInput = {
+    update: XOR<AccountUserUpdateWithoutCampaignsInput, AccountUserUncheckedUpdateWithoutCampaignsInput>
+    create: XOR<AccountUserCreateWithoutCampaignsInput, AccountUserUncheckedCreateWithoutCampaignsInput>
+  }
+
+  export type AccountUserUpdateWithoutCampaignsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    account?: AccountUpdateOneRequiredWithoutAccount_usersNestedInput
+    user?: UserUpdateOneRequiredWithoutAccount_userNestedInput
+    role?: RoleUpdateOneRequiredWithoutAccountUserNestedInput
+  }
+
+  export type AccountUserUncheckedUpdateWithoutCampaignsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    account_id?: StringFieldUpdateOperationsInput | string
+    user_id?: StringFieldUpdateOperationsInput | string
+    role_id?: StringFieldUpdateOperationsInput | string
+  }
+
   export type LabelCampaignUpsertWithWhereUniqueWithoutCampaignInput = {
     where: LabelCampaignWhereUniqueInput
     update: XOR<LabelCampaignUpdateWithoutCampaignInput, LabelCampaignUncheckedUpdateWithoutCampaignInput>
@@ -51261,6 +51551,7 @@ export namespace Prisma {
     start_date?: Date | string | null
     expiration_date?: Date | string | null
     account: AccountCreateNestedOneWithoutCampaignInput
+    account_user: AccountUserCreateNestedOneWithoutCampaignsInput
     created_at?: Date | string
     updated_at?: Date | string
     label_campaign?: LabelCampaignCreateNestedManyWithoutCampaignInput
@@ -51274,6 +51565,7 @@ export namespace Prisma {
     start_date?: Date | string | null
     expiration_date?: Date | string | null
     account_id: string
+    account_user_id: string
     created_at?: Date | string
     updated_at?: Date | string
     label_campaign?: LabelCampaignUncheckedCreateNestedManyWithoutCampaignInput
@@ -51775,6 +52067,7 @@ export namespace Prisma {
     expiration_date?: Date | string | null
     campaign_type: CampaignTypeCreateNestedOneWithoutCampaignInput
     account: AccountCreateNestedOneWithoutCampaignInput
+    account_user: AccountUserCreateNestedOneWithoutCampaignsInput
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -51788,6 +52081,7 @@ export namespace Prisma {
     expiration_date?: Date | string | null
     type_id: string
     account_id: string
+    account_user_id: string
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -51860,6 +52154,7 @@ export namespace Prisma {
     expiration_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     campaign_type?: CampaignTypeUpdateOneRequiredWithoutCampaignNestedInput
     account?: AccountUpdateOneRequiredWithoutCampaignNestedInput
+    account_user?: AccountUserUpdateOneRequiredWithoutCampaignsNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -51873,6 +52168,7 @@ export namespace Prisma {
     expiration_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     type_id?: StringFieldUpdateOperationsInput | string
     account_id?: StringFieldUpdateOperationsInput | string
+    account_user_id?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -55134,6 +55430,7 @@ export namespace Prisma {
     start_date?: Date | string | null
     expiration_date?: Date | string | null
     type_id: string
+    account_user_id: string
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -55163,6 +55460,7 @@ export namespace Prisma {
   }
 
   export type AccountUserCreateManyAccountInput = {
+    id?: string
     user_id: string
     role_id: string
   }
@@ -55181,6 +55479,7 @@ export namespace Prisma {
     start_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expiration_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     campaign_type?: CampaignTypeUpdateOneRequiredWithoutCampaignNestedInput
+    account_user?: AccountUserUpdateOneRequiredWithoutCampaignsNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     label_campaign?: LabelCampaignUpdateManyWithoutCampaignNestedInput
@@ -55194,6 +55493,7 @@ export namespace Prisma {
     start_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expiration_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     type_id?: StringFieldUpdateOperationsInput | string
+    account_user_id?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     label_campaign?: LabelCampaignUncheckedUpdateManyWithoutCampaignNestedInput
@@ -55207,6 +55507,7 @@ export namespace Prisma {
     start_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expiration_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     type_id?: StringFieldUpdateOperationsInput | string
+    account_user_id?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -55288,16 +55589,21 @@ export namespace Prisma {
   }
 
   export type AccountUserUpdateWithoutAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
     user?: UserUpdateOneRequiredWithoutAccount_userNestedInput
     role?: RoleUpdateOneRequiredWithoutAccountUserNestedInput
+    campaigns?: CampaignUpdateManyWithoutAccount_userNestedInput
   }
 
   export type AccountUserUncheckedUpdateWithoutAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
     role_id?: StringFieldUpdateOperationsInput | string
+    campaigns?: CampaignUncheckedUpdateManyWithoutAccount_userNestedInput
   }
 
   export type AccountUserUncheckedUpdateManyWithoutAccount_usersInput = {
+    id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
     role_id?: StringFieldUpdateOperationsInput | string
   }
@@ -55345,6 +55651,7 @@ export namespace Prisma {
   }
 
   export type AccountUserCreateManyUserInput = {
+    id?: string
     account_id: string
     role_id: string
   }
@@ -55368,18 +55675,77 @@ export namespace Prisma {
   }
 
   export type AccountUserUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
     account?: AccountUpdateOneRequiredWithoutAccount_usersNestedInput
     role?: RoleUpdateOneRequiredWithoutAccountUserNestedInput
+    campaigns?: CampaignUpdateManyWithoutAccount_userNestedInput
   }
 
   export type AccountUserUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    account_id?: StringFieldUpdateOperationsInput | string
+    role_id?: StringFieldUpdateOperationsInput | string
+    campaigns?: CampaignUncheckedUpdateManyWithoutAccount_userNestedInput
+  }
+
+  export type AccountUserUncheckedUpdateManyWithoutAccount_userInput = {
+    id?: StringFieldUpdateOperationsInput | string
     account_id?: StringFieldUpdateOperationsInput | string
     role_id?: StringFieldUpdateOperationsInput | string
   }
 
-  export type AccountUserUncheckedUpdateManyWithoutAccount_userInput = {
+  export type CampaignCreateManyAccount_userInput = {
+    id?: string
+    name: string
+    description?: string | null
+    percentage_discount?: number | null
+    start_date?: Date | string | null
+    expiration_date?: Date | string | null
+    type_id: string
+    account_id: string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type CampaignUpdateWithoutAccount_userInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    percentage_discount?: NullableFloatFieldUpdateOperationsInput | number | null
+    start_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiration_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    campaign_type?: CampaignTypeUpdateOneRequiredWithoutCampaignNestedInput
+    account?: AccountUpdateOneRequiredWithoutCampaignNestedInput
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    label_campaign?: LabelCampaignUpdateManyWithoutCampaignNestedInput
+  }
+
+  export type CampaignUncheckedUpdateWithoutAccount_userInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    percentage_discount?: NullableFloatFieldUpdateOperationsInput | number | null
+    start_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiration_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    type_id?: StringFieldUpdateOperationsInput | string
     account_id?: StringFieldUpdateOperationsInput | string
-    role_id?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    label_campaign?: LabelCampaignUncheckedUpdateManyWithoutCampaignNestedInput
+  }
+
+  export type CampaignUncheckedUpdateManyWithoutCampaignsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    percentage_discount?: NullableFloatFieldUpdateOperationsInput | number | null
+    start_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiration_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    type_id?: StringFieldUpdateOperationsInput | string
+    account_id?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type RolePermissionCreateManyPermissionInput = {
@@ -55403,6 +55769,7 @@ export namespace Prisma {
   }
 
   export type AccountUserCreateManyRoleInput = {
+    id?: string
     account_id: string
     user_id: string
   }
@@ -55416,16 +55783,21 @@ export namespace Prisma {
   }
 
   export type AccountUserUpdateWithoutRoleInput = {
+    id?: StringFieldUpdateOperationsInput | string
     account?: AccountUpdateOneRequiredWithoutAccount_usersNestedInput
     user?: UserUpdateOneRequiredWithoutAccount_userNestedInput
+    campaigns?: CampaignUpdateManyWithoutAccount_userNestedInput
   }
 
   export type AccountUserUncheckedUpdateWithoutRoleInput = {
+    id?: StringFieldUpdateOperationsInput | string
     account_id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
+    campaigns?: CampaignUncheckedUpdateManyWithoutAccount_userNestedInput
   }
 
   export type AccountUserUncheckedUpdateManyWithoutAccountUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
     account_id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
   }
@@ -55462,6 +55834,7 @@ export namespace Prisma {
     start_date?: Date | string | null
     expiration_date?: Date | string | null
     account_id: string
+    account_user_id: string
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -55474,6 +55847,7 @@ export namespace Prisma {
     start_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expiration_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: AccountUpdateOneRequiredWithoutCampaignNestedInput
+    account_user?: AccountUserUpdateOneRequiredWithoutCampaignsNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     label_campaign?: LabelCampaignUpdateManyWithoutCampaignNestedInput
@@ -55487,6 +55861,7 @@ export namespace Prisma {
     start_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     expiration_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account_id?: StringFieldUpdateOperationsInput | string
+    account_user_id?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     label_campaign?: LabelCampaignUncheckedUpdateManyWithoutCampaignNestedInput

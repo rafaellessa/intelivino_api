@@ -134,6 +134,7 @@ exports.Prisma.AccountScalarFieldEnum = makeEnum({
 });
 
 exports.Prisma.AccountUserScalarFieldEnum = makeEnum({
+  id: 'id',
   account_id: 'account_id',
   user_id: 'user_id',
   role_id: 'role_id'
@@ -156,6 +157,7 @@ exports.Prisma.CampaignScalarFieldEnum = makeEnum({
   expiration_date: 'expiration_date',
   type_id: 'type_id',
   account_id: 'account_id',
+  account_user_id: 'account_user_id',
   created_at: 'created_at',
   updated_at: 'updated_at'
 });

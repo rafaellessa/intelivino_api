@@ -115,14 +115,16 @@ model User {
 }
 
 model AccountUser {
+  id         String     @unique @default(uuid())
   account_id String
-  account    Account @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  account    Account    @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   user_id    String
-  user       User    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user       User       @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   role_id    String
-  role       Role    @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  role       Role       @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  campaigns  Campaign[]
 
-  @@id([account_id, user_id])
+  @@id([account_id, user_id, id])
   @@map("account_user")
 }
 
@@ -146,7 +148,7 @@ model RolePermission {
 
 model Role {
   id             String           @id @default(uuid())
-  name           String @unique
+  name           String           @unique
   RolePermission RolePermission[]
   AccountUser    AccountUser[]
 
@@ -175,6 +177,8 @@ model Campaign {
   campaign_type       CampaignType @relation(fields: [type_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   account             Account      @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   account_id          String
+  account_user_id     String
+  account_user        AccountUser  @relation(fields: [account_user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   created_at          DateTime     @default(now()) @db.Timestamp(3)
   updated_at          DateTime     @updatedAt @db.Timestamp(3)
 

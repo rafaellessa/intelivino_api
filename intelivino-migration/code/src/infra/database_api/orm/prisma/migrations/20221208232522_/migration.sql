@@ -101,11 +101,13 @@ CREATE TABLE `users` (
 
 -- CreateTable
 CREATE TABLE `account_user` (
+    `id` VARCHAR(191) NOT NULL,
     `account_id` VARCHAR(191) NOT NULL,
     `user_id` VARCHAR(191) NOT NULL,
     `role_id` VARCHAR(191) NOT NULL,
 
-    PRIMARY KEY (`account_id`, `user_id`)
+    UNIQUE INDEX `account_user_id_key`(`id`),
+    PRIMARY KEY (`account_id`, `user_id`, `id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
@@ -143,6 +145,7 @@ CREATE TABLE `campaign` (
     `expiration_date` DATETIME(3) NULL,
     `type_id` VARCHAR(191) NOT NULL,
     `account_id` VARCHAR(191) NOT NULL,
+    `account_user_id` VARCHAR(191) NOT NULL,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
 
@@ -537,6 +540,9 @@ ALTER TABLE `campaign` ADD CONSTRAINT `campaign_type_id_fkey` FOREIGN KEY (`type
 
 -- AddForeignKey
 ALTER TABLE `campaign` ADD CONSTRAINT `campaign_account_id_fkey` FOREIGN KEY (`account_id`) REFERENCES `account`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `campaign` ADD CONSTRAINT `campaign_account_user_id_fkey` FOREIGN KEY (`account_user_id`) REFERENCES `account_user`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `label` ADD CONSTRAINT `label_type_id_fkey` FOREIGN KEY (`type_id`) REFERENCES `label_type`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
