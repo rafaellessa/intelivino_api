@@ -18,6 +18,7 @@ type UnwrapTuple<Tuple extends readonly unknown[]> = {
  */
 export type Account = {
   id: string
+  external_id: number
   name: string
   cpf_cnpj: string | null
   market_name: string
@@ -102,7 +103,7 @@ export type User = {
   zipcode: string
   photo: string | null
   gender: GenderType
-  birthdate: string | null
+  birthdate: Date | null
   google_id: string | null
   apple_id: string | null
   facebook_id: string | null
@@ -2801,12 +2802,23 @@ export namespace Prisma {
 
   export type AggregateAccount = {
     _count: AccountCountAggregateOutputType | null
+    _avg: AccountAvgAggregateOutputType | null
+    _sum: AccountSumAggregateOutputType | null
     _min: AccountMinAggregateOutputType | null
     _max: AccountMaxAggregateOutputType | null
   }
 
+  export type AccountAvgAggregateOutputType = {
+    external_id: number | null
+  }
+
+  export type AccountSumAggregateOutputType = {
+    external_id: number | null
+  }
+
   export type AccountMinAggregateOutputType = {
     id: string | null
+    external_id: number | null
     name: string | null
     cpf_cnpj: string | null
     market_name: string | null
@@ -2837,6 +2849,7 @@ export namespace Prisma {
 
   export type AccountMaxAggregateOutputType = {
     id: string | null
+    external_id: number | null
     name: string | null
     cpf_cnpj: string | null
     market_name: string | null
@@ -2867,6 +2880,7 @@ export namespace Prisma {
 
   export type AccountCountAggregateOutputType = {
     id: number
+    external_id: number
     name: number
     cpf_cnpj: number
     market_name: number
@@ -2897,8 +2911,17 @@ export namespace Prisma {
   }
 
 
+  export type AccountAvgAggregateInputType = {
+    external_id?: true
+  }
+
+  export type AccountSumAggregateInputType = {
+    external_id?: true
+  }
+
   export type AccountMinAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     cpf_cnpj?: true
     market_name?: true
@@ -2929,6 +2952,7 @@ export namespace Prisma {
 
   export type AccountMaxAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     cpf_cnpj?: true
     market_name?: true
@@ -2959,6 +2983,7 @@ export namespace Prisma {
 
   export type AccountCountAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     cpf_cnpj?: true
     market_name?: true
@@ -3031,6 +3056,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: AccountAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: AccountSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: AccountMinAggregateInputType
@@ -3061,6 +3098,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: AccountCountAggregateInputType | true
+    _avg?: AccountAvgAggregateInputType
+    _sum?: AccountSumAggregateInputType
     _min?: AccountMinAggregateInputType
     _max?: AccountMaxAggregateInputType
   }
@@ -3068,6 +3107,7 @@ export namespace Prisma {
 
   export type AccountGroupByOutputType = {
     id: string
+    external_id: number
     name: string
     cpf_cnpj: string | null
     market_name: string
@@ -3095,6 +3135,8 @@ export namespace Prisma {
     domain: string
     isActive: boolean
     _count: AccountCountAggregateOutputType | null
+    _avg: AccountAvgAggregateOutputType | null
+    _sum: AccountSumAggregateOutputType | null
     _min: AccountMinAggregateOutputType | null
     _max: AccountMaxAggregateOutputType | null
   }
@@ -3115,6 +3157,7 @@ export namespace Prisma {
 
   export type AccountSelect = {
     id?: boolean
+    external_id?: boolean
     name?: boolean
     cpf_cnpj?: boolean
     market_name?: boolean
@@ -6739,7 +6782,7 @@ export namespace Prisma {
     zipcode: string | null
     photo: string | null
     gender: GenderType | null
-    birthdate: string | null
+    birthdate: Date | null
     google_id: string | null
     apple_id: string | null
     facebook_id: string | null
@@ -6766,7 +6809,7 @@ export namespace Prisma {
     zipcode: string | null
     photo: string | null
     gender: GenderType | null
-    birthdate: string | null
+    birthdate: Date | null
     google_id: string | null
     apple_id: string | null
     facebook_id: string | null
@@ -6982,7 +7025,7 @@ export namespace Prisma {
     zipcode: string
     photo: string | null
     gender: GenderType
-    birthdate: string | null
+    birthdate: Date | null
     google_id: string | null
     apple_id: string | null
     facebook_id: string | null
@@ -39236,6 +39279,7 @@ export namespace Prisma {
 
   export const AccountScalarFieldEnum: {
     id: 'id',
+    external_id: 'external_id',
     name: 'name',
     cpf_cnpj: 'cpf_cnpj',
     market_name: 'market_name',
@@ -39737,6 +39781,7 @@ export namespace Prisma {
     OR?: Enumerable<AccountWhereInput>
     NOT?: Enumerable<AccountWhereInput>
     id?: StringFilter | string
+    external_id?: IntFilter | number
     name?: StringFilter | string
     cpf_cnpj?: StringNullableFilter | string | null
     market_name?: StringFilter | string
@@ -39775,6 +39820,7 @@ export namespace Prisma {
 
   export type AccountOrderByWithRelationInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     cpf_cnpj?: SortOrder
     market_name?: SortOrder
@@ -39813,13 +39859,14 @@ export namespace Prisma {
 
   export type AccountWhereUniqueInput = {
     id?: string
-    cpf_cnpj?: string
+    external_id?: number
     email?: string
     domain?: string
   }
 
   export type AccountOrderByWithAggregationInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     cpf_cnpj?: SortOrder
     market_name?: SortOrder
@@ -39847,8 +39894,10 @@ export namespace Prisma {
     domain?: SortOrder
     isActive?: SortOrder
     _count?: AccountCountOrderByAggregateInput
+    _avg?: AccountAvgOrderByAggregateInput
     _max?: AccountMaxOrderByAggregateInput
     _min?: AccountMinOrderByAggregateInput
+    _sum?: AccountSumOrderByAggregateInput
   }
 
   export type AccountScalarWhereWithAggregatesInput = {
@@ -39856,6 +39905,7 @@ export namespace Prisma {
     OR?: Enumerable<AccountScalarWhereWithAggregatesInput>
     NOT?: Enumerable<AccountScalarWhereWithAggregatesInput>
     id?: StringWithAggregatesFilter | string
+    external_id?: IntWithAggregatesFilter | number
     name?: StringWithAggregatesFilter | string
     cpf_cnpj?: StringNullableWithAggregatesFilter | string | null
     market_name?: StringWithAggregatesFilter | string
@@ -40041,7 +40091,7 @@ export namespace Prisma {
     zipcode?: StringFilter | string
     photo?: StringNullableFilter | string | null
     gender?: EnumGenderTypeFilter | GenderType
-    birthdate?: StringNullableFilter | string | null
+    birthdate?: DateTimeNullableFilter | Date | string | null
     google_id?: StringNullableFilter | string | null
     apple_id?: StringNullableFilter | string | null
     facebook_id?: StringNullableFilter | string | null
@@ -40138,7 +40188,7 @@ export namespace Prisma {
     zipcode?: StringWithAggregatesFilter | string
     photo?: StringNullableWithAggregatesFilter | string | null
     gender?: EnumGenderTypeWithAggregatesFilter | GenderType
-    birthdate?: StringNullableWithAggregatesFilter | string | null
+    birthdate?: DateTimeNullableWithAggregatesFilter | Date | string | null
     google_id?: StringNullableWithAggregatesFilter | string | null
     apple_id?: StringNullableWithAggregatesFilter | string | null
     facebook_id?: StringNullableWithAggregatesFilter | string | null
@@ -40281,6 +40331,7 @@ export namespace Prisma {
 
   export type RoleWhereUniqueInput = {
     id?: string
+    name?: string
   }
 
   export type RoleOrderByWithAggregationInput = {
@@ -41948,6 +41999,7 @@ export namespace Prisma {
 
   export type AccountCreateInput = {
     id?: string
+    external_id: number
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -41985,6 +42037,7 @@ export namespace Prisma {
 
   export type AccountUncheckedCreateInput = {
     id?: string
+    external_id: number
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -42022,6 +42075,7 @@ export namespace Prisma {
 
   export type AccountUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -42059,6 +42113,7 @@ export namespace Prisma {
 
   export type AccountUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -42096,6 +42151,7 @@ export namespace Prisma {
 
   export type AccountCreateManyInput = {
     id?: string
+    external_id: number
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -42126,6 +42182,7 @@ export namespace Prisma {
 
   export type AccountUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -42155,6 +42212,7 @@ export namespace Prisma {
 
   export type AccountUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -42356,7 +42414,7 @@ export namespace Prisma {
     zipcode: string
     photo?: string | null
     gender?: GenderType
-    birthdate?: string | null
+    birthdate?: Date | string | null
     google_id?: string | null
     apple_id?: string | null
     facebook_id?: string | null
@@ -42385,7 +42443,7 @@ export namespace Prisma {
     zipcode: string
     photo?: string | null
     gender?: GenderType
-    birthdate?: string | null
+    birthdate?: Date | string | null
     google_id?: string | null
     apple_id?: string | null
     facebook_id?: string | null
@@ -42414,7 +42472,7 @@ export namespace Prisma {
     zipcode?: StringFieldUpdateOperationsInput | string
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
-    birthdate?: NullableStringFieldUpdateOperationsInput | string | null
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     google_id?: NullableStringFieldUpdateOperationsInput | string | null
     apple_id?: NullableStringFieldUpdateOperationsInput | string | null
     facebook_id?: NullableStringFieldUpdateOperationsInput | string | null
@@ -42443,7 +42501,7 @@ export namespace Prisma {
     zipcode?: StringFieldUpdateOperationsInput | string
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
-    birthdate?: NullableStringFieldUpdateOperationsInput | string | null
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     google_id?: NullableStringFieldUpdateOperationsInput | string | null
     apple_id?: NullableStringFieldUpdateOperationsInput | string | null
     facebook_id?: NullableStringFieldUpdateOperationsInput | string | null
@@ -42472,7 +42530,7 @@ export namespace Prisma {
     zipcode: string
     photo?: string | null
     gender?: GenderType
-    birthdate?: string | null
+    birthdate?: Date | string | null
     google_id?: string | null
     apple_id?: string | null
     facebook_id?: string | null
@@ -42499,7 +42557,7 @@ export namespace Prisma {
     zipcode?: StringFieldUpdateOperationsInput | string
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
-    birthdate?: NullableStringFieldUpdateOperationsInput | string | null
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     google_id?: NullableStringFieldUpdateOperationsInput | string | null
     apple_id?: NullableStringFieldUpdateOperationsInput | string | null
     facebook_id?: NullableStringFieldUpdateOperationsInput | string | null
@@ -42526,7 +42584,7 @@ export namespace Prisma {
     zipcode?: StringFieldUpdateOperationsInput | string
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
-    birthdate?: NullableStringFieldUpdateOperationsInput | string | null
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     google_id?: NullableStringFieldUpdateOperationsInput | string | null
     apple_id?: NullableStringFieldUpdateOperationsInput | string | null
     facebook_id?: NullableStringFieldUpdateOperationsInput | string | null
@@ -44755,6 +44813,17 @@ export namespace Prisma {
     not?: NestedStringFilter | string
   }
 
+  export type IntFilter = {
+    equals?: number
+    in?: Enumerable<number>
+    notIn?: Enumerable<number>
+    lt?: number
+    lte?: number
+    gt?: number
+    gte?: number
+    not?: NestedIntFilter | number
+  }
+
   export type StringNullableFilter = {
     equals?: string | null
     in?: Enumerable<string> | null
@@ -44871,6 +44940,7 @@ export namespace Prisma {
 
   export type AccountCountOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     cpf_cnpj?: SortOrder
     market_name?: SortOrder
@@ -44899,8 +44969,13 @@ export namespace Prisma {
     isActive?: SortOrder
   }
 
+  export type AccountAvgOrderByAggregateInput = {
+    external_id?: SortOrder
+  }
+
   export type AccountMaxOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     cpf_cnpj?: SortOrder
     market_name?: SortOrder
@@ -44931,6 +45006,7 @@ export namespace Prisma {
 
   export type AccountMinOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     cpf_cnpj?: SortOrder
     market_name?: SortOrder
@@ -44959,6 +45035,10 @@ export namespace Prisma {
     isActive?: SortOrder
   }
 
+  export type AccountSumOrderByAggregateInput = {
+    external_id?: SortOrder
+  }
+
   export type StringWithAggregatesFilter = {
     equals?: string
     in?: Enumerable<string>
@@ -44974,6 +45054,22 @@ export namespace Prisma {
     _count?: NestedIntFilter
     _min?: NestedStringFilter
     _max?: NestedStringFilter
+  }
+
+  export type IntWithAggregatesFilter = {
+    equals?: number
+    in?: Enumerable<number>
+    notIn?: Enumerable<number>
+    lt?: number
+    lte?: number
+    gt?: number
+    gte?: number
+    not?: NestedIntWithAggregatesFilter | number
+    _count?: NestedIntFilter
+    _avg?: NestedFloatFilter
+    _sum?: NestedIntFilter
+    _min?: NestedIntFilter
+    _max?: NestedIntFilter
   }
 
   export type StringNullableWithAggregatesFilter = {
@@ -45116,6 +45212,17 @@ export namespace Prisma {
     updated_at?: SortOrder
   }
 
+  export type DateTimeNullableFilter = {
+    equals?: Date | string | null
+    in?: Enumerable<Date> | Enumerable<string> | null
+    notIn?: Enumerable<Date> | Enumerable<string> | null
+    lt?: Date | string
+    lte?: Date | string
+    gt?: Date | string
+    gte?: Date | string
+    not?: NestedDateTimeNullableFilter | Date | string | null
+  }
+
   export type DeviceUserListRelationFilter = {
     every?: DeviceUserWhereInput
     some?: DeviceUserWhereInput
@@ -45205,6 +45312,20 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     lastLogin?: SortOrder
+  }
+
+  export type DateTimeNullableWithAggregatesFilter = {
+    equals?: Date | string | null
+    in?: Enumerable<Date> | Enumerable<string> | null
+    notIn?: Enumerable<Date> | Enumerable<string> | null
+    lt?: Date | string
+    lte?: Date | string
+    gt?: Date | string
+    gte?: Date | string
+    not?: NestedDateTimeNullableWithAggregatesFilter | Date | string | null
+    _count?: NestedIntNullableFilter
+    _min?: NestedDateTimeNullableFilter
+    _max?: NestedDateTimeNullableFilter
   }
 
   export type UserRelationFilter = {
@@ -45316,17 +45437,6 @@ export namespace Prisma {
     not?: NestedFloatNullableFilter | number | null
   }
 
-  export type DateTimeNullableFilter = {
-    equals?: Date | string | null
-    in?: Enumerable<Date> | Enumerable<string> | null
-    notIn?: Enumerable<Date> | Enumerable<string> | null
-    lt?: Date | string
-    lte?: Date | string
-    gt?: Date | string
-    gte?: Date | string
-    not?: NestedDateTimeNullableFilter | Date | string | null
-  }
-
   export type CampaignTypeRelationFilter = {
     is?: CampaignTypeWhereInput
     isNot?: CampaignTypeWhereInput
@@ -45403,20 +45513,6 @@ export namespace Prisma {
     _sum?: NestedFloatNullableFilter
     _min?: NestedFloatNullableFilter
     _max?: NestedFloatNullableFilter
-  }
-
-  export type DateTimeNullableWithAggregatesFilter = {
-    equals?: Date | string | null
-    in?: Enumerable<Date> | Enumerable<string> | null
-    notIn?: Enumerable<Date> | Enumerable<string> | null
-    lt?: Date | string
-    lte?: Date | string
-    gt?: Date | string
-    gte?: Date | string
-    not?: NestedDateTimeNullableWithAggregatesFilter | Date | string | null
-    _count?: NestedIntNullableFilter
-    _min?: NestedDateTimeNullableFilter
-    _max?: NestedDateTimeNullableFilter
   }
 
   export type CampaignTypeCountOrderByAggregateInput = {
@@ -46100,17 +46196,6 @@ export namespace Prisma {
     isNot?: OrderWhereInput
   }
 
-  export type IntFilter = {
-    equals?: number
-    in?: Enumerable<number>
-    notIn?: Enumerable<number>
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedIntFilter | number
-  }
-
   export type OrderLabelOrder_idLabel_idCompoundUniqueInput = {
     order_id: string
     label_id: string
@@ -46146,22 +46231,6 @@ export namespace Prisma {
 
   export type OrderLabelSumOrderByAggregateInput = {
     quantity?: SortOrder
-  }
-
-  export type IntWithAggregatesFilter = {
-    equals?: number
-    in?: Enumerable<number>
-    notIn?: Enumerable<number>
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedIntWithAggregatesFilter | number
-    _count?: NestedIntFilter
-    _avg?: NestedFloatFilter
-    _sum?: NestedIntFilter
-    _min?: NestedIntFilter
-    _max?: NestedIntFilter
   }
 
   export type InvoiceCountOrderByAggregateInput = {
@@ -46842,6 +46911,14 @@ export namespace Prisma {
     set?: string
   }
 
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
   }
@@ -47172,6 +47249,10 @@ export namespace Prisma {
     connect?: Enumerable<AccountUserWhereUniqueInput>
   }
 
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
   export type DeviceUserUpdateManyWithoutUserNestedInput = {
     create?: XOR<Enumerable<DeviceUserCreateWithoutUserInput>, Enumerable<DeviceUserUncheckedCreateWithoutUserInput>>
     connectOrCreate?: Enumerable<DeviceUserCreateOrConnectWithoutUserInput>
@@ -47456,10 +47537,6 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
-  }
-
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
   }
 
   export type CampaignTypeUpdateOneRequiredWithoutCampaignNestedInput = {
@@ -48462,14 +48539,6 @@ export namespace Prisma {
     update?: XOR<LabelUpdateWithoutOrder_labelInput, LabelUncheckedUpdateWithoutOrder_labelInput>
   }
 
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
-  }
-
   export type OrderCreateNestedOneWithoutInvoiceInput = {
     create?: XOR<OrderCreateWithoutInvoiceInput, OrderUncheckedCreateWithoutInvoiceInput>
     connectOrCreate?: OrderCreateOrConnectWithoutInvoiceInput
@@ -49182,6 +49251,17 @@ export namespace Prisma {
     not?: NestedStringFilter | string
   }
 
+  export type NestedIntFilter = {
+    equals?: number
+    in?: Enumerable<number>
+    notIn?: Enumerable<number>
+    lt?: number
+    lte?: number
+    gt?: number
+    gte?: number
+    not?: NestedIntFilter | number
+  }
+
   export type NestedStringNullableFilter = {
     equals?: string | null
     in?: Enumerable<string> | null
@@ -49243,7 +49323,7 @@ export namespace Prisma {
     _max?: NestedStringFilter
   }
 
-  export type NestedIntFilter = {
+  export type NestedIntWithAggregatesFilter = {
     equals?: number
     in?: Enumerable<number>
     notIn?: Enumerable<number>
@@ -49251,7 +49331,23 @@ export namespace Prisma {
     lte?: number
     gt?: number
     gte?: number
-    not?: NestedIntFilter | number
+    not?: NestedIntWithAggregatesFilter | number
+    _count?: NestedIntFilter
+    _avg?: NestedFloatFilter
+    _sum?: NestedIntFilter
+    _min?: NestedIntFilter
+    _max?: NestedIntFilter
+  }
+
+  export type NestedFloatFilter = {
+    equals?: number
+    in?: Enumerable<number>
+    notIn?: Enumerable<number>
+    lt?: number
+    lte?: number
+    gt?: number
+    gte?: number
+    not?: NestedFloatFilter | number
   }
 
   export type NestedStringNullableWithAggregatesFilter = {
@@ -49324,17 +49420,6 @@ export namespace Prisma {
     _max?: NestedBoolFilter
   }
 
-  export type NestedFloatNullableFilter = {
-    equals?: number | null
-    in?: Enumerable<number> | null
-    notIn?: Enumerable<number> | null
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedFloatNullableFilter | number | null
-  }
-
   export type NestedDateTimeNullableFilter = {
     equals?: Date | string | null
     in?: Enumerable<Date> | Enumerable<string> | null
@@ -49344,6 +49429,31 @@ export namespace Prisma {
     gt?: Date | string
     gte?: Date | string
     not?: NestedDateTimeNullableFilter | Date | string | null
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter = {
+    equals?: Date | string | null
+    in?: Enumerable<Date> | Enumerable<string> | null
+    notIn?: Enumerable<Date> | Enumerable<string> | null
+    lt?: Date | string
+    lte?: Date | string
+    gt?: Date | string
+    gte?: Date | string
+    not?: NestedDateTimeNullableWithAggregatesFilter | Date | string | null
+    _count?: NestedIntNullableFilter
+    _min?: NestedDateTimeNullableFilter
+    _max?: NestedDateTimeNullableFilter
+  }
+
+  export type NestedFloatNullableFilter = {
+    equals?: number | null
+    in?: Enumerable<number> | null
+    notIn?: Enumerable<number> | null
+    lt?: number
+    lte?: number
+    gt?: number
+    gte?: number
+    not?: NestedFloatNullableFilter | number | null
   }
 
   export type NestedFloatNullableWithAggregatesFilter = {
@@ -49362,36 +49472,11 @@ export namespace Prisma {
     _max?: NestedFloatNullableFilter
   }
 
-  export type NestedDateTimeNullableWithAggregatesFilter = {
-    equals?: Date | string | null
-    in?: Enumerable<Date> | Enumerable<string> | null
-    notIn?: Enumerable<Date> | Enumerable<string> | null
-    lt?: Date | string
-    lte?: Date | string
-    gt?: Date | string
-    gte?: Date | string
-    not?: NestedDateTimeNullableWithAggregatesFilter | Date | string | null
-    _count?: NestedIntNullableFilter
-    _min?: NestedDateTimeNullableFilter
-    _max?: NestedDateTimeNullableFilter
-  }
-
   export type NestedEnumCouponDiscountTypeFilter = {
     equals?: CouponDiscountType
     in?: Enumerable<CouponDiscountType>
     notIn?: Enumerable<CouponDiscountType>
     not?: NestedEnumCouponDiscountTypeFilter | CouponDiscountType
-  }
-
-  export type NestedFloatFilter = {
-    equals?: number
-    in?: Enumerable<number>
-    notIn?: Enumerable<number>
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedFloatFilter | number
   }
 
   export type NestedEnumCouponUseTypeFilter = {
@@ -49478,22 +49563,6 @@ export namespace Prisma {
     _sum?: NestedIntNullableFilter
     _min?: NestedIntNullableFilter
     _max?: NestedIntNullableFilter
-  }
-
-  export type NestedIntWithAggregatesFilter = {
-    equals?: number
-    in?: Enumerable<number>
-    notIn?: Enumerable<number>
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedIntWithAggregatesFilter | number
-    _count?: NestedIntFilter
-    _avg?: NestedFloatFilter
-    _sum?: NestedIntFilter
-    _min?: NestedIntFilter
-    _max?: NestedIntFilter
   }
 
   export type NestedEnumPlatformTypeFilter = {
@@ -49976,6 +50045,7 @@ export namespace Prisma {
 
   export type AccountCreateWithoutAccount_configurationInput = {
     id?: string
+    external_id: number
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -50012,6 +50082,7 @@ export namespace Prisma {
 
   export type AccountUncheckedCreateWithoutAccount_configurationInput = {
     id?: string
+    external_id: number
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -50058,6 +50129,7 @@ export namespace Prisma {
 
   export type AccountUpdateWithoutAccount_configurationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -50094,6 +50166,7 @@ export namespace Prisma {
 
   export type AccountUncheckedUpdateWithoutAccount_configurationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -50130,6 +50203,7 @@ export namespace Prisma {
 
   export type AccountCreateWithoutAccount_activitiesInput = {
     id?: string
+    external_id: number
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -50166,6 +50240,7 @@ export namespace Prisma {
 
   export type AccountUncheckedCreateWithoutAccount_activitiesInput = {
     id?: string
+    external_id: number
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -50233,6 +50308,7 @@ export namespace Prisma {
 
   export type AccountUpdateWithoutAccount_activitiesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -50269,6 +50345,7 @@ export namespace Prisma {
 
   export type AccountUncheckedUpdateWithoutAccount_activitiesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -50448,6 +50525,7 @@ export namespace Prisma {
 
   export type AccountCreateWithoutAccount_usersInput = {
     id?: string
+    external_id: number
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -50484,6 +50562,7 @@ export namespace Prisma {
 
   export type AccountUncheckedCreateWithoutAccount_usersInput = {
     id?: string
+    external_id: number
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -50541,7 +50620,7 @@ export namespace Prisma {
     zipcode: string
     photo?: string | null
     gender?: GenderType
-    birthdate?: string | null
+    birthdate?: Date | string | null
     google_id?: string | null
     apple_id?: string | null
     facebook_id?: string | null
@@ -50569,7 +50648,7 @@ export namespace Prisma {
     zipcode: string
     photo?: string | null
     gender?: GenderType
-    birthdate?: string | null
+    birthdate?: Date | string | null
     google_id?: string | null
     apple_id?: string | null
     facebook_id?: string | null
@@ -50608,6 +50687,7 @@ export namespace Prisma {
 
   export type AccountUpdateWithoutAccount_usersInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -50644,6 +50724,7 @@ export namespace Prisma {
 
   export type AccountUncheckedUpdateWithoutAccount_usersInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -50701,7 +50782,7 @@ export namespace Prisma {
     zipcode?: StringFieldUpdateOperationsInput | string
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
-    birthdate?: NullableStringFieldUpdateOperationsInput | string | null
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     google_id?: NullableStringFieldUpdateOperationsInput | string | null
     apple_id?: NullableStringFieldUpdateOperationsInput | string | null
     facebook_id?: NullableStringFieldUpdateOperationsInput | string | null
@@ -50729,7 +50810,7 @@ export namespace Prisma {
     zipcode?: StringFieldUpdateOperationsInput | string
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
-    birthdate?: NullableStringFieldUpdateOperationsInput | string | null
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     google_id?: NullableStringFieldUpdateOperationsInput | string | null
     apple_id?: NullableStringFieldUpdateOperationsInput | string | null
     facebook_id?: NullableStringFieldUpdateOperationsInput | string | null
@@ -50951,6 +51032,7 @@ export namespace Prisma {
 
   export type AccountCreateWithoutCampaignInput = {
     id?: string
+    external_id: number
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -50987,6 +51069,7 @@ export namespace Prisma {
 
   export type AccountUncheckedCreateWithoutCampaignInput = {
     id?: string
+    external_id: number
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -51072,6 +51155,7 @@ export namespace Prisma {
 
   export type AccountUpdateWithoutCampaignInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -51108,6 +51192,7 @@ export namespace Prisma {
 
   export type AccountUncheckedUpdateWithoutCampaignInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -52693,6 +52778,7 @@ export namespace Prisma {
 
   export type AccountCreateWithoutOrderInput = {
     id?: string
+    external_id: number
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -52729,6 +52815,7 @@ export namespace Prisma {
 
   export type AccountUncheckedCreateWithoutOrderInput = {
     id?: string
+    external_id: number
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -52821,6 +52908,7 @@ export namespace Prisma {
 
   export type AccountUpdateWithoutOrderInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -52857,6 +52945,7 @@ export namespace Prisma {
 
   export type AccountUncheckedUpdateWithoutOrderInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -53397,7 +53486,7 @@ export namespace Prisma {
     zipcode: string
     photo?: string | null
     gender?: GenderType
-    birthdate?: string | null
+    birthdate?: Date | string | null
     google_id?: string | null
     apple_id?: string | null
     facebook_id?: string | null
@@ -53425,7 +53514,7 @@ export namespace Prisma {
     zipcode: string
     photo?: string | null
     gender?: GenderType
-    birthdate?: string | null
+    birthdate?: Date | string | null
     google_id?: string | null
     apple_id?: string | null
     facebook_id?: string | null
@@ -53494,7 +53583,7 @@ export namespace Prisma {
     zipcode?: StringFieldUpdateOperationsInput | string
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
-    birthdate?: NullableStringFieldUpdateOperationsInput | string | null
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     google_id?: NullableStringFieldUpdateOperationsInput | string | null
     apple_id?: NullableStringFieldUpdateOperationsInput | string | null
     facebook_id?: NullableStringFieldUpdateOperationsInput | string | null
@@ -53522,7 +53611,7 @@ export namespace Prisma {
     zipcode?: StringFieldUpdateOperationsInput | string
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
-    birthdate?: NullableStringFieldUpdateOperationsInput | string | null
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     google_id?: NullableStringFieldUpdateOperationsInput | string | null
     apple_id?: NullableStringFieldUpdateOperationsInput | string | null
     facebook_id?: NullableStringFieldUpdateOperationsInput | string | null
@@ -54192,6 +54281,7 @@ export namespace Prisma {
 
   export type AccountCreateWithoutPlanInput = {
     id?: string
+    external_id: number
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -54228,6 +54318,7 @@ export namespace Prisma {
 
   export type AccountUncheckedCreateWithoutPlanInput = {
     id?: string
+    external_id: number
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -54342,6 +54433,7 @@ export namespace Prisma {
     OR?: Enumerable<AccountScalarWhereInput>
     NOT?: Enumerable<AccountScalarWhereInput>
     id?: StringFilter | string
+    external_id?: IntFilter | number
     name?: StringFilter | string
     cpf_cnpj?: StringNullableFilter | string | null
     market_name?: StringFilter | string
@@ -54491,6 +54583,7 @@ export namespace Prisma {
 
   export type AccountCreateWithoutSubscriptionInput = {
     id?: string
+    external_id: number
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -54527,6 +54620,7 @@ export namespace Prisma {
 
   export type AccountUncheckedCreateWithoutSubscriptionInput = {
     id?: string
+    external_id: number
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -54606,6 +54700,7 @@ export namespace Prisma {
 
   export type AccountUpdateWithoutSubscriptionInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -54642,6 +54737,7 @@ export namespace Prisma {
 
   export type AccountUncheckedUpdateWithoutSubscriptionInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -54727,6 +54823,7 @@ export namespace Prisma {
 
   export type AccountCreateWithoutStockLabelInput = {
     id?: string
+    external_id: number
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -54763,6 +54860,7 @@ export namespace Prisma {
 
   export type AccountUncheckedCreateWithoutStockLabelInput = {
     id?: string
+    external_id: number
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -54858,6 +54956,7 @@ export namespace Prisma {
 
   export type AccountUpdateWithoutStockLabelInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -54894,6 +54993,7 @@ export namespace Prisma {
 
   export type AccountUncheckedUpdateWithoutStockLabelInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -56267,6 +56367,7 @@ export namespace Prisma {
 
   export type AccountCreateManyPlanInput = {
     id?: string
+    external_id: number
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -56305,6 +56406,7 @@ export namespace Prisma {
 
   export type AccountUpdateWithoutPlanInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -56341,6 +56443,7 @@ export namespace Prisma {
 
   export type AccountUncheckedUpdateWithoutPlanInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -56377,6 +56480,7 @@ export namespace Prisma {
 
   export type AccountUncheckedUpdateManyWithoutAccountInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string

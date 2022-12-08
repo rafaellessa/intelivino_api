@@ -104,6 +104,7 @@ exports.Prisma.AccountConfigurationScalarFieldEnum = makeEnum({
 
 exports.Prisma.AccountScalarFieldEnum = makeEnum({
   id: 'id',
+  external_id: 'external_id',
   name: 'name',
   cpf_cnpj: 'cpf_cnpj',
   market_name: 'market_name',

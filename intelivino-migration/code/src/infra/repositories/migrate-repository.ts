@@ -1,5 +1,7 @@
+import { faker } from '@faker-js/faker'
 import { PrismaClient } from '@prisma/client'
 import {
+  GenderType,
   PersonType,
   PrismaClient as PrismaClientDbProd,
 } from '../database_api/orm/prisma/client'
@@ -84,24 +86,35 @@ export class MigrateRepository {
     }
   }
 
-  async migrateAccounts() {
+  async migrateAccountsAndBusinessUsers() {
     let page = 1
     const perPage = 50
     let itemsPaginated = 0
+    const roleBusiness = await this.prismaDbProd.role.findUnique({
+      where: {
+        name: 'Business',
+      },
+    })
+    const roleSeller = await this.prismaDbProd.role.findUnique({
+      where: {
+        name: 'Seller',
+      },
+    })
+    if (!roleBusiness || !roleSeller) {
+      throw new Error('Business role not found')
+    }
+    await this.prismaDbProd.account.deleteMany({})
+    await this.prismaDbProd.user.deleteMany({})
+    await this.prismaDbProd.accountUser.deleteMany({})
     do {
       itemsPaginated = 0
       const accounts = await this.prismaDbOlder.business.findMany({
         include: {
-          users: {
-            include: {},
-          },
+          users: true,
         },
         where: {
           user_id: {
             not: null,
-          },
-          user_id_parent: {
-            equals: null,
           },
         },
         take: perPage,
@@ -109,50 +122,130 @@ export class MigrateRepository {
       })
       for (const account of accounts) {
         let personType = '' as PersonType
+        let cpfCnpj = null
         if (account.person_type === 'cnpj') {
           personType = 'J'
+          cpfCnpj = account.cnpj
         } else {
           personType = 'F'
+          cpfCnpj = account.cpf
         }
-        const responseCreateAccount = await this.prismaDbProd.account.create({
-          data: {
-            name: account.main_contact_name || '',
-            country: account.users?.address_country || '',
-            district: account.users?.address_neighborhood || '',
-            street: account.users?.address_street || '',
-            number: account.users?.address_number || '',
-            state: account.users?.state || '',
-            zipcode: account.users?.address_cep || '',
-            complement: account.users?.address_complement || '',
-            domain: '',
-            email: account.users?.email || '',
-            market_name: account.users?.name_business || '',
-            phone: account.main_contact_fone,
-            gender: 'ND',
-            person_type: personType,
-            cpf_cnpj:
-              account.person_type === 'cpf' ? account.cpf : account.cnpj,
-            site: account.website,
-            social_reason: account.razao_social,
-            logo: account.logotipo_url,
-            whatsapp: account.whatsapp,
-            isActive: account.status ? account.status : false,
-            facebook_url: account.facebook_url,
-            instagram_url: account.instagram_url,
-            account_configuration: {
-              create: {
-                header_color: account.cor_texto_cabecalho,
-                banner_market_url: account.banner_catalogo_url,
+        if (!account.user_id_parent) {
+          const responseCreateAccount = await this.prismaDbProd.account.create({
+            data: {
+              external_id: account.user_id!,
+              name: account.main_contact_name || '',
+              country: account.users?.address_country || '',
+              district: account.users?.address_neighborhood || '',
+              street: account.users?.address_street || '',
+              number: account.users?.address_number || '',
+              state: account.users?.state || '',
+              zipcode: account.users?.address_cep || '',
+              complement: account.users?.address_complement || '',
+              domain:
+                account.users?.name_business_slug ||
+                faker.internet.domainName(),
+              email: account.users?.email || '',
+              market_name: account.users?.name_business || '',
+              phone: account.main_contact_fone,
+              gender: 'ND',
+              person_type: personType,
+              cpf_cnpj:
+                account.person_type === 'cpf' ? account.cpf : account.cnpj,
+              site: account.website,
+              social_reason: account.razao_social,
+              logo: account.logotipo_url,
+              whatsapp: account.whatsapp,
+              isActive: account.status ? account.status : false,
+              facebook_url: account.facebook_url,
+              instagram_url: account.instagram_url,
+              account_configuration: {
+                create: {
+                  header_color: account.cor_texto_cabecalho,
+                  banner_market_url: account.banner_catalogo_url,
+                },
               },
             },
-          },
-        })
+          })
+          await this.prismaDbProd.user.create({
+            data: {
+              account_user: {
+                create: {
+                  account_id: responseCreateAccount.id,
+                  role_id: roleBusiness.id,
+                },
+              },
+              name: account.users?.name || '',
+              email: account.users?.email || '',
+              phone: account.fone,
+              city: account.users?.city || '',
+              state: account.users?.state || '',
+              zipcode: account.users?.address_cep || '',
+              complement: account.users?.address_complement,
+              country: account.users?.address_country || '',
+              number: account.users?.address_number || '',
+              district: account.users?.address_neighborhood || '',
+              street: account.users?.address_street || '',
+              password: account.users?.password || '',
+              apple_id: account.users?.apple,
+              facebook_id: account.users?.facebook,
+              birthdate: account.users?.birthday || new Date(),
+              gender: 'ND' as GenderType,
+              cpf_cnpj: cpfCnpj,
+              google_id: account.users?.google,
+              photo: account.users?.photo,
+              whatsapp: account.whatsapp,
+            },
+          })
+        } else {
+          const accountAlreadyExists =
+            await this.prismaDbProd.account.findUnique({
+              where: {
+                external_id: account.user_id_parent,
+              },
+            })
+          if (!accountAlreadyExists) {
+            throw new Error('Account not found')
+          }
+          await this.prismaDbProd.user.create({
+            data: {
+              account_user: {
+                create: {
+                  account_id: accountAlreadyExists.id,
+                  role_id: roleSeller.id,
+                },
+              },
+              name: account.users?.name || '',
+              email: account.users?.email || '',
+              phone: account.fone,
+              city: account.users?.city || '',
+              state: account.users?.state || '',
+              zipcode: account.users?.address_cep || '',
+              complement: account.users?.address_complement,
+              country: account.users?.address_country || '',
+              number: account.users?.address_number || '',
+              district: account.users?.address_neighborhood || '',
+              street: account.users?.address_street || '',
+              password: account.users?.password || '',
+              apple_id: account.users?.apple,
+              facebook_id: account.users?.facebook,
+              birthdate: account.users?.birthday || new Date(),
+              gender: 'ND' as GenderType,
+              cpf_cnpj:
+                account.person_type === 'cpf' ? account.cpf : account.cnpj,
+              google_id: account.users?.google,
+              photo: account.users?.photo,
+              whatsapp: account.whatsapp,
+            },
+          })
+        }
       }
       itemsPaginated = accounts.length
       page++
     } while (itemsPaginated === perPage)
   }
 
+  async migrateSellers() {}
   calculatePage(offset: number, limit: number): number {
     return (offset - 1) * limit
   }

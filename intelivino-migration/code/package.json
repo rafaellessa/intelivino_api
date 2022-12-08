@@ -9,7 +9,7 @@
   },
   "prisma": {
     "schema": "./src/infra/database/orm/prisma/schema.prisma",
-    "seed": "ts-node ./src/infra/database/orm/prisma/seeds/seed.ts"
+    "seed": "ts-node ./src/infra/database_api/orm/prisma/seeds/seed.ts"
   },
   "keywords": [],
   "author": "",

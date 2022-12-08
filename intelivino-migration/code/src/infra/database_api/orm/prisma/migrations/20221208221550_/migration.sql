@@ -1,6 +1,7 @@
 -- CreateTable
 CREATE TABLE `account` (
     `id` VARCHAR(191) NOT NULL,
+    `external_id` INTEGER NOT NULL,
     `name` VARCHAR(191) NOT NULL,
     `cpf_cnpj` VARCHAR(191) NULL,
     `market_name` VARCHAR(191) NOT NULL,
@@ -28,7 +29,7 @@ CREATE TABLE `account` (
     `domain` VARCHAR(191) NOT NULL,
     `isActive` BOOLEAN NOT NULL DEFAULT false,
 
-    UNIQUE INDEX `account_cpf_cnpj_key`(`cpf_cnpj`),
+    UNIQUE INDEX `account_external_id_key`(`external_id`),
     UNIQUE INDEX `account_email_key`(`email`),
     UNIQUE INDEX `account_domain_key`(`domain`),
     PRIMARY KEY (`id`)
@@ -85,7 +86,7 @@ CREATE TABLE `users` (
     `zipcode` VARCHAR(191) NOT NULL,
     `photo` VARCHAR(191) NULL,
     `gender` ENUM('F', 'M', 'ND') NOT NULL DEFAULT 'ND',
-    `birthdate` VARCHAR(191) NULL,
+    `birthdate` DATETIME(3) NULL,
     `google_id` VARCHAR(191) NULL,
     `apple_id` VARCHAR(191) NULL,
     `facebook_id` VARCHAR(191) NULL,
@@ -128,6 +129,7 @@ CREATE TABLE `roles` (
     `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
 
+    UNIQUE INDEX `roles_name_key`(`name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -160,13 +162,13 @@ CREATE TABLE `campaign_type` (
 CREATE TABLE `coupon` (
     `id` VARCHAR(191) NOT NULL,
     `code` VARCHAR(191) NOT NULL,
-    `dicountType` ENUM('PERCENTAGE', 'VALUE') NOT NULL,
-    `discountValue` DOUBLE NOT NULL,
-    `couponUseType` ENUM('UNLIMITED', 'UNIQUE_BY_USER', 'UNIQUE') NOT NULL,
-    `initalDate` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `dicount_type` ENUM('PERCENTAGE', 'VALUE') NOT NULL,
+    `discount_value` DOUBLE NOT NULL,
+    `couponUse_type` ENUM('UNLIMITED', 'UNIQUE_BY_USER', 'UNIQUE') NOT NULL,
+    `inital_date` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `expiration_date` DATETIME(3) NULL,
-    `minValue` DOUBLE NULL,
-    `maxValue` DOUBLE NULL,
+    `min_value` DOUBLE NULL,
+    `max_value` DOUBLE NULL,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
 

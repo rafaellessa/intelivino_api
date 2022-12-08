@@ -1,4 +1,4 @@
-import { slugGenerator } from '@/domain/utils/slug_generator'
+import { slugGenerator } from '../../../../../domain/utils/slug_generator'
 import { PrismaClient } from '../client'
 
 const prisma = new PrismaClient()
