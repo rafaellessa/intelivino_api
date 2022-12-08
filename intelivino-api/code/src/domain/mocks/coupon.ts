@@ -4,7 +4,9 @@ import { faker } from '@faker-js/faker'
 export const createCouponMock = (): CouponProps => {
   return {
     code: faker.datatype.string(),
-    expirationDate: new Date(),
-    percentage: faker.datatype.number(),
+    expirationDate: faker.date.future(),
+    dicountType: 'percentage',
+    discountValue: faker.datatype.number(),
+    couponUseType: 'unlimited',
   }
 }

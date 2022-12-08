@@ -1,17 +1,23 @@
 export type OrderCouponProps = {
   code: string
-  percentage: number
+  discountValue: number
+  discountType: 'percentage' | 'value'
 }
 
 export class OrderCoupon {
   code: string
-  percentage: number
-  constructor({ code, percentage }: OrderCouponProps) {
+  discountValue: number
+  discountType: 'percentage' | 'value'
+  constructor({ code, discountType, discountValue }: OrderCouponProps) {
     this.code = code
-    this.percentage = percentage
+    this.discountType = discountType
+    this.discountValue = discountValue
   }
 
   calculateDiscount(total: number) {
-    return (total * this.percentage) / 100
+    if (this.discountType === 'percentage') {
+      return (total * this.discountValue) / 100
+    }
+    return this.discountValue
   }
 }

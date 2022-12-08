@@ -191,14 +191,30 @@ model CampaignType {
 }
 
 model Coupon {
-  id              String    @id @default(uuid())
-  code            String    @unique
-  percentage      Float
+  id              String             @id @default(uuid())
+  code            String
+  dicountType     CouponDiscountType
+  discountValue   Float
+  couponUseType   CouponUseType
+  initalDate      DateTime          @default(now()) @db.Timestamp(3)
   expiration_date DateTime?
-  created_at      DateTime  @default(now()) @db.Timestamp(3)
-  updated_at      DateTime  @updatedAt @db.Timestamp(3)
+  minValue        Float?
+  maxValue        Float?
+  created_at      DateTime           @default(now()) @db.Timestamp(3)
+  updated_at      DateTime           @updatedAt @db.Timestamp(3)
 
   @@map("coupon")
+}
+
+enum CouponDiscountType {
+  PERCENTAGE
+  VALUE
+}
+
+enum CouponUseType {
+  UNLIMITED
+  UNIQUE_BY_USER
+  UNIQUE
 }
 
 model Label {

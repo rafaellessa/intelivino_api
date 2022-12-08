@@ -36,7 +36,8 @@ export class Order {
     if (!coupon.isExpired(new Date())) {
       this.coupon = new OrderCoupon({
         code: coupon.code,
-        percentage: coupon.percentage,
+        discountType: coupon.dicountType,
+        discountValue: coupon.discountValue,
       })
     }
   }

@@ -62,7 +62,9 @@ describe('Order', () => {
     order.addCoupon(
       new Coupon({
         code: 'VALE20',
-        percentage: 20,
+        dicountType: 'percentage',
+        discountValue: 20,
+        couponUseType: 'unique_by_user',
         expirationDate: faker.date.future(),
       })
     )
