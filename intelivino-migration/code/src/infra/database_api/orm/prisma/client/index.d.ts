@@ -18,7 +18,7 @@ type UnwrapTuple<Tuple extends readonly unknown[]> = {
  */
 export type Account = {
   id: string
-  external_id: number
+  external_id: number | null
   name: string
   cpf_cnpj: string | null
   market_name: string
@@ -212,6 +212,7 @@ export type Label = {
   alcohol_percentage: Prisma.Decimal | null
   price: number
   promotional_price: number | null
+  photo: string | null
   is_active: boolean
   stock: boolean
   created_at: Date
@@ -246,6 +247,7 @@ export type LabelGrape = {
  */
 export type Grape = {
   id: string
+  external_id: number | null
   name: string
   created_at: Date
   updatedAt: Date
@@ -486,7 +488,7 @@ export type DeviceNotification = {
  */
 export type Plan = {
   id: string
-  external_id: number
+  external_id: number | null
   name: string
   description: string
   slug: string
@@ -3159,7 +3161,7 @@ export namespace Prisma {
 
   export type AccountGroupByOutputType = {
     id: string
-    external_id: number
+    external_id: number | null
     name: string
     cpf_cnpj: string | null
     market_name: string
@@ -14499,6 +14501,7 @@ export namespace Prisma {
     alcohol_percentage: Decimal | null
     price: number | null
     promotional_price: number | null
+    photo: string | null
     is_active: boolean | null
     stock: boolean | null
     created_at: Date | null
@@ -14517,6 +14520,7 @@ export namespace Prisma {
     alcohol_percentage: Decimal | null
     price: number | null
     promotional_price: number | null
+    photo: string | null
     is_active: boolean | null
     stock: boolean | null
     created_at: Date | null
@@ -14535,6 +14539,7 @@ export namespace Prisma {
     alcohol_percentage: number
     price: number
     promotional_price: number
+    photo: number
     is_active: number
     stock: number
     created_at: number
@@ -14567,6 +14572,7 @@ export namespace Prisma {
     alcohol_percentage?: true
     price?: true
     promotional_price?: true
+    photo?: true
     is_active?: true
     stock?: true
     created_at?: true
@@ -14585,6 +14591,7 @@ export namespace Prisma {
     alcohol_percentage?: true
     price?: true
     promotional_price?: true
+    photo?: true
     is_active?: true
     stock?: true
     created_at?: true
@@ -14603,6 +14610,7 @@ export namespace Prisma {
     alcohol_percentage?: true
     price?: true
     promotional_price?: true
+    photo?: true
     is_active?: true
     stock?: true
     created_at?: true
@@ -14714,6 +14722,7 @@ export namespace Prisma {
     alcohol_percentage: Decimal | null
     price: number
     promotional_price: number | null
+    photo: string | null
     is_active: boolean
     stock: boolean
     created_at: Date
@@ -14755,6 +14764,7 @@ export namespace Prisma {
     alcohol_percentage?: boolean
     price?: boolean
     promotional_price?: boolean
+    photo?: boolean
     is_active?: boolean
     stock?: boolean
     created_at?: boolean
@@ -17414,12 +17424,23 @@ export namespace Prisma {
 
   export type AggregateGrape = {
     _count: GrapeCountAggregateOutputType | null
+    _avg: GrapeAvgAggregateOutputType | null
+    _sum: GrapeSumAggregateOutputType | null
     _min: GrapeMinAggregateOutputType | null
     _max: GrapeMaxAggregateOutputType | null
   }
 
+  export type GrapeAvgAggregateOutputType = {
+    external_id: number | null
+  }
+
+  export type GrapeSumAggregateOutputType = {
+    external_id: number | null
+  }
+
   export type GrapeMinAggregateOutputType = {
     id: string | null
+    external_id: number | null
     name: string | null
     created_at: Date | null
     updatedAt: Date | null
@@ -17427,6 +17448,7 @@ export namespace Prisma {
 
   export type GrapeMaxAggregateOutputType = {
     id: string | null
+    external_id: number | null
     name: string | null
     created_at: Date | null
     updatedAt: Date | null
@@ -17434,6 +17456,7 @@ export namespace Prisma {
 
   export type GrapeCountAggregateOutputType = {
     id: number
+    external_id: number
     name: number
     created_at: number
     updatedAt: number
@@ -17441,8 +17464,17 @@ export namespace Prisma {
   }
 
 
+  export type GrapeAvgAggregateInputType = {
+    external_id?: true
+  }
+
+  export type GrapeSumAggregateInputType = {
+    external_id?: true
+  }
+
   export type GrapeMinAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     created_at?: true
     updatedAt?: true
@@ -17450,6 +17482,7 @@ export namespace Prisma {
 
   export type GrapeMaxAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     created_at?: true
     updatedAt?: true
@@ -17457,6 +17490,7 @@ export namespace Prisma {
 
   export type GrapeCountAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     created_at?: true
     updatedAt?: true
@@ -17506,6 +17540,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: GrapeAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: GrapeSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: GrapeMinAggregateInputType
@@ -17536,6 +17582,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: GrapeCountAggregateInputType | true
+    _avg?: GrapeAvgAggregateInputType
+    _sum?: GrapeSumAggregateInputType
     _min?: GrapeMinAggregateInputType
     _max?: GrapeMaxAggregateInputType
   }
@@ -17543,10 +17591,13 @@ export namespace Prisma {
 
   export type GrapeGroupByOutputType = {
     id: string
+    external_id: number | null
     name: string
     created_at: Date
     updatedAt: Date
     _count: GrapeCountAggregateOutputType | null
+    _avg: GrapeAvgAggregateOutputType | null
+    _sum: GrapeSumAggregateOutputType | null
     _min: GrapeMinAggregateOutputType | null
     _max: GrapeMaxAggregateOutputType | null
   }
@@ -17567,6 +17618,7 @@ export namespace Prisma {
 
   export type GrapeSelect = {
     id?: boolean
+    external_id?: boolean
     name?: boolean
     LabelGrape?: boolean | LabelGrapeFindManyArgs
     created_at?: boolean
@@ -34687,7 +34739,7 @@ export namespace Prisma {
 
   export type PlanGroupByOutputType = {
     id: string
-    external_id: number
+    external_id: number | null
     name: string
     description: string
     slug: string
@@ -39553,6 +39605,7 @@ export namespace Prisma {
 
   export const GrapeScalarFieldEnum: {
     id: 'id',
+    external_id: 'external_id',
     name: 'name',
     created_at: 'created_at',
     updatedAt: 'updatedAt'
@@ -39603,6 +39656,7 @@ export namespace Prisma {
     alcohol_percentage: 'alcohol_percentage',
     price: 'price',
     promotional_price: 'promotional_price',
+    photo: 'photo',
     is_active: 'is_active',
     stock: 'stock',
     created_at: 'created_at',
@@ -39880,7 +39934,7 @@ export namespace Prisma {
     OR?: Enumerable<AccountWhereInput>
     NOT?: Enumerable<AccountWhereInput>
     id?: StringFilter | string
-    external_id?: IntFilter | number
+    external_id?: IntNullableFilter | number | null
     name?: StringFilter | string
     cpf_cnpj?: StringNullableFilter | string | null
     market_name?: StringFilter | string
@@ -40004,7 +40058,7 @@ export namespace Prisma {
     OR?: Enumerable<AccountScalarWhereWithAggregatesInput>
     NOT?: Enumerable<AccountScalarWhereWithAggregatesInput>
     id?: StringWithAggregatesFilter | string
-    external_id?: IntWithAggregatesFilter | number
+    external_id?: IntNullableWithAggregatesFilter | number | null
     name?: StringWithAggregatesFilter | string
     cpf_cnpj?: StringNullableWithAggregatesFilter | string | null
     market_name?: StringWithAggregatesFilter | string
@@ -40664,6 +40718,7 @@ export namespace Prisma {
     alcohol_percentage?: DecimalNullableFilter | Decimal | DecimalJsLike | number | string | null
     price?: FloatFilter | number
     promotional_price?: FloatNullableFilter | number | null
+    photo?: StringNullableFilter | string | null
     is_active?: BoolFilter | boolean
     stock?: BoolFilter | boolean
     created_at?: DateTimeFilter | Date | string
@@ -40691,6 +40746,7 @@ export namespace Prisma {
     alcohol_percentage?: SortOrder
     price?: SortOrder
     promotional_price?: SortOrder
+    photo?: SortOrder
     is_active?: SortOrder
     stock?: SortOrder
     created_at?: SortOrder
@@ -40718,6 +40774,7 @@ export namespace Prisma {
     alcohol_percentage?: SortOrder
     price?: SortOrder
     promotional_price?: SortOrder
+    photo?: SortOrder
     is_active?: SortOrder
     stock?: SortOrder
     created_at?: SortOrder
@@ -40744,6 +40801,7 @@ export namespace Prisma {
     alcohol_percentage?: DecimalNullableWithAggregatesFilter | Decimal | DecimalJsLike | number | string | null
     price?: FloatWithAggregatesFilter | number
     promotional_price?: FloatNullableWithAggregatesFilter | number | null
+    photo?: StringNullableWithAggregatesFilter | string | null
     is_active?: BoolWithAggregatesFilter | boolean
     stock?: BoolWithAggregatesFilter | boolean
     created_at?: DateTimeWithAggregatesFilter | Date | string
@@ -40845,6 +40903,7 @@ export namespace Prisma {
     OR?: Enumerable<GrapeWhereInput>
     NOT?: Enumerable<GrapeWhereInput>
     id?: StringFilter | string
+    external_id?: IntNullableFilter | number | null
     name?: StringFilter | string
     LabelGrape?: LabelGrapeListRelationFilter
     created_at?: DateTimeFilter | Date | string
@@ -40853,6 +40912,7 @@ export namespace Prisma {
 
   export type GrapeOrderByWithRelationInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     LabelGrape?: LabelGrapeOrderByRelationAggregateInput
     created_at?: SortOrder
@@ -40865,12 +40925,15 @@ export namespace Prisma {
 
   export type GrapeOrderByWithAggregationInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     created_at?: SortOrder
     updatedAt?: SortOrder
     _count?: GrapeCountOrderByAggregateInput
+    _avg?: GrapeAvgOrderByAggregateInput
     _max?: GrapeMaxOrderByAggregateInput
     _min?: GrapeMinOrderByAggregateInput
+    _sum?: GrapeSumOrderByAggregateInput
   }
 
   export type GrapeScalarWhereWithAggregatesInput = {
@@ -40878,6 +40941,7 @@ export namespace Prisma {
     OR?: Enumerable<GrapeScalarWhereWithAggregatesInput>
     NOT?: Enumerable<GrapeScalarWhereWithAggregatesInput>
     id?: StringWithAggregatesFilter | string
+    external_id?: IntNullableWithAggregatesFilter | number | null
     name?: StringWithAggregatesFilter | string
     created_at?: DateTimeWithAggregatesFilter | Date | string
     updatedAt?: DateTimeWithAggregatesFilter | Date | string
@@ -41831,7 +41895,7 @@ export namespace Prisma {
     OR?: Enumerable<PlanWhereInput>
     NOT?: Enumerable<PlanWhereInput>
     id?: StringFilter | string
-    external_id?: IntFilter | number
+    external_id?: IntNullableFilter | number | null
     name?: StringFilter | string
     description?: StringFilter | string
     slug?: StringFilter | string
@@ -41891,7 +41955,7 @@ export namespace Prisma {
     OR?: Enumerable<PlanScalarWhereWithAggregatesInput>
     NOT?: Enumerable<PlanScalarWhereWithAggregatesInput>
     id?: StringWithAggregatesFilter | string
-    external_id?: IntWithAggregatesFilter | number
+    external_id?: IntNullableWithAggregatesFilter | number | null
     name?: StringWithAggregatesFilter | string
     description?: StringWithAggregatesFilter | string
     slug?: StringWithAggregatesFilter | string
@@ -42116,7 +42180,7 @@ export namespace Prisma {
 
   export type AccountCreateInput = {
     id?: string
-    external_id: number
+    external_id?: number | null
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -42154,7 +42218,7 @@ export namespace Prisma {
 
   export type AccountUncheckedCreateInput = {
     id?: string
-    external_id: number
+    external_id?: number | null
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -42192,7 +42256,7 @@ export namespace Prisma {
 
   export type AccountUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: IntFieldUpdateOperationsInput | number
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -42230,7 +42294,7 @@ export namespace Prisma {
 
   export type AccountUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: IntFieldUpdateOperationsInput | number
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -42268,7 +42332,7 @@ export namespace Prisma {
 
   export type AccountCreateManyInput = {
     id?: string
-    external_id: number
+    external_id?: number | null
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -42299,7 +42363,7 @@ export namespace Prisma {
 
   export type AccountUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: IntFieldUpdateOperationsInput | number
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -42329,7 +42393,7 @@ export namespace Prisma {
 
   export type AccountUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: IntFieldUpdateOperationsInput | number
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -43131,6 +43195,7 @@ export namespace Prisma {
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
+    photo?: string | null
     is_active?: boolean
     stock?: boolean
     created_at?: Date | string
@@ -43154,6 +43219,7 @@ export namespace Prisma {
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
+    photo?: string | null
     is_active?: boolean
     stock?: boolean
     created_at?: Date | string
@@ -43177,6 +43243,7 @@ export namespace Prisma {
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
     stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -43200,6 +43267,7 @@ export namespace Prisma {
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
     stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -43223,6 +43291,7 @@ export namespace Prisma {
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
+    photo?: string | null
     is_active?: boolean
     stock?: boolean
     created_at?: Date | string
@@ -43237,6 +43306,7 @@ export namespace Prisma {
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
     stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -43255,6 +43325,7 @@ export namespace Prisma {
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
     stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -43357,6 +43428,7 @@ export namespace Prisma {
 
   export type GrapeCreateInput = {
     id?: string
+    external_id?: number | null
     name: string
     LabelGrape?: LabelGrapeCreateNestedManyWithoutGrapeInput
     created_at?: Date | string
@@ -43365,6 +43437,7 @@ export namespace Prisma {
 
   export type GrapeUncheckedCreateInput = {
     id?: string
+    external_id?: number | null
     name: string
     LabelGrape?: LabelGrapeUncheckedCreateNestedManyWithoutGrapeInput
     created_at?: Date | string
@@ -43373,6 +43446,7 @@ export namespace Prisma {
 
   export type GrapeUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     LabelGrape?: LabelGrapeUpdateManyWithoutGrapeNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -43381,6 +43455,7 @@ export namespace Prisma {
 
   export type GrapeUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     LabelGrape?: LabelGrapeUncheckedUpdateManyWithoutGrapeNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -43389,6 +43464,7 @@ export namespace Prisma {
 
   export type GrapeCreateManyInput = {
     id?: string
+    external_id?: number | null
     name: string
     created_at?: Date | string
     updatedAt?: Date | string
@@ -43396,6 +43472,7 @@ export namespace Prisma {
 
   export type GrapeUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -43403,6 +43480,7 @@ export namespace Prisma {
 
   export type GrapeUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -44592,7 +44670,7 @@ export namespace Prisma {
 
   export type PlanCreateInput = {
     id?: string
-    external_id: number
+    external_id?: number | null
     name: string
     description: string
     slug: string
@@ -44608,7 +44686,7 @@ export namespace Prisma {
 
   export type PlanUncheckedCreateInput = {
     id?: string
-    external_id: number
+    external_id?: number | null
     name: string
     description: string
     slug: string
@@ -44624,7 +44702,7 @@ export namespace Prisma {
 
   export type PlanUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: IntFieldUpdateOperationsInput | number
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
@@ -44640,7 +44718,7 @@ export namespace Prisma {
 
   export type PlanUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: IntFieldUpdateOperationsInput | number
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
@@ -44656,7 +44734,7 @@ export namespace Prisma {
 
   export type PlanCreateManyInput = {
     id?: string
-    external_id: number
+    external_id?: number | null
     name: string
     description: string
     slug: string
@@ -44670,7 +44748,7 @@ export namespace Prisma {
 
   export type PlanUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: IntFieldUpdateOperationsInput | number
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
@@ -44683,7 +44761,7 @@ export namespace Prisma {
 
   export type PlanUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: IntFieldUpdateOperationsInput | number
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
@@ -44953,15 +45031,15 @@ export namespace Prisma {
     not?: NestedStringFilter | string
   }
 
-  export type IntFilter = {
-    equals?: number
-    in?: Enumerable<number>
-    notIn?: Enumerable<number>
+  export type IntNullableFilter = {
+    equals?: number | null
+    in?: Enumerable<number> | null
+    notIn?: Enumerable<number> | null
     lt?: number
     lte?: number
     gt?: number
     gte?: number
-    not?: NestedIntFilter | number
+    not?: NestedIntNullableFilter | number | null
   }
 
   export type StringNullableFilter = {
@@ -45196,20 +45274,20 @@ export namespace Prisma {
     _max?: NestedStringFilter
   }
 
-  export type IntWithAggregatesFilter = {
-    equals?: number
-    in?: Enumerable<number>
-    notIn?: Enumerable<number>
+  export type IntNullableWithAggregatesFilter = {
+    equals?: number | null
+    in?: Enumerable<number> | null
+    notIn?: Enumerable<number> | null
     lt?: number
     lte?: number
     gt?: number
     gte?: number
-    not?: NestedIntWithAggregatesFilter | number
-    _count?: NestedIntFilter
-    _avg?: NestedFloatFilter
-    _sum?: NestedIntFilter
-    _min?: NestedIntFilter
-    _max?: NestedIntFilter
+    not?: NestedIntNullableWithAggregatesFilter | number | null
+    _count?: NestedIntNullableFilter
+    _avg?: NestedFloatNullableFilter
+    _sum?: NestedIntNullableFilter
+    _min?: NestedIntNullableFilter
+    _max?: NestedIntNullableFilter
   }
 
   export type StringNullableWithAggregatesFilter = {
@@ -45873,6 +45951,7 @@ export namespace Prisma {
     alcohol_percentage?: SortOrder
     price?: SortOrder
     promotional_price?: SortOrder
+    photo?: SortOrder
     is_active?: SortOrder
     stock?: SortOrder
     created_at?: SortOrder
@@ -45897,6 +45976,7 @@ export namespace Prisma {
     alcohol_percentage?: SortOrder
     price?: SortOrder
     promotional_price?: SortOrder
+    photo?: SortOrder
     is_active?: SortOrder
     stock?: SortOrder
     created_at?: SortOrder
@@ -45915,6 +45995,7 @@ export namespace Prisma {
     alcohol_percentage?: SortOrder
     price?: SortOrder
     promotional_price?: SortOrder
+    photo?: SortOrder
     is_active?: SortOrder
     stock?: SortOrder
     created_at?: SortOrder
@@ -46012,13 +46093,19 @@ export namespace Prisma {
 
   export type GrapeCountOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     created_at?: SortOrder
     updatedAt?: SortOrder
   }
 
+  export type GrapeAvgOrderByAggregateInput = {
+    external_id?: SortOrder
+  }
+
   export type GrapeMaxOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     created_at?: SortOrder
     updatedAt?: SortOrder
@@ -46026,9 +46113,14 @@ export namespace Prisma {
 
   export type GrapeMinOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     created_at?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type GrapeSumOrderByAggregateInput = {
+    external_id?: SortOrder
   }
 
   export type LabelListRelationFilter = {
@@ -46266,17 +46358,6 @@ export namespace Prisma {
     updated_at?: SortOrder
   }
 
-  export type IntNullableFilter = {
-    equals?: number | null
-    in?: Enumerable<number> | null
-    notIn?: Enumerable<number> | null
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedIntNullableFilter | number | null
-  }
-
   export type InvoiceListRelationFilter = {
     every?: InvoiceWhereInput
     some?: InvoiceWhereInput
@@ -46327,25 +46408,20 @@ export namespace Prisma {
     coupon_id?: SortOrder
   }
 
-  export type IntNullableWithAggregatesFilter = {
-    equals?: number | null
-    in?: Enumerable<number> | null
-    notIn?: Enumerable<number> | null
+  export type OrderRelationFilter = {
+    is?: OrderWhereInput
+    isNot?: OrderWhereInput
+  }
+
+  export type IntFilter = {
+    equals?: number
+    in?: Enumerable<number>
+    notIn?: Enumerable<number>
     lt?: number
     lte?: number
     gt?: number
     gte?: number
-    not?: NestedIntNullableWithAggregatesFilter | number | null
-    _count?: NestedIntNullableFilter
-    _avg?: NestedFloatNullableFilter
-    _sum?: NestedIntNullableFilter
-    _min?: NestedIntNullableFilter
-    _max?: NestedIntNullableFilter
-  }
-
-  export type OrderRelationFilter = {
-    is?: OrderWhereInput
-    isNot?: OrderWhereInput
+    not?: NestedIntFilter | number
   }
 
   export type OrderLabelOrder_idLabel_idCompoundUniqueInput = {
@@ -46383,6 +46459,22 @@ export namespace Prisma {
 
   export type OrderLabelSumOrderByAggregateInput = {
     quantity?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter = {
+    equals?: number
+    in?: Enumerable<number>
+    notIn?: Enumerable<number>
+    lt?: number
+    lte?: number
+    gt?: number
+    gte?: number
+    not?: NestedIntWithAggregatesFilter | number
+    _count?: NestedIntFilter
+    _avg?: NestedFloatFilter
+    _sum?: NestedIntFilter
+    _min?: NestedIntFilter
+    _max?: NestedIntFilter
   }
 
   export type InvoiceCountOrderByAggregateInput = {
@@ -47068,8 +47160,8 @@ export namespace Prisma {
     set?: string
   }
 
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
     increment?: number
     decrement?: number
     multiply?: number
@@ -48660,14 +48752,6 @@ export namespace Prisma {
     update?: XOR<AccountUpdateWithoutOrderInput, AccountUncheckedUpdateWithoutOrderInput>
   }
 
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
-  }
-
   export type OrderLabelUpdateManyWithoutOrderNestedInput = {
     create?: XOR<Enumerable<OrderLabelCreateWithoutOrderInput>, Enumerable<OrderLabelUncheckedCreateWithoutOrderInput>>
     connectOrCreate?: Enumerable<OrderLabelCreateOrConnectWithoutOrderInput>
@@ -48750,6 +48834,14 @@ export namespace Prisma {
     upsert?: LabelUpsertWithoutOrder_labelInput
     connect?: LabelWhereUniqueInput
     update?: XOR<LabelUpdateWithoutOrder_labelInput, LabelUncheckedUpdateWithoutOrder_labelInput>
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type OrderCreateNestedOneWithoutInvoiceInput = {
@@ -49464,15 +49556,15 @@ export namespace Prisma {
     not?: NestedStringFilter | string
   }
 
-  export type NestedIntFilter = {
-    equals?: number
-    in?: Enumerable<number>
-    notIn?: Enumerable<number>
+  export type NestedIntNullableFilter = {
+    equals?: number | null
+    in?: Enumerable<number> | null
+    notIn?: Enumerable<number> | null
     lt?: number
     lte?: number
     gt?: number
     gte?: number
-    not?: NestedIntFilter | number
+    not?: NestedIntNullableFilter | number | null
   }
 
   export type NestedStringNullableFilter = {
@@ -49536,7 +49628,7 @@ export namespace Prisma {
     _max?: NestedStringFilter
   }
 
-  export type NestedIntWithAggregatesFilter = {
+  export type NestedIntFilter = {
     equals?: number
     in?: Enumerable<number>
     notIn?: Enumerable<number>
@@ -49544,23 +49636,34 @@ export namespace Prisma {
     lte?: number
     gt?: number
     gte?: number
-    not?: NestedIntWithAggregatesFilter | number
-    _count?: NestedIntFilter
-    _avg?: NestedFloatFilter
-    _sum?: NestedIntFilter
-    _min?: NestedIntFilter
-    _max?: NestedIntFilter
+    not?: NestedIntFilter | number
   }
 
-  export type NestedFloatFilter = {
-    equals?: number
-    in?: Enumerable<number>
-    notIn?: Enumerable<number>
+  export type NestedIntNullableWithAggregatesFilter = {
+    equals?: number | null
+    in?: Enumerable<number> | null
+    notIn?: Enumerable<number> | null
     lt?: number
     lte?: number
     gt?: number
     gte?: number
-    not?: NestedFloatFilter | number
+    not?: NestedIntNullableWithAggregatesFilter | number | null
+    _count?: NestedIntNullableFilter
+    _avg?: NestedFloatNullableFilter
+    _sum?: NestedIntNullableFilter
+    _min?: NestedIntNullableFilter
+    _max?: NestedIntNullableFilter
+  }
+
+  export type NestedFloatNullableFilter = {
+    equals?: number | null
+    in?: Enumerable<number> | null
+    notIn?: Enumerable<number> | null
+    lt?: number
+    lte?: number
+    gt?: number
+    gte?: number
+    not?: NestedFloatNullableFilter | number | null
   }
 
   export type NestedStringNullableWithAggregatesFilter = {
@@ -49578,17 +49681,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter
     _min?: NestedStringNullableFilter
     _max?: NestedStringNullableFilter
-  }
-
-  export type NestedIntNullableFilter = {
-    equals?: number | null
-    in?: Enumerable<number> | null
-    notIn?: Enumerable<number> | null
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedIntNullableFilter | number | null
   }
 
   export type NestedEnumPersonTypeWithAggregatesFilter = {
@@ -49658,17 +49750,6 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter
   }
 
-  export type NestedFloatNullableFilter = {
-    equals?: number | null
-    in?: Enumerable<number> | null
-    notIn?: Enumerable<number> | null
-    lt?: number
-    lte?: number
-    gt?: number
-    gte?: number
-    not?: NestedFloatNullableFilter | number | null
-  }
-
   export type NestedFloatNullableWithAggregatesFilter = {
     equals?: number | null
     in?: Enumerable<number> | null
@@ -49690,6 +49771,17 @@ export namespace Prisma {
     in?: Enumerable<CouponDiscountType>
     notIn?: Enumerable<CouponDiscountType>
     not?: NestedEnumCouponDiscountTypeFilter | CouponDiscountType
+  }
+
+  export type NestedFloatFilter = {
+    equals?: number
+    in?: Enumerable<number>
+    notIn?: Enumerable<number>
+    lt?: number
+    lte?: number
+    gt?: number
+    gte?: number
+    not?: NestedFloatFilter | number
   }
 
   export type NestedEnumCouponUseTypeFilter = {
@@ -49762,20 +49854,20 @@ export namespace Prisma {
     _max?: NestedDecimalNullableFilter
   }
 
-  export type NestedIntNullableWithAggregatesFilter = {
-    equals?: number | null
-    in?: Enumerable<number> | null
-    notIn?: Enumerable<number> | null
+  export type NestedIntWithAggregatesFilter = {
+    equals?: number
+    in?: Enumerable<number>
+    notIn?: Enumerable<number>
     lt?: number
     lte?: number
     gt?: number
     gte?: number
-    not?: NestedIntNullableWithAggregatesFilter | number | null
-    _count?: NestedIntNullableFilter
-    _avg?: NestedFloatNullableFilter
-    _sum?: NestedIntNullableFilter
-    _min?: NestedIntNullableFilter
-    _max?: NestedIntNullableFilter
+    not?: NestedIntWithAggregatesFilter | number
+    _count?: NestedIntFilter
+    _avg?: NestedFloatFilter
+    _sum?: NestedIntFilter
+    _min?: NestedIntFilter
+    _max?: NestedIntFilter
   }
 
   export type NestedEnumPlatformTypeFilter = {
@@ -49869,7 +49961,7 @@ export namespace Prisma {
 
   export type PlanCreateWithoutAccountInput = {
     id?: string
-    external_id: number
+    external_id?: number | null
     name: string
     description: string
     slug: string
@@ -49884,7 +49976,7 @@ export namespace Prisma {
 
   export type PlanUncheckedCreateWithoutAccountInput = {
     id?: string
-    external_id: number
+    external_id?: number | null
     name: string
     description: string
     slug: string
@@ -50087,7 +50179,7 @@ export namespace Prisma {
 
   export type PlanUpdateWithoutAccountInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: IntFieldUpdateOperationsInput | number
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
@@ -50102,7 +50194,7 @@ export namespace Prisma {
 
   export type PlanUncheckedUpdateWithoutAccountInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: IntFieldUpdateOperationsInput | number
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
@@ -50270,7 +50362,7 @@ export namespace Prisma {
 
   export type AccountCreateWithoutAccount_configurationInput = {
     id?: string
-    external_id: number
+    external_id?: number | null
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -50307,7 +50399,7 @@ export namespace Prisma {
 
   export type AccountUncheckedCreateWithoutAccount_configurationInput = {
     id?: string
-    external_id: number
+    external_id?: number | null
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -50354,7 +50446,7 @@ export namespace Prisma {
 
   export type AccountUpdateWithoutAccount_configurationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: IntFieldUpdateOperationsInput | number
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -50391,7 +50483,7 @@ export namespace Prisma {
 
   export type AccountUncheckedUpdateWithoutAccount_configurationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: IntFieldUpdateOperationsInput | number
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -50428,7 +50520,7 @@ export namespace Prisma {
 
   export type AccountCreateWithoutAccount_activitiesInput = {
     id?: string
-    external_id: number
+    external_id?: number | null
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -50465,7 +50557,7 @@ export namespace Prisma {
 
   export type AccountUncheckedCreateWithoutAccount_activitiesInput = {
     id?: string
-    external_id: number
+    external_id?: number | null
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -50533,7 +50625,7 @@ export namespace Prisma {
 
   export type AccountUpdateWithoutAccount_activitiesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: IntFieldUpdateOperationsInput | number
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -50570,7 +50662,7 @@ export namespace Prisma {
 
   export type AccountUncheckedUpdateWithoutAccount_activitiesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: IntFieldUpdateOperationsInput | number
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -50754,7 +50846,7 @@ export namespace Prisma {
 
   export type AccountCreateWithoutAccount_usersInput = {
     id?: string
-    external_id: number
+    external_id?: number | null
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -50791,7 +50883,7 @@ export namespace Prisma {
 
   export type AccountUncheckedCreateWithoutAccount_usersInput = {
     id?: string
-    external_id: number
+    external_id?: number | null
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -50954,7 +51046,7 @@ export namespace Prisma {
 
   export type AccountUpdateWithoutAccount_usersInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: IntFieldUpdateOperationsInput | number
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -50991,7 +51083,7 @@ export namespace Prisma {
 
   export type AccountUncheckedUpdateWithoutAccount_usersInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: IntFieldUpdateOperationsInput | number
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -51319,7 +51411,7 @@ export namespace Prisma {
 
   export type AccountCreateWithoutCampaignInput = {
     id?: string
-    external_id: number
+    external_id?: number | null
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -51356,7 +51448,7 @@ export namespace Prisma {
 
   export type AccountUncheckedCreateWithoutCampaignInput = {
     id?: string
-    external_id: number
+    external_id?: number | null
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -51461,7 +51553,7 @@ export namespace Prisma {
 
   export type AccountUpdateWithoutCampaignInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: IntFieldUpdateOperationsInput | number
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -51498,7 +51590,7 @@ export namespace Prisma {
 
   export type AccountUncheckedUpdateWithoutCampaignInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: IntFieldUpdateOperationsInput | number
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -52056,6 +52148,7 @@ export namespace Prisma {
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
+    photo?: string | null
     is_active?: boolean
     stock?: boolean
     created_at?: Date | string
@@ -52078,6 +52171,7 @@ export namespace Prisma {
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
+    photo?: string | null
     is_active?: boolean
     stock?: boolean
     created_at?: Date | string
@@ -52143,6 +52237,7 @@ export namespace Prisma {
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
     stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -52165,6 +52260,7 @@ export namespace Prisma {
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
     stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -52220,6 +52316,7 @@ export namespace Prisma {
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
+    photo?: string | null
     is_active?: boolean
     stock?: boolean
     created_at?: Date | string
@@ -52242,6 +52339,7 @@ export namespace Prisma {
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
+    photo?: string | null
     is_active?: boolean
     stock?: boolean
     created_at?: Date | string
@@ -52259,6 +52357,7 @@ export namespace Prisma {
 
   export type GrapeCreateWithoutLabelGrapeInput = {
     id?: string
+    external_id?: number | null
     name: string
     created_at?: Date | string
     updatedAt?: Date | string
@@ -52266,6 +52365,7 @@ export namespace Prisma {
 
   export type GrapeUncheckedCreateWithoutLabelGrapeInput = {
     id?: string
+    external_id?: number | null
     name: string
     created_at?: Date | string
     updatedAt?: Date | string
@@ -52293,6 +52393,7 @@ export namespace Prisma {
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
     stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -52315,6 +52416,7 @@ export namespace Prisma {
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
     stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -52332,6 +52434,7 @@ export namespace Prisma {
 
   export type GrapeUpdateWithoutLabelGrapeInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -52339,6 +52442,7 @@ export namespace Prisma {
 
   export type GrapeUncheckedUpdateWithoutLabelGrapeInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -52393,6 +52497,7 @@ export namespace Prisma {
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
+    photo?: string | null
     is_active?: boolean
     stock?: boolean
     created_at?: Date | string
@@ -52415,6 +52520,7 @@ export namespace Prisma {
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
+    photo?: string | null
     is_active?: boolean
     stock?: boolean
     created_at?: Date | string
@@ -52467,6 +52573,7 @@ export namespace Prisma {
     alcohol_percentage?: DecimalNullableFilter | Decimal | DecimalJsLike | number | string | null
     price?: FloatFilter | number
     promotional_price?: FloatNullableFilter | number | null
+    photo?: StringNullableFilter | string | null
     is_active?: BoolFilter | boolean
     stock?: BoolFilter | boolean
     created_at?: DateTimeFilter | Date | string
@@ -52514,6 +52621,7 @@ export namespace Prisma {
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
+    photo?: string | null
     is_active?: boolean
     stock?: boolean
     created_at?: Date | string
@@ -52536,6 +52644,7 @@ export namespace Prisma {
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
+    photo?: string | null
     is_active?: boolean
     stock?: boolean
     created_at?: Date | string
@@ -52875,6 +52984,7 @@ export namespace Prisma {
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
+    photo?: string | null
     is_active?: boolean
     stock?: boolean
     created_at?: Date | string
@@ -52897,6 +53007,7 @@ export namespace Prisma {
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
+    photo?: string | null
     is_active?: boolean
     stock?: boolean
     created_at?: Date | string
@@ -53048,6 +53159,7 @@ export namespace Prisma {
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
+    photo?: string | null
     is_active?: boolean
     stock?: boolean
     created_at?: Date | string
@@ -53070,6 +53182,7 @@ export namespace Prisma {
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
+    photo?: string | null
     is_active?: boolean
     stock?: boolean
     created_at?: Date | string
@@ -53109,7 +53222,7 @@ export namespace Prisma {
 
   export type AccountCreateWithoutOrderInput = {
     id?: string
-    external_id: number
+    external_id?: number | null
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -53146,7 +53259,7 @@ export namespace Prisma {
 
   export type AccountUncheckedCreateWithoutOrderInput = {
     id?: string
-    external_id: number
+    external_id?: number | null
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -53239,7 +53352,7 @@ export namespace Prisma {
 
   export type AccountUpdateWithoutOrderInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: IntFieldUpdateOperationsInput | number
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -53276,7 +53389,7 @@ export namespace Prisma {
 
   export type AccountUncheckedUpdateWithoutOrderInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: IntFieldUpdateOperationsInput | number
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -53392,6 +53505,7 @@ export namespace Prisma {
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
+    photo?: string | null
     is_active?: boolean
     stock?: boolean
     created_at?: Date | string
@@ -53414,6 +53528,7 @@ export namespace Prisma {
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
+    photo?: string | null
     is_active?: boolean
     stock?: boolean
     created_at?: Date | string
@@ -53473,6 +53588,7 @@ export namespace Prisma {
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
     stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -53495,6 +53611,7 @@ export namespace Prisma {
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
     stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -54612,7 +54729,7 @@ export namespace Prisma {
 
   export type AccountCreateWithoutPlanInput = {
     id?: string
-    external_id: number
+    external_id?: number | null
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -54649,7 +54766,7 @@ export namespace Prisma {
 
   export type AccountUncheckedCreateWithoutPlanInput = {
     id?: string
-    external_id: number
+    external_id?: number | null
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -54764,7 +54881,7 @@ export namespace Prisma {
     OR?: Enumerable<AccountScalarWhereInput>
     NOT?: Enumerable<AccountScalarWhereInput>
     id?: StringFilter | string
-    external_id?: IntFilter | number
+    external_id?: IntNullableFilter | number | null
     name?: StringFilter | string
     cpf_cnpj?: StringNullableFilter | string | null
     market_name?: StringFilter | string
@@ -54811,7 +54928,7 @@ export namespace Prisma {
 
   export type PlanCreateWithoutPayment_cycleInput = {
     id?: string
-    external_id: number
+    external_id?: number | null
     name: string
     description: string
     slug: string
@@ -54826,7 +54943,7 @@ export namespace Prisma {
 
   export type PlanUncheckedCreateWithoutPayment_cycleInput = {
     id?: string
-    external_id: number
+    external_id?: number | null
     name: string
     description: string
     slug: string
@@ -54870,7 +54987,7 @@ export namespace Prisma {
     OR?: Enumerable<PlanScalarWhereInput>
     NOT?: Enumerable<PlanScalarWhereInput>
     id?: StringFilter | string
-    external_id?: IntFilter | number
+    external_id?: IntNullableFilter | number | null
     name?: StringFilter | string
     description?: StringFilter | string
     slug?: StringFilter | string
@@ -54884,7 +55001,7 @@ export namespace Prisma {
 
   export type PlanCreateWithoutSubscriptionInput = {
     id?: string
-    external_id: number
+    external_id?: number | null
     name: string
     description: string
     slug: string
@@ -54899,7 +55016,7 @@ export namespace Prisma {
 
   export type PlanUncheckedCreateWithoutSubscriptionInput = {
     id?: string
-    external_id: number
+    external_id?: number | null
     name: string
     description: string
     slug: string
@@ -54919,7 +55036,7 @@ export namespace Prisma {
 
   export type AccountCreateWithoutSubscriptionInput = {
     id?: string
-    external_id: number
+    external_id?: number | null
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -54956,7 +55073,7 @@ export namespace Prisma {
 
   export type AccountUncheckedCreateWithoutSubscriptionInput = {
     id?: string
-    external_id: number
+    external_id?: number | null
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -55003,7 +55120,7 @@ export namespace Prisma {
 
   export type PlanUpdateWithoutSubscriptionInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: IntFieldUpdateOperationsInput | number
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
@@ -55018,7 +55135,7 @@ export namespace Prisma {
 
   export type PlanUncheckedUpdateWithoutSubscriptionInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: IntFieldUpdateOperationsInput | number
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
@@ -55038,7 +55155,7 @@ export namespace Prisma {
 
   export type AccountUpdateWithoutSubscriptionInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: IntFieldUpdateOperationsInput | number
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -55075,7 +55192,7 @@ export namespace Prisma {
 
   export type AccountUncheckedUpdateWithoutSubscriptionInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: IntFieldUpdateOperationsInput | number
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -55122,6 +55239,7 @@ export namespace Prisma {
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
+    photo?: string | null
     is_active?: boolean
     stock?: boolean
     created_at?: Date | string
@@ -55144,6 +55262,7 @@ export namespace Prisma {
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
+    photo?: string | null
     is_active?: boolean
     stock?: boolean
     created_at?: Date | string
@@ -55161,7 +55280,7 @@ export namespace Prisma {
 
   export type AccountCreateWithoutStockLabelInput = {
     id?: string
-    external_id: number
+    external_id?: number | null
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -55198,7 +55317,7 @@ export namespace Prisma {
 
   export type AccountUncheckedCreateWithoutStockLabelInput = {
     id?: string
-    external_id: number
+    external_id?: number | null
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -55255,6 +55374,7 @@ export namespace Prisma {
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
     stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55277,6 +55397,7 @@ export namespace Prisma {
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
     stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55294,7 +55415,7 @@ export namespace Prisma {
 
   export type AccountUpdateWithoutStockLabelInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: IntFieldUpdateOperationsInput | number
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -55331,7 +55452,7 @@ export namespace Prisma {
 
   export type AccountUncheckedUpdateWithoutStockLabelInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: IntFieldUpdateOperationsInput | number
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -55378,6 +55499,7 @@ export namespace Prisma {
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
+    photo?: string | null
     is_active?: boolean
     stock?: boolean
     created_at?: Date | string
@@ -55400,6 +55522,7 @@ export namespace Prisma {
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
+    photo?: string | null
     is_active?: boolean
     stock?: boolean
     created_at?: Date | string
@@ -55432,6 +55555,7 @@ export namespace Prisma {
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
     stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55454,6 +55578,7 @@ export namespace Prisma {
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
     stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -56068,6 +56193,7 @@ export namespace Prisma {
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
+    photo?: string | null
     is_active?: boolean
     stock?: boolean
     created_at?: Date | string
@@ -56085,6 +56211,7 @@ export namespace Prisma {
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
     stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -56107,6 +56234,7 @@ export namespace Prisma {
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
     stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -56129,6 +56257,7 @@ export namespace Prisma {
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
     stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -56154,6 +56283,7 @@ export namespace Prisma {
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
+    photo?: string | null
     is_active?: boolean
     stock?: boolean
     created_at?: Date | string
@@ -56199,6 +56329,7 @@ export namespace Prisma {
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
     stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -56221,6 +56352,7 @@ export namespace Prisma {
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
     stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -56319,6 +56451,7 @@ export namespace Prisma {
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
+    photo?: string | null
     is_active?: boolean
     stock?: boolean
     created_at?: Date | string
@@ -56360,6 +56493,7 @@ export namespace Prisma {
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
     stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -56382,6 +56516,7 @@ export namespace Prisma {
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
     stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -56404,6 +56539,7 @@ export namespace Prisma {
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
+    photo?: string | null
     is_active?: boolean
     stock?: boolean
     created_at?: Date | string
@@ -56421,6 +56557,7 @@ export namespace Prisma {
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
     stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -56443,6 +56580,7 @@ export namespace Prisma {
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
     stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -56784,7 +56922,7 @@ export namespace Prisma {
 
   export type AccountCreateManyPlanInput = {
     id?: string
-    external_id: number
+    external_id?: number | null
     name: string
     cpf_cnpj?: string | null
     market_name: string
@@ -56823,7 +56961,7 @@ export namespace Prisma {
 
   export type AccountUpdateWithoutPlanInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: IntFieldUpdateOperationsInput | number
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -56860,7 +56998,7 @@ export namespace Prisma {
 
   export type AccountUncheckedUpdateWithoutPlanInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: IntFieldUpdateOperationsInput | number
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -56897,7 +57035,7 @@ export namespace Prisma {
 
   export type AccountUncheckedUpdateManyWithoutAccountInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: IntFieldUpdateOperationsInput | number
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
@@ -56945,7 +57083,7 @@ export namespace Prisma {
 
   export type PlanCreateManyPayment_cycleInput = {
     id?: string
-    external_id: number
+    external_id?: number | null
     name: string
     description: string
     slug: string
@@ -56958,7 +57096,7 @@ export namespace Prisma {
 
   export type PlanUpdateWithoutPayment_cycleInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: IntFieldUpdateOperationsInput | number
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
@@ -56973,7 +57111,7 @@ export namespace Prisma {
 
   export type PlanUncheckedUpdateWithoutPayment_cycleInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: IntFieldUpdateOperationsInput | number
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
@@ -56988,7 +57126,7 @@ export namespace Prisma {
 
   export type PlanUncheckedUpdateManyWithoutPlansInput = {
     id?: StringFieldUpdateOperationsInput | string
-    external_id?: IntFieldUpdateOperationsInput | number
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string

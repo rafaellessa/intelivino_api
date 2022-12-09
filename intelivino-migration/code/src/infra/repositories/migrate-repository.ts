@@ -299,6 +299,46 @@ export class MigrateRepository {
     } while (itemsPaginated === perPage)
   }
 
+  async migrateLabels() {
+    try {
+      await this.prismaDbProd.label.deleteMany()
+      await this.prismaDbProd.labelCampaign.deleteMany()
+      await this.prismaDbProd.labelGrape.deleteMany()
+      await this.prismaDbProd.labelType.deleteMany()
+      await this.prismaDbProd.orderLabel.deleteMany()
+      let page = 1
+      const perPage = 50
+      let itemsPaginated = 0
+      do {
+        itemsPaginated = 0
+        const labels = await this.prismaDbOlder.indicacoes.findMany({
+          include: {
+            campaigns_indicacoes: true,
+            indicacoes_uvas: true,
+          },
+        })
+        for (const label of labels) {
+          // const responseCreateLabels = await this.prismaDbProd.label.create({
+          //   data: {
+          //     name: label.nome || '',
+          //     price: Number(label.preco),
+          //     promotional_price: Number(label.preco_promocional),
+          //     description: label.descricao,
+          //     alcohol_percentage: label.porcentagem_alcool,
+          //     harvest: label.safra,
+          //     is_active: label.status_indicacao_id === 1 ? true : false,
+          //   },
+          // })
+        }
+        itemsPaginated = labels.length
+        page++
+      } while (itemsPaginated === perPage)
+    } catch (error) {
+      console.log('Deu merda')
+      throw new Error((error as Error).message)
+    }
+  }
+
   async migrateSellers() {}
   calculatePage(offset: number, limit: number): number {
     return (offset - 1) * limit

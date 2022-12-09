@@ -56,8 +56,26 @@ async function main() {
     ],
   })
 
+  const typeLabels = await prisma.labelType.createMany({
+    data: [
+      {
+        name: 'Promoção',
+      },
+      {
+        name: 'Lançamento',
+      },
+      {
+        name: 'Normal',
+      },
+      {
+        name: 'Diversos',
+      },
+    ],
+  })
+
   console.log({ activities })
   console.log({ roles })
+  console.log({ typeLabels })
 }
 main()
   .catch((e) => {

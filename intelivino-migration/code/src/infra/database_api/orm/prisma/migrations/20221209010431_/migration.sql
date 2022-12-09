@@ -1,7 +1,7 @@
 -- CreateTable
 CREATE TABLE `account` (
     `id` VARCHAR(191) NOT NULL,
-    `external_id` INTEGER NOT NULL,
+    `external_id` INTEGER NULL,
     `name` VARCHAR(191) NOT NULL,
     `cpf_cnpj` VARCHAR(191) NULL,
     `market_name` VARCHAR(191) NOT NULL,
@@ -191,6 +191,7 @@ CREATE TABLE `label` (
     `alcohol_percentage` DECIMAL(65, 30) NULL,
     `price` DOUBLE NOT NULL,
     `promotional_price` DOUBLE NULL,
+    `photo` VARCHAR(191) NULL,
     `is_active` BOOLEAN NOT NULL DEFAULT true,
     `stock` BOOLEAN NOT NULL DEFAULT true,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -222,6 +223,7 @@ CREATE TABLE `label_grape` (
 -- CreateTable
 CREATE TABLE `grape` (
     `id` VARCHAR(191) NOT NULL,
+    `external_id` INTEGER NULL,
     `name` VARCHAR(191) NOT NULL,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` TIMESTAMP(3) NOT NULL,
@@ -448,7 +450,7 @@ CREATE TABLE `device_notification` (
 -- CreateTable
 CREATE TABLE `plan` (
     `id` VARCHAR(191) NOT NULL,
-    `external_id` INTEGER NOT NULL,
+    `external_id` INTEGER NULL,
     `name` VARCHAR(191) NOT NULL,
     `description` VARCHAR(191) NOT NULL,
     `slug` VARCHAR(191) NOT NULL,

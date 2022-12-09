@@ -246,6 +246,7 @@ exports.Prisma.EmailNotificationScalarFieldEnum = makeEnum({
 
 exports.Prisma.GrapeScalarFieldEnum = makeEnum({
   id: 'id',
+  external_id: 'external_id',
   name: 'name',
   created_at: 'created_at',
   updatedAt: 'updatedAt'
@@ -284,6 +285,7 @@ exports.Prisma.LabelScalarFieldEnum = makeEnum({
   alcohol_percentage: 'alcohol_percentage',
   price: 'price',
   promotional_price: 'promotional_price',
+  photo: 'photo',
   is_active: 'is_active',
   stock: 'stock',
   created_at: 'created_at',
