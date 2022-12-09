@@ -6,28 +6,46 @@ export type PersonProps = {
   id: string
   name: string
   email: string
-  cpf?: string
-  phone?: string
-  whatsapp?: string
+  cpfCnpj?: string | null
+  phone?: string | null
+  whatsapp?: string | null
   address: AddressProps
+  personType: 'F' | 'J'
+  gender: 'F' | 'M' | 'ND'
 }
 export abstract class Person {
   id: string
   name: string
   email: Email
-  cpf?: Cpf | null
-  phone?: string
-  whatsapp?: string
+  cpfCnpj?: Cpf | null
+  phone?: string | null
+  whatsapp?: string | null
   address: Address
-  constructor({ id, name, email, cpf, phone, whatsapp, address }: PersonProps) {
+  personType: 'F' | 'J'
+  gender: 'F' | 'M' | 'ND'
+  constructor({
+    id,
+    name,
+    email,
+    cpfCnpj,
+    phone,
+    whatsapp,
+    address,
+    personType,
+    gender,
+  }: PersonProps) {
     this.id = id
     this.name = name
     this.email = new Email(email)
-    if (cpf) {
-      this.cpf = new Cpf(cpf)
+    if (cpfCnpj && personType === 'F') {
+      this.cpfCnpj = new Cpf(cpfCnpj)
+    } else {
+      this.cpfCnpj = null
     }
     this.phone = phone
     this.whatsapp = whatsapp
     this.address = new Address({ ...address })
+    this.personType = personType
+    this.gender = gender
   }
 }

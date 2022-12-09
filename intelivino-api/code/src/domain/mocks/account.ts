@@ -10,9 +10,13 @@ export const createAccountMock = (): AccountProps => {
     phone: faker.phone.number('55 ## #####-####'),
     logo: '',
     whatsapp: faker.phone.number('55 ## #####-####'),
-    cpf: new CpfGenerator().generate(),
+    cpfCnpj: new CpfGenerator().generate(),
     email: faker.internet.email(),
     name: faker.name.firstName(),
     marketName: faker.name.firstName(),
+    domain: faker.internet.domainName(),
+    gender: 'F',
+    personType: 'F',
+    isActive: faker.datatype.boolean(),
   }
 }

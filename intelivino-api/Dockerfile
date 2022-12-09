@@ -15,7 +15,7 @@ FROM base as dev
 
 RUN apk add --no-cache mysql-client
 
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "dev2"]
 
 FROM base as ci
 

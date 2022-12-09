@@ -26,6 +26,7 @@ export class AccountRepositoryMemory implements AccountRepository {
   create(data: AccountCreateDto): Promise<Either<Failure, Account>> {
     const parsedAccount = new Account({
       id: faker.datatype.uuid(),
+      marketName: faker.name.jobArea(),
       name: data.name,
       email: data.email,
       address: new Address({
@@ -39,9 +40,17 @@ export class AccountRepositoryMemory implements AccountRepository {
         additionalInformation: data.complement,
       }),
       logo: data.logo,
-      cpf: data.cpfCnpj,
+      cpfCnpj: data.cpfCnpj,
       phone: data.phone,
       whatsapp: data.whatsapp,
+      domain: data.domain,
+      facebookUrl: data.facebookUrl,
+      gender: data.gender,
+      personType: data.personType,
+      socialReason: data.socialReason,
+      banner: data.banner,
+      instagramUrl: data.instagramUrl,
+      site: data.site,
     })
     this.accounts.push(parsedAccount)
     return Promise.resolve(right(parsedAccount))

@@ -1,8 +1,11 @@
 -- CreateTable
 CREATE TABLE `account` (
     `id` VARCHAR(191) NOT NULL,
+    `external_id` INTEGER NULL,
     `name` VARCHAR(191) NOT NULL,
-    `cpf_cnpj` VARCHAR(191) NOT NULL,
+    `email` VARCHAR(191) NOT NULL,
+    `cpf_cnpj` VARCHAR(191) NULL,
+    `market_name` VARCHAR(191) NOT NULL,
     `phone` VARCHAR(191) NULL,
     `whatsapp` VARCHAR(191) NULL,
     `logo` VARCHAR(191) NULL,
@@ -13,13 +16,34 @@ CREATE TABLE `account` (
     `instagram_url` VARCHAR(191) NULL,
     `banner` VARCHAR(191) NULL,
     `gender` ENUM('F', 'M', 'ND') NOT NULL,
+    `street` VARCHAR(191) NOT NULL,
+    `number` VARCHAR(191) NOT NULL,
+    `complement` VARCHAR(191) NULL,
+    `district` VARCHAR(191) NOT NULL,
+    `city` VARCHAR(191) NOT NULL,
+    `state` VARCHAR(191) NOT NULL,
+    `zipcode` VARCHAR(191) NOT NULL,
+    `country` VARCHAR(191) NOT NULL,
     `plan_id` VARCHAR(191) NULL,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
     `domain` VARCHAR(191) NOT NULL,
+    `isActive` BOOLEAN NOT NULL DEFAULT false,
 
-    UNIQUE INDEX `account_cpf_cnpj_key`(`cpf_cnpj`),
+    UNIQUE INDEX `account_external_id_key`(`external_id`),
+    UNIQUE INDEX `account_email_key`(`email`),
     UNIQUE INDEX `account_domain_key`(`domain`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `AccountConfiguration` (
+    `id` VARCHAR(191) NOT NULL,
+    `account_id` VARCHAR(191) NOT NULL,
+    `banner_market_url` VARCHAR(191) NULL,
+    `header_color` VARCHAR(191) NULL,
+
+    UNIQUE INDEX `AccountConfiguration_account_id_key`(`account_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -51,17 +75,22 @@ CREATE TABLE `users` (
     `email` VARCHAR(191) NOT NULL,
     `password` VARCHAR(191) NOT NULL,
     `whatsapp` VARCHAR(191) NULL,
+    `phone` VARCHAR(191) NULL,
     `cpf_cnpj` VARCHAR(191) NULL,
     `street` VARCHAR(191) NOT NULL,
     `number` VARCHAR(191) NOT NULL,
     `district` VARCHAR(191) NOT NULL,
     `country` VARCHAR(191) NOT NULL,
     `state` VARCHAR(191) NOT NULL,
-    `additional_information` VARCHAR(191) NULL,
+    `complement` VARCHAR(191) NULL,
+    `city` VARCHAR(191) NOT NULL,
     `zipcode` VARCHAR(191) NOT NULL,
     `photo` VARCHAR(191) NULL,
     `gender` ENUM('F', 'M', 'ND') NOT NULL DEFAULT 'ND',
-    `birthdate` VARCHAR(191) NULL,
+    `birthdate` DATETIME(3) NULL,
+    `google_id` VARCHAR(191) NULL,
+    `apple_id` VARCHAR(191) NULL,
+    `facebook_id` VARCHAR(191) NULL,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
     `lastLogin` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -73,11 +102,13 @@ CREATE TABLE `users` (
 
 -- CreateTable
 CREATE TABLE `account_user` (
+    `id` VARCHAR(191) NOT NULL,
     `account_id` VARCHAR(191) NOT NULL,
     `user_id` VARCHAR(191) NOT NULL,
     `role_id` VARCHAR(191) NOT NULL,
 
-    PRIMARY KEY (`account_id`, `user_id`)
+    UNIQUE INDEX `account_user_id_key`(`id`),
+    PRIMARY KEY (`account_id`, `user_id`, `id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
@@ -101,6 +132,7 @@ CREATE TABLE `roles` (
     `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
 
+    UNIQUE INDEX `roles_name_key`(`name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -114,6 +146,7 @@ CREATE TABLE `campaign` (
     `expiration_date` DATETIME(3) NULL,
     `type_id` VARCHAR(191) NOT NULL,
     `account_id` VARCHAR(191) NOT NULL,
+    `account_user_id` VARCHAR(191) NOT NULL,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
 
@@ -133,12 +166,16 @@ CREATE TABLE `campaign_type` (
 CREATE TABLE `coupon` (
     `id` VARCHAR(191) NOT NULL,
     `code` VARCHAR(191) NOT NULL,
-    `percentage` DOUBLE NOT NULL,
+    `dicount_type` ENUM('PERCENTAGE', 'VALUE') NOT NULL,
+    `discount_value` DOUBLE NOT NULL,
+    `couponUse_type` ENUM('UNLIMITED', 'UNIQUE_BY_USER', 'UNIQUE') NOT NULL,
+    `inital_date` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `expiration_date` DATETIME(3) NULL,
+    `min_value` DOUBLE NULL,
+    `max_value` DOUBLE NULL,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
 
-    UNIQUE INDEX `coupon_code_key`(`code`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -155,6 +192,7 @@ CREATE TABLE `label` (
     `alcohol_percentage` DECIMAL(65, 30) NULL,
     `price` DOUBLE NOT NULL,
     `promotional_price` DOUBLE NULL,
+    `photo` VARCHAR(191) NULL,
     `is_active` BOOLEAN NOT NULL DEFAULT true,
     `stock` BOOLEAN NOT NULL DEFAULT true,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -186,6 +224,7 @@ CREATE TABLE `label_grape` (
 -- CreateTable
 CREATE TABLE `grape` (
     `id` VARCHAR(191) NOT NULL,
+    `external_id` INTEGER NULL,
     `name` VARCHAR(191) NOT NULL,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` TIMESTAMP(3) NOT NULL,
@@ -412,6 +451,7 @@ CREATE TABLE `device_notification` (
 -- CreateTable
 CREATE TABLE `plan` (
     `id` VARCHAR(191) NOT NULL,
+    `external_id` INTEGER NULL,
     `name` VARCHAR(191) NOT NULL,
     `description` VARCHAR(191) NOT NULL,
     `slug` VARCHAR(191) NOT NULL,
@@ -433,6 +473,7 @@ CREATE TABLE `payment_cycle` (
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
 
+    UNIQUE INDEX `payment_cycle_name_key`(`name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -476,6 +517,9 @@ CREATE TABLE `stock_history` (
 ALTER TABLE `account` ADD CONSTRAINT `account_plan_id_fkey` FOREIGN KEY (`plan_id`) REFERENCES `plan`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE `AccountConfiguration` ADD CONSTRAINT `AccountConfiguration_account_id_fkey` FOREIGN KEY (`account_id`) REFERENCES `account`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `account_activities` ADD CONSTRAINT `account_activities_account_id_fkey` FOREIGN KEY (`account_id`) REFERENCES `account`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -501,6 +545,9 @@ ALTER TABLE `campaign` ADD CONSTRAINT `campaign_type_id_fkey` FOREIGN KEY (`type
 
 -- AddForeignKey
 ALTER TABLE `campaign` ADD CONSTRAINT `campaign_account_id_fkey` FOREIGN KEY (`account_id`) REFERENCES `account`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `campaign` ADD CONSTRAINT `campaign_account_user_id_fkey` FOREIGN KEY (`account_user_id`) REFERENCES `account_user`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `label` ADD CONSTRAINT `label_type_id_fkey` FOREIGN KEY (`type_id`) REFERENCES `label_type`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

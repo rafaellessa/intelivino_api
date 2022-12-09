@@ -4,7 +4,6 @@ import { AccountRepositoryMemory } from '../memory/account-repository-memory'
 import { UserRepositoryMemory } from '../memory/user-repository-memory'
 
 export class FactoryRepositoryMemory implements FactoryRepository {
-  constructor() {}
   makeAccountRepository(): AccountRepository {
     return AccountRepositoryMemory.getInstance()
   }

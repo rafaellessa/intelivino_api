@@ -12,12 +12,12 @@ export interface AccountCreateDto {
   logo: string
   personType: 'F' | 'J'
   site?: string
-  socialReasons?: string
-  facebookUrl?: string
-  instagramUrl?: string
-  banner?: string
+  socialReason?: string | null
+  facebookUrl?: string | null
+  instagramUrl?: string | null
+  banner?: string | null
   gender: 'M' | 'F' | 'ND'
-  planId?: string
+  planId?: string | null
   domain: string
   street: string
   number: string
@@ -31,6 +31,7 @@ export interface AccountCreateDto {
     bannerMarketUrl?: string
     headerColor?: string
   }
+  isActive: boolean
 }
 
 export interface AccountUpdateDto {
@@ -42,7 +43,7 @@ export interface AccountUpdateDto {
   logo?: string
   personType?: 'F' | 'J'
   site?: string
-  socialReasons?: string
+  socialReason?: string
   facebookUrl?: string
   instagramUrl?: string
   banner?: string
@@ -53,6 +54,7 @@ export interface AccountUpdateDto {
     bannerMarketUrl?: string
     headerColor?: string
   }
+  isActive?: boolean
 }
 export interface AccountRepository {
   create(data: AccountCreateDto): Promise<Either<Failure, Account>>

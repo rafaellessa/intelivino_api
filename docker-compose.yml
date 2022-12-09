@@ -71,6 +71,17 @@ services:
       - intelivino_mysql_volume:/var/lib/mysql
     networks:
       - "intelivino_network"
+
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    container_name: swagger_ui_container
+    ports:
+      - '8002:8080'
+    volumes:
+      - ./intelivino-api/code/src/external/api-docs:/usr/share/nginx/html/doc
+    environment:
+      API_URL: doc/swagger.json
+
 volumes:
   intelivino_mysql_volume:
     driver: local

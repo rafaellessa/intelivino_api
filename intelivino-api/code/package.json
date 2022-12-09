@@ -6,7 +6,8 @@
   "scripts": {
     "test": "vitest",
     "coverage": "vitest run --coverage",
-    "dev": "ts-node-dev -r tsconfig-paths/register --respawn --ignore-watch node_modules src/external/server.ts"
+    "dev": "ts-node-dev -r tsconfig-paths/register --respawn --ignore-watch node_modules src/external/server.ts",
+    "dev2": "nodemon --watch 'src/' --exec 'ts-node-dev --inspect=0.0.0.0 --exit-child -r tsconfig-paths/register src/external/server.ts' -e ts"
   },
   "prisma": {
     "schema": "./src/infra/database/orm/prisma/schema.prisma",

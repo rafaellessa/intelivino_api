@@ -17,7 +17,7 @@ describe('account', () => {
 
   it('Should not create one account if pass incorrect CPF', () => {
     const mockedAccount = createAccountMock()
-    mockedAccount.cpf = '111111111111'
+    mockedAccount.cpfCnpj = '111111111111'
     expect(() => new Account(mockedAccount)).toThrow('Invalid CPF')
   })
 
