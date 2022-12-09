@@ -486,6 +486,7 @@ export type DeviceNotification = {
  */
 export type Plan = {
   id: string
+  external_id: number
   name: string
   description: string
   slug: string
@@ -34478,12 +34479,14 @@ export namespace Prisma {
   }
 
   export type PlanAvgAggregateOutputType = {
+    external_id: number | null
     price: number | null
     max_users: number | null
     max_labels: number | null
   }
 
   export type PlanSumAggregateOutputType = {
+    external_id: number | null
     price: number | null
     max_users: number | null
     max_labels: number | null
@@ -34491,6 +34494,7 @@ export namespace Prisma {
 
   export type PlanMinAggregateOutputType = {
     id: string | null
+    external_id: number | null
     name: string | null
     description: string | null
     slug: string | null
@@ -34504,6 +34508,7 @@ export namespace Prisma {
 
   export type PlanMaxAggregateOutputType = {
     id: string | null
+    external_id: number | null
     name: string | null
     description: string | null
     slug: string | null
@@ -34517,6 +34522,7 @@ export namespace Prisma {
 
   export type PlanCountAggregateOutputType = {
     id: number
+    external_id: number
     name: number
     description: number
     slug: number
@@ -34531,12 +34537,14 @@ export namespace Prisma {
 
 
   export type PlanAvgAggregateInputType = {
+    external_id?: true
     price?: true
     max_users?: true
     max_labels?: true
   }
 
   export type PlanSumAggregateInputType = {
+    external_id?: true
     price?: true
     max_users?: true
     max_labels?: true
@@ -34544,6 +34552,7 @@ export namespace Prisma {
 
   export type PlanMinAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     description?: true
     slug?: true
@@ -34557,6 +34566,7 @@ export namespace Prisma {
 
   export type PlanMaxAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     description?: true
     slug?: true
@@ -34570,6 +34580,7 @@ export namespace Prisma {
 
   export type PlanCountAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     description?: true
     slug?: true
@@ -34676,6 +34687,7 @@ export namespace Prisma {
 
   export type PlanGroupByOutputType = {
     id: string
+    external_id: number
     name: string
     description: string
     slug: string
@@ -34708,6 +34720,7 @@ export namespace Prisma {
 
   export type PlanSelect = {
     id?: boolean
+    external_id?: boolean
     name?: boolean
     description?: boolean
     slug?: boolean
@@ -39666,6 +39679,7 @@ export namespace Prisma {
 
   export const PlanScalarFieldEnum: {
     id: 'id',
+    external_id: 'external_id',
     name: 'name',
     description: 'description',
     slug: 'slug',
@@ -41817,6 +41831,7 @@ export namespace Prisma {
     OR?: Enumerable<PlanWhereInput>
     NOT?: Enumerable<PlanWhereInput>
     id?: StringFilter | string
+    external_id?: IntFilter | number
     name?: StringFilter | string
     description?: StringFilter | string
     slug?: StringFilter | string
@@ -41833,6 +41848,7 @@ export namespace Prisma {
 
   export type PlanOrderByWithRelationInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     description?: SortOrder
     slug?: SortOrder
@@ -41853,6 +41869,7 @@ export namespace Prisma {
 
   export type PlanOrderByWithAggregationInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     description?: SortOrder
     slug?: SortOrder
@@ -41874,6 +41891,7 @@ export namespace Prisma {
     OR?: Enumerable<PlanScalarWhereWithAggregatesInput>
     NOT?: Enumerable<PlanScalarWhereWithAggregatesInput>
     id?: StringWithAggregatesFilter | string
+    external_id?: IntWithAggregatesFilter | number
     name?: StringWithAggregatesFilter | string
     description?: StringWithAggregatesFilter | string
     slug?: StringWithAggregatesFilter | string
@@ -41908,6 +41926,7 @@ export namespace Prisma {
 
   export type PaymentCycleWhereUniqueInput = {
     id?: string
+    name?: string
   }
 
   export type PaymentCycleOrderByWithAggregationInput = {
@@ -44573,6 +44592,7 @@ export namespace Prisma {
 
   export type PlanCreateInput = {
     id?: string
+    external_id: number
     name: string
     description: string
     slug: string
@@ -44588,6 +44608,7 @@ export namespace Prisma {
 
   export type PlanUncheckedCreateInput = {
     id?: string
+    external_id: number
     name: string
     description: string
     slug: string
@@ -44603,6 +44624,7 @@ export namespace Prisma {
 
   export type PlanUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
@@ -44618,6 +44640,7 @@ export namespace Prisma {
 
   export type PlanUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
@@ -44633,6 +44656,7 @@ export namespace Prisma {
 
   export type PlanCreateManyInput = {
     id?: string
+    external_id: number
     name: string
     description: string
     slug: string
@@ -44646,6 +44670,7 @@ export namespace Prisma {
 
   export type PlanUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
@@ -44658,6 +44683,7 @@ export namespace Prisma {
 
   export type PlanUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
@@ -46736,6 +46762,7 @@ export namespace Prisma {
 
   export type PlanCountOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     description?: SortOrder
     slug?: SortOrder
@@ -46748,6 +46775,7 @@ export namespace Prisma {
   }
 
   export type PlanAvgOrderByAggregateInput = {
+    external_id?: SortOrder
     price?: SortOrder
     max_users?: SortOrder
     max_labels?: SortOrder
@@ -46755,6 +46783,7 @@ export namespace Prisma {
 
   export type PlanMaxOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     description?: SortOrder
     slug?: SortOrder
@@ -46768,6 +46797,7 @@ export namespace Prisma {
 
   export type PlanMinOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     description?: SortOrder
     slug?: SortOrder
@@ -46780,6 +46810,7 @@ export namespace Prisma {
   }
 
   export type PlanSumOrderByAggregateInput = {
+    external_id?: SortOrder
     price?: SortOrder
     max_users?: SortOrder
     max_labels?: SortOrder
@@ -49838,6 +49869,7 @@ export namespace Prisma {
 
   export type PlanCreateWithoutAccountInput = {
     id?: string
+    external_id: number
     name: string
     description: string
     slug: string
@@ -49852,6 +49884,7 @@ export namespace Prisma {
 
   export type PlanUncheckedCreateWithoutAccountInput = {
     id?: string
+    external_id: number
     name: string
     description: string
     slug: string
@@ -50054,6 +50087,7 @@ export namespace Prisma {
 
   export type PlanUpdateWithoutAccountInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
@@ -50068,6 +50102,7 @@ export namespace Prisma {
 
   export type PlanUncheckedUpdateWithoutAccountInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
@@ -54776,6 +54811,7 @@ export namespace Prisma {
 
   export type PlanCreateWithoutPayment_cycleInput = {
     id?: string
+    external_id: number
     name: string
     description: string
     slug: string
@@ -54790,6 +54826,7 @@ export namespace Prisma {
 
   export type PlanUncheckedCreateWithoutPayment_cycleInput = {
     id?: string
+    external_id: number
     name: string
     description: string
     slug: string
@@ -54833,6 +54870,7 @@ export namespace Prisma {
     OR?: Enumerable<PlanScalarWhereInput>
     NOT?: Enumerable<PlanScalarWhereInput>
     id?: StringFilter | string
+    external_id?: IntFilter | number
     name?: StringFilter | string
     description?: StringFilter | string
     slug?: StringFilter | string
@@ -54846,6 +54884,7 @@ export namespace Prisma {
 
   export type PlanCreateWithoutSubscriptionInput = {
     id?: string
+    external_id: number
     name: string
     description: string
     slug: string
@@ -54860,6 +54899,7 @@ export namespace Prisma {
 
   export type PlanUncheckedCreateWithoutSubscriptionInput = {
     id?: string
+    external_id: number
     name: string
     description: string
     slug: string
@@ -54963,6 +55003,7 @@ export namespace Prisma {
 
   export type PlanUpdateWithoutSubscriptionInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
@@ -54977,6 +55018,7 @@ export namespace Prisma {
 
   export type PlanUncheckedUpdateWithoutSubscriptionInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
@@ -56903,6 +56945,7 @@ export namespace Prisma {
 
   export type PlanCreateManyPayment_cycleInput = {
     id?: string
+    external_id: number
     name: string
     description: string
     slug: string
@@ -56915,6 +56958,7 @@ export namespace Prisma {
 
   export type PlanUpdateWithoutPayment_cycleInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
@@ -56929,6 +56973,7 @@ export namespace Prisma {
 
   export type PlanUncheckedUpdateWithoutPayment_cycleInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
@@ -56943,6 +56988,7 @@ export namespace Prisma {
 
   export type PlanUncheckedUpdateManyWithoutPlansInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string

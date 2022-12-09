@@ -15,7 +15,13 @@ export default (router: Router): void => {
     response.send({})
   })
 
-  router.get('/migrate/accounts', (_req, response) => {
+  router.get('/migrate/planos', (_req, response) => {
+    response.setHeader('Content-Type', 'application/json')
+    migrateRepository.migratePlans()
+    response.send({})
+  })
+
+  router.get('/migrate/usuarios', (_req, response) => {
     response.setHeader('Content-Type', 'application/json')
     migrateRepository.migrateAccountsAndBusinessUsers()
     response.send({})

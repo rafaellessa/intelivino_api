@@ -86,6 +86,51 @@ export class MigrateRepository {
     }
   }
 
+  async migratePlans() {
+    try {
+      await this.prismaDbProd.plan.deleteMany()
+      await this.prismaDbProd.paymentCycle.deleteMany()
+      let page = 1
+      const perPage = 50
+      let itemsPaginated = 0
+      do {
+        itemsPaginated = 0
+        const plans = await this.prismaDbOlder.planos.findMany({
+          take: perPage,
+          skip: this.calculatePage(page, perPage),
+        })
+        if (!plans) {
+          throw new Error('none plans')
+        }
+        const paymentCycle = await this.prismaDbProd.paymentCycle.create({
+          data: {
+            name: 'Mensal',
+            slug: 'mensal',
+          },
+        })
+        for (const plan of plans) {
+          await this.prismaDbProd.plan.create({
+            data: {
+              name: plan.nome!,
+              external_id: plan.id,
+              slug: slugGenerator(plan.nome!),
+              description: plan.descricao!,
+              max_labels: plan.max_rotulos!,
+              max_users: plan.max_users!,
+              price: Number(plan.valor_plano!),
+              payment_cycle_id: paymentCycle.id,
+            },
+          })
+        }
+        itemsPaginated = plans.length
+        page++
+      } while (itemsPaginated === perPage)
+    } catch (error) {
+      console.log('Deu merda')
+      throw new Error((error as Error).message)
+    }
+  }
+
   async migrateAccountsAndBusinessUsers() {
     let page = 1
     const perPage = 50
@@ -131,6 +176,14 @@ export class MigrateRepository {
           cpfCnpj = account.cpf
         }
         if (!account.user_id_parent) {
+          let accountPlan = null
+          if (account.users?.plano_id) {
+            accountPlan = await this.prismaDbProd.plan.findFirst({
+              where: {
+                external_id: account.users?.plano_id,
+              },
+            })
+          }
           const responseCreateAccount = await this.prismaDbProd.account.create({
             data: {
               external_id: account.user_id!,
@@ -159,6 +212,7 @@ export class MigrateRepository {
               isActive: account.status ? account.status : false,
               facebook_url: account.facebook_url,
               instagram_url: account.instagram_url,
+              plan_id: accountPlan ? accountPlan.id : null,
               account_configuration: {
                 create: {
                   header_color: account.cor_texto_cabecalho,

@@ -448,6 +448,7 @@ CREATE TABLE `device_notification` (
 -- CreateTable
 CREATE TABLE `plan` (
     `id` VARCHAR(191) NOT NULL,
+    `external_id` INTEGER NOT NULL,
     `name` VARCHAR(191) NOT NULL,
     `description` VARCHAR(191) NOT NULL,
     `slug` VARCHAR(191) NOT NULL,
@@ -469,6 +470,7 @@ CREATE TABLE `payment_cycle` (
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
 
+    UNIQUE INDEX `payment_cycle_name_key`(`name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 

@@ -339,6 +339,7 @@ exports.Prisma.PermisionScalarFieldEnum = makeEnum({
 
 exports.Prisma.PlanScalarFieldEnum = makeEnum({
   id: 'id',
+  external_id: 'external_id',
   name: 'name',
   description: 'description',
   slug: 'slug',

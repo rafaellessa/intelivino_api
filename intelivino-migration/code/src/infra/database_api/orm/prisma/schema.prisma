@@ -543,6 +543,7 @@ model DeviceNotification {
 
 model Plan {
   id               String       @id @default(uuid())
+  external_id       Int
   name             String
   description      String
   slug             String
@@ -562,7 +563,7 @@ model Plan {
 
 model PaymentCycle {
   id         String   @id @default(uuid())
-  name       String
+  name       String @unique
   slug       String
   created_at DateTime @default(now()) @db.Timestamp(3)
   updated_at DateTime @updatedAt @db.Timestamp(3)
