@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { Coupon } from './coupon'
 import { OrderCoupon } from './order-coupon'
+import { faker } from '@faker-js/faker'
 
 describe('OrderCoupon', () => {
   it('Should create one coupon with percentage', () => {
@@ -9,7 +10,7 @@ describe('OrderCoupon', () => {
       dicountType: 'percentage',
       discountValue: 20,
       couponUseType: 'unlimited',
-      expirationDate: new Date(),
+      expirationDate: faker.date.future(),
     })
     const orderCoupon = new OrderCoupon({
       code: coupon.code,
@@ -25,7 +26,7 @@ describe('OrderCoupon', () => {
       dicountType: 'value',
       discountValue: 20,
       couponUseType: 'unlimited',
-      expirationDate: new Date(),
+      expirationDate: faker.date.future(),
     })
     const orderCoupon = new OrderCoupon({
       code: coupon.code,
