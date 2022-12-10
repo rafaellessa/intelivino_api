@@ -32,6 +32,7 @@ export class MigrateRepository {
       await this.migrateCountry()
       await this.migratePlans()
       await this.migrateActivities()
+      await this.migrateDeliveries()
     } catch (error) {
       console.log('Deu merda')
       throw new Error((error as Error).message)
@@ -60,6 +61,36 @@ export class MigrateRepository {
           })
         }
         itemsPaginated = activities.length
+        page++
+      } while (itemsPaginated === perPage)
+    } catch (error) {
+      console.log('Deu merda')
+      throw new Error((error as Error).message)
+    }
+  }
+  async migrateDeliveries() {
+    try {
+      let page = 1
+      const perPage = 50
+      let itemsPaginated = 0
+      await this.prismaDbProd.delivery.deleteMany({})
+      await this.prismaDbProd.accountDelivery.deleteMany({})
+      do {
+        itemsPaginated = 0
+        const deliveries = await this.prismaDbOlder.deliveries.findMany({
+          take: perPage,
+          skip: this.calculatePage(page, perPage),
+        })
+        for (const delivery of deliveries) {
+          await this.prismaDbProd.delivery.create({
+            data: {
+              name: delivery.nome,
+              slug: slugGenerator(cleanString(delivery.nome)),
+              external_id: delivery.id,
+            },
+          })
+        }
+        itemsPaginated = deliveries.length
         page++
       } while (itemsPaginated === perPage)
     } catch (error) {
@@ -250,6 +281,7 @@ export class MigrateRepository {
         await this.createAccountActivities(account, responseCreateAccount)
         await this.createAccountUser(account, responseCreateAccount)
         await this.createAccountSeller(account.user_id!)
+        await this.createAccountDeliveries(account, responseCreateAccount)
       }
       itemsPaginated = accounts.length
       page++
@@ -415,7 +447,37 @@ export class MigrateRepository {
       })
     }
   }
-
+  async createAccountDeliveries(
+    account: business & {
+      activities_business: activities_business[]
+      users: users | null
+    },
+    newAccount: Account
+  ) {
+    const deliveries = await this.prismaDbOlder.deliveries_business.findMany({
+      where: {
+        business_id: account.id,
+        AND: {
+          business_id: {
+            not: null,
+          },
+        },
+      },
+    })
+    for (const delivery of deliveries) {
+      const newDelivery = await this.prismaDbProd.delivery.findUnique({
+        where: {
+          external_id: delivery.delivery_id!,
+        },
+      })
+      await this.prismaDbProd.accountDelivery.create({
+        data: {
+          account_id: newAccount.id,
+          delivery_id: newDelivery?.id || '',
+        },
+      })
+    }
+  }
   async createAccountUser(
     account: business & {
       activities_business: activities_business[]

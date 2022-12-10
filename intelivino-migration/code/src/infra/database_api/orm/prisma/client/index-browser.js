@@ -102,6 +102,13 @@ exports.Prisma.AccountConfigurationScalarFieldEnum = makeEnum({
   header_color: 'header_color'
 });
 
+exports.Prisma.AccountDeliveryScalarFieldEnum = makeEnum({
+  account_id: 'account_id',
+  delivery_id: 'delivery_id',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+});
+
 exports.Prisma.AccountScalarFieldEnum = makeEnum({
   id: 'id',
   external_id: 'external_id',
@@ -201,6 +208,15 @@ exports.Prisma.CouponScalarFieldEnum = makeEnum({
   expiration_date: 'expiration_date',
   min_value: 'min_value',
   max_value: 'max_value',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+});
+
+exports.Prisma.DeliveryScalarFieldEnum = makeEnum({
+  id: 'id',
+  external_id: 'external_id',
+  name: 'name',
+  slug: 'slug',
   created_at: 'created_at',
   updated_at: 'updated_at'
 });
@@ -542,6 +558,8 @@ exports.Prisma.ModelName = makeEnum({
   AccountConfiguration: 'AccountConfiguration',
   AccountActivities: 'AccountActivities',
   Activities: 'Activities',
+  Delivery: 'Delivery',
+  AccountDelivery: 'AccountDelivery',
   User: 'User',
   AccountUser: 'AccountUser',
   Permision: 'Permision',

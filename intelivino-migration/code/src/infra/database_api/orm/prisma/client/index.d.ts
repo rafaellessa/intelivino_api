@@ -84,6 +84,30 @@ export type Activities = {
 }
 
 /**
+ * Model Delivery
+ * 
+ */
+export type Delivery = {
+  id: string
+  external_id: number | null
+  name: string
+  slug: string
+  created_at: Date
+  updated_at: Date
+}
+
+/**
+ * Model AccountDelivery
+ * 
+ */
+export type AccountDelivery = {
+  account_id: string
+  delivery_id: string
+  created_at: Date
+  updated_at: Date
+}
+
+/**
  * Model User
  * 
  */
@@ -810,6 +834,26 @@ export class PrismaClient<
     * ```
     */
   get activities(): Prisma.ActivitiesDelegate<GlobalReject>;
+
+  /**
+   * `prisma.delivery`: Exposes CRUD operations for the **Delivery** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Deliveries
+    * const deliveries = await prisma.delivery.findMany()
+    * ```
+    */
+  get delivery(): Prisma.DeliveryDelegate<GlobalReject>;
+
+  /**
+   * `prisma.accountDelivery`: Exposes CRUD operations for the **AccountDelivery** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AccountDeliveries
+    * const accountDeliveries = await prisma.accountDelivery.findMany()
+    * ```
+    */
+  get accountDelivery(): Prisma.AccountDeliveryDelegate<GlobalReject>;
 
   /**
    * `prisma.user`: Exposes CRUD operations for the **User** model.
@@ -1642,6 +1686,8 @@ export namespace Prisma {
     AccountConfiguration: 'AccountConfiguration',
     AccountActivities: 'AccountActivities',
     Activities: 'Activities',
+    Delivery: 'Delivery',
+    AccountDelivery: 'AccountDelivery',
     User: 'User',
     AccountUser: 'AccountUser',
     Permision: 'Permision',
@@ -1844,6 +1890,7 @@ export namespace Prisma {
     subscription: number
     order: number
     account_activities: number
+    account_deliveries: number
     account_users: number
     StockLabel: number
   }
@@ -1853,6 +1900,7 @@ export namespace Prisma {
     subscription?: boolean
     order?: boolean
     account_activities?: boolean
+    account_deliveries?: boolean
     account_users?: boolean
     StockLabel?: boolean
   }
@@ -1938,6 +1986,55 @@ export namespace Prisma {
      * 
     **/
     select?: ActivitiesCountOutputTypeSelect | null
+  }
+
+
+
+  /**
+   * Count Type DeliveryCountOutputType
+   */
+
+
+  export type DeliveryCountOutputType = {
+    account_deliveries: number
+  }
+
+  export type DeliveryCountOutputTypeSelect = {
+    account_deliveries?: boolean
+  }
+
+  export type DeliveryCountOutputTypeGetPayload<
+    S extends boolean | null | undefined | DeliveryCountOutputTypeArgs,
+    U = keyof S
+      > = S extends true
+        ? DeliveryCountOutputType
+    : S extends undefined
+    ? never
+    : S extends DeliveryCountOutputTypeArgs
+    ?'include' extends U
+    ? DeliveryCountOutputType 
+    : 'select' extends U
+    ? {
+    [P in TrueKeys<S['select']>]:
+    P extends keyof DeliveryCountOutputType ? DeliveryCountOutputType[P] : never
+  } 
+    : DeliveryCountOutputType
+  : DeliveryCountOutputType
+
+
+
+
+  // Custom InputTypes
+
+  /**
+   * DeliveryCountOutputType without action
+   */
+  export type DeliveryCountOutputTypeArgs = {
+    /**
+     * Select specific fields to fetch from the DeliveryCountOutputType
+     * 
+    **/
+    select?: DeliveryCountOutputTypeSelect | null
   }
 
 
@@ -3262,6 +3359,7 @@ export namespace Prisma {
     updated_at?: boolean
     order?: boolean | OrderFindManyArgs
     account_activities?: boolean | AccountActivitiesFindManyArgs
+    account_deliveries?: boolean | AccountDeliveryFindManyArgs
     account_users?: boolean | AccountUserFindManyArgs
     domain?: boolean
     StockLabel?: boolean | StockLabelFindManyArgs
@@ -3276,6 +3374,7 @@ export namespace Prisma {
     subscription?: boolean | SubscriptionFindManyArgs
     order?: boolean | OrderFindManyArgs
     account_activities?: boolean | AccountActivitiesFindManyArgs
+    account_deliveries?: boolean | AccountDeliveryFindManyArgs
     account_users?: boolean | AccountUserFindManyArgs
     StockLabel?: boolean | StockLabelFindManyArgs
     account_configuration?: boolean | AccountConfigurationArgs
@@ -3298,6 +3397,7 @@ export namespace Prisma {
         P extends 'subscription' ? Array < SubscriptionGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
         P extends 'order' ? Array < OrderGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
         P extends 'account_activities' ? Array < AccountActivitiesGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
+        P extends 'account_deliveries' ? Array < AccountDeliveryGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
         P extends 'account_users' ? Array < AccountUserGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
         P extends 'StockLabel' ? Array < StockLabelGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
         P extends 'account_configuration' ? AccountConfigurationGetPayload<Exclude<S['include'], undefined | null>[P]> | null :
@@ -3311,6 +3411,7 @@ export namespace Prisma {
         P extends 'subscription' ? Array < SubscriptionGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
         P extends 'order' ? Array < OrderGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
         P extends 'account_activities' ? Array < AccountActivitiesGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
+        P extends 'account_deliveries' ? Array < AccountDeliveryGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
         P extends 'account_users' ? Array < AccountUserGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
         P extends 'StockLabel' ? Array < StockLabelGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
         P extends 'account_configuration' ? AccountConfigurationGetPayload<Exclude<S['select'], undefined | null>[P]> | null :
@@ -3698,6 +3799,8 @@ export namespace Prisma {
     order<T extends OrderFindManyArgs = {}>(args?: Subset<T, OrderFindManyArgs>): CheckSelect<T, PrismaPromise<Array<Order>| Null>, PrismaPromise<Array<OrderGetPayload<T>>| Null>>;
 
     account_activities<T extends AccountActivitiesFindManyArgs = {}>(args?: Subset<T, AccountActivitiesFindManyArgs>): CheckSelect<T, PrismaPromise<Array<AccountActivities>| Null>, PrismaPromise<Array<AccountActivitiesGetPayload<T>>| Null>>;
+
+    account_deliveries<T extends AccountDeliveryFindManyArgs = {}>(args?: Subset<T, AccountDeliveryFindManyArgs>): CheckSelect<T, PrismaPromise<Array<AccountDelivery>| Null>, PrismaPromise<Array<AccountDeliveryGetPayload<T>>| Null>>;
 
     account_users<T extends AccountUserFindManyArgs = {}>(args?: Subset<T, AccountUserFindManyArgs>): CheckSelect<T, PrismaPromise<Array<AccountUser>| Null>, PrismaPromise<Array<AccountUserGetPayload<T>>| Null>>;
 
@@ -6866,6 +6969,1900 @@ export namespace Prisma {
      * 
     **/
     include?: ActivitiesInclude | null
+  }
+
+
+
+  /**
+   * Model Delivery
+   */
+
+
+  export type AggregateDelivery = {
+    _count: DeliveryCountAggregateOutputType | null
+    _avg: DeliveryAvgAggregateOutputType | null
+    _sum: DeliverySumAggregateOutputType | null
+    _min: DeliveryMinAggregateOutputType | null
+    _max: DeliveryMaxAggregateOutputType | null
+  }
+
+  export type DeliveryAvgAggregateOutputType = {
+    external_id: number | null
+  }
+
+  export type DeliverySumAggregateOutputType = {
+    external_id: number | null
+  }
+
+  export type DeliveryMinAggregateOutputType = {
+    id: string | null
+    external_id: number | null
+    name: string | null
+    slug: string | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type DeliveryMaxAggregateOutputType = {
+    id: string | null
+    external_id: number | null
+    name: string | null
+    slug: string | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type DeliveryCountAggregateOutputType = {
+    id: number
+    external_id: number
+    name: number
+    slug: number
+    created_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type DeliveryAvgAggregateInputType = {
+    external_id?: true
+  }
+
+  export type DeliverySumAggregateInputType = {
+    external_id?: true
+  }
+
+  export type DeliveryMinAggregateInputType = {
+    id?: true
+    external_id?: true
+    name?: true
+    slug?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type DeliveryMaxAggregateInputType = {
+    id?: true
+    external_id?: true
+    name?: true
+    slug?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type DeliveryCountAggregateInputType = {
+    id?: true
+    external_id?: true
+    name?: true
+    slug?: true
+    created_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type DeliveryAggregateArgs = {
+    /**
+     * Filter which Delivery to aggregate.
+     * 
+    **/
+    where?: DeliveryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Deliveries to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<DeliveryOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     * 
+    **/
+    cursor?: DeliveryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Deliveries from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Deliveries.
+     * 
+    **/
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Deliveries
+    **/
+    _count?: true | DeliveryCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: DeliveryAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: DeliverySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: DeliveryMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: DeliveryMaxAggregateInputType
+  }
+
+  export type GetDeliveryAggregateType<T extends DeliveryAggregateArgs> = {
+        [P in keyof T & keyof AggregateDelivery]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDelivery[P]>
+      : GetScalarType<T[P], AggregateDelivery[P]>
+  }
+
+
+
+
+  export type DeliveryGroupByArgs = {
+    where?: DeliveryWhereInput
+    orderBy?: Enumerable<DeliveryOrderByWithAggregationInput>
+    by: Array<DeliveryScalarFieldEnum>
+    having?: DeliveryScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: DeliveryCountAggregateInputType | true
+    _avg?: DeliveryAvgAggregateInputType
+    _sum?: DeliverySumAggregateInputType
+    _min?: DeliveryMinAggregateInputType
+    _max?: DeliveryMaxAggregateInputType
+  }
+
+
+  export type DeliveryGroupByOutputType = {
+    id: string
+    external_id: number | null
+    name: string
+    slug: string
+    created_at: Date
+    updated_at: Date
+    _count: DeliveryCountAggregateOutputType | null
+    _avg: DeliveryAvgAggregateOutputType | null
+    _sum: DeliverySumAggregateOutputType | null
+    _min: DeliveryMinAggregateOutputType | null
+    _max: DeliveryMaxAggregateOutputType | null
+  }
+
+  type GetDeliveryGroupByPayload<T extends DeliveryGroupByArgs> = PrismaPromise<
+    Array<
+      PickArray<DeliveryGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof DeliveryGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], DeliveryGroupByOutputType[P]>
+            : GetScalarType<T[P], DeliveryGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type DeliverySelect = {
+    id?: boolean
+    external_id?: boolean
+    name?: boolean
+    slug?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    account_deliveries?: boolean | AccountDeliveryFindManyArgs
+    _count?: boolean | DeliveryCountOutputTypeArgs
+  }
+
+  export type DeliveryInclude = {
+    account_deliveries?: boolean | AccountDeliveryFindManyArgs
+    _count?: boolean | DeliveryCountOutputTypeArgs
+  }
+
+  export type DeliveryGetPayload<
+    S extends boolean | null | undefined | DeliveryArgs,
+    U = keyof S
+      > = S extends true
+        ? Delivery
+    : S extends undefined
+    ? never
+    : S extends DeliveryArgs | DeliveryFindManyArgs
+    ?'include' extends U
+    ? Delivery  & {
+    [P in TrueKeys<S['include']>]:
+        P extends 'account_deliveries' ? Array < AccountDeliveryGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
+        P extends '_count' ? DeliveryCountOutputTypeGetPayload<Exclude<S['include'], undefined | null>[P]> :  never
+  } 
+    : 'select' extends U
+    ? {
+    [P in TrueKeys<S['select']>]:
+        P extends 'account_deliveries' ? Array < AccountDeliveryGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
+        P extends '_count' ? DeliveryCountOutputTypeGetPayload<Exclude<S['select'], undefined | null>[P]> :  P extends keyof Delivery ? Delivery[P] : never
+  } 
+    : Delivery
+  : Delivery
+
+
+  type DeliveryCountArgs = Merge<
+    Omit<DeliveryFindManyArgs, 'select' | 'include'> & {
+      select?: DeliveryCountAggregateInputType | true
+    }
+  >
+
+  export interface DeliveryDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
+    /**
+     * Find zero or one Delivery that matches the filter.
+     * @param {DeliveryFindUniqueArgs} args - Arguments to find a Delivery
+     * @example
+     * // Get one Delivery
+     * const delivery = await prisma.delivery.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUnique<T extends DeliveryFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args: SelectSubset<T, DeliveryFindUniqueArgs>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'Delivery'> extends True ? CheckSelect<T, Prisma__DeliveryClient<Delivery>, Prisma__DeliveryClient<DeliveryGetPayload<T>>> : CheckSelect<T, Prisma__DeliveryClient<Delivery | null, null>, Prisma__DeliveryClient<DeliveryGetPayload<T> | null, null>>
+
+    /**
+     * Find the first Delivery that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeliveryFindFirstArgs} args - Arguments to find a Delivery
+     * @example
+     * // Get one Delivery
+     * const delivery = await prisma.delivery.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirst<T extends DeliveryFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args?: SelectSubset<T, DeliveryFindFirstArgs>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'Delivery'> extends True ? CheckSelect<T, Prisma__DeliveryClient<Delivery>, Prisma__DeliveryClient<DeliveryGetPayload<T>>> : CheckSelect<T, Prisma__DeliveryClient<Delivery | null, null>, Prisma__DeliveryClient<DeliveryGetPayload<T> | null, null>>
+
+    /**
+     * Find zero or more Deliveries that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeliveryFindManyArgs=} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Deliveries
+     * const deliveries = await prisma.delivery.findMany()
+     * 
+     * // Get first 10 Deliveries
+     * const deliveries = await prisma.delivery.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const deliveryWithIdOnly = await prisma.delivery.findMany({ select: { id: true } })
+     * 
+    **/
+    findMany<T extends DeliveryFindManyArgs>(
+      args?: SelectSubset<T, DeliveryFindManyArgs>
+    ): CheckSelect<T, PrismaPromise<Array<Delivery>>, PrismaPromise<Array<DeliveryGetPayload<T>>>>
+
+    /**
+     * Create a Delivery.
+     * @param {DeliveryCreateArgs} args - Arguments to create a Delivery.
+     * @example
+     * // Create one Delivery
+     * const Delivery = await prisma.delivery.create({
+     *   data: {
+     *     // ... data to create a Delivery
+     *   }
+     * })
+     * 
+    **/
+    create<T extends DeliveryCreateArgs>(
+      args: SelectSubset<T, DeliveryCreateArgs>
+    ): CheckSelect<T, Prisma__DeliveryClient<Delivery>, Prisma__DeliveryClient<DeliveryGetPayload<T>>>
+
+    /**
+     * Create many Deliveries.
+     *     @param {DeliveryCreateManyArgs} args - Arguments to create many Deliveries.
+     *     @example
+     *     // Create many Deliveries
+     *     const delivery = await prisma.delivery.createMany({
+     *       data: {
+     *         // ... provide data here
+     *       }
+     *     })
+     *     
+    **/
+    createMany<T extends DeliveryCreateManyArgs>(
+      args?: SelectSubset<T, DeliveryCreateManyArgs>
+    ): PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Delivery.
+     * @param {DeliveryDeleteArgs} args - Arguments to delete one Delivery.
+     * @example
+     * // Delete one Delivery
+     * const Delivery = await prisma.delivery.delete({
+     *   where: {
+     *     // ... filter to delete one Delivery
+     *   }
+     * })
+     * 
+    **/
+    delete<T extends DeliveryDeleteArgs>(
+      args: SelectSubset<T, DeliveryDeleteArgs>
+    ): CheckSelect<T, Prisma__DeliveryClient<Delivery>, Prisma__DeliveryClient<DeliveryGetPayload<T>>>
+
+    /**
+     * Update one Delivery.
+     * @param {DeliveryUpdateArgs} args - Arguments to update one Delivery.
+     * @example
+     * // Update one Delivery
+     * const delivery = await prisma.delivery.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    update<T extends DeliveryUpdateArgs>(
+      args: SelectSubset<T, DeliveryUpdateArgs>
+    ): CheckSelect<T, Prisma__DeliveryClient<Delivery>, Prisma__DeliveryClient<DeliveryGetPayload<T>>>
+
+    /**
+     * Delete zero or more Deliveries.
+     * @param {DeliveryDeleteManyArgs} args - Arguments to filter Deliveries to delete.
+     * @example
+     * // Delete a few Deliveries
+     * const { count } = await prisma.delivery.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+    **/
+    deleteMany<T extends DeliveryDeleteManyArgs>(
+      args?: SelectSubset<T, DeliveryDeleteManyArgs>
+    ): PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Deliveries.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeliveryUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Deliveries
+     * const delivery = await prisma.delivery.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    updateMany<T extends DeliveryUpdateManyArgs>(
+      args: SelectSubset<T, DeliveryUpdateManyArgs>
+    ): PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Delivery.
+     * @param {DeliveryUpsertArgs} args - Arguments to update or create a Delivery.
+     * @example
+     * // Update or create a Delivery
+     * const delivery = await prisma.delivery.upsert({
+     *   create: {
+     *     // ... data to create a Delivery
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Delivery we want to update
+     *   }
+     * })
+    **/
+    upsert<T extends DeliveryUpsertArgs>(
+      args: SelectSubset<T, DeliveryUpsertArgs>
+    ): CheckSelect<T, Prisma__DeliveryClient<Delivery>, Prisma__DeliveryClient<DeliveryGetPayload<T>>>
+
+    /**
+     * Find one Delivery that matches the filter or throw
+     * `NotFoundError` if no matches were found.
+     * @param {DeliveryFindUniqueOrThrowArgs} args - Arguments to find a Delivery
+     * @example
+     * // Get one Delivery
+     * const delivery = await prisma.delivery.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends DeliveryFindUniqueOrThrowArgs>(
+      args?: SelectSubset<T, DeliveryFindUniqueOrThrowArgs>
+    ): CheckSelect<T, Prisma__DeliveryClient<Delivery>, Prisma__DeliveryClient<DeliveryGetPayload<T>>>
+
+    /**
+     * Find the first Delivery that matches the filter or
+     * throw `NotFoundError` if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeliveryFindFirstOrThrowArgs} args - Arguments to find a Delivery
+     * @example
+     * // Get one Delivery
+     * const delivery = await prisma.delivery.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends DeliveryFindFirstOrThrowArgs>(
+      args?: SelectSubset<T, DeliveryFindFirstOrThrowArgs>
+    ): CheckSelect<T, Prisma__DeliveryClient<Delivery>, Prisma__DeliveryClient<DeliveryGetPayload<T>>>
+
+    /**
+     * Count the number of Deliveries.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeliveryCountArgs} args - Arguments to filter Deliveries to count.
+     * @example
+     * // Count the number of Deliveries
+     * const count = await prisma.delivery.count({
+     *   where: {
+     *     // ... the filter for the Deliveries we want to count
+     *   }
+     * })
+    **/
+    count<T extends DeliveryCountArgs>(
+      args?: Subset<T, DeliveryCountArgs>,
+    ): PrismaPromise<
+      T extends _Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], DeliveryCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Delivery.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeliveryAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DeliveryAggregateArgs>(args: Subset<T, DeliveryAggregateArgs>): PrismaPromise<GetDeliveryAggregateType<T>>
+
+    /**
+     * Group by Delivery.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeliveryGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends DeliveryGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: DeliveryGroupByArgs['orderBy'] }
+        : { orderBy?: DeliveryGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends TupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, DeliveryGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDeliveryGroupByPayload<T> : PrismaPromise<InputErrors>
+
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Delivery.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export class Prisma__DeliveryClient<T, Null = never> implements PrismaPromise<T> {
+    [prisma]: true;
+    private readonly _dmmf;
+    private readonly _fetcher;
+    private readonly _queryType;
+    private readonly _rootField;
+    private readonly _clientMethod;
+    private readonly _args;
+    private readonly _dataPath;
+    private readonly _errorFormat;
+    private readonly _measurePerformance?;
+    private _isList;
+    private _callsite;
+    private _requestPromise?;
+    constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
+    readonly [Symbol.toStringTag]: 'PrismaClientPromise';
+
+    account_deliveries<T extends AccountDeliveryFindManyArgs = {}>(args?: Subset<T, AccountDeliveryFindManyArgs>): CheckSelect<T, PrismaPromise<Array<AccountDelivery>| Null>, PrismaPromise<Array<AccountDeliveryGetPayload<T>>| Null>>;
+
+    private get _document();
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): Promise<T>;
+  }
+
+
+
+  // Custom InputTypes
+
+  /**
+   * Delivery base type for findUnique actions
+   */
+  export type DeliveryFindUniqueArgsBase = {
+    /**
+     * Select specific fields to fetch from the Delivery
+     * 
+    **/
+    select?: DeliverySelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: DeliveryInclude | null
+    /**
+     * Filter, which Delivery to fetch.
+     * 
+    **/
+    where: DeliveryWhereUniqueInput
+  }
+
+  /**
+   * Delivery: findUnique
+   */
+  export interface DeliveryFindUniqueArgs extends DeliveryFindUniqueArgsBase {
+   /**
+    * Throw an Error if query returns no results
+    * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
+    */
+    rejectOnNotFound?: RejectOnNotFound
+  }
+      
+
+  /**
+   * Delivery base type for findFirst actions
+   */
+  export type DeliveryFindFirstArgsBase = {
+    /**
+     * Select specific fields to fetch from the Delivery
+     * 
+    **/
+    select?: DeliverySelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: DeliveryInclude | null
+    /**
+     * Filter, which Delivery to fetch.
+     * 
+    **/
+    where?: DeliveryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Deliveries to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<DeliveryOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Deliveries.
+     * 
+    **/
+    cursor?: DeliveryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Deliveries from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Deliveries.
+     * 
+    **/
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Deliveries.
+     * 
+    **/
+    distinct?: Enumerable<DeliveryScalarFieldEnum>
+  }
+
+  /**
+   * Delivery: findFirst
+   */
+  export interface DeliveryFindFirstArgs extends DeliveryFindFirstArgsBase {
+   /**
+    * Throw an Error if query returns no results
+    * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
+    */
+    rejectOnNotFound?: RejectOnNotFound
+  }
+      
+
+  /**
+   * Delivery findMany
+   */
+  export type DeliveryFindManyArgs = {
+    /**
+     * Select specific fields to fetch from the Delivery
+     * 
+    **/
+    select?: DeliverySelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: DeliveryInclude | null
+    /**
+     * Filter, which Deliveries to fetch.
+     * 
+    **/
+    where?: DeliveryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Deliveries to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<DeliveryOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Deliveries.
+     * 
+    **/
+    cursor?: DeliveryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Deliveries from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Deliveries.
+     * 
+    **/
+    skip?: number
+    distinct?: Enumerable<DeliveryScalarFieldEnum>
+  }
+
+
+  /**
+   * Delivery create
+   */
+  export type DeliveryCreateArgs = {
+    /**
+     * Select specific fields to fetch from the Delivery
+     * 
+    **/
+    select?: DeliverySelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: DeliveryInclude | null
+    /**
+     * The data needed to create a Delivery.
+     * 
+    **/
+    data: XOR<DeliveryCreateInput, DeliveryUncheckedCreateInput>
+  }
+
+
+  /**
+   * Delivery createMany
+   */
+  export type DeliveryCreateManyArgs = {
+    /**
+     * The data used to create many Deliveries.
+     * 
+    **/
+    data: Enumerable<DeliveryCreateManyInput>
+    skipDuplicates?: boolean
+  }
+
+
+  /**
+   * Delivery update
+   */
+  export type DeliveryUpdateArgs = {
+    /**
+     * Select specific fields to fetch from the Delivery
+     * 
+    **/
+    select?: DeliverySelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: DeliveryInclude | null
+    /**
+     * The data needed to update a Delivery.
+     * 
+    **/
+    data: XOR<DeliveryUpdateInput, DeliveryUncheckedUpdateInput>
+    /**
+     * Choose, which Delivery to update.
+     * 
+    **/
+    where: DeliveryWhereUniqueInput
+  }
+
+
+  /**
+   * Delivery updateMany
+   */
+  export type DeliveryUpdateManyArgs = {
+    /**
+     * The data used to update Deliveries.
+     * 
+    **/
+    data: XOR<DeliveryUpdateManyMutationInput, DeliveryUncheckedUpdateManyInput>
+    /**
+     * Filter which Deliveries to update
+     * 
+    **/
+    where?: DeliveryWhereInput
+  }
+
+
+  /**
+   * Delivery upsert
+   */
+  export type DeliveryUpsertArgs = {
+    /**
+     * Select specific fields to fetch from the Delivery
+     * 
+    **/
+    select?: DeliverySelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: DeliveryInclude | null
+    /**
+     * The filter to search for the Delivery to update in case it exists.
+     * 
+    **/
+    where: DeliveryWhereUniqueInput
+    /**
+     * In case the Delivery found by the `where` argument doesn't exist, create a new Delivery with this data.
+     * 
+    **/
+    create: XOR<DeliveryCreateInput, DeliveryUncheckedCreateInput>
+    /**
+     * In case the Delivery was found with the provided `where` argument, update it with this data.
+     * 
+    **/
+    update: XOR<DeliveryUpdateInput, DeliveryUncheckedUpdateInput>
+  }
+
+
+  /**
+   * Delivery delete
+   */
+  export type DeliveryDeleteArgs = {
+    /**
+     * Select specific fields to fetch from the Delivery
+     * 
+    **/
+    select?: DeliverySelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: DeliveryInclude | null
+    /**
+     * Filter which Delivery to delete.
+     * 
+    **/
+    where: DeliveryWhereUniqueInput
+  }
+
+
+  /**
+   * Delivery deleteMany
+   */
+  export type DeliveryDeleteManyArgs = {
+    /**
+     * Filter which Deliveries to delete
+     * 
+    **/
+    where?: DeliveryWhereInput
+  }
+
+
+  /**
+   * Delivery: findUniqueOrThrow
+   */
+  export type DeliveryFindUniqueOrThrowArgs = DeliveryFindUniqueArgsBase
+      
+
+  /**
+   * Delivery: findFirstOrThrow
+   */
+  export type DeliveryFindFirstOrThrowArgs = DeliveryFindFirstArgsBase
+      
+
+  /**
+   * Delivery without action
+   */
+  export type DeliveryArgs = {
+    /**
+     * Select specific fields to fetch from the Delivery
+     * 
+    **/
+    select?: DeliverySelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: DeliveryInclude | null
+  }
+
+
+
+  /**
+   * Model AccountDelivery
+   */
+
+
+  export type AggregateAccountDelivery = {
+    _count: AccountDeliveryCountAggregateOutputType | null
+    _min: AccountDeliveryMinAggregateOutputType | null
+    _max: AccountDeliveryMaxAggregateOutputType | null
+  }
+
+  export type AccountDeliveryMinAggregateOutputType = {
+    account_id: string | null
+    delivery_id: string | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type AccountDeliveryMaxAggregateOutputType = {
+    account_id: string | null
+    delivery_id: string | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type AccountDeliveryCountAggregateOutputType = {
+    account_id: number
+    delivery_id: number
+    created_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type AccountDeliveryMinAggregateInputType = {
+    account_id?: true
+    delivery_id?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type AccountDeliveryMaxAggregateInputType = {
+    account_id?: true
+    delivery_id?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type AccountDeliveryCountAggregateInputType = {
+    account_id?: true
+    delivery_id?: true
+    created_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type AccountDeliveryAggregateArgs = {
+    /**
+     * Filter which AccountDelivery to aggregate.
+     * 
+    **/
+    where?: AccountDeliveryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AccountDeliveries to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<AccountDeliveryOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     * 
+    **/
+    cursor?: AccountDeliveryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AccountDeliveries from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AccountDeliveries.
+     * 
+    **/
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AccountDeliveries
+    **/
+    _count?: true | AccountDeliveryCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AccountDeliveryMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AccountDeliveryMaxAggregateInputType
+  }
+
+  export type GetAccountDeliveryAggregateType<T extends AccountDeliveryAggregateArgs> = {
+        [P in keyof T & keyof AggregateAccountDelivery]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAccountDelivery[P]>
+      : GetScalarType<T[P], AggregateAccountDelivery[P]>
+  }
+
+
+
+
+  export type AccountDeliveryGroupByArgs = {
+    where?: AccountDeliveryWhereInput
+    orderBy?: Enumerable<AccountDeliveryOrderByWithAggregationInput>
+    by: Array<AccountDeliveryScalarFieldEnum>
+    having?: AccountDeliveryScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AccountDeliveryCountAggregateInputType | true
+    _min?: AccountDeliveryMinAggregateInputType
+    _max?: AccountDeliveryMaxAggregateInputType
+  }
+
+
+  export type AccountDeliveryGroupByOutputType = {
+    account_id: string
+    delivery_id: string
+    created_at: Date
+    updated_at: Date
+    _count: AccountDeliveryCountAggregateOutputType | null
+    _min: AccountDeliveryMinAggregateOutputType | null
+    _max: AccountDeliveryMaxAggregateOutputType | null
+  }
+
+  type GetAccountDeliveryGroupByPayload<T extends AccountDeliveryGroupByArgs> = PrismaPromise<
+    Array<
+      PickArray<AccountDeliveryGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AccountDeliveryGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AccountDeliveryGroupByOutputType[P]>
+            : GetScalarType<T[P], AccountDeliveryGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AccountDeliverySelect = {
+    account_id?: boolean
+    account?: boolean | AccountArgs
+    delivery_id?: boolean
+    delivery?: boolean | DeliveryArgs
+    created_at?: boolean
+    updated_at?: boolean
+  }
+
+  export type AccountDeliveryInclude = {
+    account?: boolean | AccountArgs
+    delivery?: boolean | DeliveryArgs
+  }
+
+  export type AccountDeliveryGetPayload<
+    S extends boolean | null | undefined | AccountDeliveryArgs,
+    U = keyof S
+      > = S extends true
+        ? AccountDelivery
+    : S extends undefined
+    ? never
+    : S extends AccountDeliveryArgs | AccountDeliveryFindManyArgs
+    ?'include' extends U
+    ? AccountDelivery  & {
+    [P in TrueKeys<S['include']>]:
+        P extends 'account' ? AccountGetPayload<Exclude<S['include'], undefined | null>[P]> :
+        P extends 'delivery' ? DeliveryGetPayload<Exclude<S['include'], undefined | null>[P]> :  never
+  } 
+    : 'select' extends U
+    ? {
+    [P in TrueKeys<S['select']>]:
+        P extends 'account' ? AccountGetPayload<Exclude<S['select'], undefined | null>[P]> :
+        P extends 'delivery' ? DeliveryGetPayload<Exclude<S['select'], undefined | null>[P]> :  P extends keyof AccountDelivery ? AccountDelivery[P] : never
+  } 
+    : AccountDelivery
+  : AccountDelivery
+
+
+  type AccountDeliveryCountArgs = Merge<
+    Omit<AccountDeliveryFindManyArgs, 'select' | 'include'> & {
+      select?: AccountDeliveryCountAggregateInputType | true
+    }
+  >
+
+  export interface AccountDeliveryDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
+    /**
+     * Find zero or one AccountDelivery that matches the filter.
+     * @param {AccountDeliveryFindUniqueArgs} args - Arguments to find a AccountDelivery
+     * @example
+     * // Get one AccountDelivery
+     * const accountDelivery = await prisma.accountDelivery.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUnique<T extends AccountDeliveryFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args: SelectSubset<T, AccountDeliveryFindUniqueArgs>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'AccountDelivery'> extends True ? CheckSelect<T, Prisma__AccountDeliveryClient<AccountDelivery>, Prisma__AccountDeliveryClient<AccountDeliveryGetPayload<T>>> : CheckSelect<T, Prisma__AccountDeliveryClient<AccountDelivery | null, null>, Prisma__AccountDeliveryClient<AccountDeliveryGetPayload<T> | null, null>>
+
+    /**
+     * Find the first AccountDelivery that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountDeliveryFindFirstArgs} args - Arguments to find a AccountDelivery
+     * @example
+     * // Get one AccountDelivery
+     * const accountDelivery = await prisma.accountDelivery.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirst<T extends AccountDeliveryFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args?: SelectSubset<T, AccountDeliveryFindFirstArgs>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'AccountDelivery'> extends True ? CheckSelect<T, Prisma__AccountDeliveryClient<AccountDelivery>, Prisma__AccountDeliveryClient<AccountDeliveryGetPayload<T>>> : CheckSelect<T, Prisma__AccountDeliveryClient<AccountDelivery | null, null>, Prisma__AccountDeliveryClient<AccountDeliveryGetPayload<T> | null, null>>
+
+    /**
+     * Find zero or more AccountDeliveries that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountDeliveryFindManyArgs=} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AccountDeliveries
+     * const accountDeliveries = await prisma.accountDelivery.findMany()
+     * 
+     * // Get first 10 AccountDeliveries
+     * const accountDeliveries = await prisma.accountDelivery.findMany({ take: 10 })
+     * 
+     * // Only select the `account_id`
+     * const accountDeliveryWithAccount_idOnly = await prisma.accountDelivery.findMany({ select: { account_id: true } })
+     * 
+    **/
+    findMany<T extends AccountDeliveryFindManyArgs>(
+      args?: SelectSubset<T, AccountDeliveryFindManyArgs>
+    ): CheckSelect<T, PrismaPromise<Array<AccountDelivery>>, PrismaPromise<Array<AccountDeliveryGetPayload<T>>>>
+
+    /**
+     * Create a AccountDelivery.
+     * @param {AccountDeliveryCreateArgs} args - Arguments to create a AccountDelivery.
+     * @example
+     * // Create one AccountDelivery
+     * const AccountDelivery = await prisma.accountDelivery.create({
+     *   data: {
+     *     // ... data to create a AccountDelivery
+     *   }
+     * })
+     * 
+    **/
+    create<T extends AccountDeliveryCreateArgs>(
+      args: SelectSubset<T, AccountDeliveryCreateArgs>
+    ): CheckSelect<T, Prisma__AccountDeliveryClient<AccountDelivery>, Prisma__AccountDeliveryClient<AccountDeliveryGetPayload<T>>>
+
+    /**
+     * Create many AccountDeliveries.
+     *     @param {AccountDeliveryCreateManyArgs} args - Arguments to create many AccountDeliveries.
+     *     @example
+     *     // Create many AccountDeliveries
+     *     const accountDelivery = await prisma.accountDelivery.createMany({
+     *       data: {
+     *         // ... provide data here
+     *       }
+     *     })
+     *     
+    **/
+    createMany<T extends AccountDeliveryCreateManyArgs>(
+      args?: SelectSubset<T, AccountDeliveryCreateManyArgs>
+    ): PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a AccountDelivery.
+     * @param {AccountDeliveryDeleteArgs} args - Arguments to delete one AccountDelivery.
+     * @example
+     * // Delete one AccountDelivery
+     * const AccountDelivery = await prisma.accountDelivery.delete({
+     *   where: {
+     *     // ... filter to delete one AccountDelivery
+     *   }
+     * })
+     * 
+    **/
+    delete<T extends AccountDeliveryDeleteArgs>(
+      args: SelectSubset<T, AccountDeliveryDeleteArgs>
+    ): CheckSelect<T, Prisma__AccountDeliveryClient<AccountDelivery>, Prisma__AccountDeliveryClient<AccountDeliveryGetPayload<T>>>
+
+    /**
+     * Update one AccountDelivery.
+     * @param {AccountDeliveryUpdateArgs} args - Arguments to update one AccountDelivery.
+     * @example
+     * // Update one AccountDelivery
+     * const accountDelivery = await prisma.accountDelivery.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    update<T extends AccountDeliveryUpdateArgs>(
+      args: SelectSubset<T, AccountDeliveryUpdateArgs>
+    ): CheckSelect<T, Prisma__AccountDeliveryClient<AccountDelivery>, Prisma__AccountDeliveryClient<AccountDeliveryGetPayload<T>>>
+
+    /**
+     * Delete zero or more AccountDeliveries.
+     * @param {AccountDeliveryDeleteManyArgs} args - Arguments to filter AccountDeliveries to delete.
+     * @example
+     * // Delete a few AccountDeliveries
+     * const { count } = await prisma.accountDelivery.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+    **/
+    deleteMany<T extends AccountDeliveryDeleteManyArgs>(
+      args?: SelectSubset<T, AccountDeliveryDeleteManyArgs>
+    ): PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AccountDeliveries.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountDeliveryUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AccountDeliveries
+     * const accountDelivery = await prisma.accountDelivery.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    updateMany<T extends AccountDeliveryUpdateManyArgs>(
+      args: SelectSubset<T, AccountDeliveryUpdateManyArgs>
+    ): PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one AccountDelivery.
+     * @param {AccountDeliveryUpsertArgs} args - Arguments to update or create a AccountDelivery.
+     * @example
+     * // Update or create a AccountDelivery
+     * const accountDelivery = await prisma.accountDelivery.upsert({
+     *   create: {
+     *     // ... data to create a AccountDelivery
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AccountDelivery we want to update
+     *   }
+     * })
+    **/
+    upsert<T extends AccountDeliveryUpsertArgs>(
+      args: SelectSubset<T, AccountDeliveryUpsertArgs>
+    ): CheckSelect<T, Prisma__AccountDeliveryClient<AccountDelivery>, Prisma__AccountDeliveryClient<AccountDeliveryGetPayload<T>>>
+
+    /**
+     * Find one AccountDelivery that matches the filter or throw
+     * `NotFoundError` if no matches were found.
+     * @param {AccountDeliveryFindUniqueOrThrowArgs} args - Arguments to find a AccountDelivery
+     * @example
+     * // Get one AccountDelivery
+     * const accountDelivery = await prisma.accountDelivery.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends AccountDeliveryFindUniqueOrThrowArgs>(
+      args?: SelectSubset<T, AccountDeliveryFindUniqueOrThrowArgs>
+    ): CheckSelect<T, Prisma__AccountDeliveryClient<AccountDelivery>, Prisma__AccountDeliveryClient<AccountDeliveryGetPayload<T>>>
+
+    /**
+     * Find the first AccountDelivery that matches the filter or
+     * throw `NotFoundError` if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountDeliveryFindFirstOrThrowArgs} args - Arguments to find a AccountDelivery
+     * @example
+     * // Get one AccountDelivery
+     * const accountDelivery = await prisma.accountDelivery.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends AccountDeliveryFindFirstOrThrowArgs>(
+      args?: SelectSubset<T, AccountDeliveryFindFirstOrThrowArgs>
+    ): CheckSelect<T, Prisma__AccountDeliveryClient<AccountDelivery>, Prisma__AccountDeliveryClient<AccountDeliveryGetPayload<T>>>
+
+    /**
+     * Count the number of AccountDeliveries.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountDeliveryCountArgs} args - Arguments to filter AccountDeliveries to count.
+     * @example
+     * // Count the number of AccountDeliveries
+     * const count = await prisma.accountDelivery.count({
+     *   where: {
+     *     // ... the filter for the AccountDeliveries we want to count
+     *   }
+     * })
+    **/
+    count<T extends AccountDeliveryCountArgs>(
+      args?: Subset<T, AccountDeliveryCountArgs>,
+    ): PrismaPromise<
+      T extends _Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AccountDeliveryCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AccountDelivery.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountDeliveryAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AccountDeliveryAggregateArgs>(args: Subset<T, AccountDeliveryAggregateArgs>): PrismaPromise<GetAccountDeliveryAggregateType<T>>
+
+    /**
+     * Group by AccountDelivery.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AccountDeliveryGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AccountDeliveryGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AccountDeliveryGroupByArgs['orderBy'] }
+        : { orderBy?: AccountDeliveryGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends TupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AccountDeliveryGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAccountDeliveryGroupByPayload<T> : PrismaPromise<InputErrors>
+
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AccountDelivery.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export class Prisma__AccountDeliveryClient<T, Null = never> implements PrismaPromise<T> {
+    [prisma]: true;
+    private readonly _dmmf;
+    private readonly _fetcher;
+    private readonly _queryType;
+    private readonly _rootField;
+    private readonly _clientMethod;
+    private readonly _args;
+    private readonly _dataPath;
+    private readonly _errorFormat;
+    private readonly _measurePerformance?;
+    private _isList;
+    private _callsite;
+    private _requestPromise?;
+    constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
+    readonly [Symbol.toStringTag]: 'PrismaClientPromise';
+
+    account<T extends AccountArgs = {}>(args?: Subset<T, AccountArgs>): CheckSelect<T, Prisma__AccountClient<Account | Null>, Prisma__AccountClient<AccountGetPayload<T> | Null>>;
+
+    delivery<T extends DeliveryArgs = {}>(args?: Subset<T, DeliveryArgs>): CheckSelect<T, Prisma__DeliveryClient<Delivery | Null>, Prisma__DeliveryClient<DeliveryGetPayload<T> | Null>>;
+
+    private get _document();
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): Promise<T>;
+  }
+
+
+
+  // Custom InputTypes
+
+  /**
+   * AccountDelivery base type for findUnique actions
+   */
+  export type AccountDeliveryFindUniqueArgsBase = {
+    /**
+     * Select specific fields to fetch from the AccountDelivery
+     * 
+    **/
+    select?: AccountDeliverySelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: AccountDeliveryInclude | null
+    /**
+     * Filter, which AccountDelivery to fetch.
+     * 
+    **/
+    where: AccountDeliveryWhereUniqueInput
+  }
+
+  /**
+   * AccountDelivery: findUnique
+   */
+  export interface AccountDeliveryFindUniqueArgs extends AccountDeliveryFindUniqueArgsBase {
+   /**
+    * Throw an Error if query returns no results
+    * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
+    */
+    rejectOnNotFound?: RejectOnNotFound
+  }
+      
+
+  /**
+   * AccountDelivery base type for findFirst actions
+   */
+  export type AccountDeliveryFindFirstArgsBase = {
+    /**
+     * Select specific fields to fetch from the AccountDelivery
+     * 
+    **/
+    select?: AccountDeliverySelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: AccountDeliveryInclude | null
+    /**
+     * Filter, which AccountDelivery to fetch.
+     * 
+    **/
+    where?: AccountDeliveryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AccountDeliveries to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<AccountDeliveryOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AccountDeliveries.
+     * 
+    **/
+    cursor?: AccountDeliveryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AccountDeliveries from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AccountDeliveries.
+     * 
+    **/
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AccountDeliveries.
+     * 
+    **/
+    distinct?: Enumerable<AccountDeliveryScalarFieldEnum>
+  }
+
+  /**
+   * AccountDelivery: findFirst
+   */
+  export interface AccountDeliveryFindFirstArgs extends AccountDeliveryFindFirstArgsBase {
+   /**
+    * Throw an Error if query returns no results
+    * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
+    */
+    rejectOnNotFound?: RejectOnNotFound
+  }
+      
+
+  /**
+   * AccountDelivery findMany
+   */
+  export type AccountDeliveryFindManyArgs = {
+    /**
+     * Select specific fields to fetch from the AccountDelivery
+     * 
+    **/
+    select?: AccountDeliverySelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: AccountDeliveryInclude | null
+    /**
+     * Filter, which AccountDeliveries to fetch.
+     * 
+    **/
+    where?: AccountDeliveryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AccountDeliveries to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<AccountDeliveryOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AccountDeliveries.
+     * 
+    **/
+    cursor?: AccountDeliveryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AccountDeliveries from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AccountDeliveries.
+     * 
+    **/
+    skip?: number
+    distinct?: Enumerable<AccountDeliveryScalarFieldEnum>
+  }
+
+
+  /**
+   * AccountDelivery create
+   */
+  export type AccountDeliveryCreateArgs = {
+    /**
+     * Select specific fields to fetch from the AccountDelivery
+     * 
+    **/
+    select?: AccountDeliverySelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: AccountDeliveryInclude | null
+    /**
+     * The data needed to create a AccountDelivery.
+     * 
+    **/
+    data: XOR<AccountDeliveryCreateInput, AccountDeliveryUncheckedCreateInput>
+  }
+
+
+  /**
+   * AccountDelivery createMany
+   */
+  export type AccountDeliveryCreateManyArgs = {
+    /**
+     * The data used to create many AccountDeliveries.
+     * 
+    **/
+    data: Enumerable<AccountDeliveryCreateManyInput>
+    skipDuplicates?: boolean
+  }
+
+
+  /**
+   * AccountDelivery update
+   */
+  export type AccountDeliveryUpdateArgs = {
+    /**
+     * Select specific fields to fetch from the AccountDelivery
+     * 
+    **/
+    select?: AccountDeliverySelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: AccountDeliveryInclude | null
+    /**
+     * The data needed to update a AccountDelivery.
+     * 
+    **/
+    data: XOR<AccountDeliveryUpdateInput, AccountDeliveryUncheckedUpdateInput>
+    /**
+     * Choose, which AccountDelivery to update.
+     * 
+    **/
+    where: AccountDeliveryWhereUniqueInput
+  }
+
+
+  /**
+   * AccountDelivery updateMany
+   */
+  export type AccountDeliveryUpdateManyArgs = {
+    /**
+     * The data used to update AccountDeliveries.
+     * 
+    **/
+    data: XOR<AccountDeliveryUpdateManyMutationInput, AccountDeliveryUncheckedUpdateManyInput>
+    /**
+     * Filter which AccountDeliveries to update
+     * 
+    **/
+    where?: AccountDeliveryWhereInput
+  }
+
+
+  /**
+   * AccountDelivery upsert
+   */
+  export type AccountDeliveryUpsertArgs = {
+    /**
+     * Select specific fields to fetch from the AccountDelivery
+     * 
+    **/
+    select?: AccountDeliverySelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: AccountDeliveryInclude | null
+    /**
+     * The filter to search for the AccountDelivery to update in case it exists.
+     * 
+    **/
+    where: AccountDeliveryWhereUniqueInput
+    /**
+     * In case the AccountDelivery found by the `where` argument doesn't exist, create a new AccountDelivery with this data.
+     * 
+    **/
+    create: XOR<AccountDeliveryCreateInput, AccountDeliveryUncheckedCreateInput>
+    /**
+     * In case the AccountDelivery was found with the provided `where` argument, update it with this data.
+     * 
+    **/
+    update: XOR<AccountDeliveryUpdateInput, AccountDeliveryUncheckedUpdateInput>
+  }
+
+
+  /**
+   * AccountDelivery delete
+   */
+  export type AccountDeliveryDeleteArgs = {
+    /**
+     * Select specific fields to fetch from the AccountDelivery
+     * 
+    **/
+    select?: AccountDeliverySelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: AccountDeliveryInclude | null
+    /**
+     * Filter which AccountDelivery to delete.
+     * 
+    **/
+    where: AccountDeliveryWhereUniqueInput
+  }
+
+
+  /**
+   * AccountDelivery deleteMany
+   */
+  export type AccountDeliveryDeleteManyArgs = {
+    /**
+     * Filter which AccountDeliveries to delete
+     * 
+    **/
+    where?: AccountDeliveryWhereInput
+  }
+
+
+  /**
+   * AccountDelivery: findUniqueOrThrow
+   */
+  export type AccountDeliveryFindUniqueOrThrowArgs = AccountDeliveryFindUniqueArgsBase
+      
+
+  /**
+   * AccountDelivery: findFirstOrThrow
+   */
+  export type AccountDeliveryFindFirstOrThrowArgs = AccountDeliveryFindFirstArgsBase
+      
+
+  /**
+   * AccountDelivery without action
+   */
+  export type AccountDeliveryArgs = {
+    /**
+     * Select specific fields to fetch from the AccountDelivery
+     * 
+    **/
+    select?: AccountDeliverySelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: AccountDeliveryInclude | null
   }
 
 
@@ -39792,6 +41789,16 @@ export namespace Prisma {
   export type AccountConfigurationScalarFieldEnum = (typeof AccountConfigurationScalarFieldEnum)[keyof typeof AccountConfigurationScalarFieldEnum]
 
 
+  export const AccountDeliveryScalarFieldEnum: {
+    account_id: 'account_id',
+    delivery_id: 'delivery_id',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
+  };
+
+  export type AccountDeliveryScalarFieldEnum = (typeof AccountDeliveryScalarFieldEnum)[keyof typeof AccountDeliveryScalarFieldEnum]
+
+
   export const AccountScalarFieldEnum: {
     id: 'id',
     external_id: 'external_id',
@@ -39917,6 +41924,18 @@ export namespace Prisma {
   };
 
   export type CouponScalarFieldEnum = (typeof CouponScalarFieldEnum)[keyof typeof CouponScalarFieldEnum]
+
+
+  export const DeliveryScalarFieldEnum: {
+    id: 'id',
+    external_id: 'external_id',
+    name: 'name',
+    slug: 'slug',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
+  };
+
+  export type DeliveryScalarFieldEnum = (typeof DeliveryScalarFieldEnum)[keyof typeof DeliveryScalarFieldEnum]
 
 
   export const DeviceNotificationScalarFieldEnum: {
@@ -40345,6 +42364,7 @@ export namespace Prisma {
     updated_at?: DateTimeFilter | Date | string
     order?: OrderListRelationFilter
     account_activities?: AccountActivitiesListRelationFilter
+    account_deliveries?: AccountDeliveryListRelationFilter
     account_users?: AccountUserListRelationFilter
     domain?: StringFilter | string
     StockLabel?: StockLabelListRelationFilter
@@ -40385,6 +42405,7 @@ export namespace Prisma {
     updated_at?: SortOrder
     order?: OrderOrderByRelationAggregateInput
     account_activities?: AccountActivitiesOrderByRelationAggregateInput
+    account_deliveries?: AccountDeliveryOrderByRelationAggregateInput
     account_users?: AccountUserOrderByRelationAggregateInput
     domain?: SortOrder
     StockLabel?: StockLabelOrderByRelationAggregateInput
@@ -40610,6 +42631,105 @@ export namespace Prisma {
     external_id?: IntNullableWithAggregatesFilter | number | null
     name?: StringWithAggregatesFilter | string
     slug?: StringWithAggregatesFilter | string
+    created_at?: DateTimeWithAggregatesFilter | Date | string
+    updated_at?: DateTimeWithAggregatesFilter | Date | string
+  }
+
+  export type DeliveryWhereInput = {
+    AND?: Enumerable<DeliveryWhereInput>
+    OR?: Enumerable<DeliveryWhereInput>
+    NOT?: Enumerable<DeliveryWhereInput>
+    id?: StringFilter | string
+    external_id?: IntNullableFilter | number | null
+    name?: StringFilter | string
+    slug?: StringFilter | string
+    created_at?: DateTimeFilter | Date | string
+    updated_at?: DateTimeFilter | Date | string
+    account_deliveries?: AccountDeliveryListRelationFilter
+  }
+
+  export type DeliveryOrderByWithRelationInput = {
+    id?: SortOrder
+    external_id?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    account_deliveries?: AccountDeliveryOrderByRelationAggregateInput
+  }
+
+  export type DeliveryWhereUniqueInput = {
+    id?: string
+    external_id?: number
+  }
+
+  export type DeliveryOrderByWithAggregationInput = {
+    id?: SortOrder
+    external_id?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: DeliveryCountOrderByAggregateInput
+    _avg?: DeliveryAvgOrderByAggregateInput
+    _max?: DeliveryMaxOrderByAggregateInput
+    _min?: DeliveryMinOrderByAggregateInput
+    _sum?: DeliverySumOrderByAggregateInput
+  }
+
+  export type DeliveryScalarWhereWithAggregatesInput = {
+    AND?: Enumerable<DeliveryScalarWhereWithAggregatesInput>
+    OR?: Enumerable<DeliveryScalarWhereWithAggregatesInput>
+    NOT?: Enumerable<DeliveryScalarWhereWithAggregatesInput>
+    id?: StringWithAggregatesFilter | string
+    external_id?: IntNullableWithAggregatesFilter | number | null
+    name?: StringWithAggregatesFilter | string
+    slug?: StringWithAggregatesFilter | string
+    created_at?: DateTimeWithAggregatesFilter | Date | string
+    updated_at?: DateTimeWithAggregatesFilter | Date | string
+  }
+
+  export type AccountDeliveryWhereInput = {
+    AND?: Enumerable<AccountDeliveryWhereInput>
+    OR?: Enumerable<AccountDeliveryWhereInput>
+    NOT?: Enumerable<AccountDeliveryWhereInput>
+    account_id?: StringFilter | string
+    account?: XOR<AccountRelationFilter, AccountWhereInput>
+    delivery_id?: StringFilter | string
+    delivery?: XOR<DeliveryRelationFilter, DeliveryWhereInput>
+    created_at?: DateTimeFilter | Date | string
+    updated_at?: DateTimeFilter | Date | string
+  }
+
+  export type AccountDeliveryOrderByWithRelationInput = {
+    account_id?: SortOrder
+    account?: AccountOrderByWithRelationInput
+    delivery_id?: SortOrder
+    delivery?: DeliveryOrderByWithRelationInput
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type AccountDeliveryWhereUniqueInput = {
+    account_id_delivery_id?: AccountDeliveryAccount_idDelivery_idCompoundUniqueInput
+  }
+
+  export type AccountDeliveryOrderByWithAggregationInput = {
+    account_id?: SortOrder
+    delivery_id?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: AccountDeliveryCountOrderByAggregateInput
+    _max?: AccountDeliveryMaxOrderByAggregateInput
+    _min?: AccountDeliveryMinOrderByAggregateInput
+  }
+
+  export type AccountDeliveryScalarWhereWithAggregatesInput = {
+    AND?: Enumerable<AccountDeliveryScalarWhereWithAggregatesInput>
+    OR?: Enumerable<AccountDeliveryScalarWhereWithAggregatesInput>
+    NOT?: Enumerable<AccountDeliveryScalarWhereWithAggregatesInput>
+    account_id?: StringWithAggregatesFilter | string
+    delivery_id?: StringWithAggregatesFilter | string
     created_at?: DateTimeWithAggregatesFilter | Date | string
     updated_at?: DateTimeWithAggregatesFilter | Date | string
   }
@@ -42668,6 +44788,7 @@ export namespace Prisma {
     updated_at?: Date | string
     order?: OrderCreateNestedManyWithoutAccountInput
     account_activities?: AccountActivitiesCreateNestedManyWithoutAccountInput
+    account_deliveries?: AccountDeliveryCreateNestedManyWithoutAccountInput
     account_users?: AccountUserCreateNestedManyWithoutAccountInput
     domain: string
     StockLabel?: StockLabelCreateNestedManyWithoutAccountInput
@@ -42707,6 +44828,7 @@ export namespace Prisma {
     updated_at?: Date | string
     order?: OrderUncheckedCreateNestedManyWithoutAccountInput
     account_activities?: AccountActivitiesUncheckedCreateNestedManyWithoutAccountInput
+    account_deliveries?: AccountDeliveryUncheckedCreateNestedManyWithoutAccountInput
     account_users?: AccountUserUncheckedCreateNestedManyWithoutAccountInput
     domain: string
     StockLabel?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
@@ -42746,6 +44868,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     order?: OrderUpdateManyWithoutAccountNestedInput
     account_activities?: AccountActivitiesUpdateManyWithoutAccountNestedInput
+    account_deliveries?: AccountDeliveryUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
     StockLabel?: StockLabelUpdateManyWithoutAccountNestedInput
@@ -42785,6 +44908,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     order?: OrderUncheckedUpdateManyWithoutAccountNestedInput
     account_activities?: AccountActivitiesUncheckedUpdateManyWithoutAccountNestedInput
+    account_deliveries?: AccountDeliveryUncheckedUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUncheckedUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
     StockLabel?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
@@ -43045,6 +45169,120 @@ export namespace Prisma {
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DeliveryCreateInput = {
+    id?: string
+    external_id?: number | null
+    name: string
+    slug: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    account_deliveries?: AccountDeliveryCreateNestedManyWithoutDeliveryInput
+  }
+
+  export type DeliveryUncheckedCreateInput = {
+    id?: string
+    external_id?: number | null
+    name: string
+    slug: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    account_deliveries?: AccountDeliveryUncheckedCreateNestedManyWithoutDeliveryInput
+  }
+
+  export type DeliveryUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    account_deliveries?: AccountDeliveryUpdateManyWithoutDeliveryNestedInput
+  }
+
+  export type DeliveryUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    account_deliveries?: AccountDeliveryUncheckedUpdateManyWithoutDeliveryNestedInput
+  }
+
+  export type DeliveryCreateManyInput = {
+    id?: string
+    external_id?: number | null
+    name: string
+    slug: string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type DeliveryUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DeliveryUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AccountDeliveryCreateInput = {
+    account: AccountCreateNestedOneWithoutAccount_deliveriesInput
+    delivery: DeliveryCreateNestedOneWithoutAccount_deliveriesInput
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type AccountDeliveryUncheckedCreateInput = {
+    account_id: string
+    delivery_id: string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type AccountDeliveryUpdateInput = {
+    account?: AccountUpdateOneRequiredWithoutAccount_deliveriesNestedInput
+    delivery?: DeliveryUpdateOneRequiredWithoutAccount_deliveriesNestedInput
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AccountDeliveryUncheckedUpdateInput = {
+    account_id?: StringFieldUpdateOperationsInput | string
+    delivery_id?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AccountDeliveryCreateManyInput = {
+    account_id: string
+    delivery_id: string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type AccountDeliveryUpdateManyMutationInput = {
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AccountDeliveryUncheckedUpdateManyInput = {
+    account_id?: StringFieldUpdateOperationsInput | string
+    delivery_id?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -45659,6 +47897,12 @@ export namespace Prisma {
     none?: AccountActivitiesWhereInput
   }
 
+  export type AccountDeliveryListRelationFilter = {
+    every?: AccountDeliveryWhereInput
+    some?: AccountDeliveryWhereInput
+    none?: AccountDeliveryWhereInput
+  }
+
   export type AccountUserListRelationFilter = {
     every?: AccountUserWhereInput
     some?: AccountUserWhereInput
@@ -45694,6 +47938,10 @@ export namespace Prisma {
   }
 
   export type AccountActivitiesOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AccountDeliveryOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -45991,6 +48239,72 @@ export namespace Prisma {
 
   export type ActivitiesSumOrderByAggregateInput = {
     external_id?: SortOrder
+  }
+
+  export type DeliveryCountOrderByAggregateInput = {
+    id?: SortOrder
+    external_id?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type DeliveryAvgOrderByAggregateInput = {
+    external_id?: SortOrder
+  }
+
+  export type DeliveryMaxOrderByAggregateInput = {
+    id?: SortOrder
+    external_id?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type DeliveryMinOrderByAggregateInput = {
+    id?: SortOrder
+    external_id?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type DeliverySumOrderByAggregateInput = {
+    external_id?: SortOrder
+  }
+
+  export type DeliveryRelationFilter = {
+    is?: DeliveryWhereInput
+    isNot?: DeliveryWhereInput
+  }
+
+  export type AccountDeliveryAccount_idDelivery_idCompoundUniqueInput = {
+    account_id: string
+    delivery_id: string
+  }
+
+  export type AccountDeliveryCountOrderByAggregateInput = {
+    account_id?: SortOrder
+    delivery_id?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type AccountDeliveryMaxOrderByAggregateInput = {
+    account_id?: SortOrder
+    delivery_id?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type AccountDeliveryMinOrderByAggregateInput = {
+    account_id?: SortOrder
+    delivery_id?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
   }
 
   export type DateTimeNullableFilter = {
@@ -47751,6 +50065,13 @@ export namespace Prisma {
     connect?: Enumerable<AccountActivitiesWhereUniqueInput>
   }
 
+  export type AccountDeliveryCreateNestedManyWithoutAccountInput = {
+    create?: XOR<Enumerable<AccountDeliveryCreateWithoutAccountInput>, Enumerable<AccountDeliveryUncheckedCreateWithoutAccountInput>>
+    connectOrCreate?: Enumerable<AccountDeliveryCreateOrConnectWithoutAccountInput>
+    createMany?: AccountDeliveryCreateManyAccountInputEnvelope
+    connect?: Enumerable<AccountDeliveryWhereUniqueInput>
+  }
+
   export type AccountUserCreateNestedManyWithoutAccountInput = {
     create?: XOR<Enumerable<AccountUserCreateWithoutAccountInput>, Enumerable<AccountUserUncheckedCreateWithoutAccountInput>>
     connectOrCreate?: Enumerable<AccountUserCreateOrConnectWithoutAccountInput>
@@ -47797,6 +50118,13 @@ export namespace Prisma {
     connectOrCreate?: Enumerable<AccountActivitiesCreateOrConnectWithoutAccountInput>
     createMany?: AccountActivitiesCreateManyAccountInputEnvelope
     connect?: Enumerable<AccountActivitiesWhereUniqueInput>
+  }
+
+  export type AccountDeliveryUncheckedCreateNestedManyWithoutAccountInput = {
+    create?: XOR<Enumerable<AccountDeliveryCreateWithoutAccountInput>, Enumerable<AccountDeliveryUncheckedCreateWithoutAccountInput>>
+    connectOrCreate?: Enumerable<AccountDeliveryCreateOrConnectWithoutAccountInput>
+    createMany?: AccountDeliveryCreateManyAccountInputEnvelope
+    connect?: Enumerable<AccountDeliveryWhereUniqueInput>
   }
 
   export type AccountUserUncheckedCreateNestedManyWithoutAccountInput = {
@@ -47913,6 +50241,20 @@ export namespace Prisma {
     deleteMany?: Enumerable<AccountActivitiesScalarWhereInput>
   }
 
+  export type AccountDeliveryUpdateManyWithoutAccountNestedInput = {
+    create?: XOR<Enumerable<AccountDeliveryCreateWithoutAccountInput>, Enumerable<AccountDeliveryUncheckedCreateWithoutAccountInput>>
+    connectOrCreate?: Enumerable<AccountDeliveryCreateOrConnectWithoutAccountInput>
+    upsert?: Enumerable<AccountDeliveryUpsertWithWhereUniqueWithoutAccountInput>
+    createMany?: AccountDeliveryCreateManyAccountInputEnvelope
+    set?: Enumerable<AccountDeliveryWhereUniqueInput>
+    disconnect?: Enumerable<AccountDeliveryWhereUniqueInput>
+    delete?: Enumerable<AccountDeliveryWhereUniqueInput>
+    connect?: Enumerable<AccountDeliveryWhereUniqueInput>
+    update?: Enumerable<AccountDeliveryUpdateWithWhereUniqueWithoutAccountInput>
+    updateMany?: Enumerable<AccountDeliveryUpdateManyWithWhereWithoutAccountInput>
+    deleteMany?: Enumerable<AccountDeliveryScalarWhereInput>
+  }
+
   export type AccountUserUpdateManyWithoutAccountNestedInput = {
     create?: XOR<Enumerable<AccountUserCreateWithoutAccountInput>, Enumerable<AccountUserUncheckedCreateWithoutAccountInput>>
     connectOrCreate?: Enumerable<AccountUserCreateOrConnectWithoutAccountInput>
@@ -48009,6 +50351,20 @@ export namespace Prisma {
     update?: Enumerable<AccountActivitiesUpdateWithWhereUniqueWithoutAccountInput>
     updateMany?: Enumerable<AccountActivitiesUpdateManyWithWhereWithoutAccountInput>
     deleteMany?: Enumerable<AccountActivitiesScalarWhereInput>
+  }
+
+  export type AccountDeliveryUncheckedUpdateManyWithoutAccountNestedInput = {
+    create?: XOR<Enumerable<AccountDeliveryCreateWithoutAccountInput>, Enumerable<AccountDeliveryUncheckedCreateWithoutAccountInput>>
+    connectOrCreate?: Enumerable<AccountDeliveryCreateOrConnectWithoutAccountInput>
+    upsert?: Enumerable<AccountDeliveryUpsertWithWhereUniqueWithoutAccountInput>
+    createMany?: AccountDeliveryCreateManyAccountInputEnvelope
+    set?: Enumerable<AccountDeliveryWhereUniqueInput>
+    disconnect?: Enumerable<AccountDeliveryWhereUniqueInput>
+    delete?: Enumerable<AccountDeliveryWhereUniqueInput>
+    connect?: Enumerable<AccountDeliveryWhereUniqueInput>
+    update?: Enumerable<AccountDeliveryUpdateWithWhereUniqueWithoutAccountInput>
+    updateMany?: Enumerable<AccountDeliveryUpdateManyWithWhereWithoutAccountInput>
+    deleteMany?: Enumerable<AccountDeliveryScalarWhereInput>
   }
 
   export type AccountUserUncheckedUpdateManyWithoutAccountNestedInput = {
@@ -48131,6 +50487,76 @@ export namespace Prisma {
     update?: Enumerable<AccountActivitiesUpdateWithWhereUniqueWithoutActivitiesInput>
     updateMany?: Enumerable<AccountActivitiesUpdateManyWithWhereWithoutActivitiesInput>
     deleteMany?: Enumerable<AccountActivitiesScalarWhereInput>
+  }
+
+  export type AccountDeliveryCreateNestedManyWithoutDeliveryInput = {
+    create?: XOR<Enumerable<AccountDeliveryCreateWithoutDeliveryInput>, Enumerable<AccountDeliveryUncheckedCreateWithoutDeliveryInput>>
+    connectOrCreate?: Enumerable<AccountDeliveryCreateOrConnectWithoutDeliveryInput>
+    createMany?: AccountDeliveryCreateManyDeliveryInputEnvelope
+    connect?: Enumerable<AccountDeliveryWhereUniqueInput>
+  }
+
+  export type AccountDeliveryUncheckedCreateNestedManyWithoutDeliveryInput = {
+    create?: XOR<Enumerable<AccountDeliveryCreateWithoutDeliveryInput>, Enumerable<AccountDeliveryUncheckedCreateWithoutDeliveryInput>>
+    connectOrCreate?: Enumerable<AccountDeliveryCreateOrConnectWithoutDeliveryInput>
+    createMany?: AccountDeliveryCreateManyDeliveryInputEnvelope
+    connect?: Enumerable<AccountDeliveryWhereUniqueInput>
+  }
+
+  export type AccountDeliveryUpdateManyWithoutDeliveryNestedInput = {
+    create?: XOR<Enumerable<AccountDeliveryCreateWithoutDeliveryInput>, Enumerable<AccountDeliveryUncheckedCreateWithoutDeliveryInput>>
+    connectOrCreate?: Enumerable<AccountDeliveryCreateOrConnectWithoutDeliveryInput>
+    upsert?: Enumerable<AccountDeliveryUpsertWithWhereUniqueWithoutDeliveryInput>
+    createMany?: AccountDeliveryCreateManyDeliveryInputEnvelope
+    set?: Enumerable<AccountDeliveryWhereUniqueInput>
+    disconnect?: Enumerable<AccountDeliveryWhereUniqueInput>
+    delete?: Enumerable<AccountDeliveryWhereUniqueInput>
+    connect?: Enumerable<AccountDeliveryWhereUniqueInput>
+    update?: Enumerable<AccountDeliveryUpdateWithWhereUniqueWithoutDeliveryInput>
+    updateMany?: Enumerable<AccountDeliveryUpdateManyWithWhereWithoutDeliveryInput>
+    deleteMany?: Enumerable<AccountDeliveryScalarWhereInput>
+  }
+
+  export type AccountDeliveryUncheckedUpdateManyWithoutDeliveryNestedInput = {
+    create?: XOR<Enumerable<AccountDeliveryCreateWithoutDeliveryInput>, Enumerable<AccountDeliveryUncheckedCreateWithoutDeliveryInput>>
+    connectOrCreate?: Enumerable<AccountDeliveryCreateOrConnectWithoutDeliveryInput>
+    upsert?: Enumerable<AccountDeliveryUpsertWithWhereUniqueWithoutDeliveryInput>
+    createMany?: AccountDeliveryCreateManyDeliveryInputEnvelope
+    set?: Enumerable<AccountDeliveryWhereUniqueInput>
+    disconnect?: Enumerable<AccountDeliveryWhereUniqueInput>
+    delete?: Enumerable<AccountDeliveryWhereUniqueInput>
+    connect?: Enumerable<AccountDeliveryWhereUniqueInput>
+    update?: Enumerable<AccountDeliveryUpdateWithWhereUniqueWithoutDeliveryInput>
+    updateMany?: Enumerable<AccountDeliveryUpdateManyWithWhereWithoutDeliveryInput>
+    deleteMany?: Enumerable<AccountDeliveryScalarWhereInput>
+  }
+
+  export type AccountCreateNestedOneWithoutAccount_deliveriesInput = {
+    create?: XOR<AccountCreateWithoutAccount_deliveriesInput, AccountUncheckedCreateWithoutAccount_deliveriesInput>
+    connectOrCreate?: AccountCreateOrConnectWithoutAccount_deliveriesInput
+    connect?: AccountWhereUniqueInput
+  }
+
+  export type DeliveryCreateNestedOneWithoutAccount_deliveriesInput = {
+    create?: XOR<DeliveryCreateWithoutAccount_deliveriesInput, DeliveryUncheckedCreateWithoutAccount_deliveriesInput>
+    connectOrCreate?: DeliveryCreateOrConnectWithoutAccount_deliveriesInput
+    connect?: DeliveryWhereUniqueInput
+  }
+
+  export type AccountUpdateOneRequiredWithoutAccount_deliveriesNestedInput = {
+    create?: XOR<AccountCreateWithoutAccount_deliveriesInput, AccountUncheckedCreateWithoutAccount_deliveriesInput>
+    connectOrCreate?: AccountCreateOrConnectWithoutAccount_deliveriesInput
+    upsert?: AccountUpsertWithoutAccount_deliveriesInput
+    connect?: AccountWhereUniqueInput
+    update?: XOR<AccountUpdateWithoutAccount_deliveriesInput, AccountUncheckedUpdateWithoutAccount_deliveriesInput>
+  }
+
+  export type DeliveryUpdateOneRequiredWithoutAccount_deliveriesNestedInput = {
+    create?: XOR<DeliveryCreateWithoutAccount_deliveriesInput, DeliveryUncheckedCreateWithoutAccount_deliveriesInput>
+    connectOrCreate?: DeliveryCreateOrConnectWithoutAccount_deliveriesInput
+    upsert?: DeliveryUpsertWithoutAccount_deliveriesInput
+    connect?: DeliveryWhereUniqueInput
+    update?: XOR<DeliveryUpdateWithoutAccount_deliveriesInput, DeliveryUncheckedUpdateWithoutAccount_deliveriesInput>
   }
 
   export type DeviceUserCreateNestedManyWithoutUserInput = {
@@ -50760,6 +53186,28 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type AccountDeliveryCreateWithoutAccountInput = {
+    delivery: DeliveryCreateNestedOneWithoutAccount_deliveriesInput
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type AccountDeliveryUncheckedCreateWithoutAccountInput = {
+    delivery_id: string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type AccountDeliveryCreateOrConnectWithoutAccountInput = {
+    where: AccountDeliveryWhereUniqueInput
+    create: XOR<AccountDeliveryCreateWithoutAccountInput, AccountDeliveryUncheckedCreateWithoutAccountInput>
+  }
+
+  export type AccountDeliveryCreateManyAccountInputEnvelope = {
+    data: Enumerable<AccountDeliveryCreateManyAccountInput>
+    skipDuplicates?: boolean
+  }
+
   export type AccountUserCreateWithoutAccountInput = {
     id?: string
     user: UserCreateNestedOneWithoutAccount_userInput
@@ -50977,6 +53425,32 @@ export namespace Prisma {
     updated_at?: DateTimeFilter | Date | string
   }
 
+  export type AccountDeliveryUpsertWithWhereUniqueWithoutAccountInput = {
+    where: AccountDeliveryWhereUniqueInput
+    update: XOR<AccountDeliveryUpdateWithoutAccountInput, AccountDeliveryUncheckedUpdateWithoutAccountInput>
+    create: XOR<AccountDeliveryCreateWithoutAccountInput, AccountDeliveryUncheckedCreateWithoutAccountInput>
+  }
+
+  export type AccountDeliveryUpdateWithWhereUniqueWithoutAccountInput = {
+    where: AccountDeliveryWhereUniqueInput
+    data: XOR<AccountDeliveryUpdateWithoutAccountInput, AccountDeliveryUncheckedUpdateWithoutAccountInput>
+  }
+
+  export type AccountDeliveryUpdateManyWithWhereWithoutAccountInput = {
+    where: AccountDeliveryScalarWhereInput
+    data: XOR<AccountDeliveryUpdateManyMutationInput, AccountDeliveryUncheckedUpdateManyWithoutAccount_deliveriesInput>
+  }
+
+  export type AccountDeliveryScalarWhereInput = {
+    AND?: Enumerable<AccountDeliveryScalarWhereInput>
+    OR?: Enumerable<AccountDeliveryScalarWhereInput>
+    NOT?: Enumerable<AccountDeliveryScalarWhereInput>
+    account_id?: StringFilter | string
+    delivery_id?: StringFilter | string
+    created_at?: DateTimeFilter | Date | string
+    updated_at?: DateTimeFilter | Date | string
+  }
+
   export type AccountUserUpsertWithWhereUniqueWithoutAccountInput = {
     where: AccountUserWhereUniqueInput
     update: XOR<AccountUserUpdateWithoutAccountInput, AccountUserUncheckedUpdateWithoutAccountInput>
@@ -51078,6 +53552,7 @@ export namespace Prisma {
     updated_at?: Date | string
     order?: OrderCreateNestedManyWithoutAccountInput
     account_activities?: AccountActivitiesCreateNestedManyWithoutAccountInput
+    account_deliveries?: AccountDeliveryCreateNestedManyWithoutAccountInput
     account_users?: AccountUserCreateNestedManyWithoutAccountInput
     domain: string
     StockLabel?: StockLabelCreateNestedManyWithoutAccountInput
@@ -51116,6 +53591,7 @@ export namespace Prisma {
     updated_at?: Date | string
     order?: OrderUncheckedCreateNestedManyWithoutAccountInput
     account_activities?: AccountActivitiesUncheckedCreateNestedManyWithoutAccountInput
+    account_deliveries?: AccountDeliveryUncheckedCreateNestedManyWithoutAccountInput
     account_users?: AccountUserUncheckedCreateNestedManyWithoutAccountInput
     domain: string
     StockLabel?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
@@ -51164,6 +53640,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     order?: OrderUpdateManyWithoutAccountNestedInput
     account_activities?: AccountActivitiesUpdateManyWithoutAccountNestedInput
+    account_deliveries?: AccountDeliveryUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
     StockLabel?: StockLabelUpdateManyWithoutAccountNestedInput
@@ -51202,6 +53679,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     order?: OrderUncheckedUpdateManyWithoutAccountNestedInput
     account_activities?: AccountActivitiesUncheckedUpdateManyWithoutAccountNestedInput
+    account_deliveries?: AccountDeliveryUncheckedUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUncheckedUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
     StockLabel?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
@@ -51239,6 +53717,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     order?: OrderCreateNestedManyWithoutAccountInput
+    account_deliveries?: AccountDeliveryCreateNestedManyWithoutAccountInput
     account_users?: AccountUserCreateNestedManyWithoutAccountInput
     domain: string
     StockLabel?: StockLabelCreateNestedManyWithoutAccountInput
@@ -51277,6 +53756,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     order?: OrderUncheckedCreateNestedManyWithoutAccountInput
+    account_deliveries?: AccountDeliveryUncheckedCreateNestedManyWithoutAccountInput
     account_users?: AccountUserUncheckedCreateNestedManyWithoutAccountInput
     domain: string
     StockLabel?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
@@ -51348,6 +53828,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     order?: OrderUpdateManyWithoutAccountNestedInput
+    account_deliveries?: AccountDeliveryUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
     StockLabel?: StockLabelUpdateManyWithoutAccountNestedInput
@@ -51386,6 +53867,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     order?: OrderUncheckedUpdateManyWithoutAccountNestedInput
+    account_deliveries?: AccountDeliveryUncheckedUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUncheckedUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
     StockLabel?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
@@ -51452,6 +53934,256 @@ export namespace Prisma {
   export type AccountActivitiesUpdateManyWithWhereWithoutActivitiesInput = {
     where: AccountActivitiesScalarWhereInput
     data: XOR<AccountActivitiesUpdateManyMutationInput, AccountActivitiesUncheckedUpdateManyWithoutAccount_activitiesInput>
+  }
+
+  export type AccountDeliveryCreateWithoutDeliveryInput = {
+    account: AccountCreateNestedOneWithoutAccount_deliveriesInput
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type AccountDeliveryUncheckedCreateWithoutDeliveryInput = {
+    account_id: string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type AccountDeliveryCreateOrConnectWithoutDeliveryInput = {
+    where: AccountDeliveryWhereUniqueInput
+    create: XOR<AccountDeliveryCreateWithoutDeliveryInput, AccountDeliveryUncheckedCreateWithoutDeliveryInput>
+  }
+
+  export type AccountDeliveryCreateManyDeliveryInputEnvelope = {
+    data: Enumerable<AccountDeliveryCreateManyDeliveryInput>
+    skipDuplicates?: boolean
+  }
+
+  export type AccountDeliveryUpsertWithWhereUniqueWithoutDeliveryInput = {
+    where: AccountDeliveryWhereUniqueInput
+    update: XOR<AccountDeliveryUpdateWithoutDeliveryInput, AccountDeliveryUncheckedUpdateWithoutDeliveryInput>
+    create: XOR<AccountDeliveryCreateWithoutDeliveryInput, AccountDeliveryUncheckedCreateWithoutDeliveryInput>
+  }
+
+  export type AccountDeliveryUpdateWithWhereUniqueWithoutDeliveryInput = {
+    where: AccountDeliveryWhereUniqueInput
+    data: XOR<AccountDeliveryUpdateWithoutDeliveryInput, AccountDeliveryUncheckedUpdateWithoutDeliveryInput>
+  }
+
+  export type AccountDeliveryUpdateManyWithWhereWithoutDeliveryInput = {
+    where: AccountDeliveryScalarWhereInput
+    data: XOR<AccountDeliveryUpdateManyMutationInput, AccountDeliveryUncheckedUpdateManyWithoutAccount_deliveriesInput>
+  }
+
+  export type AccountCreateWithoutAccount_deliveriesInput = {
+    id?: string
+    external_id?: number | null
+    name: string
+    email: string
+    cpf_cnpj?: string | null
+    market_name: string
+    phone?: string | null
+    whatsapp?: string | null
+    logo?: string | null
+    person_type: PersonType
+    site?: string | null
+    social_reason?: string | null
+    facebook_url?: string | null
+    instagram_url?: string | null
+    banner?: string | null
+    gender: GenderType
+    campaign?: CampaignCreateNestedManyWithoutAccountInput
+    street: string
+    number: string
+    complement?: string | null
+    district: string
+    city: string
+    state: string
+    zipcode: string
+    country: string
+    plan?: PlanCreateNestedOneWithoutAccountInput
+    subscription?: SubscriptionCreateNestedManyWithoutAccountInput
+    created_at?: Date | string
+    updated_at?: Date | string
+    order?: OrderCreateNestedManyWithoutAccountInput
+    account_activities?: AccountActivitiesCreateNestedManyWithoutAccountInput
+    account_users?: AccountUserCreateNestedManyWithoutAccountInput
+    domain: string
+    StockLabel?: StockLabelCreateNestedManyWithoutAccountInput
+    account_configuration?: AccountConfigurationCreateNestedOneWithoutAccountInput
+    isActive?: boolean
+  }
+
+  export type AccountUncheckedCreateWithoutAccount_deliveriesInput = {
+    id?: string
+    external_id?: number | null
+    name: string
+    email: string
+    cpf_cnpj?: string | null
+    market_name: string
+    phone?: string | null
+    whatsapp?: string | null
+    logo?: string | null
+    person_type: PersonType
+    site?: string | null
+    social_reason?: string | null
+    facebook_url?: string | null
+    instagram_url?: string | null
+    banner?: string | null
+    gender: GenderType
+    campaign?: CampaignUncheckedCreateNestedManyWithoutAccountInput
+    street: string
+    number: string
+    complement?: string | null
+    district: string
+    city: string
+    state: string
+    zipcode: string
+    country: string
+    plan_id?: string | null
+    subscription?: SubscriptionUncheckedCreateNestedManyWithoutAccountInput
+    created_at?: Date | string
+    updated_at?: Date | string
+    order?: OrderUncheckedCreateNestedManyWithoutAccountInput
+    account_activities?: AccountActivitiesUncheckedCreateNestedManyWithoutAccountInput
+    account_users?: AccountUserUncheckedCreateNestedManyWithoutAccountInput
+    domain: string
+    StockLabel?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
+    account_configuration?: AccountConfigurationUncheckedCreateNestedOneWithoutAccountInput
+    isActive?: boolean
+  }
+
+  export type AccountCreateOrConnectWithoutAccount_deliveriesInput = {
+    where: AccountWhereUniqueInput
+    create: XOR<AccountCreateWithoutAccount_deliveriesInput, AccountUncheckedCreateWithoutAccount_deliveriesInput>
+  }
+
+  export type DeliveryCreateWithoutAccount_deliveriesInput = {
+    id?: string
+    external_id?: number | null
+    name: string
+    slug: string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type DeliveryUncheckedCreateWithoutAccount_deliveriesInput = {
+    id?: string
+    external_id?: number | null
+    name: string
+    slug: string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type DeliveryCreateOrConnectWithoutAccount_deliveriesInput = {
+    where: DeliveryWhereUniqueInput
+    create: XOR<DeliveryCreateWithoutAccount_deliveriesInput, DeliveryUncheckedCreateWithoutAccount_deliveriesInput>
+  }
+
+  export type AccountUpsertWithoutAccount_deliveriesInput = {
+    update: XOR<AccountUpdateWithoutAccount_deliveriesInput, AccountUncheckedUpdateWithoutAccount_deliveriesInput>
+    create: XOR<AccountCreateWithoutAccount_deliveriesInput, AccountUncheckedCreateWithoutAccount_deliveriesInput>
+  }
+
+  export type AccountUpdateWithoutAccount_deliveriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
+    market_name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    person_type?: EnumPersonTypeFieldUpdateOperationsInput | PersonType
+    site?: NullableStringFieldUpdateOperationsInput | string | null
+    social_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    facebook_url?: NullableStringFieldUpdateOperationsInput | string | null
+    instagram_url?: NullableStringFieldUpdateOperationsInput | string | null
+    banner?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
+    campaign?: CampaignUpdateManyWithoutAccountNestedInput
+    street?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    zipcode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    plan?: PlanUpdateOneWithoutAccountNestedInput
+    subscription?: SubscriptionUpdateManyWithoutAccountNestedInput
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    order?: OrderUpdateManyWithoutAccountNestedInput
+    account_activities?: AccountActivitiesUpdateManyWithoutAccountNestedInput
+    account_users?: AccountUserUpdateManyWithoutAccountNestedInput
+    domain?: StringFieldUpdateOperationsInput | string
+    StockLabel?: StockLabelUpdateManyWithoutAccountNestedInput
+    account_configuration?: AccountConfigurationUpdateOneWithoutAccountNestedInput
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type AccountUncheckedUpdateWithoutAccount_deliveriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
+    market_name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    person_type?: EnumPersonTypeFieldUpdateOperationsInput | PersonType
+    site?: NullableStringFieldUpdateOperationsInput | string | null
+    social_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    facebook_url?: NullableStringFieldUpdateOperationsInput | string | null
+    instagram_url?: NullableStringFieldUpdateOperationsInput | string | null
+    banner?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
+    campaign?: CampaignUncheckedUpdateManyWithoutAccountNestedInput
+    street?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    zipcode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    plan_id?: NullableStringFieldUpdateOperationsInput | string | null
+    subscription?: SubscriptionUncheckedUpdateManyWithoutAccountNestedInput
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    order?: OrderUncheckedUpdateManyWithoutAccountNestedInput
+    account_activities?: AccountActivitiesUncheckedUpdateManyWithoutAccountNestedInput
+    account_users?: AccountUserUncheckedUpdateManyWithoutAccountNestedInput
+    domain?: StringFieldUpdateOperationsInput | string
+    StockLabel?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
+    account_configuration?: AccountConfigurationUncheckedUpdateOneWithoutAccountNestedInput
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type DeliveryUpsertWithoutAccount_deliveriesInput = {
+    update: XOR<DeliveryUpdateWithoutAccount_deliveriesInput, DeliveryUncheckedUpdateWithoutAccount_deliveriesInput>
+    create: XOR<DeliveryCreateWithoutAccount_deliveriesInput, DeliveryUncheckedCreateWithoutAccount_deliveriesInput>
+  }
+
+  export type DeliveryUpdateWithoutAccount_deliveriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DeliveryUncheckedUpdateWithoutAccount_deliveriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type DeviceUserCreateWithoutUserInput = {
@@ -51574,6 +54306,7 @@ export namespace Prisma {
     updated_at?: Date | string
     order?: OrderCreateNestedManyWithoutAccountInput
     account_activities?: AccountActivitiesCreateNestedManyWithoutAccountInput
+    account_deliveries?: AccountDeliveryCreateNestedManyWithoutAccountInput
     domain: string
     StockLabel?: StockLabelCreateNestedManyWithoutAccountInput
     account_configuration?: AccountConfigurationCreateNestedOneWithoutAccountInput
@@ -51612,6 +54345,7 @@ export namespace Prisma {
     updated_at?: Date | string
     order?: OrderUncheckedCreateNestedManyWithoutAccountInput
     account_activities?: AccountActivitiesUncheckedCreateNestedManyWithoutAccountInput
+    account_deliveries?: AccountDeliveryUncheckedCreateNestedManyWithoutAccountInput
     domain: string
     StockLabel?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
     account_configuration?: AccountConfigurationUncheckedCreateNestedOneWithoutAccountInput
@@ -51782,6 +54516,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     order?: OrderUpdateManyWithoutAccountNestedInput
     account_activities?: AccountActivitiesUpdateManyWithoutAccountNestedInput
+    account_deliveries?: AccountDeliveryUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
     StockLabel?: StockLabelUpdateManyWithoutAccountNestedInput
     account_configuration?: AccountConfigurationUpdateOneWithoutAccountNestedInput
@@ -51820,6 +54555,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     order?: OrderUncheckedUpdateManyWithoutAccountNestedInput
     account_activities?: AccountActivitiesUncheckedUpdateManyWithoutAccountNestedInput
+    account_deliveries?: AccountDeliveryUncheckedUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
     StockLabel?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
     account_configuration?: AccountConfigurationUncheckedUpdateOneWithoutAccountNestedInput
@@ -52152,6 +54888,7 @@ export namespace Prisma {
     updated_at?: Date | string
     order?: OrderCreateNestedManyWithoutAccountInput
     account_activities?: AccountActivitiesCreateNestedManyWithoutAccountInput
+    account_deliveries?: AccountDeliveryCreateNestedManyWithoutAccountInput
     account_users?: AccountUserCreateNestedManyWithoutAccountInput
     domain: string
     StockLabel?: StockLabelCreateNestedManyWithoutAccountInput
@@ -52190,6 +54927,7 @@ export namespace Prisma {
     updated_at?: Date | string
     order?: OrderUncheckedCreateNestedManyWithoutAccountInput
     account_activities?: AccountActivitiesUncheckedCreateNestedManyWithoutAccountInput
+    account_deliveries?: AccountDeliveryUncheckedCreateNestedManyWithoutAccountInput
     account_users?: AccountUserUncheckedCreateNestedManyWithoutAccountInput
     domain: string
     StockLabel?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
@@ -52296,6 +55034,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     order?: OrderUpdateManyWithoutAccountNestedInput
     account_activities?: AccountActivitiesUpdateManyWithoutAccountNestedInput
+    account_deliveries?: AccountDeliveryUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
     StockLabel?: StockLabelUpdateManyWithoutAccountNestedInput
@@ -52334,6 +55073,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     order?: OrderUncheckedUpdateManyWithoutAccountNestedInput
     account_activities?: AccountActivitiesUncheckedUpdateManyWithoutAccountNestedInput
+    account_deliveries?: AccountDeliveryUncheckedUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUncheckedUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
     StockLabel?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
@@ -54026,6 +56766,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     account_activities?: AccountActivitiesCreateNestedManyWithoutAccountInput
+    account_deliveries?: AccountDeliveryCreateNestedManyWithoutAccountInput
     account_users?: AccountUserCreateNestedManyWithoutAccountInput
     domain: string
     StockLabel?: StockLabelCreateNestedManyWithoutAccountInput
@@ -54064,6 +56805,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     account_activities?: AccountActivitiesUncheckedCreateNestedManyWithoutAccountInput
+    account_deliveries?: AccountDeliveryUncheckedCreateNestedManyWithoutAccountInput
     account_users?: AccountUserUncheckedCreateNestedManyWithoutAccountInput
     domain: string
     StockLabel?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
@@ -54158,6 +56900,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     account_activities?: AccountActivitiesUpdateManyWithoutAccountNestedInput
+    account_deliveries?: AccountDeliveryUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
     StockLabel?: StockLabelUpdateManyWithoutAccountNestedInput
@@ -54196,6 +56939,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     account_activities?: AccountActivitiesUncheckedUpdateManyWithoutAccountNestedInput
+    account_deliveries?: AccountDeliveryUncheckedUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUncheckedUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
     StockLabel?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
@@ -55573,6 +58317,7 @@ export namespace Prisma {
     updated_at?: Date | string
     order?: OrderCreateNestedManyWithoutAccountInput
     account_activities?: AccountActivitiesCreateNestedManyWithoutAccountInput
+    account_deliveries?: AccountDeliveryCreateNestedManyWithoutAccountInput
     account_users?: AccountUserCreateNestedManyWithoutAccountInput
     domain: string
     StockLabel?: StockLabelCreateNestedManyWithoutAccountInput
@@ -55611,6 +58356,7 @@ export namespace Prisma {
     updated_at?: Date | string
     order?: OrderUncheckedCreateNestedManyWithoutAccountInput
     account_activities?: AccountActivitiesUncheckedCreateNestedManyWithoutAccountInput
+    account_deliveries?: AccountDeliveryUncheckedCreateNestedManyWithoutAccountInput
     account_users?: AccountUserUncheckedCreateNestedManyWithoutAccountInput
     domain: string
     StockLabel?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
@@ -55883,6 +58629,7 @@ export namespace Prisma {
     updated_at?: Date | string
     order?: OrderCreateNestedManyWithoutAccountInput
     account_activities?: AccountActivitiesCreateNestedManyWithoutAccountInput
+    account_deliveries?: AccountDeliveryCreateNestedManyWithoutAccountInput
     account_users?: AccountUserCreateNestedManyWithoutAccountInput
     domain: string
     StockLabel?: StockLabelCreateNestedManyWithoutAccountInput
@@ -55921,6 +58668,7 @@ export namespace Prisma {
     updated_at?: Date | string
     order?: OrderUncheckedCreateNestedManyWithoutAccountInput
     account_activities?: AccountActivitiesUncheckedCreateNestedManyWithoutAccountInput
+    account_deliveries?: AccountDeliveryUncheckedCreateNestedManyWithoutAccountInput
     account_users?: AccountUserUncheckedCreateNestedManyWithoutAccountInput
     domain: string
     StockLabel?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
@@ -56004,6 +58752,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     order?: OrderUpdateManyWithoutAccountNestedInput
     account_activities?: AccountActivitiesUpdateManyWithoutAccountNestedInput
+    account_deliveries?: AccountDeliveryUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
     StockLabel?: StockLabelUpdateManyWithoutAccountNestedInput
@@ -56042,6 +58791,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     order?: OrderUncheckedUpdateManyWithoutAccountNestedInput
     account_activities?: AccountActivitiesUncheckedUpdateManyWithoutAccountNestedInput
+    account_deliveries?: AccountDeliveryUncheckedUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUncheckedUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
     StockLabel?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
@@ -56134,6 +58884,7 @@ export namespace Prisma {
     updated_at?: Date | string
     order?: OrderCreateNestedManyWithoutAccountInput
     account_activities?: AccountActivitiesCreateNestedManyWithoutAccountInput
+    account_deliveries?: AccountDeliveryCreateNestedManyWithoutAccountInput
     account_users?: AccountUserCreateNestedManyWithoutAccountInput
     domain: string
     account_configuration?: AccountConfigurationCreateNestedOneWithoutAccountInput
@@ -56172,6 +58923,7 @@ export namespace Prisma {
     updated_at?: Date | string
     order?: OrderUncheckedCreateNestedManyWithoutAccountInput
     account_activities?: AccountActivitiesUncheckedCreateNestedManyWithoutAccountInput
+    account_deliveries?: AccountDeliveryUncheckedCreateNestedManyWithoutAccountInput
     account_users?: AccountUserUncheckedCreateNestedManyWithoutAccountInput
     domain: string
     account_configuration?: AccountConfigurationUncheckedCreateNestedOneWithoutAccountInput
@@ -56273,6 +59025,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     order?: OrderUpdateManyWithoutAccountNestedInput
     account_activities?: AccountActivitiesUpdateManyWithoutAccountNestedInput
+    account_deliveries?: AccountDeliveryUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
     account_configuration?: AccountConfigurationUpdateOneWithoutAccountNestedInput
@@ -56311,6 +59064,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     order?: OrderUncheckedUpdateManyWithoutAccountNestedInput
     account_activities?: AccountActivitiesUncheckedUpdateManyWithoutAccountNestedInput
+    account_deliveries?: AccountDeliveryUncheckedUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUncheckedUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
     account_configuration?: AccountConfigurationUncheckedUpdateOneWithoutAccountNestedInput
@@ -56462,6 +59216,12 @@ export namespace Prisma {
     updated_at?: Date | string
   }
 
+  export type AccountDeliveryCreateManyAccountInput = {
+    delivery_id: string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
   export type AccountUserCreateManyAccountInput = {
     id?: string
     user_id: string
@@ -56597,6 +59357,24 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type AccountDeliveryUpdateWithoutAccountInput = {
+    delivery?: DeliveryUpdateOneRequiredWithoutAccount_deliveriesNestedInput
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AccountDeliveryUncheckedUpdateWithoutAccountInput = {
+    delivery_id?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AccountDeliveryUncheckedUpdateManyWithoutAccount_deliveriesInput = {
+    delivery_id?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type AccountUserUpdateWithoutAccountInput = {
     id?: StringFieldUpdateOperationsInput | string
     user?: UserUpdateOneRequiredWithoutAccount_userNestedInput
@@ -56648,6 +59426,24 @@ export namespace Prisma {
   }
 
   export type AccountActivitiesUncheckedUpdateWithoutActivitiesInput = {
+    account_id?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AccountDeliveryCreateManyDeliveryInput = {
+    account_id: string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type AccountDeliveryUpdateWithoutDeliveryInput = {
+    account?: AccountUpdateOneRequiredWithoutAccount_deliveriesNestedInput
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AccountDeliveryUncheckedUpdateWithoutDeliveryInput = {
     account_id?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -57869,6 +60665,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     order?: OrderUpdateManyWithoutAccountNestedInput
     account_activities?: AccountActivitiesUpdateManyWithoutAccountNestedInput
+    account_deliveries?: AccountDeliveryUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
     StockLabel?: StockLabelUpdateManyWithoutAccountNestedInput
@@ -57907,6 +60704,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     order?: OrderUncheckedUpdateManyWithoutAccountNestedInput
     account_activities?: AccountActivitiesUncheckedUpdateManyWithoutAccountNestedInput
+    account_deliveries?: AccountDeliveryUncheckedUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUncheckedUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
     StockLabel?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput

@@ -45,6 +45,7 @@ model Account {
   updated_at            DateTime              @updatedAt @db.Timestamp(3)
   order                 Order[]
   account_activities    AccountActivities[]
+  account_deliveries    AccountDelivery[]
   account_users         AccountUser[]
   domain                String                @unique
   StockLabel            StockLabel[]
@@ -86,35 +87,59 @@ model Activities {
   @@map("activities")
 }
 
+model Delivery {
+  id                 String            @id @default(uuid())
+  external_id        Int?              @unique
+  name               String
+  slug               String
+  created_at         DateTime          @default(now()) @db.Timestamp(3)
+  updated_at         DateTime          @updatedAt @db.Timestamp(3)
+  account_deliveries AccountDelivery[]
+
+  @@map("deliveries")
+}
+
+model AccountDelivery {
+  account_id  String
+  account     Account  @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  delivery_id String
+  delivery    Delivery @relation(fields: [delivery_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  created_at  DateTime @default(now()) @db.Timestamp(3)
+  updated_at  DateTime @updatedAt @db.Timestamp(3)
+
+  @@id([account_id, delivery_id])
+  @@map("account_deliveries")
+}
+
 model User {
-  id           String        @id @default(uuid())
-  name         String
-  email        String        @unique
-  password     String
-  whatsapp     String?
-  phone        String?
-  cpf_cnpj     String?       @unique
-  street       String
-  number       String
-  district     String
-  country      String
-  state        String
-  complement   String?
-  city         String
-  zipcode      String
-  photo        String?
-  gender       GenderType    @default(ND)
-  birthdate    DateTime?
-  google_id    String?
-  apple_id     String?
-  facebook_id  String?
-  rd_station_id String?
-  rd_station_sync Boolean? @default(false)
-  created_at   DateTime      @default(now()) @db.Timestamp(3)
-  updated_at   DateTime      @updatedAt @db.Timestamp(3)
-  lastLogin    DateTime      @default(now()) @db.Timestamp(3)
-  device_user  DeviceUser[]
-  account_user AccountUser[]
+  id              String        @id @default(uuid())
+  name            String
+  email           String        @unique
+  password        String
+  whatsapp        String?
+  phone           String?
+  cpf_cnpj        String?       @unique
+  street          String
+  number          String
+  district        String
+  country         String
+  state           String
+  complement      String?
+  city            String
+  zipcode         String
+  photo           String?
+  gender          GenderType    @default(ND)
+  birthdate       DateTime?
+  google_id       String?
+  apple_id        String?
+  facebook_id     String?
+  rd_station_id   String?
+  rd_station_sync Boolean?      @default(false)
+  created_at      DateTime      @default(now()) @db.Timestamp(3)
+  updated_at      DateTime      @updatedAt @db.Timestamp(3)
+  lastLogin       DateTime      @default(now()) @db.Timestamp(3)
+  device_user     DeviceUser[]
+  account_user    AccountUser[]
 
   @@map("users")
 }
