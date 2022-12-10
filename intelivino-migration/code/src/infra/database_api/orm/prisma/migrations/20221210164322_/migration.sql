@@ -3,9 +3,9 @@ CREATE TABLE `account` (
     `id` VARCHAR(191) NOT NULL,
     `external_id` INTEGER NULL,
     `name` VARCHAR(191) NOT NULL,
+    `email` VARCHAR(191) NOT NULL,
     `cpf_cnpj` VARCHAR(191) NULL,
     `market_name` VARCHAR(191) NOT NULL,
-    `email` VARCHAR(191) NOT NULL,
     `phone` VARCHAR(191) NULL,
     `whatsapp` VARCHAR(191) NULL,
     `logo` VARCHAR(191) NULL,
@@ -18,11 +18,12 @@ CREATE TABLE `account` (
     `gender` ENUM('F', 'M', 'ND') NOT NULL,
     `street` VARCHAR(191) NOT NULL,
     `number` VARCHAR(191) NOT NULL,
-    `district` VARCHAR(191) NOT NULL,
-    `country` VARCHAR(191) NOT NULL,
-    `state` VARCHAR(191) NOT NULL,
     `complement` VARCHAR(191) NULL,
+    `district` VARCHAR(191) NOT NULL,
+    `city` VARCHAR(191) NOT NULL,
+    `state` VARCHAR(191) NOT NULL,
     `zipcode` VARCHAR(191) NOT NULL,
+    `country` VARCHAR(191) NOT NULL,
     `plan_id` VARCHAR(191) NULL,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
@@ -59,11 +60,13 @@ CREATE TABLE `account_activities` (
 -- CreateTable
 CREATE TABLE `activities` (
     `id` VARCHAR(191) NOT NULL,
+    `external_id` INTEGER NULL,
     `name` VARCHAR(191) NOT NULL,
     `slug` VARCHAR(191) NOT NULL,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
 
+    UNIQUE INDEX `activities_external_id_key`(`external_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -138,6 +141,7 @@ CREATE TABLE `roles` (
 -- CreateTable
 CREATE TABLE `campaign` (
     `id` VARCHAR(191) NOT NULL,
+    `external_id` INTEGER NULL,
     `name` VARCHAR(191) NOT NULL,
     `description` VARCHAR(191) NULL,
     `percentage_discount` DOUBLE NULL,
@@ -149,6 +153,7 @@ CREATE TABLE `campaign` (
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
 
+    UNIQUE INDEX `campaign_external_id_key`(`external_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -181,6 +186,7 @@ CREATE TABLE `coupon` (
 -- CreateTable
 CREATE TABLE `label` (
     `id` VARCHAR(191) NOT NULL,
+    `external_id` INTEGER NULL,
     `name` VARCHAR(191) NOT NULL,
     `description` VARCHAR(191) NULL,
     `type_id` VARCHAR(191) NOT NULL,
@@ -197,6 +203,7 @@ CREATE TABLE `label` (
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
 
+    UNIQUE INDEX `label_external_id_key`(`external_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -228,6 +235,7 @@ CREATE TABLE `grape` (
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` TIMESTAMP(3) NOT NULL,
 
+    UNIQUE INDEX `grape_external_id_key`(`external_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -244,60 +252,70 @@ CREATE TABLE `label_type` (
 -- CreateTable
 CREATE TABLE `country` (
     `id` VARCHAR(191) NOT NULL,
+    `external_id` INTEGER NULL,
     `name` VARCHAR(191) NOT NULL,
     `slug` VARCHAR(191) NOT NULL,
     `value` VARCHAR(191) NOT NULL,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
 
+    UNIQUE INDEX `country_external_id_key`(`external_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `state` (
     `id` VARCHAR(191) NOT NULL,
+    `external_id` INTEGER NULL,
     `name` VARCHAR(191) NOT NULL,
     `slug` VARCHAR(191) NOT NULL,
     `country_id` VARCHAR(191) NOT NULL,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
 
+    UNIQUE INDEX `state_external_id_key`(`external_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `city` (
     `id` VARCHAR(191) NOT NULL,
+    `external_id` INTEGER NULL,
     `name` VARCHAR(191) NOT NULL,
     `slug` VARCHAR(191) NOT NULL,
     `state_id` VARCHAR(191) NOT NULL,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
 
+    UNIQUE INDEX `city_external_id_key`(`external_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `region` (
     `id` VARCHAR(191) NOT NULL,
+    `external_id` INTEGER NULL,
     `state_id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
     `slug` VARCHAR(191) NOT NULL,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
 
+    UNIQUE INDEX `region_external_id_key`(`external_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `sub_region` (
     `id` VARCHAR(191) NOT NULL,
+    `external_id` INTEGER NULL,
     `name` VARCHAR(191) NOT NULL,
     `slug` VARCHAR(191) NOT NULL,
     `region_id` VARCHAR(191) NOT NULL,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
 
+    UNIQUE INDEX `sub_region_external_id_key`(`external_id`),
     UNIQUE INDEX `sub_region_name_key`(`name`),
     UNIQUE INDEX `sub_region_slug_key`(`slug`),
     PRIMARY KEY (`id`)
@@ -317,6 +335,7 @@ CREATE TABLE `wine_type` (
 -- CreateTable
 CREATE TABLE `order` (
     `id` VARCHAR(191) NOT NULL,
+    `external_id` INTEGER NULL,
     `code` VARCHAR(191) NOT NULL,
     `account_id` VARCHAR(191) NOT NULL,
     `total` DOUBLE NOT NULL,
@@ -324,6 +343,7 @@ CREATE TABLE `order` (
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
 
+    UNIQUE INDEX `order_external_id_key`(`external_id`),
     UNIQUE INDEX `order_code_key`(`code`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -352,6 +372,7 @@ CREATE TABLE `invoice` (
 -- CreateTable
 CREATE TABLE `device` (
     `id` VARCHAR(191) NOT NULL,
+    `external_id` INTEGER NULL,
     `device_physical_id` VARCHAR(191) NOT NULL,
     `platform` ENUM('android', 'ios') NOT NULL,
     `version` VARCHAR(191) NOT NULL,
@@ -359,6 +380,7 @@ CREATE TABLE `device` (
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
 
+    UNIQUE INDEX `device_external_id_key`(`external_id`),
     UNIQUE INDEX `device_device_physical_id_key`(`device_physical_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -461,6 +483,7 @@ CREATE TABLE `plan` (
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
 
+    UNIQUE INDEX `plan_external_id_key`(`external_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 

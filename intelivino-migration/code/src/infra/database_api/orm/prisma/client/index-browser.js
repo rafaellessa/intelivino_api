@@ -106,9 +106,9 @@ exports.Prisma.AccountScalarFieldEnum = makeEnum({
   id: 'id',
   external_id: 'external_id',
   name: 'name',
+  email: 'email',
   cpf_cnpj: 'cpf_cnpj',
   market_name: 'market_name',
-  email: 'email',
   phone: 'phone',
   whatsapp: 'whatsapp',
   logo: 'logo',
@@ -121,11 +121,12 @@ exports.Prisma.AccountScalarFieldEnum = makeEnum({
   gender: 'gender',
   street: 'street',
   number: 'number',
-  district: 'district',
-  country: 'country',
-  state: 'state',
   complement: 'complement',
+  district: 'district',
+  city: 'city',
+  state: 'state',
   zipcode: 'zipcode',
+  country: 'country',
   plan_id: 'plan_id',
   created_at: 'created_at',
   updated_at: 'updated_at',
@@ -142,6 +143,7 @@ exports.Prisma.AccountUserScalarFieldEnum = makeEnum({
 
 exports.Prisma.ActivitiesScalarFieldEnum = makeEnum({
   id: 'id',
+  external_id: 'external_id',
   name: 'name',
   slug: 'slug',
   created_at: 'created_at',
@@ -150,6 +152,7 @@ exports.Prisma.ActivitiesScalarFieldEnum = makeEnum({
 
 exports.Prisma.CampaignScalarFieldEnum = makeEnum({
   id: 'id',
+  external_id: 'external_id',
   name: 'name',
   description: 'description',
   percentage_discount: 'percentage_discount',
@@ -170,6 +173,7 @@ exports.Prisma.CampaignTypeScalarFieldEnum = makeEnum({
 
 exports.Prisma.CityScalarFieldEnum = makeEnum({
   id: 'id',
+  external_id: 'external_id',
   name: 'name',
   slug: 'slug',
   state_id: 'state_id',
@@ -179,6 +183,7 @@ exports.Prisma.CityScalarFieldEnum = makeEnum({
 
 exports.Prisma.CountryScalarFieldEnum = makeEnum({
   id: 'id',
+  external_id: 'external_id',
   name: 'name',
   slug: 'slug',
   value: 'value',
@@ -209,6 +214,7 @@ exports.Prisma.DeviceNotificationScalarFieldEnum = makeEnum({
 
 exports.Prisma.DeviceScalarFieldEnum = makeEnum({
   id: 'id',
+  external_id: 'external_id',
   device_physical_id: 'device_physical_id',
   platform: 'platform',
   version: 'version',
@@ -275,6 +281,7 @@ exports.Prisma.LabelGrapeScalarFieldEnum = makeEnum({
 
 exports.Prisma.LabelScalarFieldEnum = makeEnum({
   id: 'id',
+  external_id: 'external_id',
   name: 'name',
   description: 'description',
   type_id: 'type_id',
@@ -318,6 +325,7 @@ exports.Prisma.OrderLabelScalarFieldEnum = makeEnum({
 
 exports.Prisma.OrderScalarFieldEnum = makeEnum({
   id: 'id',
+  external_id: 'external_id',
   code: 'code',
   account_id: 'account_id',
   total: 'total',
@@ -366,6 +374,7 @@ exports.Prisma.PushNotificationScalarFieldEnum = makeEnum({
 
 exports.Prisma.RegionScalarFieldEnum = makeEnum({
   id: 'id',
+  external_id: 'external_id',
   state_id: 'state_id',
   name: 'name',
   slug: 'slug',
@@ -402,6 +411,7 @@ exports.Prisma.SortOrder = makeEnum({
 
 exports.Prisma.StateScalarFieldEnum = makeEnum({
   id: 'id',
+  external_id: 'external_id',
   name: 'name',
   slug: 'slug',
   country_id: 'country_id',
@@ -428,6 +438,7 @@ exports.Prisma.StockLabelScalarFieldEnum = makeEnum({
 
 exports.Prisma.SubRegionScalarFieldEnum = makeEnum({
   id: 'id',
+  external_id: 'external_id',
   name: 'name',
   slug: 'slug',
   region_id: 'region_id',

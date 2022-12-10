@@ -34,6 +34,7 @@ export class MigrateRepository {
           await this.prismaDbProd.grape.create({
             data: {
               name: grape.nome,
+              external_id: grape.id,
             },
           })
         }
@@ -65,6 +66,7 @@ export class MigrateRepository {
           })
           await this.prismaDbProd.country.create({
             data: {
+              external_id: country.id,
               name: country.descricao || '',
               slug: slugGenerator(cleanString(country.descricao!)),
               value: country.valor,
@@ -156,6 +158,7 @@ export class MigrateRepository {
       const accounts = await this.prismaDbOlder.business.findMany({
         include: {
           users: true,
+          activities_business: true,
         },
         where: {
           user_id: {
@@ -189,6 +192,7 @@ export class MigrateRepository {
               external_id: account.user_id!,
               name: account.main_contact_name || '',
               country: account.users?.address_country || '',
+              city: account.users?.city || '',
               district: account.users?.address_neighborhood || '',
               street: account.users?.address_street || '',
               number: account.users?.address_number || '',

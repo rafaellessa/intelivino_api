@@ -20,9 +20,9 @@ export type Account = {
   id: string
   external_id: number | null
   name: string
+  email: string
   cpf_cnpj: string | null
   market_name: string
-  email: string
   phone: string | null
   whatsapp: string | null
   logo: string | null
@@ -35,11 +35,12 @@ export type Account = {
   gender: GenderType
   street: string
   number: string
-  district: string
-  country: string
-  state: string
   complement: string | null
+  district: string
+  city: string
+  state: string
   zipcode: string
+  country: string
   plan_id: string | null
   created_at: Date
   updated_at: Date
@@ -75,6 +76,7 @@ export type AccountActivities = {
  */
 export type Activities = {
   id: string
+  external_id: number | null
   name: string
   slug: string
   created_at: Date
@@ -156,6 +158,7 @@ export type Role = {
  */
 export type Campaign = {
   id: string
+  external_id: number | null
   name: string
   description: string | null
   percentage_discount: number | null
@@ -202,6 +205,7 @@ export type Coupon = {
  */
 export type Label = {
   id: string
+  external_id: number | null
   name: string
   description: string | null
   type_id: string
@@ -270,6 +274,7 @@ export type LabelType = {
  */
 export type Country = {
   id: string
+  external_id: number | null
   name: string
   slug: string
   value: string
@@ -283,6 +288,7 @@ export type Country = {
  */
 export type State = {
   id: string
+  external_id: number | null
   name: string
   slug: string
   country_id: string
@@ -296,6 +302,7 @@ export type State = {
  */
 export type City = {
   id: string
+  external_id: number | null
   name: string
   slug: string
   state_id: string
@@ -309,6 +316,7 @@ export type City = {
  */
 export type Region = {
   id: string
+  external_id: number | null
   state_id: string
   name: string
   slug: string
@@ -322,6 +330,7 @@ export type Region = {
  */
 export type SubRegion = {
   id: string
+  external_id: number | null
   name: string
   slug: string
   region_id: string
@@ -347,6 +356,7 @@ export type WineType = {
  */
 export type Order = {
   id: string
+  external_id: number | null
   code: string
   account_id: string
   total: number
@@ -384,6 +394,7 @@ export type Invoice = {
  */
 export type Device = {
   id: string
+  external_id: number | null
   device_physical_id: string
   platform: PlatformType
   version: string
@@ -2874,9 +2885,9 @@ export namespace Prisma {
     id: string | null
     external_id: number | null
     name: string | null
+    email: string | null
     cpf_cnpj: string | null
     market_name: string | null
-    email: string | null
     phone: string | null
     whatsapp: string | null
     logo: string | null
@@ -2889,11 +2900,12 @@ export namespace Prisma {
     gender: GenderType | null
     street: string | null
     number: string | null
-    district: string | null
-    country: string | null
-    state: string | null
     complement: string | null
+    district: string | null
+    city: string | null
+    state: string | null
     zipcode: string | null
+    country: string | null
     plan_id: string | null
     created_at: Date | null
     updated_at: Date | null
@@ -2905,9 +2917,9 @@ export namespace Prisma {
     id: string | null
     external_id: number | null
     name: string | null
+    email: string | null
     cpf_cnpj: string | null
     market_name: string | null
-    email: string | null
     phone: string | null
     whatsapp: string | null
     logo: string | null
@@ -2920,11 +2932,12 @@ export namespace Prisma {
     gender: GenderType | null
     street: string | null
     number: string | null
-    district: string | null
-    country: string | null
-    state: string | null
     complement: string | null
+    district: string | null
+    city: string | null
+    state: string | null
     zipcode: string | null
+    country: string | null
     plan_id: string | null
     created_at: Date | null
     updated_at: Date | null
@@ -2936,9 +2949,9 @@ export namespace Prisma {
     id: number
     external_id: number
     name: number
+    email: number
     cpf_cnpj: number
     market_name: number
-    email: number
     phone: number
     whatsapp: number
     logo: number
@@ -2951,11 +2964,12 @@ export namespace Prisma {
     gender: number
     street: number
     number: number
-    district: number
-    country: number
-    state: number
     complement: number
+    district: number
+    city: number
+    state: number
     zipcode: number
+    country: number
     plan_id: number
     created_at: number
     updated_at: number
@@ -2977,9 +2991,9 @@ export namespace Prisma {
     id?: true
     external_id?: true
     name?: true
+    email?: true
     cpf_cnpj?: true
     market_name?: true
-    email?: true
     phone?: true
     whatsapp?: true
     logo?: true
@@ -2992,11 +3006,12 @@ export namespace Prisma {
     gender?: true
     street?: true
     number?: true
-    district?: true
-    country?: true
-    state?: true
     complement?: true
+    district?: true
+    city?: true
+    state?: true
     zipcode?: true
+    country?: true
     plan_id?: true
     created_at?: true
     updated_at?: true
@@ -3008,9 +3023,9 @@ export namespace Prisma {
     id?: true
     external_id?: true
     name?: true
+    email?: true
     cpf_cnpj?: true
     market_name?: true
-    email?: true
     phone?: true
     whatsapp?: true
     logo?: true
@@ -3023,11 +3038,12 @@ export namespace Prisma {
     gender?: true
     street?: true
     number?: true
-    district?: true
-    country?: true
-    state?: true
     complement?: true
+    district?: true
+    city?: true
+    state?: true
     zipcode?: true
+    country?: true
     plan_id?: true
     created_at?: true
     updated_at?: true
@@ -3039,9 +3055,9 @@ export namespace Prisma {
     id?: true
     external_id?: true
     name?: true
+    email?: true
     cpf_cnpj?: true
     market_name?: true
-    email?: true
     phone?: true
     whatsapp?: true
     logo?: true
@@ -3054,11 +3070,12 @@ export namespace Prisma {
     gender?: true
     street?: true
     number?: true
-    district?: true
-    country?: true
-    state?: true
     complement?: true
+    district?: true
+    city?: true
+    state?: true
     zipcode?: true
+    country?: true
     plan_id?: true
     created_at?: true
     updated_at?: true
@@ -3163,9 +3180,9 @@ export namespace Prisma {
     id: string
     external_id: number | null
     name: string
+    email: string
     cpf_cnpj: string | null
     market_name: string
-    email: string
     phone: string | null
     whatsapp: string | null
     logo: string | null
@@ -3178,11 +3195,12 @@ export namespace Prisma {
     gender: GenderType
     street: string
     number: string
-    district: string
-    country: string
-    state: string
     complement: string | null
+    district: string
+    city: string
+    state: string
     zipcode: string
+    country: string
     plan_id: string | null
     created_at: Date
     updated_at: Date
@@ -3213,9 +3231,9 @@ export namespace Prisma {
     id?: boolean
     external_id?: boolean
     name?: boolean
+    email?: boolean
     cpf_cnpj?: boolean
     market_name?: boolean
-    email?: boolean
     phone?: boolean
     whatsapp?: boolean
     logo?: boolean
@@ -3229,11 +3247,12 @@ export namespace Prisma {
     campaign?: boolean | CampaignFindManyArgs
     street?: boolean
     number?: boolean
-    district?: boolean
-    country?: boolean
-    state?: boolean
     complement?: boolean
+    district?: boolean
+    city?: boolean
+    state?: boolean
     zipcode?: boolean
+    country?: boolean
     plan_id?: boolean
     plan?: boolean | PlanArgs
     subscription?: boolean | SubscriptionFindManyArgs
@@ -5885,12 +5904,23 @@ export namespace Prisma {
 
   export type AggregateActivities = {
     _count: ActivitiesCountAggregateOutputType | null
+    _avg: ActivitiesAvgAggregateOutputType | null
+    _sum: ActivitiesSumAggregateOutputType | null
     _min: ActivitiesMinAggregateOutputType | null
     _max: ActivitiesMaxAggregateOutputType | null
   }
 
+  export type ActivitiesAvgAggregateOutputType = {
+    external_id: number | null
+  }
+
+  export type ActivitiesSumAggregateOutputType = {
+    external_id: number | null
+  }
+
   export type ActivitiesMinAggregateOutputType = {
     id: string | null
+    external_id: number | null
     name: string | null
     slug: string | null
     created_at: Date | null
@@ -5899,6 +5929,7 @@ export namespace Prisma {
 
   export type ActivitiesMaxAggregateOutputType = {
     id: string | null
+    external_id: number | null
     name: string | null
     slug: string | null
     created_at: Date | null
@@ -5907,6 +5938,7 @@ export namespace Prisma {
 
   export type ActivitiesCountAggregateOutputType = {
     id: number
+    external_id: number
     name: number
     slug: number
     created_at: number
@@ -5915,8 +5947,17 @@ export namespace Prisma {
   }
 
 
+  export type ActivitiesAvgAggregateInputType = {
+    external_id?: true
+  }
+
+  export type ActivitiesSumAggregateInputType = {
+    external_id?: true
+  }
+
   export type ActivitiesMinAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     slug?: true
     created_at?: true
@@ -5925,6 +5966,7 @@ export namespace Prisma {
 
   export type ActivitiesMaxAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     slug?: true
     created_at?: true
@@ -5933,6 +5975,7 @@ export namespace Prisma {
 
   export type ActivitiesCountAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     slug?: true
     created_at?: true
@@ -5983,6 +6026,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: ActivitiesAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ActivitiesSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: ActivitiesMinAggregateInputType
@@ -6013,6 +6068,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: ActivitiesCountAggregateInputType | true
+    _avg?: ActivitiesAvgAggregateInputType
+    _sum?: ActivitiesSumAggregateInputType
     _min?: ActivitiesMinAggregateInputType
     _max?: ActivitiesMaxAggregateInputType
   }
@@ -6020,11 +6077,14 @@ export namespace Prisma {
 
   export type ActivitiesGroupByOutputType = {
     id: string
+    external_id: number | null
     name: string
     slug: string
     created_at: Date
     updated_at: Date
     _count: ActivitiesCountAggregateOutputType | null
+    _avg: ActivitiesAvgAggregateOutputType | null
+    _sum: ActivitiesSumAggregateOutputType | null
     _min: ActivitiesMinAggregateOutputType | null
     _max: ActivitiesMaxAggregateOutputType | null
   }
@@ -6045,6 +6105,7 @@ export namespace Prisma {
 
   export type ActivitiesSelect = {
     id?: boolean
+    external_id?: boolean
     name?: boolean
     slug?: boolean
     created_at?: boolean
@@ -11570,15 +11631,18 @@ export namespace Prisma {
   }
 
   export type CampaignAvgAggregateOutputType = {
+    external_id: number | null
     percentage_discount: number | null
   }
 
   export type CampaignSumAggregateOutputType = {
+    external_id: number | null
     percentage_discount: number | null
   }
 
   export type CampaignMinAggregateOutputType = {
     id: string | null
+    external_id: number | null
     name: string | null
     description: string | null
     percentage_discount: number | null
@@ -11593,6 +11657,7 @@ export namespace Prisma {
 
   export type CampaignMaxAggregateOutputType = {
     id: string | null
+    external_id: number | null
     name: string | null
     description: string | null
     percentage_discount: number | null
@@ -11607,6 +11672,7 @@ export namespace Prisma {
 
   export type CampaignCountAggregateOutputType = {
     id: number
+    external_id: number
     name: number
     description: number
     percentage_discount: number
@@ -11622,15 +11688,18 @@ export namespace Prisma {
 
 
   export type CampaignAvgAggregateInputType = {
+    external_id?: true
     percentage_discount?: true
   }
 
   export type CampaignSumAggregateInputType = {
+    external_id?: true
     percentage_discount?: true
   }
 
   export type CampaignMinAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     description?: true
     percentage_discount?: true
@@ -11645,6 +11714,7 @@ export namespace Prisma {
 
   export type CampaignMaxAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     description?: true
     percentage_discount?: true
@@ -11659,6 +11729,7 @@ export namespace Prisma {
 
   export type CampaignCountAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     description?: true
     percentage_discount?: true
@@ -11766,6 +11837,7 @@ export namespace Prisma {
 
   export type CampaignGroupByOutputType = {
     id: string
+    external_id: number | null
     name: string
     description: string | null
     percentage_discount: number | null
@@ -11799,6 +11871,7 @@ export namespace Prisma {
 
   export type CampaignSelect = {
     id?: boolean
+    external_id?: boolean
     name?: boolean
     description?: boolean
     percentage_discount?: boolean
@@ -14478,12 +14551,14 @@ export namespace Prisma {
   }
 
   export type LabelAvgAggregateOutputType = {
+    external_id: number | null
     alcohol_percentage: Decimal | null
     price: number | null
     promotional_price: number | null
   }
 
   export type LabelSumAggregateOutputType = {
+    external_id: number | null
     alcohol_percentage: Decimal | null
     price: number | null
     promotional_price: number | null
@@ -14491,6 +14566,7 @@ export namespace Prisma {
 
   export type LabelMinAggregateOutputType = {
     id: string | null
+    external_id: number | null
     name: string | null
     description: string | null
     type_id: string | null
@@ -14510,6 +14586,7 @@ export namespace Prisma {
 
   export type LabelMaxAggregateOutputType = {
     id: string | null
+    external_id: number | null
     name: string | null
     description: string | null
     type_id: string | null
@@ -14529,6 +14606,7 @@ export namespace Prisma {
 
   export type LabelCountAggregateOutputType = {
     id: number
+    external_id: number
     name: number
     description: number
     type_id: number
@@ -14549,12 +14627,14 @@ export namespace Prisma {
 
 
   export type LabelAvgAggregateInputType = {
+    external_id?: true
     alcohol_percentage?: true
     price?: true
     promotional_price?: true
   }
 
   export type LabelSumAggregateInputType = {
+    external_id?: true
     alcohol_percentage?: true
     price?: true
     promotional_price?: true
@@ -14562,6 +14642,7 @@ export namespace Prisma {
 
   export type LabelMinAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     description?: true
     type_id?: true
@@ -14581,6 +14662,7 @@ export namespace Prisma {
 
   export type LabelMaxAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     description?: true
     type_id?: true
@@ -14600,6 +14682,7 @@ export namespace Prisma {
 
   export type LabelCountAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     description?: true
     type_id?: true
@@ -14712,6 +14795,7 @@ export namespace Prisma {
 
   export type LabelGroupByOutputType = {
     id: string
+    external_id: number | null
     name: string
     description: string | null
     type_id: string
@@ -14750,6 +14834,7 @@ export namespace Prisma {
 
   export type LabelSelect = {
     id?: boolean
+    external_id?: boolean
     name?: boolean
     description?: boolean
     type_id?: boolean
@@ -19308,12 +19393,23 @@ export namespace Prisma {
 
   export type AggregateCountry = {
     _count: CountryCountAggregateOutputType | null
+    _avg: CountryAvgAggregateOutputType | null
+    _sum: CountrySumAggregateOutputType | null
     _min: CountryMinAggregateOutputType | null
     _max: CountryMaxAggregateOutputType | null
   }
 
+  export type CountryAvgAggregateOutputType = {
+    external_id: number | null
+  }
+
+  export type CountrySumAggregateOutputType = {
+    external_id: number | null
+  }
+
   export type CountryMinAggregateOutputType = {
     id: string | null
+    external_id: number | null
     name: string | null
     slug: string | null
     value: string | null
@@ -19323,6 +19419,7 @@ export namespace Prisma {
 
   export type CountryMaxAggregateOutputType = {
     id: string | null
+    external_id: number | null
     name: string | null
     slug: string | null
     value: string | null
@@ -19332,6 +19429,7 @@ export namespace Prisma {
 
   export type CountryCountAggregateOutputType = {
     id: number
+    external_id: number
     name: number
     slug: number
     value: number
@@ -19341,8 +19439,17 @@ export namespace Prisma {
   }
 
 
+  export type CountryAvgAggregateInputType = {
+    external_id?: true
+  }
+
+  export type CountrySumAggregateInputType = {
+    external_id?: true
+  }
+
   export type CountryMinAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     slug?: true
     value?: true
@@ -19352,6 +19459,7 @@ export namespace Prisma {
 
   export type CountryMaxAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     slug?: true
     value?: true
@@ -19361,6 +19469,7 @@ export namespace Prisma {
 
   export type CountryCountAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     slug?: true
     value?: true
@@ -19412,6 +19521,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: CountryAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CountrySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: CountryMinAggregateInputType
@@ -19442,6 +19563,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: CountryCountAggregateInputType | true
+    _avg?: CountryAvgAggregateInputType
+    _sum?: CountrySumAggregateInputType
     _min?: CountryMinAggregateInputType
     _max?: CountryMaxAggregateInputType
   }
@@ -19449,12 +19572,15 @@ export namespace Prisma {
 
   export type CountryGroupByOutputType = {
     id: string
+    external_id: number | null
     name: string
     slug: string
     value: string
     created_at: Date
     updated_at: Date
     _count: CountryCountAggregateOutputType | null
+    _avg: CountryAvgAggregateOutputType | null
+    _sum: CountrySumAggregateOutputType | null
     _min: CountryMinAggregateOutputType | null
     _max: CountryMaxAggregateOutputType | null
   }
@@ -19475,6 +19601,7 @@ export namespace Prisma {
 
   export type CountrySelect = {
     id?: boolean
+    external_id?: boolean
     name?: boolean
     slug?: boolean
     value?: boolean
@@ -20251,12 +20378,23 @@ export namespace Prisma {
 
   export type AggregateState = {
     _count: StateCountAggregateOutputType | null
+    _avg: StateAvgAggregateOutputType | null
+    _sum: StateSumAggregateOutputType | null
     _min: StateMinAggregateOutputType | null
     _max: StateMaxAggregateOutputType | null
   }
 
+  export type StateAvgAggregateOutputType = {
+    external_id: number | null
+  }
+
+  export type StateSumAggregateOutputType = {
+    external_id: number | null
+  }
+
   export type StateMinAggregateOutputType = {
     id: string | null
+    external_id: number | null
     name: string | null
     slug: string | null
     country_id: string | null
@@ -20266,6 +20404,7 @@ export namespace Prisma {
 
   export type StateMaxAggregateOutputType = {
     id: string | null
+    external_id: number | null
     name: string | null
     slug: string | null
     country_id: string | null
@@ -20275,6 +20414,7 @@ export namespace Prisma {
 
   export type StateCountAggregateOutputType = {
     id: number
+    external_id: number
     name: number
     slug: number
     country_id: number
@@ -20284,8 +20424,17 @@ export namespace Prisma {
   }
 
 
+  export type StateAvgAggregateInputType = {
+    external_id?: true
+  }
+
+  export type StateSumAggregateInputType = {
+    external_id?: true
+  }
+
   export type StateMinAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     slug?: true
     country_id?: true
@@ -20295,6 +20444,7 @@ export namespace Prisma {
 
   export type StateMaxAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     slug?: true
     country_id?: true
@@ -20304,6 +20454,7 @@ export namespace Prisma {
 
   export type StateCountAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     slug?: true
     country_id?: true
@@ -20355,6 +20506,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: StateAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: StateSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: StateMinAggregateInputType
@@ -20385,6 +20548,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: StateCountAggregateInputType | true
+    _avg?: StateAvgAggregateInputType
+    _sum?: StateSumAggregateInputType
     _min?: StateMinAggregateInputType
     _max?: StateMaxAggregateInputType
   }
@@ -20392,12 +20557,15 @@ export namespace Prisma {
 
   export type StateGroupByOutputType = {
     id: string
+    external_id: number | null
     name: string
     slug: string
     country_id: string
     created_at: Date
     updated_at: Date
     _count: StateCountAggregateOutputType | null
+    _avg: StateAvgAggregateOutputType | null
+    _sum: StateSumAggregateOutputType | null
     _min: StateMinAggregateOutputType | null
     _max: StateMaxAggregateOutputType | null
   }
@@ -20418,6 +20586,7 @@ export namespace Prisma {
 
   export type StateSelect = {
     id?: boolean
+    external_id?: boolean
     name?: boolean
     slug?: boolean
     country_id?: boolean
@@ -21200,12 +21369,23 @@ export namespace Prisma {
 
   export type AggregateCity = {
     _count: CityCountAggregateOutputType | null
+    _avg: CityAvgAggregateOutputType | null
+    _sum: CitySumAggregateOutputType | null
     _min: CityMinAggregateOutputType | null
     _max: CityMaxAggregateOutputType | null
   }
 
+  export type CityAvgAggregateOutputType = {
+    external_id: number | null
+  }
+
+  export type CitySumAggregateOutputType = {
+    external_id: number | null
+  }
+
   export type CityMinAggregateOutputType = {
     id: string | null
+    external_id: number | null
     name: string | null
     slug: string | null
     state_id: string | null
@@ -21215,6 +21395,7 @@ export namespace Prisma {
 
   export type CityMaxAggregateOutputType = {
     id: string | null
+    external_id: number | null
     name: string | null
     slug: string | null
     state_id: string | null
@@ -21224,6 +21405,7 @@ export namespace Prisma {
 
   export type CityCountAggregateOutputType = {
     id: number
+    external_id: number
     name: number
     slug: number
     state_id: number
@@ -21233,8 +21415,17 @@ export namespace Prisma {
   }
 
 
+  export type CityAvgAggregateInputType = {
+    external_id?: true
+  }
+
+  export type CitySumAggregateInputType = {
+    external_id?: true
+  }
+
   export type CityMinAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     slug?: true
     state_id?: true
@@ -21244,6 +21435,7 @@ export namespace Prisma {
 
   export type CityMaxAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     slug?: true
     state_id?: true
@@ -21253,6 +21445,7 @@ export namespace Prisma {
 
   export type CityCountAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     slug?: true
     state_id?: true
@@ -21304,6 +21497,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: CityAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CitySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: CityMinAggregateInputType
@@ -21334,6 +21539,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: CityCountAggregateInputType | true
+    _avg?: CityAvgAggregateInputType
+    _sum?: CitySumAggregateInputType
     _min?: CityMinAggregateInputType
     _max?: CityMaxAggregateInputType
   }
@@ -21341,12 +21548,15 @@ export namespace Prisma {
 
   export type CityGroupByOutputType = {
     id: string
+    external_id: number | null
     name: string
     slug: string
     state_id: string
     created_at: Date
     updated_at: Date
     _count: CityCountAggregateOutputType | null
+    _avg: CityAvgAggregateOutputType | null
+    _sum: CitySumAggregateOutputType | null
     _min: CityMinAggregateOutputType | null
     _max: CityMaxAggregateOutputType | null
   }
@@ -21367,6 +21577,7 @@ export namespace Prisma {
 
   export type CitySelect = {
     id?: boolean
+    external_id?: boolean
     name?: boolean
     slug?: boolean
     state_id?: boolean
@@ -22133,12 +22344,23 @@ export namespace Prisma {
 
   export type AggregateRegion = {
     _count: RegionCountAggregateOutputType | null
+    _avg: RegionAvgAggregateOutputType | null
+    _sum: RegionSumAggregateOutputType | null
     _min: RegionMinAggregateOutputType | null
     _max: RegionMaxAggregateOutputType | null
   }
 
+  export type RegionAvgAggregateOutputType = {
+    external_id: number | null
+  }
+
+  export type RegionSumAggregateOutputType = {
+    external_id: number | null
+  }
+
   export type RegionMinAggregateOutputType = {
     id: string | null
+    external_id: number | null
     state_id: string | null
     name: string | null
     slug: string | null
@@ -22148,6 +22370,7 @@ export namespace Prisma {
 
   export type RegionMaxAggregateOutputType = {
     id: string | null
+    external_id: number | null
     state_id: string | null
     name: string | null
     slug: string | null
@@ -22157,6 +22380,7 @@ export namespace Prisma {
 
   export type RegionCountAggregateOutputType = {
     id: number
+    external_id: number
     state_id: number
     name: number
     slug: number
@@ -22166,8 +22390,17 @@ export namespace Prisma {
   }
 
 
+  export type RegionAvgAggregateInputType = {
+    external_id?: true
+  }
+
+  export type RegionSumAggregateInputType = {
+    external_id?: true
+  }
+
   export type RegionMinAggregateInputType = {
     id?: true
+    external_id?: true
     state_id?: true
     name?: true
     slug?: true
@@ -22177,6 +22410,7 @@ export namespace Prisma {
 
   export type RegionMaxAggregateInputType = {
     id?: true
+    external_id?: true
     state_id?: true
     name?: true
     slug?: true
@@ -22186,6 +22420,7 @@ export namespace Prisma {
 
   export type RegionCountAggregateInputType = {
     id?: true
+    external_id?: true
     state_id?: true
     name?: true
     slug?: true
@@ -22237,6 +22472,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: RegionAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: RegionSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: RegionMinAggregateInputType
@@ -22267,6 +22514,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: RegionCountAggregateInputType | true
+    _avg?: RegionAvgAggregateInputType
+    _sum?: RegionSumAggregateInputType
     _min?: RegionMinAggregateInputType
     _max?: RegionMaxAggregateInputType
   }
@@ -22274,12 +22523,15 @@ export namespace Prisma {
 
   export type RegionGroupByOutputType = {
     id: string
+    external_id: number | null
     state_id: string
     name: string
     slug: string
     created_at: Date
     updated_at: Date
     _count: RegionCountAggregateOutputType | null
+    _avg: RegionAvgAggregateOutputType | null
+    _sum: RegionSumAggregateOutputType | null
     _min: RegionMinAggregateOutputType | null
     _max: RegionMaxAggregateOutputType | null
   }
@@ -22300,6 +22552,7 @@ export namespace Prisma {
 
   export type RegionSelect = {
     id?: boolean
+    external_id?: boolean
     state_id?: boolean
     state?: boolean | StateArgs
     name?: boolean
@@ -23082,12 +23335,23 @@ export namespace Prisma {
 
   export type AggregateSubRegion = {
     _count: SubRegionCountAggregateOutputType | null
+    _avg: SubRegionAvgAggregateOutputType | null
+    _sum: SubRegionSumAggregateOutputType | null
     _min: SubRegionMinAggregateOutputType | null
     _max: SubRegionMaxAggregateOutputType | null
   }
 
+  export type SubRegionAvgAggregateOutputType = {
+    external_id: number | null
+  }
+
+  export type SubRegionSumAggregateOutputType = {
+    external_id: number | null
+  }
+
   export type SubRegionMinAggregateOutputType = {
     id: string | null
+    external_id: number | null
     name: string | null
     slug: string | null
     region_id: string | null
@@ -23097,6 +23361,7 @@ export namespace Prisma {
 
   export type SubRegionMaxAggregateOutputType = {
     id: string | null
+    external_id: number | null
     name: string | null
     slug: string | null
     region_id: string | null
@@ -23106,6 +23371,7 @@ export namespace Prisma {
 
   export type SubRegionCountAggregateOutputType = {
     id: number
+    external_id: number
     name: number
     slug: number
     region_id: number
@@ -23115,8 +23381,17 @@ export namespace Prisma {
   }
 
 
+  export type SubRegionAvgAggregateInputType = {
+    external_id?: true
+  }
+
+  export type SubRegionSumAggregateInputType = {
+    external_id?: true
+  }
+
   export type SubRegionMinAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     slug?: true
     region_id?: true
@@ -23126,6 +23401,7 @@ export namespace Prisma {
 
   export type SubRegionMaxAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     slug?: true
     region_id?: true
@@ -23135,6 +23411,7 @@ export namespace Prisma {
 
   export type SubRegionCountAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     slug?: true
     region_id?: true
@@ -23186,6 +23463,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: SubRegionAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SubRegionSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: SubRegionMinAggregateInputType
@@ -23216,6 +23505,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: SubRegionCountAggregateInputType | true
+    _avg?: SubRegionAvgAggregateInputType
+    _sum?: SubRegionSumAggregateInputType
     _min?: SubRegionMinAggregateInputType
     _max?: SubRegionMaxAggregateInputType
   }
@@ -23223,12 +23514,15 @@ export namespace Prisma {
 
   export type SubRegionGroupByOutputType = {
     id: string
+    external_id: number | null
     name: string
     slug: string
     region_id: string
     created_at: Date
     updated_at: Date
     _count: SubRegionCountAggregateOutputType | null
+    _avg: SubRegionAvgAggregateOutputType | null
+    _sum: SubRegionSumAggregateOutputType | null
     _min: SubRegionMinAggregateOutputType | null
     _max: SubRegionMaxAggregateOutputType | null
   }
@@ -23249,6 +23543,7 @@ export namespace Prisma {
 
   export type SubRegionSelect = {
     id?: boolean
+    external_id?: boolean
     name?: boolean
     slug?: boolean
     region_id?: boolean
@@ -24951,17 +25246,20 @@ export namespace Prisma {
   }
 
   export type OrderAvgAggregateOutputType = {
+    external_id: number | null
     total: number | null
     coupon_id: number | null
   }
 
   export type OrderSumAggregateOutputType = {
+    external_id: number | null
     total: number | null
     coupon_id: number | null
   }
 
   export type OrderMinAggregateOutputType = {
     id: string | null
+    external_id: number | null
     code: string | null
     account_id: string | null
     total: number | null
@@ -24972,6 +25270,7 @@ export namespace Prisma {
 
   export type OrderMaxAggregateOutputType = {
     id: string | null
+    external_id: number | null
     code: string | null
     account_id: string | null
     total: number | null
@@ -24982,6 +25281,7 @@ export namespace Prisma {
 
   export type OrderCountAggregateOutputType = {
     id: number
+    external_id: number
     code: number
     account_id: number
     total: number
@@ -24993,17 +25293,20 @@ export namespace Prisma {
 
 
   export type OrderAvgAggregateInputType = {
+    external_id?: true
     total?: true
     coupon_id?: true
   }
 
   export type OrderSumAggregateInputType = {
+    external_id?: true
     total?: true
     coupon_id?: true
   }
 
   export type OrderMinAggregateInputType = {
     id?: true
+    external_id?: true
     code?: true
     account_id?: true
     total?: true
@@ -25014,6 +25317,7 @@ export namespace Prisma {
 
   export type OrderMaxAggregateInputType = {
     id?: true
+    external_id?: true
     code?: true
     account_id?: true
     total?: true
@@ -25024,6 +25328,7 @@ export namespace Prisma {
 
   export type OrderCountAggregateInputType = {
     id?: true
+    external_id?: true
     code?: true
     account_id?: true
     total?: true
@@ -25127,6 +25432,7 @@ export namespace Prisma {
 
   export type OrderGroupByOutputType = {
     id: string
+    external_id: number | null
     code: string
     account_id: string
     total: number
@@ -25156,6 +25462,7 @@ export namespace Prisma {
 
   export type OrderSelect = {
     id?: boolean
+    external_id?: boolean
     code?: boolean
     account_id?: boolean
     account?: boolean | AccountArgs
@@ -27821,12 +28128,23 @@ export namespace Prisma {
 
   export type AggregateDevice = {
     _count: DeviceCountAggregateOutputType | null
+    _avg: DeviceAvgAggregateOutputType | null
+    _sum: DeviceSumAggregateOutputType | null
     _min: DeviceMinAggregateOutputType | null
     _max: DeviceMaxAggregateOutputType | null
   }
 
+  export type DeviceAvgAggregateOutputType = {
+    external_id: number | null
+  }
+
+  export type DeviceSumAggregateOutputType = {
+    external_id: number | null
+  }
+
   export type DeviceMinAggregateOutputType = {
     id: string | null
+    external_id: number | null
     device_physical_id: string | null
     platform: PlatformType | null
     version: string | null
@@ -27837,6 +28155,7 @@ export namespace Prisma {
 
   export type DeviceMaxAggregateOutputType = {
     id: string | null
+    external_id: number | null
     device_physical_id: string | null
     platform: PlatformType | null
     version: string | null
@@ -27847,6 +28166,7 @@ export namespace Prisma {
 
   export type DeviceCountAggregateOutputType = {
     id: number
+    external_id: number
     device_physical_id: number
     platform: number
     version: number
@@ -27857,8 +28177,17 @@ export namespace Prisma {
   }
 
 
+  export type DeviceAvgAggregateInputType = {
+    external_id?: true
+  }
+
+  export type DeviceSumAggregateInputType = {
+    external_id?: true
+  }
+
   export type DeviceMinAggregateInputType = {
     id?: true
+    external_id?: true
     device_physical_id?: true
     platform?: true
     version?: true
@@ -27869,6 +28198,7 @@ export namespace Prisma {
 
   export type DeviceMaxAggregateInputType = {
     id?: true
+    external_id?: true
     device_physical_id?: true
     platform?: true
     version?: true
@@ -27879,6 +28209,7 @@ export namespace Prisma {
 
   export type DeviceCountAggregateInputType = {
     id?: true
+    external_id?: true
     device_physical_id?: true
     platform?: true
     version?: true
@@ -27931,6 +28262,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: DeviceAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: DeviceSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: DeviceMinAggregateInputType
@@ -27961,6 +28304,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: DeviceCountAggregateInputType | true
+    _avg?: DeviceAvgAggregateInputType
+    _sum?: DeviceSumAggregateInputType
     _min?: DeviceMinAggregateInputType
     _max?: DeviceMaxAggregateInputType
   }
@@ -27968,6 +28313,7 @@ export namespace Prisma {
 
   export type DeviceGroupByOutputType = {
     id: string
+    external_id: number | null
     device_physical_id: string
     platform: PlatformType
     version: string
@@ -27975,6 +28321,8 @@ export namespace Prisma {
     created_at: Date
     updated_at: Date
     _count: DeviceCountAggregateOutputType | null
+    _avg: DeviceAvgAggregateOutputType | null
+    _sum: DeviceSumAggregateOutputType | null
     _min: DeviceMinAggregateOutputType | null
     _max: DeviceMaxAggregateOutputType | null
   }
@@ -27995,6 +28343,7 @@ export namespace Prisma {
 
   export type DeviceSelect = {
     id?: boolean
+    external_id?: boolean
     device_physical_id?: boolean
     platform?: boolean
     version?: boolean
@@ -39429,9 +39778,9 @@ export namespace Prisma {
     id: 'id',
     external_id: 'external_id',
     name: 'name',
+    email: 'email',
     cpf_cnpj: 'cpf_cnpj',
     market_name: 'market_name',
-    email: 'email',
     phone: 'phone',
     whatsapp: 'whatsapp',
     logo: 'logo',
@@ -39444,11 +39793,12 @@ export namespace Prisma {
     gender: 'gender',
     street: 'street',
     number: 'number',
-    district: 'district',
-    country: 'country',
-    state: 'state',
     complement: 'complement',
+    district: 'district',
+    city: 'city',
+    state: 'state',
     zipcode: 'zipcode',
+    country: 'country',
     plan_id: 'plan_id',
     created_at: 'created_at',
     updated_at: 'updated_at',
@@ -39471,6 +39821,7 @@ export namespace Prisma {
 
   export const ActivitiesScalarFieldEnum: {
     id: 'id',
+    external_id: 'external_id',
     name: 'name',
     slug: 'slug',
     created_at: 'created_at',
@@ -39482,6 +39833,7 @@ export namespace Prisma {
 
   export const CampaignScalarFieldEnum: {
     id: 'id',
+    external_id: 'external_id',
     name: 'name',
     description: 'description',
     percentage_discount: 'percentage_discount',
@@ -39508,6 +39860,7 @@ export namespace Prisma {
 
   export const CityScalarFieldEnum: {
     id: 'id',
+    external_id: 'external_id',
     name: 'name',
     slug: 'slug',
     state_id: 'state_id',
@@ -39520,6 +39873,7 @@ export namespace Prisma {
 
   export const CountryScalarFieldEnum: {
     id: 'id',
+    external_id: 'external_id',
     name: 'name',
     slug: 'slug',
     value: 'value',
@@ -39559,6 +39913,7 @@ export namespace Prisma {
 
   export const DeviceScalarFieldEnum: {
     id: 'id',
+    external_id: 'external_id',
     device_physical_id: 'device_physical_id',
     platform: 'platform',
     version: 'version',
@@ -39646,6 +40001,7 @@ export namespace Prisma {
 
   export const LabelScalarFieldEnum: {
     id: 'id',
+    external_id: 'external_id',
     name: 'name',
     description: 'description',
     type_id: 'type_id',
@@ -39701,6 +40057,7 @@ export namespace Prisma {
 
   export const OrderScalarFieldEnum: {
     id: 'id',
+    external_id: 'external_id',
     code: 'code',
     account_id: 'account_id',
     total: 'total',
@@ -39764,6 +40121,7 @@ export namespace Prisma {
 
   export const RegionScalarFieldEnum: {
     id: 'id',
+    external_id: 'external_id',
     state_id: 'state_id',
     name: 'name',
     slug: 'slug',
@@ -39815,6 +40173,7 @@ export namespace Prisma {
 
   export const StateScalarFieldEnum: {
     id: 'id',
+    external_id: 'external_id',
     name: 'name',
     slug: 'slug',
     country_id: 'country_id',
@@ -39850,6 +40209,7 @@ export namespace Prisma {
 
   export const SubRegionScalarFieldEnum: {
     id: 'id',
+    external_id: 'external_id',
     name: 'name',
     slug: 'slug',
     region_id: 'region_id',
@@ -39936,9 +40296,9 @@ export namespace Prisma {
     id?: StringFilter | string
     external_id?: IntNullableFilter | number | null
     name?: StringFilter | string
+    email?: StringFilter | string
     cpf_cnpj?: StringNullableFilter | string | null
     market_name?: StringFilter | string
-    email?: StringFilter | string
     phone?: StringNullableFilter | string | null
     whatsapp?: StringNullableFilter | string | null
     logo?: StringNullableFilter | string | null
@@ -39952,11 +40312,12 @@ export namespace Prisma {
     campaign?: CampaignListRelationFilter
     street?: StringFilter | string
     number?: StringFilter | string
-    district?: StringFilter | string
-    country?: StringFilter | string
-    state?: StringFilter | string
     complement?: StringNullableFilter | string | null
+    district?: StringFilter | string
+    city?: StringFilter | string
+    state?: StringFilter | string
     zipcode?: StringFilter | string
+    country?: StringFilter | string
     plan_id?: StringNullableFilter | string | null
     plan?: XOR<PlanRelationFilter, PlanWhereInput> | null
     subscription?: SubscriptionListRelationFilter
@@ -39975,9 +40336,9 @@ export namespace Prisma {
     id?: SortOrder
     external_id?: SortOrder
     name?: SortOrder
+    email?: SortOrder
     cpf_cnpj?: SortOrder
     market_name?: SortOrder
-    email?: SortOrder
     phone?: SortOrder
     whatsapp?: SortOrder
     logo?: SortOrder
@@ -39991,11 +40352,12 @@ export namespace Prisma {
     campaign?: CampaignOrderByRelationAggregateInput
     street?: SortOrder
     number?: SortOrder
-    district?: SortOrder
-    country?: SortOrder
-    state?: SortOrder
     complement?: SortOrder
+    district?: SortOrder
+    city?: SortOrder
+    state?: SortOrder
     zipcode?: SortOrder
+    country?: SortOrder
     plan_id?: SortOrder
     plan?: PlanOrderByWithRelationInput
     subscription?: SubscriptionOrderByRelationAggregateInput
@@ -40021,9 +40383,9 @@ export namespace Prisma {
     id?: SortOrder
     external_id?: SortOrder
     name?: SortOrder
+    email?: SortOrder
     cpf_cnpj?: SortOrder
     market_name?: SortOrder
-    email?: SortOrder
     phone?: SortOrder
     whatsapp?: SortOrder
     logo?: SortOrder
@@ -40036,11 +40398,12 @@ export namespace Prisma {
     gender?: SortOrder
     street?: SortOrder
     number?: SortOrder
-    district?: SortOrder
-    country?: SortOrder
-    state?: SortOrder
     complement?: SortOrder
+    district?: SortOrder
+    city?: SortOrder
+    state?: SortOrder
     zipcode?: SortOrder
+    country?: SortOrder
     plan_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -40060,9 +40423,9 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter | string
     external_id?: IntNullableWithAggregatesFilter | number | null
     name?: StringWithAggregatesFilter | string
+    email?: StringWithAggregatesFilter | string
     cpf_cnpj?: StringNullableWithAggregatesFilter | string | null
     market_name?: StringWithAggregatesFilter | string
-    email?: StringWithAggregatesFilter | string
     phone?: StringNullableWithAggregatesFilter | string | null
     whatsapp?: StringNullableWithAggregatesFilter | string | null
     logo?: StringNullableWithAggregatesFilter | string | null
@@ -40075,11 +40438,12 @@ export namespace Prisma {
     gender?: EnumGenderTypeWithAggregatesFilter | GenderType
     street?: StringWithAggregatesFilter | string
     number?: StringWithAggregatesFilter | string
-    district?: StringWithAggregatesFilter | string
-    country?: StringWithAggregatesFilter | string
-    state?: StringWithAggregatesFilter | string
     complement?: StringNullableWithAggregatesFilter | string | null
+    district?: StringWithAggregatesFilter | string
+    city?: StringWithAggregatesFilter | string
+    state?: StringWithAggregatesFilter | string
     zipcode?: StringWithAggregatesFilter | string
+    country?: StringWithAggregatesFilter | string
     plan_id?: StringNullableWithAggregatesFilter | string | null
     created_at?: DateTimeWithAggregatesFilter | Date | string
     updated_at?: DateTimeWithAggregatesFilter | Date | string
@@ -40181,6 +40545,7 @@ export namespace Prisma {
     OR?: Enumerable<ActivitiesWhereInput>
     NOT?: Enumerable<ActivitiesWhereInput>
     id?: StringFilter | string
+    external_id?: IntNullableFilter | number | null
     name?: StringFilter | string
     slug?: StringFilter | string
     created_at?: DateTimeFilter | Date | string
@@ -40190,6 +40555,7 @@ export namespace Prisma {
 
   export type ActivitiesOrderByWithRelationInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     created_at?: SortOrder
@@ -40199,17 +40565,21 @@ export namespace Prisma {
 
   export type ActivitiesWhereUniqueInput = {
     id?: string
+    external_id?: number
   }
 
   export type ActivitiesOrderByWithAggregationInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     _count?: ActivitiesCountOrderByAggregateInput
+    _avg?: ActivitiesAvgOrderByAggregateInput
     _max?: ActivitiesMaxOrderByAggregateInput
     _min?: ActivitiesMinOrderByAggregateInput
+    _sum?: ActivitiesSumOrderByAggregateInput
   }
 
   export type ActivitiesScalarWhereWithAggregatesInput = {
@@ -40217,6 +40587,7 @@ export namespace Prisma {
     OR?: Enumerable<ActivitiesScalarWhereWithAggregatesInput>
     NOT?: Enumerable<ActivitiesScalarWhereWithAggregatesInput>
     id?: StringWithAggregatesFilter | string
+    external_id?: IntNullableWithAggregatesFilter | number | null
     name?: StringWithAggregatesFilter | string
     slug?: StringWithAggregatesFilter | string
     created_at?: DateTimeWithAggregatesFilter | Date | string
@@ -40515,6 +40886,7 @@ export namespace Prisma {
     OR?: Enumerable<CampaignWhereInput>
     NOT?: Enumerable<CampaignWhereInput>
     id?: StringFilter | string
+    external_id?: IntNullableFilter | number | null
     name?: StringFilter | string
     description?: StringNullableFilter | string | null
     percentage_discount?: FloatNullableFilter | number | null
@@ -40533,6 +40905,7 @@ export namespace Prisma {
 
   export type CampaignOrderByWithRelationInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     description?: SortOrder
     percentage_discount?: SortOrder
@@ -40551,10 +40924,12 @@ export namespace Prisma {
 
   export type CampaignWhereUniqueInput = {
     id?: string
+    external_id?: number
   }
 
   export type CampaignOrderByWithAggregationInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     description?: SortOrder
     percentage_discount?: SortOrder
@@ -40577,6 +40952,7 @@ export namespace Prisma {
     OR?: Enumerable<CampaignScalarWhereWithAggregatesInput>
     NOT?: Enumerable<CampaignScalarWhereWithAggregatesInput>
     id?: StringWithAggregatesFilter | string
+    external_id?: IntNullableWithAggregatesFilter | number | null
     name?: StringWithAggregatesFilter | string
     description?: StringNullableWithAggregatesFilter | string | null
     percentage_discount?: FloatNullableWithAggregatesFilter | number | null
@@ -40704,6 +41080,7 @@ export namespace Prisma {
     OR?: Enumerable<LabelWhereInput>
     NOT?: Enumerable<LabelWhereInput>
     id?: StringFilter | string
+    external_id?: IntNullableFilter | number | null
     name?: StringFilter | string
     description?: StringNullableFilter | string | null
     type_id?: StringFilter | string
@@ -40732,6 +41109,7 @@ export namespace Prisma {
 
   export type LabelOrderByWithRelationInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     description?: SortOrder
     type_id?: SortOrder
@@ -40760,10 +41138,12 @@ export namespace Prisma {
 
   export type LabelWhereUniqueInput = {
     id?: string
+    external_id?: number
   }
 
   export type LabelOrderByWithAggregationInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     description?: SortOrder
     type_id?: SortOrder
@@ -40791,6 +41171,7 @@ export namespace Prisma {
     OR?: Enumerable<LabelScalarWhereWithAggregatesInput>
     NOT?: Enumerable<LabelScalarWhereWithAggregatesInput>
     id?: StringWithAggregatesFilter | string
+    external_id?: IntNullableWithAggregatesFilter | number | null
     name?: StringWithAggregatesFilter | string
     description?: StringNullableWithAggregatesFilter | string | null
     type_id?: StringWithAggregatesFilter | string
@@ -40921,6 +41302,7 @@ export namespace Prisma {
 
   export type GrapeWhereUniqueInput = {
     id?: string
+    external_id?: number
   }
 
   export type GrapeOrderByWithAggregationInput = {
@@ -40995,6 +41377,7 @@ export namespace Prisma {
     OR?: Enumerable<CountryWhereInput>
     NOT?: Enumerable<CountryWhereInput>
     id?: StringFilter | string
+    external_id?: IntNullableFilter | number | null
     name?: StringFilter | string
     slug?: StringFilter | string
     value?: StringFilter | string
@@ -41006,6 +41389,7 @@ export namespace Prisma {
 
   export type CountryOrderByWithRelationInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     value?: SortOrder
@@ -41017,18 +41401,22 @@ export namespace Prisma {
 
   export type CountryWhereUniqueInput = {
     id?: string
+    external_id?: number
   }
 
   export type CountryOrderByWithAggregationInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     value?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     _count?: CountryCountOrderByAggregateInput
+    _avg?: CountryAvgOrderByAggregateInput
     _max?: CountryMaxOrderByAggregateInput
     _min?: CountryMinOrderByAggregateInput
+    _sum?: CountrySumOrderByAggregateInput
   }
 
   export type CountryScalarWhereWithAggregatesInput = {
@@ -41036,6 +41424,7 @@ export namespace Prisma {
     OR?: Enumerable<CountryScalarWhereWithAggregatesInput>
     NOT?: Enumerable<CountryScalarWhereWithAggregatesInput>
     id?: StringWithAggregatesFilter | string
+    external_id?: IntNullableWithAggregatesFilter | number | null
     name?: StringWithAggregatesFilter | string
     slug?: StringWithAggregatesFilter | string
     value?: StringWithAggregatesFilter | string
@@ -41048,6 +41437,7 @@ export namespace Prisma {
     OR?: Enumerable<StateWhereInput>
     NOT?: Enumerable<StateWhereInput>
     id?: StringFilter | string
+    external_id?: IntNullableFilter | number | null
     name?: StringFilter | string
     slug?: StringFilter | string
     country_id?: StringFilter | string
@@ -41060,6 +41450,7 @@ export namespace Prisma {
 
   export type StateOrderByWithRelationInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     country_id?: SortOrder
@@ -41072,18 +41463,22 @@ export namespace Prisma {
 
   export type StateWhereUniqueInput = {
     id?: string
+    external_id?: number
   }
 
   export type StateOrderByWithAggregationInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     country_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     _count?: StateCountOrderByAggregateInput
+    _avg?: StateAvgOrderByAggregateInput
     _max?: StateMaxOrderByAggregateInput
     _min?: StateMinOrderByAggregateInput
+    _sum?: StateSumOrderByAggregateInput
   }
 
   export type StateScalarWhereWithAggregatesInput = {
@@ -41091,6 +41486,7 @@ export namespace Prisma {
     OR?: Enumerable<StateScalarWhereWithAggregatesInput>
     NOT?: Enumerable<StateScalarWhereWithAggregatesInput>
     id?: StringWithAggregatesFilter | string
+    external_id?: IntNullableWithAggregatesFilter | number | null
     name?: StringWithAggregatesFilter | string
     slug?: StringWithAggregatesFilter | string
     country_id?: StringWithAggregatesFilter | string
@@ -41103,6 +41499,7 @@ export namespace Prisma {
     OR?: Enumerable<CityWhereInput>
     NOT?: Enumerable<CityWhereInput>
     id?: StringFilter | string
+    external_id?: IntNullableFilter | number | null
     name?: StringFilter | string
     slug?: StringFilter | string
     state_id?: StringFilter | string
@@ -41113,6 +41510,7 @@ export namespace Prisma {
 
   export type CityOrderByWithRelationInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     state_id?: SortOrder
@@ -41123,18 +41521,22 @@ export namespace Prisma {
 
   export type CityWhereUniqueInput = {
     id?: string
+    external_id?: number
   }
 
   export type CityOrderByWithAggregationInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     state_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     _count?: CityCountOrderByAggregateInput
+    _avg?: CityAvgOrderByAggregateInput
     _max?: CityMaxOrderByAggregateInput
     _min?: CityMinOrderByAggregateInput
+    _sum?: CitySumOrderByAggregateInput
   }
 
   export type CityScalarWhereWithAggregatesInput = {
@@ -41142,6 +41544,7 @@ export namespace Prisma {
     OR?: Enumerable<CityScalarWhereWithAggregatesInput>
     NOT?: Enumerable<CityScalarWhereWithAggregatesInput>
     id?: StringWithAggregatesFilter | string
+    external_id?: IntNullableWithAggregatesFilter | number | null
     name?: StringWithAggregatesFilter | string
     slug?: StringWithAggregatesFilter | string
     state_id?: StringWithAggregatesFilter | string
@@ -41154,6 +41557,7 @@ export namespace Prisma {
     OR?: Enumerable<RegionWhereInput>
     NOT?: Enumerable<RegionWhereInput>
     id?: StringFilter | string
+    external_id?: IntNullableFilter | number | null
     state_id?: StringFilter | string
     state?: XOR<StateRelationFilter, StateWhereInput>
     name?: StringFilter | string
@@ -41166,6 +41570,7 @@ export namespace Prisma {
 
   export type RegionOrderByWithRelationInput = {
     id?: SortOrder
+    external_id?: SortOrder
     state_id?: SortOrder
     state?: StateOrderByWithRelationInput
     name?: SortOrder
@@ -41178,18 +41583,22 @@ export namespace Prisma {
 
   export type RegionWhereUniqueInput = {
     id?: string
+    external_id?: number
   }
 
   export type RegionOrderByWithAggregationInput = {
     id?: SortOrder
+    external_id?: SortOrder
     state_id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     _count?: RegionCountOrderByAggregateInput
+    _avg?: RegionAvgOrderByAggregateInput
     _max?: RegionMaxOrderByAggregateInput
     _min?: RegionMinOrderByAggregateInput
+    _sum?: RegionSumOrderByAggregateInput
   }
 
   export type RegionScalarWhereWithAggregatesInput = {
@@ -41197,6 +41606,7 @@ export namespace Prisma {
     OR?: Enumerable<RegionScalarWhereWithAggregatesInput>
     NOT?: Enumerable<RegionScalarWhereWithAggregatesInput>
     id?: StringWithAggregatesFilter | string
+    external_id?: IntNullableWithAggregatesFilter | number | null
     state_id?: StringWithAggregatesFilter | string
     name?: StringWithAggregatesFilter | string
     slug?: StringWithAggregatesFilter | string
@@ -41209,6 +41619,7 @@ export namespace Prisma {
     OR?: Enumerable<SubRegionWhereInput>
     NOT?: Enumerable<SubRegionWhereInput>
     id?: StringFilter | string
+    external_id?: IntNullableFilter | number | null
     name?: StringFilter | string
     slug?: StringFilter | string
     region_id?: StringFilter | string
@@ -41219,6 +41630,7 @@ export namespace Prisma {
 
   export type SubRegionOrderByWithRelationInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     region_id?: SortOrder
@@ -41229,20 +41641,24 @@ export namespace Prisma {
 
   export type SubRegionWhereUniqueInput = {
     id?: string
+    external_id?: number
     name?: string
     slug?: string
   }
 
   export type SubRegionOrderByWithAggregationInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     region_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     _count?: SubRegionCountOrderByAggregateInput
+    _avg?: SubRegionAvgOrderByAggregateInput
     _max?: SubRegionMaxOrderByAggregateInput
     _min?: SubRegionMinOrderByAggregateInput
+    _sum?: SubRegionSumOrderByAggregateInput
   }
 
   export type SubRegionScalarWhereWithAggregatesInput = {
@@ -41250,6 +41666,7 @@ export namespace Prisma {
     OR?: Enumerable<SubRegionScalarWhereWithAggregatesInput>
     NOT?: Enumerable<SubRegionScalarWhereWithAggregatesInput>
     id?: StringWithAggregatesFilter | string
+    external_id?: IntNullableWithAggregatesFilter | number | null
     name?: StringWithAggregatesFilter | string
     slug?: StringWithAggregatesFilter | string
     region_id?: StringWithAggregatesFilter | string
@@ -41309,6 +41726,7 @@ export namespace Prisma {
     OR?: Enumerable<OrderWhereInput>
     NOT?: Enumerable<OrderWhereInput>
     id?: StringFilter | string
+    external_id?: IntNullableFilter | number | null
     code?: StringFilter | string
     account_id?: StringFilter | string
     account?: XOR<AccountRelationFilter, AccountWhereInput>
@@ -41322,6 +41740,7 @@ export namespace Prisma {
 
   export type OrderOrderByWithRelationInput = {
     id?: SortOrder
+    external_id?: SortOrder
     code?: SortOrder
     account_id?: SortOrder
     account?: AccountOrderByWithRelationInput
@@ -41335,11 +41754,13 @@ export namespace Prisma {
 
   export type OrderWhereUniqueInput = {
     id?: string
+    external_id?: number
     code?: string
   }
 
   export type OrderOrderByWithAggregationInput = {
     id?: SortOrder
+    external_id?: SortOrder
     code?: SortOrder
     account_id?: SortOrder
     total?: SortOrder
@@ -41358,6 +41779,7 @@ export namespace Prisma {
     OR?: Enumerable<OrderScalarWhereWithAggregatesInput>
     NOT?: Enumerable<OrderScalarWhereWithAggregatesInput>
     id?: StringWithAggregatesFilter | string
+    external_id?: IntNullableWithAggregatesFilter | number | null
     code?: StringWithAggregatesFilter | string
     account_id?: StringWithAggregatesFilter | string
     total?: FloatWithAggregatesFilter | number
@@ -41465,6 +41887,7 @@ export namespace Prisma {
     OR?: Enumerable<DeviceWhereInput>
     NOT?: Enumerable<DeviceWhereInput>
     id?: StringFilter | string
+    external_id?: IntNullableFilter | number | null
     device_physical_id?: StringFilter | string
     platform?: EnumPlatformTypeFilter | PlatformType
     version?: StringFilter | string
@@ -41479,6 +41902,7 @@ export namespace Prisma {
 
   export type DeviceOrderByWithRelationInput = {
     id?: SortOrder
+    external_id?: SortOrder
     device_physical_id?: SortOrder
     platform?: SortOrder
     version?: SortOrder
@@ -41493,11 +41917,13 @@ export namespace Prisma {
 
   export type DeviceWhereUniqueInput = {
     id?: string
+    external_id?: number
     device_physical_id?: string
   }
 
   export type DeviceOrderByWithAggregationInput = {
     id?: SortOrder
+    external_id?: SortOrder
     device_physical_id?: SortOrder
     platform?: SortOrder
     version?: SortOrder
@@ -41505,8 +41931,10 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     _count?: DeviceCountOrderByAggregateInput
+    _avg?: DeviceAvgOrderByAggregateInput
     _max?: DeviceMaxOrderByAggregateInput
     _min?: DeviceMinOrderByAggregateInput
+    _sum?: DeviceSumOrderByAggregateInput
   }
 
   export type DeviceScalarWhereWithAggregatesInput = {
@@ -41514,6 +41942,7 @@ export namespace Prisma {
     OR?: Enumerable<DeviceScalarWhereWithAggregatesInput>
     NOT?: Enumerable<DeviceScalarWhereWithAggregatesInput>
     id?: StringWithAggregatesFilter | string
+    external_id?: IntNullableWithAggregatesFilter | number | null
     device_physical_id?: StringWithAggregatesFilter | string
     platform?: EnumPlatformTypeWithAggregatesFilter | PlatformType
     version?: StringWithAggregatesFilter | string
@@ -41929,6 +42358,7 @@ export namespace Prisma {
 
   export type PlanWhereUniqueInput = {
     id?: string
+    external_id?: number
   }
 
   export type PlanOrderByWithAggregationInput = {
@@ -42182,9 +42612,9 @@ export namespace Prisma {
     id?: string
     external_id?: number | null
     name: string
+    email: string
     cpf_cnpj?: string | null
     market_name: string
-    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -42198,11 +42628,12 @@ export namespace Prisma {
     campaign?: CampaignCreateNestedManyWithoutAccountInput
     street: string
     number: string
-    district: string
-    country: string
-    state: string
     complement?: string | null
+    district: string
+    city: string
+    state: string
     zipcode: string
+    country: string
     plan?: PlanCreateNestedOneWithoutAccountInput
     subscription?: SubscriptionCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -42220,9 +42651,9 @@ export namespace Prisma {
     id?: string
     external_id?: number | null
     name: string
+    email: string
     cpf_cnpj?: string | null
     market_name: string
-    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -42236,11 +42667,12 @@ export namespace Prisma {
     campaign?: CampaignUncheckedCreateNestedManyWithoutAccountInput
     street: string
     number: string
-    district: string
-    country: string
-    state: string
     complement?: string | null
+    district: string
+    city: string
+    state: string
     zipcode: string
+    country: string
     plan_id?: string | null
     subscription?: SubscriptionUncheckedCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -42258,9 +42690,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -42274,11 +42706,12 @@ export namespace Prisma {
     campaign?: CampaignUpdateManyWithoutAccountNestedInput
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
     complement?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
     plan?: PlanUpdateOneWithoutAccountNestedInput
     subscription?: SubscriptionUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -42296,9 +42729,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -42312,11 +42745,12 @@ export namespace Prisma {
     campaign?: CampaignUncheckedUpdateManyWithoutAccountNestedInput
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
     complement?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
     plan_id?: NullableStringFieldUpdateOperationsInput | string | null
     subscription?: SubscriptionUncheckedUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -42334,9 +42768,9 @@ export namespace Prisma {
     id?: string
     external_id?: number | null
     name: string
+    email: string
     cpf_cnpj?: string | null
     market_name: string
-    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -42349,11 +42783,12 @@ export namespace Prisma {
     gender: GenderType
     street: string
     number: string
-    district: string
-    country: string
-    state: string
     complement?: string | null
+    district: string
+    city: string
+    state: string
     zipcode: string
+    country: string
     plan_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
@@ -42365,9 +42800,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -42380,11 +42815,12 @@ export namespace Prisma {
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
     complement?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     domain?: StringFieldUpdateOperationsInput | string
@@ -42395,9 +42831,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -42410,11 +42846,12 @@ export namespace Prisma {
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
     complement?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
     plan_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -42519,6 +42956,7 @@ export namespace Prisma {
 
   export type ActivitiesCreateInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     created_at?: Date | string
@@ -42528,6 +42966,7 @@ export namespace Prisma {
 
   export type ActivitiesUncheckedCreateInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     created_at?: Date | string
@@ -42537,6 +42976,7 @@ export namespace Prisma {
 
   export type ActivitiesUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -42546,6 +42986,7 @@ export namespace Prisma {
 
   export type ActivitiesUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -42555,6 +42996,7 @@ export namespace Prisma {
 
   export type ActivitiesCreateManyInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     created_at?: Date | string
@@ -42563,6 +43005,7 @@ export namespace Prisma {
 
   export type ActivitiesUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -42571,6 +43014,7 @@ export namespace Prisma {
 
   export type ActivitiesUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -42942,6 +43386,7 @@ export namespace Prisma {
 
   export type CampaignCreateInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     percentage_discount?: number | null
@@ -42957,6 +43402,7 @@ export namespace Prisma {
 
   export type CampaignUncheckedCreateInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     percentage_discount?: number | null
@@ -42972,6 +43418,7 @@ export namespace Prisma {
 
   export type CampaignUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     percentage_discount?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -42987,6 +43434,7 @@ export namespace Prisma {
 
   export type CampaignUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     percentage_discount?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -43002,6 +43450,7 @@ export namespace Prisma {
 
   export type CampaignCreateManyInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     percentage_discount?: number | null
@@ -43016,6 +43465,7 @@ export namespace Prisma {
 
   export type CampaignUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     percentage_discount?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -43027,6 +43477,7 @@ export namespace Prisma {
 
   export type CampaignUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     percentage_discount?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -43185,6 +43636,7 @@ export namespace Prisma {
 
   export type LabelCreateInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     labelType: LabelTypeCreateNestedOneWithoutLabelsInput
@@ -43209,6 +43661,7 @@ export namespace Prisma {
 
   export type LabelUncheckedCreateInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     type_id: string
@@ -43233,6 +43686,7 @@ export namespace Prisma {
 
   export type LabelUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     labelType?: LabelTypeUpdateOneRequiredWithoutLabelsNestedInput
@@ -43257,6 +43711,7 @@ export namespace Prisma {
 
   export type LabelUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type_id?: StringFieldUpdateOperationsInput | string
@@ -43281,6 +43736,7 @@ export namespace Prisma {
 
   export type LabelCreateManyInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     type_id: string
@@ -43300,6 +43756,7 @@ export namespace Prisma {
 
   export type LabelUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     harvest?: NullableStringFieldUpdateOperationsInput | string | null
@@ -43315,6 +43772,7 @@ export namespace Prisma {
 
   export type LabelUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type_id?: StringFieldUpdateOperationsInput | string
@@ -43541,6 +43999,7 @@ export namespace Prisma {
 
   export type CountryCreateInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     value: string
@@ -43552,6 +44011,7 @@ export namespace Prisma {
 
   export type CountryUncheckedCreateInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     value: string
@@ -43563,6 +44023,7 @@ export namespace Prisma {
 
   export type CountryUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     value?: StringFieldUpdateOperationsInput | string
@@ -43574,6 +44035,7 @@ export namespace Prisma {
 
   export type CountryUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     value?: StringFieldUpdateOperationsInput | string
@@ -43585,6 +44047,7 @@ export namespace Prisma {
 
   export type CountryCreateManyInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     value: string
@@ -43594,6 +44057,7 @@ export namespace Prisma {
 
   export type CountryUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     value?: StringFieldUpdateOperationsInput | string
@@ -43603,6 +44067,7 @@ export namespace Prisma {
 
   export type CountryUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     value?: StringFieldUpdateOperationsInput | string
@@ -43612,6 +44077,7 @@ export namespace Prisma {
 
   export type StateCreateInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     country: CountryCreateNestedOneWithoutStatesInput
@@ -43623,6 +44089,7 @@ export namespace Prisma {
 
   export type StateUncheckedCreateInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     country_id: string
@@ -43634,6 +44101,7 @@ export namespace Prisma {
 
   export type StateUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     country?: CountryUpdateOneRequiredWithoutStatesNestedInput
@@ -43645,6 +44113,7 @@ export namespace Prisma {
 
   export type StateUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     country_id?: StringFieldUpdateOperationsInput | string
@@ -43656,6 +44125,7 @@ export namespace Prisma {
 
   export type StateCreateManyInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     country_id: string
@@ -43665,6 +44135,7 @@ export namespace Prisma {
 
   export type StateUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -43673,6 +44144,7 @@ export namespace Prisma {
 
   export type StateUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     country_id?: StringFieldUpdateOperationsInput | string
@@ -43682,6 +44154,7 @@ export namespace Prisma {
 
   export type CityCreateInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     state: StateCreateNestedOneWithoutCitiesInput
@@ -43691,6 +44164,7 @@ export namespace Prisma {
 
   export type CityUncheckedCreateInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     state_id: string
@@ -43700,6 +44174,7 @@ export namespace Prisma {
 
   export type CityUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     state?: StateUpdateOneRequiredWithoutCitiesNestedInput
@@ -43709,6 +44184,7 @@ export namespace Prisma {
 
   export type CityUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     state_id?: StringFieldUpdateOperationsInput | string
@@ -43718,6 +44194,7 @@ export namespace Prisma {
 
   export type CityCreateManyInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     state_id: string
@@ -43727,6 +44204,7 @@ export namespace Prisma {
 
   export type CityUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -43735,6 +44213,7 @@ export namespace Prisma {
 
   export type CityUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     state_id?: StringFieldUpdateOperationsInput | string
@@ -43744,6 +44223,7 @@ export namespace Prisma {
 
   export type RegionCreateInput = {
     id?: string
+    external_id?: number | null
     state: StateCreateNestedOneWithoutRegionsInput
     name: string
     slug: string
@@ -43755,6 +44235,7 @@ export namespace Prisma {
 
   export type RegionUncheckedCreateInput = {
     id?: string
+    external_id?: number | null
     state_id: string
     name: string
     slug: string
@@ -43766,6 +44247,7 @@ export namespace Prisma {
 
   export type RegionUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     state?: StateUpdateOneRequiredWithoutRegionsNestedInput
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
@@ -43777,6 +44259,7 @@ export namespace Prisma {
 
   export type RegionUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     state_id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
@@ -43788,6 +44271,7 @@ export namespace Prisma {
 
   export type RegionCreateManyInput = {
     id?: string
+    external_id?: number | null
     state_id: string
     name: string
     slug: string
@@ -43797,6 +44281,7 @@ export namespace Prisma {
 
   export type RegionUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -43805,6 +44290,7 @@ export namespace Prisma {
 
   export type RegionUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     state_id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
@@ -43814,6 +44300,7 @@ export namespace Prisma {
 
   export type SubRegionCreateInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     region: RegionCreateNestedOneWithoutSubregionInput
@@ -43823,6 +44310,7 @@ export namespace Prisma {
 
   export type SubRegionUncheckedCreateInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     region_id: string
@@ -43832,6 +44320,7 @@ export namespace Prisma {
 
   export type SubRegionUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     region?: RegionUpdateOneRequiredWithoutSubregionNestedInput
@@ -43841,6 +44330,7 @@ export namespace Prisma {
 
   export type SubRegionUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     region_id?: StringFieldUpdateOperationsInput | string
@@ -43850,6 +44340,7 @@ export namespace Prisma {
 
   export type SubRegionCreateManyInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     region_id: string
@@ -43859,6 +44350,7 @@ export namespace Prisma {
 
   export type SubRegionUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -43867,6 +44359,7 @@ export namespace Prisma {
 
   export type SubRegionUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     region_id?: StringFieldUpdateOperationsInput | string
@@ -43936,6 +44429,7 @@ export namespace Prisma {
 
   export type OrderCreateInput = {
     id?: string
+    external_id?: number | null
     code: string
     account: AccountCreateNestedOneWithoutOrderInput
     total: number
@@ -43948,6 +44442,7 @@ export namespace Prisma {
 
   export type OrderUncheckedCreateInput = {
     id?: string
+    external_id?: number | null
     code: string
     account_id: string
     total: number
@@ -43960,6 +44455,7 @@ export namespace Prisma {
 
   export type OrderUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     code?: StringFieldUpdateOperationsInput | string
     account?: AccountUpdateOneRequiredWithoutOrderNestedInput
     total?: FloatFieldUpdateOperationsInput | number
@@ -43972,6 +44468,7 @@ export namespace Prisma {
 
   export type OrderUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     code?: StringFieldUpdateOperationsInput | string
     account_id?: StringFieldUpdateOperationsInput | string
     total?: FloatFieldUpdateOperationsInput | number
@@ -43984,6 +44481,7 @@ export namespace Prisma {
 
   export type OrderCreateManyInput = {
     id?: string
+    external_id?: number | null
     code: string
     account_id: string
     total: number
@@ -43994,6 +44492,7 @@ export namespace Prisma {
 
   export type OrderUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     code?: StringFieldUpdateOperationsInput | string
     total?: FloatFieldUpdateOperationsInput | number
     coupon_id?: NullableIntFieldUpdateOperationsInput | number | null
@@ -44003,6 +44502,7 @@ export namespace Prisma {
 
   export type OrderUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     code?: StringFieldUpdateOperationsInput | string
     account_id?: StringFieldUpdateOperationsInput | string
     total?: FloatFieldUpdateOperationsInput | number
@@ -44115,6 +44615,7 @@ export namespace Prisma {
 
   export type DeviceCreateInput = {
     id?: string
+    external_id?: number | null
     device_physical_id: string
     platform: PlatformType
     version: string
@@ -44129,6 +44630,7 @@ export namespace Prisma {
 
   export type DeviceUncheckedCreateInput = {
     id?: string
+    external_id?: number | null
     device_physical_id: string
     platform: PlatformType
     version: string
@@ -44143,6 +44645,7 @@ export namespace Prisma {
 
   export type DeviceUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     device_physical_id?: StringFieldUpdateOperationsInput | string
     platform?: EnumPlatformTypeFieldUpdateOperationsInput | PlatformType
     version?: StringFieldUpdateOperationsInput | string
@@ -44157,6 +44660,7 @@ export namespace Prisma {
 
   export type DeviceUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     device_physical_id?: StringFieldUpdateOperationsInput | string
     platform?: EnumPlatformTypeFieldUpdateOperationsInput | PlatformType
     version?: StringFieldUpdateOperationsInput | string
@@ -44171,6 +44675,7 @@ export namespace Prisma {
 
   export type DeviceCreateManyInput = {
     id?: string
+    external_id?: number | null
     device_physical_id: string
     platform: PlatformType
     version: string
@@ -44181,6 +44686,7 @@ export namespace Prisma {
 
   export type DeviceUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     device_physical_id?: StringFieldUpdateOperationsInput | string
     platform?: EnumPlatformTypeFieldUpdateOperationsInput | PlatformType
     version?: StringFieldUpdateOperationsInput | string
@@ -44191,6 +44697,7 @@ export namespace Prisma {
 
   export type DeviceUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     device_physical_id?: StringFieldUpdateOperationsInput | string
     platform?: EnumPlatformTypeFieldUpdateOperationsInput | PlatformType
     version?: StringFieldUpdateOperationsInput | string
@@ -45160,9 +45667,9 @@ export namespace Prisma {
     id?: SortOrder
     external_id?: SortOrder
     name?: SortOrder
+    email?: SortOrder
     cpf_cnpj?: SortOrder
     market_name?: SortOrder
-    email?: SortOrder
     phone?: SortOrder
     whatsapp?: SortOrder
     logo?: SortOrder
@@ -45175,11 +45682,12 @@ export namespace Prisma {
     gender?: SortOrder
     street?: SortOrder
     number?: SortOrder
-    district?: SortOrder
-    country?: SortOrder
-    state?: SortOrder
     complement?: SortOrder
+    district?: SortOrder
+    city?: SortOrder
+    state?: SortOrder
     zipcode?: SortOrder
+    country?: SortOrder
     plan_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -45195,9 +45703,9 @@ export namespace Prisma {
     id?: SortOrder
     external_id?: SortOrder
     name?: SortOrder
+    email?: SortOrder
     cpf_cnpj?: SortOrder
     market_name?: SortOrder
-    email?: SortOrder
     phone?: SortOrder
     whatsapp?: SortOrder
     logo?: SortOrder
@@ -45210,11 +45718,12 @@ export namespace Prisma {
     gender?: SortOrder
     street?: SortOrder
     number?: SortOrder
-    district?: SortOrder
-    country?: SortOrder
-    state?: SortOrder
     complement?: SortOrder
+    district?: SortOrder
+    city?: SortOrder
+    state?: SortOrder
     zipcode?: SortOrder
+    country?: SortOrder
     plan_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -45226,9 +45735,9 @@ export namespace Prisma {
     id?: SortOrder
     external_id?: SortOrder
     name?: SortOrder
+    email?: SortOrder
     cpf_cnpj?: SortOrder
     market_name?: SortOrder
-    email?: SortOrder
     phone?: SortOrder
     whatsapp?: SortOrder
     logo?: SortOrder
@@ -45241,11 +45750,12 @@ export namespace Prisma {
     gender?: SortOrder
     street?: SortOrder
     number?: SortOrder
-    district?: SortOrder
-    country?: SortOrder
-    state?: SortOrder
     complement?: SortOrder
+    district?: SortOrder
+    city?: SortOrder
+    state?: SortOrder
     zipcode?: SortOrder
+    country?: SortOrder
     plan_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -45408,14 +45918,20 @@ export namespace Prisma {
 
   export type ActivitiesCountOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
 
+  export type ActivitiesAvgOrderByAggregateInput = {
+    external_id?: SortOrder
+  }
+
   export type ActivitiesMaxOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     created_at?: SortOrder
@@ -45424,10 +45940,15 @@ export namespace Prisma {
 
   export type ActivitiesMinOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+  }
+
+  export type ActivitiesSumOrderByAggregateInput = {
+    external_id?: SortOrder
   }
 
   export type DateTimeNullableFilter = {
@@ -45681,6 +46202,7 @@ export namespace Prisma {
 
   export type CampaignCountOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     description?: SortOrder
     percentage_discount?: SortOrder
@@ -45694,11 +46216,13 @@ export namespace Prisma {
   }
 
   export type CampaignAvgOrderByAggregateInput = {
+    external_id?: SortOrder
     percentage_discount?: SortOrder
   }
 
   export type CampaignMaxOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     description?: SortOrder
     percentage_discount?: SortOrder
@@ -45713,6 +46237,7 @@ export namespace Prisma {
 
   export type CampaignMinOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     description?: SortOrder
     percentage_discount?: SortOrder
@@ -45726,6 +46251,7 @@ export namespace Prisma {
   }
 
   export type CampaignSumOrderByAggregateInput = {
+    external_id?: SortOrder
     percentage_discount?: SortOrder
   }
 
@@ -45941,6 +46467,7 @@ export namespace Prisma {
 
   export type LabelCountOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     description?: SortOrder
     type_id?: SortOrder
@@ -45959,6 +46486,7 @@ export namespace Prisma {
   }
 
   export type LabelAvgOrderByAggregateInput = {
+    external_id?: SortOrder
     alcohol_percentage?: SortOrder
     price?: SortOrder
     promotional_price?: SortOrder
@@ -45966,6 +46494,7 @@ export namespace Prisma {
 
   export type LabelMaxOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     description?: SortOrder
     type_id?: SortOrder
@@ -45985,6 +46514,7 @@ export namespace Prisma {
 
   export type LabelMinOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     description?: SortOrder
     type_id?: SortOrder
@@ -46003,6 +46533,7 @@ export namespace Prisma {
   }
 
   export type LabelSumOrderByAggregateInput = {
+    external_id?: SortOrder
     alcohol_percentage?: SortOrder
     price?: SortOrder
     promotional_price?: SortOrder
@@ -46166,6 +46697,7 @@ export namespace Prisma {
 
   export type CountryCountOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     value?: SortOrder
@@ -46173,8 +46705,13 @@ export namespace Prisma {
     updated_at?: SortOrder
   }
 
+  export type CountryAvgOrderByAggregateInput = {
+    external_id?: SortOrder
+  }
+
   export type CountryMaxOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     value?: SortOrder
@@ -46184,11 +46721,16 @@ export namespace Prisma {
 
   export type CountryMinOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     value?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+  }
+
+  export type CountrySumOrderByAggregateInput = {
+    external_id?: SortOrder
   }
 
   export type RegionListRelationFilter = {
@@ -46213,6 +46755,7 @@ export namespace Prisma {
 
   export type StateCountOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     country_id?: SortOrder
@@ -46220,8 +46763,13 @@ export namespace Prisma {
     updated_at?: SortOrder
   }
 
+  export type StateAvgOrderByAggregateInput = {
+    external_id?: SortOrder
+  }
+
   export type StateMaxOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     country_id?: SortOrder
@@ -46231,11 +46779,16 @@ export namespace Prisma {
 
   export type StateMinOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     country_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+  }
+
+  export type StateSumOrderByAggregateInput = {
+    external_id?: SortOrder
   }
 
   export type StateRelationFilter = {
@@ -46245,6 +46798,7 @@ export namespace Prisma {
 
   export type CityCountOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     state_id?: SortOrder
@@ -46252,8 +46806,13 @@ export namespace Prisma {
     updated_at?: SortOrder
   }
 
+  export type CityAvgOrderByAggregateInput = {
+    external_id?: SortOrder
+  }
+
   export type CityMaxOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     state_id?: SortOrder
@@ -46263,11 +46822,16 @@ export namespace Prisma {
 
   export type CityMinOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     state_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+  }
+
+  export type CitySumOrderByAggregateInput = {
+    external_id?: SortOrder
   }
 
   export type SubRegionListRelationFilter = {
@@ -46282,6 +46846,7 @@ export namespace Prisma {
 
   export type RegionCountOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     state_id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
@@ -46289,8 +46854,13 @@ export namespace Prisma {
     updated_at?: SortOrder
   }
 
+  export type RegionAvgOrderByAggregateInput = {
+    external_id?: SortOrder
+  }
+
   export type RegionMaxOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     state_id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
@@ -46300,6 +46870,7 @@ export namespace Prisma {
 
   export type RegionMinOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     state_id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
@@ -46307,8 +46878,13 @@ export namespace Prisma {
     updated_at?: SortOrder
   }
 
+  export type RegionSumOrderByAggregateInput = {
+    external_id?: SortOrder
+  }
+
   export type SubRegionCountOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     region_id?: SortOrder
@@ -46316,8 +46892,13 @@ export namespace Prisma {
     updated_at?: SortOrder
   }
 
+  export type SubRegionAvgOrderByAggregateInput = {
+    external_id?: SortOrder
+  }
+
   export type SubRegionMaxOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     region_id?: SortOrder
@@ -46327,11 +46908,16 @@ export namespace Prisma {
 
   export type SubRegionMinOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     region_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+  }
+
+  export type SubRegionSumOrderByAggregateInput = {
+    external_id?: SortOrder
   }
 
   export type WineTypeCountOrderByAggregateInput = {
@@ -46370,6 +46956,7 @@ export namespace Prisma {
 
   export type OrderCountOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     code?: SortOrder
     account_id?: SortOrder
     total?: SortOrder
@@ -46379,12 +46966,14 @@ export namespace Prisma {
   }
 
   export type OrderAvgOrderByAggregateInput = {
+    external_id?: SortOrder
     total?: SortOrder
     coupon_id?: SortOrder
   }
 
   export type OrderMaxOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     code?: SortOrder
     account_id?: SortOrder
     total?: SortOrder
@@ -46395,6 +46984,7 @@ export namespace Prisma {
 
   export type OrderMinOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     code?: SortOrder
     account_id?: SortOrder
     total?: SortOrder
@@ -46404,6 +46994,7 @@ export namespace Prisma {
   }
 
   export type OrderSumOrderByAggregateInput = {
+    external_id?: SortOrder
     total?: SortOrder
     coupon_id?: SortOrder
   }
@@ -46537,6 +47128,7 @@ export namespace Prisma {
 
   export type DeviceCountOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     device_physical_id?: SortOrder
     platform?: SortOrder
     version?: SortOrder
@@ -46545,8 +47137,13 @@ export namespace Prisma {
     updated_at?: SortOrder
   }
 
+  export type DeviceAvgOrderByAggregateInput = {
+    external_id?: SortOrder
+  }
+
   export type DeviceMaxOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     device_physical_id?: SortOrder
     platform?: SortOrder
     version?: SortOrder
@@ -46557,12 +47154,17 @@ export namespace Prisma {
 
   export type DeviceMinOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     device_physical_id?: SortOrder
     platform?: SortOrder
     version?: SortOrder
     token_notification?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+  }
+
+  export type DeviceSumOrderByAggregateInput = {
+    external_id?: SortOrder
   }
 
   export type EnumPlatformTypeWithAggregatesFilter = {
@@ -49923,6 +50525,7 @@ export namespace Prisma {
 
   export type CampaignCreateWithoutAccountInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     percentage_discount?: number | null
@@ -49937,6 +50540,7 @@ export namespace Prisma {
 
   export type CampaignUncheckedCreateWithoutAccountInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     percentage_discount?: number | null
@@ -50024,6 +50628,7 @@ export namespace Prisma {
 
   export type OrderCreateWithoutAccountInput = {
     id?: string
+    external_id?: number | null
     code: string
     total: number
     coupon_id?: number | null
@@ -50035,6 +50640,7 @@ export namespace Prisma {
 
   export type OrderUncheckedCreateWithoutAccountInput = {
     id?: string
+    external_id?: number | null
     code: string
     total: number
     coupon_id?: number | null
@@ -50160,6 +50766,7 @@ export namespace Prisma {
     OR?: Enumerable<CampaignScalarWhereInput>
     NOT?: Enumerable<CampaignScalarWhereInput>
     id?: StringFilter | string
+    external_id?: IntNullableFilter | number | null
     name?: StringFilter | string
     description?: StringNullableFilter | string | null
     percentage_discount?: FloatNullableFilter | number | null
@@ -50257,6 +50864,7 @@ export namespace Prisma {
     OR?: Enumerable<OrderScalarWhereInput>
     NOT?: Enumerable<OrderScalarWhereInput>
     id?: StringFilter | string
+    external_id?: IntNullableFilter | number | null
     code?: StringFilter | string
     account_id?: StringFilter | string
     total?: FloatFilter | number
@@ -50364,9 +50972,9 @@ export namespace Prisma {
     id?: string
     external_id?: number | null
     name: string
+    email: string
     cpf_cnpj?: string | null
     market_name: string
-    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -50380,11 +50988,12 @@ export namespace Prisma {
     campaign?: CampaignCreateNestedManyWithoutAccountInput
     street: string
     number: string
-    district: string
-    country: string
-    state: string
     complement?: string | null
+    district: string
+    city: string
+    state: string
     zipcode: string
+    country: string
     plan?: PlanCreateNestedOneWithoutAccountInput
     subscription?: SubscriptionCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -50401,9 +51010,9 @@ export namespace Prisma {
     id?: string
     external_id?: number | null
     name: string
+    email: string
     cpf_cnpj?: string | null
     market_name: string
-    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -50417,11 +51026,12 @@ export namespace Prisma {
     campaign?: CampaignUncheckedCreateNestedManyWithoutAccountInput
     street: string
     number: string
-    district: string
-    country: string
-    state: string
     complement?: string | null
+    district: string
+    city: string
+    state: string
     zipcode: string
+    country: string
     plan_id?: string | null
     subscription?: SubscriptionUncheckedCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -50448,9 +51058,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -50464,11 +51074,12 @@ export namespace Prisma {
     campaign?: CampaignUpdateManyWithoutAccountNestedInput
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
     complement?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
     plan?: PlanUpdateOneWithoutAccountNestedInput
     subscription?: SubscriptionUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50485,9 +51096,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -50501,11 +51112,12 @@ export namespace Prisma {
     campaign?: CampaignUncheckedUpdateManyWithoutAccountNestedInput
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
     complement?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
     plan_id?: NullableStringFieldUpdateOperationsInput | string | null
     subscription?: SubscriptionUncheckedUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50522,9 +51134,9 @@ export namespace Prisma {
     id?: string
     external_id?: number | null
     name: string
+    email: string
     cpf_cnpj?: string | null
     market_name: string
-    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -50538,11 +51150,12 @@ export namespace Prisma {
     campaign?: CampaignCreateNestedManyWithoutAccountInput
     street: string
     number: string
-    district: string
-    country: string
-    state: string
     complement?: string | null
+    district: string
+    city: string
+    state: string
     zipcode: string
+    country: string
     plan?: PlanCreateNestedOneWithoutAccountInput
     subscription?: SubscriptionCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -50559,9 +51172,9 @@ export namespace Prisma {
     id?: string
     external_id?: number | null
     name: string
+    email: string
     cpf_cnpj?: string | null
     market_name: string
-    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -50575,11 +51188,12 @@ export namespace Prisma {
     campaign?: CampaignUncheckedCreateNestedManyWithoutAccountInput
     street: string
     number: string
-    district: string
-    country: string
-    state: string
     complement?: string | null
+    district: string
+    city: string
+    state: string
     zipcode: string
+    country: string
     plan_id?: string | null
     subscription?: SubscriptionUncheckedCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -50599,6 +51213,7 @@ export namespace Prisma {
 
   export type ActivitiesCreateWithoutAccount_activitiesInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     created_at?: Date | string
@@ -50607,6 +51222,7 @@ export namespace Prisma {
 
   export type ActivitiesUncheckedCreateWithoutAccount_activitiesInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     created_at?: Date | string
@@ -50627,9 +51243,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -50643,11 +51259,12 @@ export namespace Prisma {
     campaign?: CampaignUpdateManyWithoutAccountNestedInput
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
     complement?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
     plan?: PlanUpdateOneWithoutAccountNestedInput
     subscription?: SubscriptionUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50664,9 +51281,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -50680,11 +51297,12 @@ export namespace Prisma {
     campaign?: CampaignUncheckedUpdateManyWithoutAccountNestedInput
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
     complement?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
     plan_id?: NullableStringFieldUpdateOperationsInput | string | null
     subscription?: SubscriptionUncheckedUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50704,6 +51322,7 @@ export namespace Prisma {
 
   export type ActivitiesUpdateWithoutAccount_activitiesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50712,6 +51331,7 @@ export namespace Prisma {
 
   export type ActivitiesUncheckedUpdateWithoutAccount_activitiesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50848,9 +51468,9 @@ export namespace Prisma {
     id?: string
     external_id?: number | null
     name: string
+    email: string
     cpf_cnpj?: string | null
     market_name: string
-    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -50864,11 +51484,12 @@ export namespace Prisma {
     campaign?: CampaignCreateNestedManyWithoutAccountInput
     street: string
     number: string
-    district: string
-    country: string
-    state: string
     complement?: string | null
+    district: string
+    city: string
+    state: string
     zipcode: string
+    country: string
     plan?: PlanCreateNestedOneWithoutAccountInput
     subscription?: SubscriptionCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -50885,9 +51506,9 @@ export namespace Prisma {
     id?: string
     external_id?: number | null
     name: string
+    email: string
     cpf_cnpj?: string | null
     market_name: string
-    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -50901,11 +51522,12 @@ export namespace Prisma {
     campaign?: CampaignUncheckedCreateNestedManyWithoutAccountInput
     street: string
     number: string
-    district: string
-    country: string
-    state: string
     complement?: string | null
+    district: string
+    city: string
+    state: string
     zipcode: string
+    country: string
     plan_id?: string | null
     subscription?: SubscriptionUncheckedCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -51003,6 +51625,7 @@ export namespace Prisma {
 
   export type CampaignCreateWithoutAccount_userInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     percentage_discount?: number | null
@@ -51017,6 +51640,7 @@ export namespace Prisma {
 
   export type CampaignUncheckedCreateWithoutAccount_userInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     percentage_discount?: number | null
@@ -51048,9 +51672,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -51064,11 +51688,12 @@ export namespace Prisma {
     campaign?: CampaignUpdateManyWithoutAccountNestedInput
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
     complement?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
     plan?: PlanUpdateOneWithoutAccountNestedInput
     subscription?: SubscriptionUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -51085,9 +51710,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -51101,11 +51726,12 @@ export namespace Prisma {
     campaign?: CampaignUncheckedUpdateManyWithoutAccountNestedInput
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
     complement?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
     plan_id?: NullableStringFieldUpdateOperationsInput | string | null
     subscription?: SubscriptionUncheckedUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -51413,9 +52039,9 @@ export namespace Prisma {
     id?: string
     external_id?: number | null
     name: string
+    email: string
     cpf_cnpj?: string | null
     market_name: string
-    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -51428,11 +52054,12 @@ export namespace Prisma {
     gender: GenderType
     street: string
     number: string
-    district: string
-    country: string
-    state: string
     complement?: string | null
+    district: string
+    city: string
+    state: string
     zipcode: string
+    country: string
     plan?: PlanCreateNestedOneWithoutAccountInput
     subscription?: SubscriptionCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -51450,9 +52077,9 @@ export namespace Prisma {
     id?: string
     external_id?: number | null
     name: string
+    email: string
     cpf_cnpj?: string | null
     market_name: string
-    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -51465,11 +52092,12 @@ export namespace Prisma {
     gender: GenderType
     street: string
     number: string
-    district: string
-    country: string
-    state: string
     complement?: string | null
+    district: string
+    city: string
+    state: string
     zipcode: string
+    country: string
     plan_id?: string | null
     subscription?: SubscriptionUncheckedCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -51555,9 +52183,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -51570,11 +52198,12 @@ export namespace Prisma {
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
     complement?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
     plan?: PlanUpdateOneWithoutAccountNestedInput
     subscription?: SubscriptionUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -51592,9 +52221,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -51607,11 +52236,12 @@ export namespace Prisma {
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
     complement?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
     plan_id?: NullableStringFieldUpdateOperationsInput | string | null
     subscription?: SubscriptionUncheckedUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -51672,6 +52302,7 @@ export namespace Prisma {
 
   export type CampaignCreateWithoutCampaign_typeInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     percentage_discount?: number | null
@@ -51686,6 +52317,7 @@ export namespace Prisma {
 
   export type CampaignUncheckedCreateWithoutCampaign_typeInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     percentage_discount?: number | null
@@ -51745,6 +52377,7 @@ export namespace Prisma {
 
   export type CountryCreateWithoutLabelsInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     value: string
@@ -51755,6 +52388,7 @@ export namespace Prisma {
 
   export type CountryUncheckedCreateWithoutLabelsInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     value: string
@@ -51770,6 +52404,7 @@ export namespace Prisma {
 
   export type RegionCreateWithoutLabelsInput = {
     id?: string
+    external_id?: number | null
     state: StateCreateNestedOneWithoutRegionsInput
     name: string
     slug: string
@@ -51780,6 +52415,7 @@ export namespace Prisma {
 
   export type RegionUncheckedCreateWithoutLabelsInput = {
     id?: string
+    external_id?: number | null
     state_id: string
     name: string
     slug: string
@@ -51958,6 +52594,7 @@ export namespace Prisma {
 
   export type CountryUpdateWithoutLabelsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     value?: StringFieldUpdateOperationsInput | string
@@ -51968,6 +52605,7 @@ export namespace Prisma {
 
   export type CountryUncheckedUpdateWithoutLabelsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     value?: StringFieldUpdateOperationsInput | string
@@ -51983,6 +52621,7 @@ export namespace Prisma {
 
   export type RegionUpdateWithoutLabelsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     state?: StateUpdateOneRequiredWithoutRegionsNestedInput
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
@@ -51993,6 +52632,7 @@ export namespace Prisma {
 
   export type RegionUncheckedUpdateWithoutLabelsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     state_id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
@@ -52138,6 +52778,7 @@ export namespace Prisma {
 
   export type LabelCreateWithoutLabel_campaignInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     labelType: LabelTypeCreateNestedOneWithoutLabelsInput
@@ -52161,6 +52802,7 @@ export namespace Prisma {
 
   export type LabelUncheckedCreateWithoutLabel_campaignInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     type_id: string
@@ -52189,6 +52831,7 @@ export namespace Prisma {
 
   export type CampaignCreateWithoutLabel_campaignInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     percentage_discount?: number | null
@@ -52203,6 +52846,7 @@ export namespace Prisma {
 
   export type CampaignUncheckedCreateWithoutLabel_campaignInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     percentage_discount?: number | null
@@ -52227,6 +52871,7 @@ export namespace Prisma {
 
   export type LabelUpdateWithoutLabel_campaignInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     labelType?: LabelTypeUpdateOneRequiredWithoutLabelsNestedInput
@@ -52250,6 +52895,7 @@ export namespace Prisma {
 
   export type LabelUncheckedUpdateWithoutLabel_campaignInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type_id?: StringFieldUpdateOperationsInput | string
@@ -52278,6 +52924,7 @@ export namespace Prisma {
 
   export type CampaignUpdateWithoutLabel_campaignInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     percentage_discount?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -52292,6 +52939,7 @@ export namespace Prisma {
 
   export type CampaignUncheckedUpdateWithoutLabel_campaignInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     percentage_discount?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -52306,6 +52954,7 @@ export namespace Prisma {
 
   export type LabelCreateWithoutLabel_grapeInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     labelType: LabelTypeCreateNestedOneWithoutLabelsInput
@@ -52329,6 +52978,7 @@ export namespace Prisma {
 
   export type LabelUncheckedCreateWithoutLabel_grapeInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     type_id: string
@@ -52383,6 +53033,7 @@ export namespace Prisma {
 
   export type LabelUpdateWithoutLabel_grapeInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     labelType?: LabelTypeUpdateOneRequiredWithoutLabelsNestedInput
@@ -52406,6 +53057,7 @@ export namespace Prisma {
 
   export type LabelUncheckedUpdateWithoutLabel_grapeInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type_id?: StringFieldUpdateOperationsInput | string
@@ -52488,6 +53140,7 @@ export namespace Prisma {
 
   export type LabelCreateWithoutLabelTypeInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     country: CountryCreateNestedOneWithoutLabelsInput
@@ -52511,6 +53164,7 @@ export namespace Prisma {
 
   export type LabelUncheckedCreateWithoutLabelTypeInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     country_id: string
@@ -52563,6 +53217,7 @@ export namespace Prisma {
     OR?: Enumerable<LabelScalarWhereInput>
     NOT?: Enumerable<LabelScalarWhereInput>
     id?: StringFilter | string
+    external_id?: IntNullableFilter | number | null
     name?: StringFilter | string
     description?: StringNullableFilter | string | null
     type_id?: StringFilter | string
@@ -52582,6 +53237,7 @@ export namespace Prisma {
 
   export type StateCreateWithoutCountryInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     regions?: RegionCreateNestedManyWithoutStateInput
@@ -52592,6 +53248,7 @@ export namespace Prisma {
 
   export type StateUncheckedCreateWithoutCountryInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     regions?: RegionUncheckedCreateNestedManyWithoutStateInput
@@ -52612,6 +53269,7 @@ export namespace Prisma {
 
   export type LabelCreateWithoutCountryInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     labelType: LabelTypeCreateNestedOneWithoutLabelsInput
@@ -52635,6 +53293,7 @@ export namespace Prisma {
 
   export type LabelUncheckedCreateWithoutCountryInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     type_id: string
@@ -52687,6 +53346,7 @@ export namespace Prisma {
     OR?: Enumerable<StateScalarWhereInput>
     NOT?: Enumerable<StateScalarWhereInput>
     id?: StringFilter | string
+    external_id?: IntNullableFilter | number | null
     name?: StringFilter | string
     slug?: StringFilter | string
     country_id?: StringFilter | string
@@ -52712,6 +53372,7 @@ export namespace Prisma {
 
   export type CountryCreateWithoutStatesInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     value: string
@@ -52722,6 +53383,7 @@ export namespace Prisma {
 
   export type CountryUncheckedCreateWithoutStatesInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     value: string
@@ -52737,6 +53399,7 @@ export namespace Prisma {
 
   export type RegionCreateWithoutStateInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     subregion?: SubRegionCreateNestedManyWithoutRegionInput
@@ -52747,6 +53410,7 @@ export namespace Prisma {
 
   export type RegionUncheckedCreateWithoutStateInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     subregion?: SubRegionUncheckedCreateNestedManyWithoutRegionInput
@@ -52767,6 +53431,7 @@ export namespace Prisma {
 
   export type CityCreateWithoutStateInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     created_at?: Date | string
@@ -52775,6 +53440,7 @@ export namespace Prisma {
 
   export type CityUncheckedCreateWithoutStateInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     created_at?: Date | string
@@ -52798,6 +53464,7 @@ export namespace Prisma {
 
   export type CountryUpdateWithoutStatesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     value?: StringFieldUpdateOperationsInput | string
@@ -52808,6 +53475,7 @@ export namespace Prisma {
 
   export type CountryUncheckedUpdateWithoutStatesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     value?: StringFieldUpdateOperationsInput | string
@@ -52837,6 +53505,7 @@ export namespace Prisma {
     OR?: Enumerable<RegionScalarWhereInput>
     NOT?: Enumerable<RegionScalarWhereInput>
     id?: StringFilter | string
+    external_id?: IntNullableFilter | number | null
     state_id?: StringFilter | string
     name?: StringFilter | string
     slug?: StringFilter | string
@@ -52865,6 +53534,7 @@ export namespace Prisma {
     OR?: Enumerable<CityScalarWhereInput>
     NOT?: Enumerable<CityScalarWhereInput>
     id?: StringFilter | string
+    external_id?: IntNullableFilter | number | null
     name?: StringFilter | string
     slug?: StringFilter | string
     state_id?: StringFilter | string
@@ -52874,6 +53544,7 @@ export namespace Prisma {
 
   export type StateCreateWithoutCitiesInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     country: CountryCreateNestedOneWithoutStatesInput
@@ -52884,6 +53555,7 @@ export namespace Prisma {
 
   export type StateUncheckedCreateWithoutCitiesInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     country_id: string
@@ -52904,6 +53576,7 @@ export namespace Prisma {
 
   export type StateUpdateWithoutCitiesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     country?: CountryUpdateOneRequiredWithoutStatesNestedInput
@@ -52914,6 +53587,7 @@ export namespace Prisma {
 
   export type StateUncheckedUpdateWithoutCitiesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     country_id?: StringFieldUpdateOperationsInput | string
@@ -52924,6 +53598,7 @@ export namespace Prisma {
 
   export type StateCreateWithoutRegionsInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     country: CountryCreateNestedOneWithoutStatesInput
@@ -52934,6 +53609,7 @@ export namespace Prisma {
 
   export type StateUncheckedCreateWithoutRegionsInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     country_id: string
@@ -52949,6 +53625,7 @@ export namespace Prisma {
 
   export type SubRegionCreateWithoutRegionInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     created_at?: Date | string
@@ -52957,6 +53634,7 @@ export namespace Prisma {
 
   export type SubRegionUncheckedCreateWithoutRegionInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     created_at?: Date | string
@@ -52975,6 +53653,7 @@ export namespace Prisma {
 
   export type LabelCreateWithoutRegionInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     labelType: LabelTypeCreateNestedOneWithoutLabelsInput
@@ -52998,6 +53677,7 @@ export namespace Prisma {
 
   export type LabelUncheckedCreateWithoutRegionInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     type_id: string
@@ -53036,6 +53716,7 @@ export namespace Prisma {
 
   export type StateUpdateWithoutRegionsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     country?: CountryUpdateOneRequiredWithoutStatesNestedInput
@@ -53046,6 +53727,7 @@ export namespace Prisma {
 
   export type StateUncheckedUpdateWithoutRegionsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     country_id?: StringFieldUpdateOperationsInput | string
@@ -53075,6 +53757,7 @@ export namespace Prisma {
     OR?: Enumerable<SubRegionScalarWhereInput>
     NOT?: Enumerable<SubRegionScalarWhereInput>
     id?: StringFilter | string
+    external_id?: IntNullableFilter | number | null
     name?: StringFilter | string
     slug?: StringFilter | string
     region_id?: StringFilter | string
@@ -53100,6 +53783,7 @@ export namespace Prisma {
 
   export type RegionCreateWithoutSubregionInput = {
     id?: string
+    external_id?: number | null
     state: StateCreateNestedOneWithoutRegionsInput
     name: string
     slug: string
@@ -53110,6 +53794,7 @@ export namespace Prisma {
 
   export type RegionUncheckedCreateWithoutSubregionInput = {
     id?: string
+    external_id?: number | null
     state_id: string
     name: string
     slug: string
@@ -53130,6 +53815,7 @@ export namespace Prisma {
 
   export type RegionUpdateWithoutSubregionInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     state?: StateUpdateOneRequiredWithoutRegionsNestedInput
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
@@ -53140,6 +53826,7 @@ export namespace Prisma {
 
   export type RegionUncheckedUpdateWithoutSubregionInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     state_id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
@@ -53150,6 +53837,7 @@ export namespace Prisma {
 
   export type LabelCreateWithoutWine_typeInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     labelType: LabelTypeCreateNestedOneWithoutLabelsInput
@@ -53173,6 +53861,7 @@ export namespace Prisma {
 
   export type LabelUncheckedCreateWithoutWine_typeInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     type_id: string
@@ -53224,9 +53913,9 @@ export namespace Prisma {
     id?: string
     external_id?: number | null
     name: string
+    email: string
     cpf_cnpj?: string | null
     market_name: string
-    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -53240,11 +53929,12 @@ export namespace Prisma {
     campaign?: CampaignCreateNestedManyWithoutAccountInput
     street: string
     number: string
-    district: string
-    country: string
-    state: string
     complement?: string | null
+    district: string
+    city: string
+    state: string
     zipcode: string
+    country: string
     plan?: PlanCreateNestedOneWithoutAccountInput
     subscription?: SubscriptionCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -53261,9 +53951,9 @@ export namespace Prisma {
     id?: string
     external_id?: number | null
     name: string
+    email: string
     cpf_cnpj?: string | null
     market_name: string
-    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -53277,11 +53967,12 @@ export namespace Prisma {
     campaign?: CampaignUncheckedCreateNestedManyWithoutAccountInput
     street: string
     number: string
-    district: string
-    country: string
-    state: string
     complement?: string | null
+    district: string
+    city: string
+    state: string
     zipcode: string
+    country: string
     plan_id?: string | null
     subscription?: SubscriptionUncheckedCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -53354,9 +54045,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -53370,11 +54061,12 @@ export namespace Prisma {
     campaign?: CampaignUpdateManyWithoutAccountNestedInput
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
     complement?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
     plan?: PlanUpdateOneWithoutAccountNestedInput
     subscription?: SubscriptionUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -53391,9 +54083,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -53407,11 +54099,12 @@ export namespace Prisma {
     campaign?: CampaignUncheckedUpdateManyWithoutAccountNestedInput
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
     complement?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
     plan_id?: NullableStringFieldUpdateOperationsInput | string | null
     subscription?: SubscriptionUncheckedUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -53468,6 +54161,7 @@ export namespace Prisma {
 
   export type OrderCreateWithoutOrder_labelInput = {
     id?: string
+    external_id?: number | null
     code: string
     account: AccountCreateNestedOneWithoutOrderInput
     total: number
@@ -53479,6 +54173,7 @@ export namespace Prisma {
 
   export type OrderUncheckedCreateWithoutOrder_labelInput = {
     id?: string
+    external_id?: number | null
     code: string
     account_id: string
     total: number
@@ -53495,6 +54190,7 @@ export namespace Prisma {
 
   export type LabelCreateWithoutOrder_labelInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     labelType: LabelTypeCreateNestedOneWithoutLabelsInput
@@ -53518,6 +54214,7 @@ export namespace Prisma {
 
   export type LabelUncheckedCreateWithoutOrder_labelInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     type_id: string
@@ -53551,6 +54248,7 @@ export namespace Prisma {
 
   export type OrderUpdateWithoutOrder_labelInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     code?: StringFieldUpdateOperationsInput | string
     account?: AccountUpdateOneRequiredWithoutOrderNestedInput
     total?: FloatFieldUpdateOperationsInput | number
@@ -53562,6 +54260,7 @@ export namespace Prisma {
 
   export type OrderUncheckedUpdateWithoutOrder_labelInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     code?: StringFieldUpdateOperationsInput | string
     account_id?: StringFieldUpdateOperationsInput | string
     total?: FloatFieldUpdateOperationsInput | number
@@ -53578,6 +54277,7 @@ export namespace Prisma {
 
   export type LabelUpdateWithoutOrder_labelInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     labelType?: LabelTypeUpdateOneRequiredWithoutLabelsNestedInput
@@ -53601,6 +54301,7 @@ export namespace Prisma {
 
   export type LabelUncheckedUpdateWithoutOrder_labelInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type_id?: StringFieldUpdateOperationsInput | string
@@ -53624,6 +54325,7 @@ export namespace Prisma {
 
   export type OrderCreateWithoutInvoiceInput = {
     id?: string
+    external_id?: number | null
     code: string
     account: AccountCreateNestedOneWithoutOrderInput
     total: number
@@ -53635,6 +54337,7 @@ export namespace Prisma {
 
   export type OrderUncheckedCreateWithoutInvoiceInput = {
     id?: string
+    external_id?: number | null
     code: string
     account_id: string
     total: number
@@ -53656,6 +54359,7 @@ export namespace Prisma {
 
   export type OrderUpdateWithoutInvoiceInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     code?: StringFieldUpdateOperationsInput | string
     account?: AccountUpdateOneRequiredWithoutOrderNestedInput
     total?: FloatFieldUpdateOperationsInput | number
@@ -53667,6 +54371,7 @@ export namespace Prisma {
 
   export type OrderUncheckedUpdateWithoutInvoiceInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     code?: StringFieldUpdateOperationsInput | string
     account_id?: StringFieldUpdateOperationsInput | string
     total?: FloatFieldUpdateOperationsInput | number
@@ -53887,6 +54592,7 @@ export namespace Prisma {
 
   export type DeviceCreateWithoutDevice_userInput = {
     id?: string
+    external_id?: number | null
     device_physical_id: string
     platform: PlatformType
     version: string
@@ -53900,6 +54606,7 @@ export namespace Prisma {
 
   export type DeviceUncheckedCreateWithoutDevice_userInput = {
     id?: string
+    external_id?: number | null
     device_physical_id: string
     platform: PlatformType
     version: string
@@ -53984,6 +54691,7 @@ export namespace Prisma {
 
   export type DeviceUpdateWithoutDevice_userInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     device_physical_id?: StringFieldUpdateOperationsInput | string
     platform?: EnumPlatformTypeFieldUpdateOperationsInput | PlatformType
     version?: StringFieldUpdateOperationsInput | string
@@ -53997,6 +54705,7 @@ export namespace Prisma {
 
   export type DeviceUncheckedUpdateWithoutDevice_userInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     device_physical_id?: StringFieldUpdateOperationsInput | string
     platform?: EnumPlatformTypeFieldUpdateOperationsInput | PlatformType
     version?: StringFieldUpdateOperationsInput | string
@@ -54377,6 +55086,7 @@ export namespace Prisma {
 
   export type DeviceCreateWithoutSms_notificationInput = {
     id?: string
+    external_id?: number | null
     device_physical_id: string
     platform: PlatformType
     version: string
@@ -54390,6 +55100,7 @@ export namespace Prisma {
 
   export type DeviceUncheckedCreateWithoutSms_notificationInput = {
     id?: string
+    external_id?: number | null
     device_physical_id: string
     platform: PlatformType
     version: string
@@ -54442,6 +55153,7 @@ export namespace Prisma {
 
   export type DeviceUpdateWithoutSms_notificationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     device_physical_id?: StringFieldUpdateOperationsInput | string
     platform?: EnumPlatformTypeFieldUpdateOperationsInput | PlatformType
     version?: StringFieldUpdateOperationsInput | string
@@ -54455,6 +55167,7 @@ export namespace Prisma {
 
   export type DeviceUncheckedUpdateWithoutSms_notificationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     device_physical_id?: StringFieldUpdateOperationsInput | string
     platform?: EnumPlatformTypeFieldUpdateOperationsInput | PlatformType
     version?: StringFieldUpdateOperationsInput | string
@@ -54497,6 +55210,7 @@ export namespace Prisma {
 
   export type DeviceCreateWithoutPush_notificationInput = {
     id?: string
+    external_id?: number | null
     device_physical_id: string
     platform: PlatformType
     version: string
@@ -54510,6 +55224,7 @@ export namespace Prisma {
 
   export type DeviceUncheckedCreateWithoutPush_notificationInput = {
     id?: string
+    external_id?: number | null
     device_physical_id: string
     platform: PlatformType
     version: string
@@ -54562,6 +55277,7 @@ export namespace Prisma {
 
   export type DeviceUpdateWithoutPush_notificationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     device_physical_id?: StringFieldUpdateOperationsInput | string
     platform?: EnumPlatformTypeFieldUpdateOperationsInput | PlatformType
     version?: StringFieldUpdateOperationsInput | string
@@ -54575,6 +55291,7 @@ export namespace Prisma {
 
   export type DeviceUncheckedUpdateWithoutPush_notificationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     device_physical_id?: StringFieldUpdateOperationsInput | string
     platform?: EnumPlatformTypeFieldUpdateOperationsInput | PlatformType
     version?: StringFieldUpdateOperationsInput | string
@@ -54588,6 +55305,7 @@ export namespace Prisma {
 
   export type DeviceCreateWithoutDevice_notificationInput = {
     id?: string
+    external_id?: number | null
     device_physical_id: string
     platform: PlatformType
     version: string
@@ -54601,6 +55319,7 @@ export namespace Prisma {
 
   export type DeviceUncheckedCreateWithoutDevice_notificationInput = {
     id?: string
+    external_id?: number | null
     device_physical_id: string
     platform: PlatformType
     version: string
@@ -54653,6 +55372,7 @@ export namespace Prisma {
 
   export type DeviceUpdateWithoutDevice_notificationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     device_physical_id?: StringFieldUpdateOperationsInput | string
     platform?: EnumPlatformTypeFieldUpdateOperationsInput | PlatformType
     version?: StringFieldUpdateOperationsInput | string
@@ -54666,6 +55386,7 @@ export namespace Prisma {
 
   export type DeviceUncheckedUpdateWithoutDevice_notificationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     device_physical_id?: StringFieldUpdateOperationsInput | string
     platform?: EnumPlatformTypeFieldUpdateOperationsInput | PlatformType
     version?: StringFieldUpdateOperationsInput | string
@@ -54731,9 +55452,9 @@ export namespace Prisma {
     id?: string
     external_id?: number | null
     name: string
+    email: string
     cpf_cnpj?: string | null
     market_name: string
-    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -54747,11 +55468,12 @@ export namespace Prisma {
     campaign?: CampaignCreateNestedManyWithoutAccountInput
     street: string
     number: string
-    district: string
-    country: string
-    state: string
     complement?: string | null
+    district: string
+    city: string
+    state: string
     zipcode: string
+    country: string
     subscription?: SubscriptionCreateNestedManyWithoutAccountInput
     created_at?: Date | string
     updated_at?: Date | string
@@ -54768,9 +55490,9 @@ export namespace Prisma {
     id?: string
     external_id?: number | null
     name: string
+    email: string
     cpf_cnpj?: string | null
     market_name: string
-    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -54784,11 +55506,12 @@ export namespace Prisma {
     campaign?: CampaignUncheckedCreateNestedManyWithoutAccountInput
     street: string
     number: string
-    district: string
-    country: string
-    state: string
     complement?: string | null
+    district: string
+    city: string
+    state: string
     zipcode: string
+    country: string
     subscription?: SubscriptionUncheckedCreateNestedManyWithoutAccountInput
     created_at?: Date | string
     updated_at?: Date | string
@@ -54883,9 +55606,9 @@ export namespace Prisma {
     id?: StringFilter | string
     external_id?: IntNullableFilter | number | null
     name?: StringFilter | string
+    email?: StringFilter | string
     cpf_cnpj?: StringNullableFilter | string | null
     market_name?: StringFilter | string
-    email?: StringFilter | string
     phone?: StringNullableFilter | string | null
     whatsapp?: StringNullableFilter | string | null
     logo?: StringNullableFilter | string | null
@@ -54898,11 +55621,12 @@ export namespace Prisma {
     gender?: EnumGenderTypeFilter | GenderType
     street?: StringFilter | string
     number?: StringFilter | string
-    district?: StringFilter | string
-    country?: StringFilter | string
-    state?: StringFilter | string
     complement?: StringNullableFilter | string | null
+    district?: StringFilter | string
+    city?: StringFilter | string
+    state?: StringFilter | string
     zipcode?: StringFilter | string
+    country?: StringFilter | string
     plan_id?: StringNullableFilter | string | null
     created_at?: DateTimeFilter | Date | string
     updated_at?: DateTimeFilter | Date | string
@@ -55038,9 +55762,9 @@ export namespace Prisma {
     id?: string
     external_id?: number | null
     name: string
+    email: string
     cpf_cnpj?: string | null
     market_name: string
-    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -55054,11 +55778,12 @@ export namespace Prisma {
     campaign?: CampaignCreateNestedManyWithoutAccountInput
     street: string
     number: string
-    district: string
-    country: string
-    state: string
     complement?: string | null
+    district: string
+    city: string
+    state: string
     zipcode: string
+    country: string
     plan?: PlanCreateNestedOneWithoutAccountInput
     created_at?: Date | string
     updated_at?: Date | string
@@ -55075,9 +55800,9 @@ export namespace Prisma {
     id?: string
     external_id?: number | null
     name: string
+    email: string
     cpf_cnpj?: string | null
     market_name: string
-    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -55091,11 +55816,12 @@ export namespace Prisma {
     campaign?: CampaignUncheckedCreateNestedManyWithoutAccountInput
     street: string
     number: string
-    district: string
-    country: string
-    state: string
     complement?: string | null
+    district: string
+    city: string
+    state: string
     zipcode: string
+    country: string
     plan_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
@@ -55157,9 +55883,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -55173,11 +55899,12 @@ export namespace Prisma {
     campaign?: CampaignUpdateManyWithoutAccountNestedInput
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
     complement?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
     plan?: PlanUpdateOneWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55194,9 +55921,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -55210,11 +55937,12 @@ export namespace Prisma {
     campaign?: CampaignUncheckedUpdateManyWithoutAccountNestedInput
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
     complement?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
     plan_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55229,6 +55957,7 @@ export namespace Prisma {
 
   export type LabelCreateWithoutStockLabelInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     labelType: LabelTypeCreateNestedOneWithoutLabelsInput
@@ -55252,6 +55981,7 @@ export namespace Prisma {
 
   export type LabelUncheckedCreateWithoutStockLabelInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     type_id: string
@@ -55282,9 +56012,9 @@ export namespace Prisma {
     id?: string
     external_id?: number | null
     name: string
+    email: string
     cpf_cnpj?: string | null
     market_name: string
-    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -55298,11 +56028,12 @@ export namespace Prisma {
     campaign?: CampaignCreateNestedManyWithoutAccountInput
     street: string
     number: string
-    district: string
-    country: string
-    state: string
     complement?: string | null
+    district: string
+    city: string
+    state: string
     zipcode: string
+    country: string
     plan?: PlanCreateNestedOneWithoutAccountInput
     subscription?: SubscriptionCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -55319,9 +56050,9 @@ export namespace Prisma {
     id?: string
     external_id?: number | null
     name: string
+    email: string
     cpf_cnpj?: string | null
     market_name: string
-    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -55335,11 +56066,12 @@ export namespace Prisma {
     campaign?: CampaignUncheckedCreateNestedManyWithoutAccountInput
     street: string
     number: string
-    district: string
-    country: string
-    state: string
     complement?: string | null
+    district: string
+    city: string
+    state: string
     zipcode: string
+    country: string
     plan_id?: string | null
     subscription?: SubscriptionUncheckedCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -55364,6 +56096,7 @@ export namespace Prisma {
 
   export type LabelUpdateWithoutStockLabelInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     labelType?: LabelTypeUpdateOneRequiredWithoutLabelsNestedInput
@@ -55387,6 +56120,7 @@ export namespace Prisma {
 
   export type LabelUncheckedUpdateWithoutStockLabelInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type_id?: StringFieldUpdateOperationsInput | string
@@ -55417,9 +56151,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -55433,11 +56167,12 @@ export namespace Prisma {
     campaign?: CampaignUpdateManyWithoutAccountNestedInput
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
     complement?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
     plan?: PlanUpdateOneWithoutAccountNestedInput
     subscription?: SubscriptionUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55454,9 +56189,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -55470,11 +56205,12 @@ export namespace Prisma {
     campaign?: CampaignUncheckedUpdateManyWithoutAccountNestedInput
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
     complement?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
     plan_id?: NullableStringFieldUpdateOperationsInput | string | null
     subscription?: SubscriptionUncheckedUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55489,6 +56225,7 @@ export namespace Prisma {
 
   export type LabelCreateWithoutStockHistoryInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     labelType: LabelTypeCreateNestedOneWithoutLabelsInput
@@ -55512,6 +56249,7 @@ export namespace Prisma {
 
   export type LabelUncheckedCreateWithoutStockHistoryInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     type_id: string
@@ -55545,6 +56283,7 @@ export namespace Prisma {
 
   export type LabelUpdateWithoutStockHistoryInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     labelType?: LabelTypeUpdateOneRequiredWithoutLabelsNestedInput
@@ -55568,6 +56307,7 @@ export namespace Prisma {
 
   export type LabelUncheckedUpdateWithoutStockHistoryInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type_id?: StringFieldUpdateOperationsInput | string
@@ -55591,6 +56331,7 @@ export namespace Prisma {
 
   export type CampaignCreateManyAccountInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     percentage_discount?: number | null
@@ -55613,6 +56354,7 @@ export namespace Prisma {
 
   export type OrderCreateManyAccountInput = {
     id?: string
+    external_id?: number | null
     code: string
     total: number
     coupon_id?: number | null
@@ -55640,6 +56382,7 @@ export namespace Prisma {
 
   export type CampaignUpdateWithoutAccountInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     percentage_discount?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -55654,6 +56397,7 @@ export namespace Prisma {
 
   export type CampaignUncheckedUpdateWithoutAccountInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     percentage_discount?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -55668,6 +56412,7 @@ export namespace Prisma {
 
   export type CampaignUncheckedUpdateManyWithoutCampaignInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     percentage_discount?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -55708,6 +56453,7 @@ export namespace Prisma {
 
   export type OrderUpdateWithoutAccountInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     code?: StringFieldUpdateOperationsInput | string
     total?: FloatFieldUpdateOperationsInput | number
     coupon_id?: NullableIntFieldUpdateOperationsInput | number | null
@@ -55719,6 +56465,7 @@ export namespace Prisma {
 
   export type OrderUncheckedUpdateWithoutAccountInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     code?: StringFieldUpdateOperationsInput | string
     total?: FloatFieldUpdateOperationsInput | number
     coupon_id?: NullableIntFieldUpdateOperationsInput | number | null
@@ -55730,6 +56477,7 @@ export namespace Prisma {
 
   export type OrderUncheckedUpdateManyWithoutOrderInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     code?: StringFieldUpdateOperationsInput | string
     total?: FloatFieldUpdateOperationsInput | number
     coupon_id?: NullableIntFieldUpdateOperationsInput | number | null
@@ -55863,6 +56611,7 @@ export namespace Prisma {
 
   export type CampaignCreateManyAccount_userInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     percentage_discount?: number | null
@@ -55876,6 +56625,7 @@ export namespace Prisma {
 
   export type CampaignUpdateWithoutAccount_userInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     percentage_discount?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -55890,6 +56640,7 @@ export namespace Prisma {
 
   export type CampaignUncheckedUpdateWithoutAccount_userInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     percentage_discount?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -55904,6 +56655,7 @@ export namespace Prisma {
 
   export type CampaignUncheckedUpdateManyWithoutCampaignsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     percentage_discount?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -55995,6 +56747,7 @@ export namespace Prisma {
 
   export type CampaignCreateManyCampaign_typeInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     percentage_discount?: number | null
@@ -56008,6 +56761,7 @@ export namespace Prisma {
 
   export type CampaignUpdateWithoutCampaign_typeInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     percentage_discount?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -56022,6 +56776,7 @@ export namespace Prisma {
 
   export type CampaignUncheckedUpdateWithoutCampaign_typeInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     percentage_discount?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -56184,6 +56939,7 @@ export namespace Prisma {
 
   export type LabelCreateManyLabelTypeInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     country_id: string
@@ -56202,6 +56958,7 @@ export namespace Prisma {
 
   export type LabelUpdateWithoutLabelTypeInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     country?: CountryUpdateOneRequiredWithoutLabelsNestedInput
@@ -56225,6 +56982,7 @@ export namespace Prisma {
 
   export type LabelUncheckedUpdateWithoutLabelTypeInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     country_id?: StringFieldUpdateOperationsInput | string
@@ -56248,6 +57006,7 @@ export namespace Prisma {
 
   export type LabelUncheckedUpdateManyWithoutLabelsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     country_id?: StringFieldUpdateOperationsInput | string
@@ -56266,6 +57025,7 @@ export namespace Prisma {
 
   export type StateCreateManyCountryInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     created_at?: Date | string
@@ -56274,6 +57034,7 @@ export namespace Prisma {
 
   export type LabelCreateManyCountryInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     type_id: string
@@ -56292,6 +57053,7 @@ export namespace Prisma {
 
   export type StateUpdateWithoutCountryInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     regions?: RegionUpdateManyWithoutStateNestedInput
@@ -56302,6 +57064,7 @@ export namespace Prisma {
 
   export type StateUncheckedUpdateWithoutCountryInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     regions?: RegionUncheckedUpdateManyWithoutStateNestedInput
@@ -56312,6 +57075,7 @@ export namespace Prisma {
 
   export type StateUncheckedUpdateManyWithoutStatesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -56320,6 +57084,7 @@ export namespace Prisma {
 
   export type LabelUpdateWithoutCountryInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     labelType?: LabelTypeUpdateOneRequiredWithoutLabelsNestedInput
@@ -56343,6 +57108,7 @@ export namespace Prisma {
 
   export type LabelUncheckedUpdateWithoutCountryInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type_id?: StringFieldUpdateOperationsInput | string
@@ -56366,6 +57132,7 @@ export namespace Prisma {
 
   export type RegionCreateManyStateInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     created_at?: Date | string
@@ -56374,6 +57141,7 @@ export namespace Prisma {
 
   export type CityCreateManyStateInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     created_at?: Date | string
@@ -56382,6 +57150,7 @@ export namespace Prisma {
 
   export type RegionUpdateWithoutStateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     subregion?: SubRegionUpdateManyWithoutRegionNestedInput
@@ -56392,6 +57161,7 @@ export namespace Prisma {
 
   export type RegionUncheckedUpdateWithoutStateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     subregion?: SubRegionUncheckedUpdateManyWithoutRegionNestedInput
@@ -56402,6 +57172,7 @@ export namespace Prisma {
 
   export type RegionUncheckedUpdateManyWithoutRegionsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -56410,6 +57181,7 @@ export namespace Prisma {
 
   export type CityUpdateWithoutStateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -56418,6 +57190,7 @@ export namespace Prisma {
 
   export type CityUncheckedUpdateWithoutStateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -56426,6 +57199,7 @@ export namespace Prisma {
 
   export type CityUncheckedUpdateManyWithoutCitiesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -56434,6 +57208,7 @@ export namespace Prisma {
 
   export type SubRegionCreateManyRegionInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     created_at?: Date | string
@@ -56442,6 +57217,7 @@ export namespace Prisma {
 
   export type LabelCreateManyRegionInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     type_id: string
@@ -56460,6 +57236,7 @@ export namespace Prisma {
 
   export type SubRegionUpdateWithoutRegionInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -56468,6 +57245,7 @@ export namespace Prisma {
 
   export type SubRegionUncheckedUpdateWithoutRegionInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -56476,6 +57254,7 @@ export namespace Prisma {
 
   export type SubRegionUncheckedUpdateManyWithoutSubregionInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -56484,6 +57263,7 @@ export namespace Prisma {
 
   export type LabelUpdateWithoutRegionInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     labelType?: LabelTypeUpdateOneRequiredWithoutLabelsNestedInput
@@ -56507,6 +57287,7 @@ export namespace Prisma {
 
   export type LabelUncheckedUpdateWithoutRegionInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type_id?: StringFieldUpdateOperationsInput | string
@@ -56530,6 +57311,7 @@ export namespace Prisma {
 
   export type LabelCreateManyWine_typeInput = {
     id?: string
+    external_id?: number | null
     name: string
     description?: string | null
     type_id: string
@@ -56548,6 +57330,7 @@ export namespace Prisma {
 
   export type LabelUpdateWithoutWine_typeInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     labelType?: LabelTypeUpdateOneRequiredWithoutLabelsNestedInput
@@ -56571,6 +57354,7 @@ export namespace Prisma {
 
   export type LabelUncheckedUpdateWithoutWine_typeInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type_id?: StringFieldUpdateOperationsInput | string
@@ -56924,9 +57708,9 @@ export namespace Prisma {
     id?: string
     external_id?: number | null
     name: string
+    email: string
     cpf_cnpj?: string | null
     market_name: string
-    email: string
     phone?: string | null
     whatsapp?: string | null
     logo?: string | null
@@ -56939,11 +57723,12 @@ export namespace Prisma {
     gender: GenderType
     street: string
     number: string
-    district: string
-    country: string
-    state: string
     complement?: string | null
+    district: string
+    city: string
+    state: string
     zipcode: string
+    country: string
     created_at?: Date | string
     updated_at?: Date | string
     domain: string
@@ -56963,9 +57748,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -56979,11 +57764,12 @@ export namespace Prisma {
     campaign?: CampaignUpdateManyWithoutAccountNestedInput
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
     complement?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
     subscription?: SubscriptionUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -57000,9 +57786,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -57016,11 +57802,12 @@ export namespace Prisma {
     campaign?: CampaignUncheckedUpdateManyWithoutAccountNestedInput
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
     complement?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
     subscription?: SubscriptionUncheckedUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -57037,9 +57824,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
     cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
     market_name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
     logo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -57052,11 +57839,12 @@ export namespace Prisma {
     gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
     complement?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     domain?: StringFieldUpdateOperationsInput | string
