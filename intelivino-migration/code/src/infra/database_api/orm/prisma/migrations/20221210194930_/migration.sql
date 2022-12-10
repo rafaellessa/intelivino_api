@@ -93,6 +93,8 @@ CREATE TABLE `users` (
     `google_id` VARCHAR(191) NULL,
     `apple_id` VARCHAR(191) NULL,
     `facebook_id` VARCHAR(191) NULL,
+    `rd_station_id` VARCHAR(191) NULL,
+    `rd_station_sync` BOOLEAN NULL DEFAULT false,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
     `lastLogin` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),

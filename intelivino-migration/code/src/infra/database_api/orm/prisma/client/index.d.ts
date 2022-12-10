@@ -109,6 +109,8 @@ export type User = {
   google_id: string | null
   apple_id: string | null
   facebook_id: string | null
+  rd_station_id: string | null
+  rd_station_sync: boolean | null
   created_at: Date
   updated_at: Date
   lastLogin: Date
@@ -6901,6 +6903,8 @@ export namespace Prisma {
     google_id: string | null
     apple_id: string | null
     facebook_id: string | null
+    rd_station_id: string | null
+    rd_station_sync: boolean | null
     created_at: Date | null
     updated_at: Date | null
     lastLogin: Date | null
@@ -6928,6 +6932,8 @@ export namespace Prisma {
     google_id: string | null
     apple_id: string | null
     facebook_id: string | null
+    rd_station_id: string | null
+    rd_station_sync: boolean | null
     created_at: Date | null
     updated_at: Date | null
     lastLogin: Date | null
@@ -6955,6 +6961,8 @@ export namespace Prisma {
     google_id: number
     apple_id: number
     facebook_id: number
+    rd_station_id: number
+    rd_station_sync: number
     created_at: number
     updated_at: number
     lastLogin: number
@@ -6984,6 +6992,8 @@ export namespace Prisma {
     google_id?: true
     apple_id?: true
     facebook_id?: true
+    rd_station_id?: true
+    rd_station_sync?: true
     created_at?: true
     updated_at?: true
     lastLogin?: true
@@ -7011,6 +7021,8 @@ export namespace Prisma {
     google_id?: true
     apple_id?: true
     facebook_id?: true
+    rd_station_id?: true
+    rd_station_sync?: true
     created_at?: true
     updated_at?: true
     lastLogin?: true
@@ -7038,6 +7050,8 @@ export namespace Prisma {
     google_id?: true
     apple_id?: true
     facebook_id?: true
+    rd_station_id?: true
+    rd_station_sync?: true
     created_at?: true
     updated_at?: true
     lastLogin?: true
@@ -7144,6 +7158,8 @@ export namespace Prisma {
     google_id: string | null
     apple_id: string | null
     facebook_id: string | null
+    rd_station_id: string | null
+    rd_station_sync: boolean | null
     created_at: Date
     updated_at: Date
     lastLogin: Date
@@ -7188,6 +7204,8 @@ export namespace Prisma {
     google_id?: boolean
     apple_id?: boolean
     facebook_id?: boolean
+    rd_station_id?: boolean
+    rd_station_sync?: boolean
     created_at?: boolean
     updated_at?: boolean
     lastLogin?: boolean
@@ -40265,6 +40283,8 @@ export namespace Prisma {
     google_id: 'google_id',
     apple_id: 'apple_id',
     facebook_id: 'facebook_id',
+    rd_station_id: 'rd_station_id',
+    rd_station_sync: 'rd_station_sync',
     created_at: 'created_at',
     updated_at: 'updated_at',
     lastLogin: 'lastLogin'
@@ -40619,6 +40639,8 @@ export namespace Prisma {
     google_id?: StringNullableFilter | string | null
     apple_id?: StringNullableFilter | string | null
     facebook_id?: StringNullableFilter | string | null
+    rd_station_id?: StringNullableFilter | string | null
+    rd_station_sync?: BoolNullableFilter | boolean | null
     created_at?: DateTimeFilter | Date | string
     updated_at?: DateTimeFilter | Date | string
     lastLogin?: DateTimeFilter | Date | string
@@ -40648,6 +40670,8 @@ export namespace Prisma {
     google_id?: SortOrder
     apple_id?: SortOrder
     facebook_id?: SortOrder
+    rd_station_id?: SortOrder
+    rd_station_sync?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     lastLogin?: SortOrder
@@ -40683,6 +40707,8 @@ export namespace Prisma {
     google_id?: SortOrder
     apple_id?: SortOrder
     facebook_id?: SortOrder
+    rd_station_id?: SortOrder
+    rd_station_sync?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     lastLogin?: SortOrder
@@ -40716,6 +40742,8 @@ export namespace Prisma {
     google_id?: StringNullableWithAggregatesFilter | string | null
     apple_id?: StringNullableWithAggregatesFilter | string | null
     facebook_id?: StringNullableWithAggregatesFilter | string | null
+    rd_station_id?: StringNullableWithAggregatesFilter | string | null
+    rd_station_sync?: BoolNullableWithAggregatesFilter | boolean | null
     created_at?: DateTimeWithAggregatesFilter | Date | string
     updated_at?: DateTimeWithAggregatesFilter | Date | string
     lastLogin?: DateTimeWithAggregatesFilter | Date | string
@@ -43043,6 +43071,8 @@ export namespace Prisma {
     google_id?: string | null
     apple_id?: string | null
     facebook_id?: string | null
+    rd_station_id?: string | null
+    rd_station_sync?: boolean | null
     created_at?: Date | string
     updated_at?: Date | string
     lastLogin?: Date | string
@@ -43072,6 +43102,8 @@ export namespace Prisma {
     google_id?: string | null
     apple_id?: string | null
     facebook_id?: string | null
+    rd_station_id?: string | null
+    rd_station_sync?: boolean | null
     created_at?: Date | string
     updated_at?: Date | string
     lastLogin?: Date | string
@@ -43101,6 +43133,8 @@ export namespace Prisma {
     google_id?: NullableStringFieldUpdateOperationsInput | string | null
     apple_id?: NullableStringFieldUpdateOperationsInput | string | null
     facebook_id?: NullableStringFieldUpdateOperationsInput | string | null
+    rd_station_id?: NullableStringFieldUpdateOperationsInput | string | null
+    rd_station_sync?: NullableBoolFieldUpdateOperationsInput | boolean | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLogin?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -43130,6 +43164,8 @@ export namespace Prisma {
     google_id?: NullableStringFieldUpdateOperationsInput | string | null
     apple_id?: NullableStringFieldUpdateOperationsInput | string | null
     facebook_id?: NullableStringFieldUpdateOperationsInput | string | null
+    rd_station_id?: NullableStringFieldUpdateOperationsInput | string | null
+    rd_station_sync?: NullableBoolFieldUpdateOperationsInput | boolean | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLogin?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -43159,6 +43195,8 @@ export namespace Prisma {
     google_id?: string | null
     apple_id?: string | null
     facebook_id?: string | null
+    rd_station_id?: string | null
+    rd_station_sync?: boolean | null
     created_at?: Date | string
     updated_at?: Date | string
     lastLogin?: Date | string
@@ -43186,6 +43224,8 @@ export namespace Prisma {
     google_id?: NullableStringFieldUpdateOperationsInput | string | null
     apple_id?: NullableStringFieldUpdateOperationsInput | string | null
     facebook_id?: NullableStringFieldUpdateOperationsInput | string | null
+    rd_station_id?: NullableStringFieldUpdateOperationsInput | string | null
+    rd_station_sync?: NullableBoolFieldUpdateOperationsInput | boolean | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLogin?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -43213,6 +43253,8 @@ export namespace Prisma {
     google_id?: NullableStringFieldUpdateOperationsInput | string | null
     apple_id?: NullableStringFieldUpdateOperationsInput | string | null
     facebook_id?: NullableStringFieldUpdateOperationsInput | string | null
+    rd_station_id?: NullableStringFieldUpdateOperationsInput | string | null
+    rd_station_sync?: NullableBoolFieldUpdateOperationsInput | boolean | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLogin?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -45962,6 +46004,11 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter | Date | string | null
   }
 
+  export type BoolNullableFilter = {
+    equals?: boolean | null
+    not?: NestedBoolNullableFilter | boolean | null
+  }
+
   export type DeviceUserListRelationFilter = {
     every?: DeviceUserWhereInput
     some?: DeviceUserWhereInput
@@ -45994,6 +46041,8 @@ export namespace Prisma {
     google_id?: SortOrder
     apple_id?: SortOrder
     facebook_id?: SortOrder
+    rd_station_id?: SortOrder
+    rd_station_sync?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     lastLogin?: SortOrder
@@ -46021,6 +46070,8 @@ export namespace Prisma {
     google_id?: SortOrder
     apple_id?: SortOrder
     facebook_id?: SortOrder
+    rd_station_id?: SortOrder
+    rd_station_sync?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     lastLogin?: SortOrder
@@ -46048,6 +46099,8 @@ export namespace Prisma {
     google_id?: SortOrder
     apple_id?: SortOrder
     facebook_id?: SortOrder
+    rd_station_id?: SortOrder
+    rd_station_sync?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     lastLogin?: SortOrder
@@ -46065,6 +46118,14 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter
     _min?: NestedDateTimeNullableFilter
     _max?: NestedDateTimeNullableFilter
+  }
+
+  export type BoolNullableWithAggregatesFilter = {
+    equals?: boolean | null
+    not?: NestedBoolNullableWithAggregatesFilter | boolean | null
+    _count?: NestedIntNullableFilter
+    _min?: NestedBoolNullableFilter
+    _max?: NestedBoolNullableFilter
   }
 
   export type UserRelationFilter = {
@@ -48102,6 +48163,10 @@ export namespace Prisma {
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
     set?: Date | string | null
+  }
+
+  export type NullableBoolFieldUpdateOperationsInput = {
+    set?: boolean | null
   }
 
   export type DeviceUserUpdateManyWithoutUserNestedInput = {
@@ -50338,6 +50403,11 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter | Date | string | null
   }
 
+  export type NestedBoolNullableFilter = {
+    equals?: boolean | null
+    not?: NestedBoolNullableFilter | boolean | null
+  }
+
   export type NestedDateTimeNullableWithAggregatesFilter = {
     equals?: Date | string | null
     in?: Enumerable<Date> | Enumerable<string> | null
@@ -50350,6 +50420,14 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter
     _min?: NestedDateTimeNullableFilter
     _max?: NestedDateTimeNullableFilter
+  }
+
+  export type NestedBoolNullableWithAggregatesFilter = {
+    equals?: boolean | null
+    not?: NestedBoolNullableWithAggregatesFilter | boolean | null
+    _count?: NestedIntNullableFilter
+    _min?: NestedBoolNullableFilter
+    _max?: NestedBoolNullableFilter
   }
 
   export type NestedFloatNullableWithAggregatesFilter = {
@@ -51567,6 +51645,8 @@ export namespace Prisma {
     google_id?: string | null
     apple_id?: string | null
     facebook_id?: string | null
+    rd_station_id?: string | null
+    rd_station_sync?: boolean | null
     created_at?: Date | string
     updated_at?: Date | string
     lastLogin?: Date | string
@@ -51595,6 +51675,8 @@ export namespace Prisma {
     google_id?: string | null
     apple_id?: string | null
     facebook_id?: string | null
+    rd_station_id?: string | null
+    rd_station_sync?: boolean | null
     created_at?: Date | string
     updated_at?: Date | string
     lastLogin?: Date | string
@@ -51771,6 +51853,8 @@ export namespace Prisma {
     google_id?: NullableStringFieldUpdateOperationsInput | string | null
     apple_id?: NullableStringFieldUpdateOperationsInput | string | null
     facebook_id?: NullableStringFieldUpdateOperationsInput | string | null
+    rd_station_id?: NullableStringFieldUpdateOperationsInput | string | null
+    rd_station_sync?: NullableBoolFieldUpdateOperationsInput | boolean | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLogin?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -51799,6 +51883,8 @@ export namespace Prisma {
     google_id?: NullableStringFieldUpdateOperationsInput | string | null
     apple_id?: NullableStringFieldUpdateOperationsInput | string | null
     facebook_id?: NullableStringFieldUpdateOperationsInput | string | null
+    rd_station_id?: NullableStringFieldUpdateOperationsInput | string | null
+    rd_station_sync?: NullableBoolFieldUpdateOperationsInput | boolean | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLogin?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -54645,6 +54731,8 @@ export namespace Prisma {
     google_id?: string | null
     apple_id?: string | null
     facebook_id?: string | null
+    rd_station_id?: string | null
+    rd_station_sync?: boolean | null
     created_at?: Date | string
     updated_at?: Date | string
     lastLogin?: Date | string
@@ -54673,6 +54761,8 @@ export namespace Prisma {
     google_id?: string | null
     apple_id?: string | null
     facebook_id?: string | null
+    rd_station_id?: string | null
+    rd_station_sync?: boolean | null
     created_at?: Date | string
     updated_at?: Date | string
     lastLogin?: Date | string
@@ -54744,6 +54834,8 @@ export namespace Prisma {
     google_id?: NullableStringFieldUpdateOperationsInput | string | null
     apple_id?: NullableStringFieldUpdateOperationsInput | string | null
     facebook_id?: NullableStringFieldUpdateOperationsInput | string | null
+    rd_station_id?: NullableStringFieldUpdateOperationsInput | string | null
+    rd_station_sync?: NullableBoolFieldUpdateOperationsInput | boolean | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLogin?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -54772,6 +54864,8 @@ export namespace Prisma {
     google_id?: NullableStringFieldUpdateOperationsInput | string | null
     apple_id?: NullableStringFieldUpdateOperationsInput | string | null
     facebook_id?: NullableStringFieldUpdateOperationsInput | string | null
+    rd_station_id?: NullableStringFieldUpdateOperationsInput | string | null
+    rd_station_sync?: NullableBoolFieldUpdateOperationsInput | boolean | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLogin?: DateTimeFieldUpdateOperationsInput | Date | string

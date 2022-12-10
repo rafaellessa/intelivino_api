@@ -3,9 +3,9 @@ import { Router } from 'express'
 
 export default (router: Router): void => {
   const migrateRepository = new MigrateRepository()
-  router.get('/migrate/uvas', (_req, response) => {
+  router.get('/migrate/initial', (_req, response) => {
     response.setHeader('Content-Type', 'application/json')
-    migrateRepository.migrateGrapes()
+    migrateRepository.initialMigrate()
     response.send({})
   })
 

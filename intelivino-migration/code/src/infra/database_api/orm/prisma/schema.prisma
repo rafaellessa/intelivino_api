@@ -108,6 +108,8 @@ model User {
   google_id    String?
   apple_id     String?
   facebook_id  String?
+  rd_station_id String?
+  rd_station_sync Boolean? @default(false)
   created_at   DateTime      @default(now()) @db.Timestamp(3)
   updated_at   DateTime      @updatedAt @db.Timestamp(3)
   lastLogin    DateTime      @default(now()) @db.Timestamp(3)

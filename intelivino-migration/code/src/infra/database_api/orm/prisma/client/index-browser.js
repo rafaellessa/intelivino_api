@@ -485,6 +485,8 @@ exports.Prisma.UserScalarFieldEnum = makeEnum({
   google_id: 'google_id',
   apple_id: 'apple_id',
   facebook_id: 'facebook_id',
+  rd_station_id: 'rd_station_id',
+  rd_station_sync: 'rd_station_sync',
   created_at: 'created_at',
   updated_at: 'updated_at',
   lastLogin: 'lastLogin'
