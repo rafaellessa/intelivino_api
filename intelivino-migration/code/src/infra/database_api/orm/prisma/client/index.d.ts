@@ -214,6 +214,7 @@ export type CampaignType = {
 export type Coupon = {
   id: string
   code: string
+  account_id: string
   dicount_type: CouponDiscountType
   discount_value: number
   couponUse_type: CouponUseType
@@ -235,16 +236,19 @@ export type Label = {
   name: string
   description: string | null
   type_id: string
-  country_id: string
-  region_id: string
+  country_id: string | null
+  region_id: string | null
+  winery_id: string | null
   harvest: string | null
-  wine_type_id: string
+  no_harvest: boolean
+  wine_type_id: string | null
   alcohol_percentage: Prisma.Decimal | null
   price: number
   promotional_price: number | null
   photo: string | null
+  account_id: string
   is_active: boolean
-  stock: boolean
+  control_stock: boolean
   created_at: Date
   updated_at: Date
 }
@@ -289,6 +293,7 @@ export type Grape = {
  */
 export type LabelType = {
   id: string
+  external_id: number | null
   name: string
   created_at: Date
   updated_at: Date
@@ -370,6 +375,7 @@ export type SubRegion = {
  */
 export type WineType = {
   id: string
+  external_id: number | null
   name: string
   slug: string
   created_at: Date
@@ -410,6 +416,7 @@ export type OrderLabel = {
 export type Invoice = {
   id: string
   order_id: string
+  account_id: string
   created_at: Date
   updated_at: Date
 }
@@ -570,6 +577,7 @@ export type Subscription = {
 export type StockLabel = {
   label_id: string
   account_id: string
+  quantity: number
   min_quantity: number
   max_quantity: number
 }
@@ -584,6 +592,18 @@ export type StockHistory = {
   reason: string
   quantity: number
   date: Date
+  created_at: Date
+  updated_at: Date
+}
+
+/**
+ * Model Winery
+ * 
+ */
+export type Winery = {
+  id: string
+  external_id: number | null
+  name: string
   created_at: Date
   updated_at: Date
 }
@@ -1194,6 +1214,16 @@ export class PrismaClient<
     * ```
     */
   get stockHistory(): Prisma.StockHistoryDelegate<GlobalReject>;
+
+  /**
+   * `prisma.winery`: Exposes CRUD operations for the **Winery** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Wineries
+    * const wineries = await prisma.winery.findMany()
+    * ```
+    */
+  get winery(): Prisma.WineryDelegate<GlobalReject>;
 }
 
 export namespace Prisma {
@@ -1721,7 +1751,8 @@ export namespace Prisma {
     PaymentCycle: 'PaymentCycle',
     Subscription: 'Subscription',
     StockLabel: 'StockLabel',
-    StockHistory: 'StockHistory'
+    StockHistory: 'StockHistory',
+    Winery: 'Winery'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1892,7 +1923,10 @@ export namespace Prisma {
     account_activities: number
     account_deliveries: number
     account_users: number
-    StockLabel: number
+    invoices: number
+    stock_label: number
+    labels: number
+    coupons: number
   }
 
   export type AccountCountOutputTypeSelect = {
@@ -1902,7 +1936,10 @@ export namespace Prisma {
     account_activities?: boolean
     account_deliveries?: boolean
     account_users?: boolean
-    StockLabel?: boolean
+    invoices?: boolean
+    stock_label?: boolean
+    labels?: boolean
+    coupons?: boolean
   }
 
   export type AccountCountOutputTypeGetPayload<
@@ -2346,16 +2383,16 @@ export namespace Prisma {
     label_grape: number
     order_label: number
     label_campaign: number
-    StockLabel: number
-    StockHistory: number
+    stock_label: number
+    stock_history: number
   }
 
   export type LabelCountOutputTypeSelect = {
     label_grape?: boolean
     order_label?: boolean
     label_campaign?: boolean
-    StockLabel?: boolean
-    StockHistory?: boolean
+    stock_label?: boolean
+    stock_history?: boolean
   }
 
   export type LabelCountOutputTypeGetPayload<
@@ -2956,6 +2993,55 @@ export namespace Prisma {
 
 
   /**
+   * Count Type WineryCountOutputType
+   */
+
+
+  export type WineryCountOutputType = {
+    labels: number
+  }
+
+  export type WineryCountOutputTypeSelect = {
+    labels?: boolean
+  }
+
+  export type WineryCountOutputTypeGetPayload<
+    S extends boolean | null | undefined | WineryCountOutputTypeArgs,
+    U = keyof S
+      > = S extends true
+        ? WineryCountOutputType
+    : S extends undefined
+    ? never
+    : S extends WineryCountOutputTypeArgs
+    ?'include' extends U
+    ? WineryCountOutputType 
+    : 'select' extends U
+    ? {
+    [P in TrueKeys<S['select']>]:
+    P extends keyof WineryCountOutputType ? WineryCountOutputType[P] : never
+  } 
+    : WineryCountOutputType
+  : WineryCountOutputType
+
+
+
+
+  // Custom InputTypes
+
+  /**
+   * WineryCountOutputType without action
+   */
+  export type WineryCountOutputTypeArgs = {
+    /**
+     * Select specific fields to fetch from the WineryCountOutputType
+     * 
+    **/
+    select?: WineryCountOutputTypeSelect | null
+  }
+
+
+
+  /**
    * Models
    */
 
@@ -3361,8 +3447,11 @@ export namespace Prisma {
     account_activities?: boolean | AccountActivitiesFindManyArgs
     account_deliveries?: boolean | AccountDeliveryFindManyArgs
     account_users?: boolean | AccountUserFindManyArgs
+    invoices?: boolean | InvoiceFindManyArgs
     domain?: boolean
-    StockLabel?: boolean | StockLabelFindManyArgs
+    stock_label?: boolean | StockLabelFindManyArgs
+    labels?: boolean | LabelFindManyArgs
+    coupons?: boolean | CouponFindManyArgs
     account_configuration?: boolean | AccountConfigurationArgs
     isActive?: boolean
     _count?: boolean | AccountCountOutputTypeArgs
@@ -3376,7 +3465,10 @@ export namespace Prisma {
     account_activities?: boolean | AccountActivitiesFindManyArgs
     account_deliveries?: boolean | AccountDeliveryFindManyArgs
     account_users?: boolean | AccountUserFindManyArgs
-    StockLabel?: boolean | StockLabelFindManyArgs
+    invoices?: boolean | InvoiceFindManyArgs
+    stock_label?: boolean | StockLabelFindManyArgs
+    labels?: boolean | LabelFindManyArgs
+    coupons?: boolean | CouponFindManyArgs
     account_configuration?: boolean | AccountConfigurationArgs
     _count?: boolean | AccountCountOutputTypeArgs
   }
@@ -3399,7 +3491,10 @@ export namespace Prisma {
         P extends 'account_activities' ? Array < AccountActivitiesGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
         P extends 'account_deliveries' ? Array < AccountDeliveryGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
         P extends 'account_users' ? Array < AccountUserGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
-        P extends 'StockLabel' ? Array < StockLabelGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
+        P extends 'invoices' ? Array < InvoiceGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
+        P extends 'stock_label' ? Array < StockLabelGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
+        P extends 'labels' ? Array < LabelGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
+        P extends 'coupons' ? Array < CouponGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
         P extends 'account_configuration' ? AccountConfigurationGetPayload<Exclude<S['include'], undefined | null>[P]> | null :
         P extends '_count' ? AccountCountOutputTypeGetPayload<Exclude<S['include'], undefined | null>[P]> :  never
   } 
@@ -3413,7 +3508,10 @@ export namespace Prisma {
         P extends 'account_activities' ? Array < AccountActivitiesGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
         P extends 'account_deliveries' ? Array < AccountDeliveryGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
         P extends 'account_users' ? Array < AccountUserGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
-        P extends 'StockLabel' ? Array < StockLabelGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
+        P extends 'invoices' ? Array < InvoiceGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
+        P extends 'stock_label' ? Array < StockLabelGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
+        P extends 'labels' ? Array < LabelGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
+        P extends 'coupons' ? Array < CouponGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
         P extends 'account_configuration' ? AccountConfigurationGetPayload<Exclude<S['select'], undefined | null>[P]> | null :
         P extends '_count' ? AccountCountOutputTypeGetPayload<Exclude<S['select'], undefined | null>[P]> :  P extends keyof Account ? Account[P] : never
   } 
@@ -3804,7 +3902,13 @@ export namespace Prisma {
 
     account_users<T extends AccountUserFindManyArgs = {}>(args?: Subset<T, AccountUserFindManyArgs>): CheckSelect<T, PrismaPromise<Array<AccountUser>| Null>, PrismaPromise<Array<AccountUserGetPayload<T>>| Null>>;
 
-    StockLabel<T extends StockLabelFindManyArgs = {}>(args?: Subset<T, StockLabelFindManyArgs>): CheckSelect<T, PrismaPromise<Array<StockLabel>| Null>, PrismaPromise<Array<StockLabelGetPayload<T>>| Null>>;
+    invoices<T extends InvoiceFindManyArgs = {}>(args?: Subset<T, InvoiceFindManyArgs>): CheckSelect<T, PrismaPromise<Array<Invoice>| Null>, PrismaPromise<Array<InvoiceGetPayload<T>>| Null>>;
+
+    stock_label<T extends StockLabelFindManyArgs = {}>(args?: Subset<T, StockLabelFindManyArgs>): CheckSelect<T, PrismaPromise<Array<StockLabel>| Null>, PrismaPromise<Array<StockLabelGetPayload<T>>| Null>>;
+
+    labels<T extends LabelFindManyArgs = {}>(args?: Subset<T, LabelFindManyArgs>): CheckSelect<T, PrismaPromise<Array<Label>| Null>, PrismaPromise<Array<LabelGetPayload<T>>| Null>>;
+
+    coupons<T extends CouponFindManyArgs = {}>(args?: Subset<T, CouponFindManyArgs>): CheckSelect<T, PrismaPromise<Array<Coupon>| Null>, PrismaPromise<Array<CouponGetPayload<T>>| Null>>;
 
     account_configuration<T extends AccountConfigurationArgs = {}>(args?: Subset<T, AccountConfigurationArgs>): CheckSelect<T, Prisma__AccountConfigurationClient<AccountConfiguration | Null>, Prisma__AccountConfigurationClient<AccountConfigurationGetPayload<T> | Null>>;
 
@@ -15614,6 +15718,7 @@ export namespace Prisma {
   export type CouponMinAggregateOutputType = {
     id: string | null
     code: string | null
+    account_id: string | null
     dicount_type: CouponDiscountType | null
     discount_value: number | null
     couponUse_type: CouponUseType | null
@@ -15628,6 +15733,7 @@ export namespace Prisma {
   export type CouponMaxAggregateOutputType = {
     id: string | null
     code: string | null
+    account_id: string | null
     dicount_type: CouponDiscountType | null
     discount_value: number | null
     couponUse_type: CouponUseType | null
@@ -15642,6 +15748,7 @@ export namespace Prisma {
   export type CouponCountAggregateOutputType = {
     id: number
     code: number
+    account_id: number
     dicount_type: number
     discount_value: number
     couponUse_type: number
@@ -15670,6 +15777,7 @@ export namespace Prisma {
   export type CouponMinAggregateInputType = {
     id?: true
     code?: true
+    account_id?: true
     dicount_type?: true
     discount_value?: true
     couponUse_type?: true
@@ -15684,6 +15792,7 @@ export namespace Prisma {
   export type CouponMaxAggregateInputType = {
     id?: true
     code?: true
+    account_id?: true
     dicount_type?: true
     discount_value?: true
     couponUse_type?: true
@@ -15698,6 +15807,7 @@ export namespace Prisma {
   export type CouponCountAggregateInputType = {
     id?: true
     code?: true
+    account_id?: true
     dicount_type?: true
     discount_value?: true
     couponUse_type?: true
@@ -15805,6 +15915,7 @@ export namespace Prisma {
   export type CouponGroupByOutputType = {
     id: string
     code: string
+    account_id: string
     dicount_type: CouponDiscountType
     discount_value: number
     couponUse_type: CouponUseType
@@ -15838,6 +15949,8 @@ export namespace Prisma {
   export type CouponSelect = {
     id?: boolean
     code?: boolean
+    account_id?: boolean
+    account?: boolean | AccountArgs
     dicount_type?: boolean
     discount_value?: boolean
     couponUse_type?: boolean
@@ -15849,6 +15962,10 @@ export namespace Prisma {
     updated_at?: boolean
   }
 
+  export type CouponInclude = {
+    account?: boolean | AccountArgs
+  }
+
   export type CouponGetPayload<
     S extends boolean | null | undefined | CouponArgs,
     U = keyof S
@@ -15858,11 +15975,14 @@ export namespace Prisma {
     ? never
     : S extends CouponArgs | CouponFindManyArgs
     ?'include' extends U
-    ? Coupon 
+    ? Coupon  & {
+    [P in TrueKeys<S['include']>]:
+        P extends 'account' ? AccountGetPayload<Exclude<S['include'], undefined | null>[P]> :  never
+  } 
     : 'select' extends U
     ? {
     [P in TrueKeys<S['select']>]:
-    P extends keyof Coupon ? Coupon[P] : never
+        P extends 'account' ? AccountGetPayload<Exclude<S['select'], undefined | null>[P]> :  P extends keyof Coupon ? Coupon[P] : never
   } 
     : Coupon
   : Coupon
@@ -16237,6 +16357,7 @@ export namespace Prisma {
     constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
     readonly [Symbol.toStringTag]: 'PrismaClientPromise';
 
+    account<T extends AccountArgs = {}>(args?: Subset<T, AccountArgs>): CheckSelect<T, Prisma__AccountClient<Account | Null>, Prisma__AccountClient<AccountGetPayload<T> | Null>>;
 
     private get _document();
     /**
@@ -16275,6 +16396,11 @@ export namespace Prisma {
     **/
     select?: CouponSelect | null
     /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: CouponInclude | null
+    /**
      * Filter, which Coupon to fetch.
      * 
     **/
@@ -16302,6 +16428,11 @@ export namespace Prisma {
      * 
     **/
     select?: CouponSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: CouponInclude | null
     /**
      * Filter, which Coupon to fetch.
      * 
@@ -16366,6 +16497,11 @@ export namespace Prisma {
     **/
     select?: CouponSelect | null
     /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: CouponInclude | null
+    /**
      * Filter, which Coupons to fetch.
      * 
     **/
@@ -16412,6 +16548,11 @@ export namespace Prisma {
     **/
     select?: CouponSelect | null
     /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: CouponInclude | null
+    /**
      * The data needed to create a Coupon.
      * 
     **/
@@ -16441,6 +16582,11 @@ export namespace Prisma {
      * 
     **/
     select?: CouponSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: CouponInclude | null
     /**
      * The data needed to update a Coupon.
      * 
@@ -16481,6 +16627,11 @@ export namespace Prisma {
     **/
     select?: CouponSelect | null
     /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: CouponInclude | null
+    /**
      * The filter to search for the Coupon to update in case it exists.
      * 
     **/
@@ -16507,6 +16658,11 @@ export namespace Prisma {
      * 
     **/
     select?: CouponSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: CouponInclude | null
     /**
      * Filter which Coupon to delete.
      * 
@@ -16548,6 +16704,11 @@ export namespace Prisma {
      * 
     **/
     select?: CouponSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: CouponInclude | null
   }
 
 
@@ -16587,14 +16748,17 @@ export namespace Prisma {
     type_id: string | null
     country_id: string | null
     region_id: string | null
+    winery_id: string | null
     harvest: string | null
+    no_harvest: boolean | null
     wine_type_id: string | null
     alcohol_percentage: Decimal | null
     price: number | null
     promotional_price: number | null
     photo: string | null
+    account_id: string | null
     is_active: boolean | null
-    stock: boolean | null
+    control_stock: boolean | null
     created_at: Date | null
     updated_at: Date | null
   }
@@ -16607,14 +16771,17 @@ export namespace Prisma {
     type_id: string | null
     country_id: string | null
     region_id: string | null
+    winery_id: string | null
     harvest: string | null
+    no_harvest: boolean | null
     wine_type_id: string | null
     alcohol_percentage: Decimal | null
     price: number | null
     promotional_price: number | null
     photo: string | null
+    account_id: string | null
     is_active: boolean | null
-    stock: boolean | null
+    control_stock: boolean | null
     created_at: Date | null
     updated_at: Date | null
   }
@@ -16627,14 +16794,17 @@ export namespace Prisma {
     type_id: number
     country_id: number
     region_id: number
+    winery_id: number
     harvest: number
+    no_harvest: number
     wine_type_id: number
     alcohol_percentage: number
     price: number
     promotional_price: number
     photo: number
+    account_id: number
     is_active: number
-    stock: number
+    control_stock: number
     created_at: number
     updated_at: number
     _all: number
@@ -16663,14 +16833,17 @@ export namespace Prisma {
     type_id?: true
     country_id?: true
     region_id?: true
+    winery_id?: true
     harvest?: true
+    no_harvest?: true
     wine_type_id?: true
     alcohol_percentage?: true
     price?: true
     promotional_price?: true
     photo?: true
+    account_id?: true
     is_active?: true
-    stock?: true
+    control_stock?: true
     created_at?: true
     updated_at?: true
   }
@@ -16683,14 +16856,17 @@ export namespace Prisma {
     type_id?: true
     country_id?: true
     region_id?: true
+    winery_id?: true
     harvest?: true
+    no_harvest?: true
     wine_type_id?: true
     alcohol_percentage?: true
     price?: true
     promotional_price?: true
     photo?: true
+    account_id?: true
     is_active?: true
-    stock?: true
+    control_stock?: true
     created_at?: true
     updated_at?: true
   }
@@ -16703,14 +16879,17 @@ export namespace Prisma {
     type_id?: true
     country_id?: true
     region_id?: true
+    winery_id?: true
     harvest?: true
+    no_harvest?: true
     wine_type_id?: true
     alcohol_percentage?: true
     price?: true
     promotional_price?: true
     photo?: true
+    account_id?: true
     is_active?: true
-    stock?: true
+    control_stock?: true
     created_at?: true
     updated_at?: true
     _all?: true
@@ -16814,16 +16993,19 @@ export namespace Prisma {
     name: string
     description: string | null
     type_id: string
-    country_id: string
-    region_id: string
+    country_id: string | null
+    region_id: string | null
+    winery_id: string | null
     harvest: string | null
-    wine_type_id: string
+    no_harvest: boolean
+    wine_type_id: string | null
     alcohol_percentage: Decimal | null
     price: number
     promotional_price: number | null
     photo: string | null
+    account_id: string
     is_active: boolean
-    stock: boolean
+    control_stock: boolean
     created_at: Date
     updated_at: Date
     _count: LabelCountAggregateOutputType | null
@@ -16853,40 +17035,47 @@ export namespace Prisma {
     name?: boolean
     description?: boolean
     type_id?: boolean
-    labelType?: boolean | LabelTypeArgs
+    label_type?: boolean | LabelTypeArgs
     country_id?: boolean
     country?: boolean | CountryArgs
     region_id?: boolean
     region?: boolean | RegionArgs
+    winery_id?: boolean
+    winery?: boolean | WineryArgs
     harvest?: boolean
+    no_harvest?: boolean
     wine_type_id?: boolean
     wine_type?: boolean | WineTypeArgs
     alcohol_percentage?: boolean
     price?: boolean
     promotional_price?: boolean
     photo?: boolean
+    account_id?: boolean
+    account?: boolean | AccountArgs
     is_active?: boolean
-    stock?: boolean
+    control_stock?: boolean
     created_at?: boolean
     updated_at?: boolean
     label_grape?: boolean | LabelGrapeFindManyArgs
     order_label?: boolean | OrderLabelFindManyArgs
     label_campaign?: boolean | LabelCampaignFindManyArgs
-    StockLabel?: boolean | StockLabelFindManyArgs
-    StockHistory?: boolean | StockHistoryFindManyArgs
+    stock_label?: boolean | StockLabelFindManyArgs
+    stock_history?: boolean | StockHistoryFindManyArgs
     _count?: boolean | LabelCountOutputTypeArgs
   }
 
   export type LabelInclude = {
-    labelType?: boolean | LabelTypeArgs
+    label_type?: boolean | LabelTypeArgs
     country?: boolean | CountryArgs
     region?: boolean | RegionArgs
+    winery?: boolean | WineryArgs
     wine_type?: boolean | WineTypeArgs
+    account?: boolean | AccountArgs
     label_grape?: boolean | LabelGrapeFindManyArgs
     order_label?: boolean | OrderLabelFindManyArgs
     label_campaign?: boolean | LabelCampaignFindManyArgs
-    StockLabel?: boolean | StockLabelFindManyArgs
-    StockHistory?: boolean | StockHistoryFindManyArgs
+    stock_label?: boolean | StockLabelFindManyArgs
+    stock_history?: boolean | StockHistoryFindManyArgs
     _count?: boolean | LabelCountOutputTypeArgs
   }
 
@@ -16901,29 +17090,33 @@ export namespace Prisma {
     ?'include' extends U
     ? Label  & {
     [P in TrueKeys<S['include']>]:
-        P extends 'labelType' ? LabelTypeGetPayload<Exclude<S['include'], undefined | null>[P]> :
-        P extends 'country' ? CountryGetPayload<Exclude<S['include'], undefined | null>[P]> :
-        P extends 'region' ? RegionGetPayload<Exclude<S['include'], undefined | null>[P]> :
-        P extends 'wine_type' ? WineTypeGetPayload<Exclude<S['include'], undefined | null>[P]> :
+        P extends 'label_type' ? LabelTypeGetPayload<Exclude<S['include'], undefined | null>[P]> :
+        P extends 'country' ? CountryGetPayload<Exclude<S['include'], undefined | null>[P]> | null :
+        P extends 'region' ? RegionGetPayload<Exclude<S['include'], undefined | null>[P]> | null :
+        P extends 'winery' ? WineryGetPayload<Exclude<S['include'], undefined | null>[P]> | null :
+        P extends 'wine_type' ? WineTypeGetPayload<Exclude<S['include'], undefined | null>[P]> | null :
+        P extends 'account' ? AccountGetPayload<Exclude<S['include'], undefined | null>[P]> :
         P extends 'label_grape' ? Array < LabelGrapeGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
         P extends 'order_label' ? Array < OrderLabelGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
         P extends 'label_campaign' ? Array < LabelCampaignGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
-        P extends 'StockLabel' ? Array < StockLabelGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
-        P extends 'StockHistory' ? Array < StockHistoryGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
+        P extends 'stock_label' ? Array < StockLabelGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
+        P extends 'stock_history' ? Array < StockHistoryGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
         P extends '_count' ? LabelCountOutputTypeGetPayload<Exclude<S['include'], undefined | null>[P]> :  never
   } 
     : 'select' extends U
     ? {
     [P in TrueKeys<S['select']>]:
-        P extends 'labelType' ? LabelTypeGetPayload<Exclude<S['select'], undefined | null>[P]> :
-        P extends 'country' ? CountryGetPayload<Exclude<S['select'], undefined | null>[P]> :
-        P extends 'region' ? RegionGetPayload<Exclude<S['select'], undefined | null>[P]> :
-        P extends 'wine_type' ? WineTypeGetPayload<Exclude<S['select'], undefined | null>[P]> :
+        P extends 'label_type' ? LabelTypeGetPayload<Exclude<S['select'], undefined | null>[P]> :
+        P extends 'country' ? CountryGetPayload<Exclude<S['select'], undefined | null>[P]> | null :
+        P extends 'region' ? RegionGetPayload<Exclude<S['select'], undefined | null>[P]> | null :
+        P extends 'winery' ? WineryGetPayload<Exclude<S['select'], undefined | null>[P]> | null :
+        P extends 'wine_type' ? WineTypeGetPayload<Exclude<S['select'], undefined | null>[P]> | null :
+        P extends 'account' ? AccountGetPayload<Exclude<S['select'], undefined | null>[P]> :
         P extends 'label_grape' ? Array < LabelGrapeGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
         P extends 'order_label' ? Array < OrderLabelGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
         P extends 'label_campaign' ? Array < LabelCampaignGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
-        P extends 'StockLabel' ? Array < StockLabelGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
-        P extends 'StockHistory' ? Array < StockHistoryGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
+        P extends 'stock_label' ? Array < StockLabelGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
+        P extends 'stock_history' ? Array < StockHistoryGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
         P extends '_count' ? LabelCountOutputTypeGetPayload<Exclude<S['select'], undefined | null>[P]> :  P extends keyof Label ? Label[P] : never
   } 
     : Label
@@ -17299,13 +17492,17 @@ export namespace Prisma {
     constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
     readonly [Symbol.toStringTag]: 'PrismaClientPromise';
 
-    labelType<T extends LabelTypeArgs = {}>(args?: Subset<T, LabelTypeArgs>): CheckSelect<T, Prisma__LabelTypeClient<LabelType | Null>, Prisma__LabelTypeClient<LabelTypeGetPayload<T> | Null>>;
+    label_type<T extends LabelTypeArgs = {}>(args?: Subset<T, LabelTypeArgs>): CheckSelect<T, Prisma__LabelTypeClient<LabelType | Null>, Prisma__LabelTypeClient<LabelTypeGetPayload<T> | Null>>;
 
     country<T extends CountryArgs = {}>(args?: Subset<T, CountryArgs>): CheckSelect<T, Prisma__CountryClient<Country | Null>, Prisma__CountryClient<CountryGetPayload<T> | Null>>;
 
     region<T extends RegionArgs = {}>(args?: Subset<T, RegionArgs>): CheckSelect<T, Prisma__RegionClient<Region | Null>, Prisma__RegionClient<RegionGetPayload<T> | Null>>;
 
+    winery<T extends WineryArgs = {}>(args?: Subset<T, WineryArgs>): CheckSelect<T, Prisma__WineryClient<Winery | Null>, Prisma__WineryClient<WineryGetPayload<T> | Null>>;
+
     wine_type<T extends WineTypeArgs = {}>(args?: Subset<T, WineTypeArgs>): CheckSelect<T, Prisma__WineTypeClient<WineType | Null>, Prisma__WineTypeClient<WineTypeGetPayload<T> | Null>>;
+
+    account<T extends AccountArgs = {}>(args?: Subset<T, AccountArgs>): CheckSelect<T, Prisma__AccountClient<Account | Null>, Prisma__AccountClient<AccountGetPayload<T> | Null>>;
 
     label_grape<T extends LabelGrapeFindManyArgs = {}>(args?: Subset<T, LabelGrapeFindManyArgs>): CheckSelect<T, PrismaPromise<Array<LabelGrape>| Null>, PrismaPromise<Array<LabelGrapeGetPayload<T>>| Null>>;
 
@@ -17313,9 +17510,9 @@ export namespace Prisma {
 
     label_campaign<T extends LabelCampaignFindManyArgs = {}>(args?: Subset<T, LabelCampaignFindManyArgs>): CheckSelect<T, PrismaPromise<Array<LabelCampaign>| Null>, PrismaPromise<Array<LabelCampaignGetPayload<T>>| Null>>;
 
-    StockLabel<T extends StockLabelFindManyArgs = {}>(args?: Subset<T, StockLabelFindManyArgs>): CheckSelect<T, PrismaPromise<Array<StockLabel>| Null>, PrismaPromise<Array<StockLabelGetPayload<T>>| Null>>;
+    stock_label<T extends StockLabelFindManyArgs = {}>(args?: Subset<T, StockLabelFindManyArgs>): CheckSelect<T, PrismaPromise<Array<StockLabel>| Null>, PrismaPromise<Array<StockLabelGetPayload<T>>| Null>>;
 
-    StockHistory<T extends StockHistoryFindManyArgs = {}>(args?: Subset<T, StockHistoryFindManyArgs>): CheckSelect<T, PrismaPromise<Array<StockHistory>| Null>, PrismaPromise<Array<StockHistoryGetPayload<T>>| Null>>;
+    stock_history<T extends StockHistoryFindManyArgs = {}>(args?: Subset<T, StockHistoryFindManyArgs>): CheckSelect<T, PrismaPromise<Array<StockHistory>| Null>, PrismaPromise<Array<StockHistoryGetPayload<T>>| Null>>;
 
     private get _document();
     /**
@@ -20487,12 +20684,23 @@ export namespace Prisma {
 
   export type AggregateLabelType = {
     _count: LabelTypeCountAggregateOutputType | null
+    _avg: LabelTypeAvgAggregateOutputType | null
+    _sum: LabelTypeSumAggregateOutputType | null
     _min: LabelTypeMinAggregateOutputType | null
     _max: LabelTypeMaxAggregateOutputType | null
   }
 
+  export type LabelTypeAvgAggregateOutputType = {
+    external_id: number | null
+  }
+
+  export type LabelTypeSumAggregateOutputType = {
+    external_id: number | null
+  }
+
   export type LabelTypeMinAggregateOutputType = {
     id: string | null
+    external_id: number | null
     name: string | null
     created_at: Date | null
     updated_at: Date | null
@@ -20500,6 +20708,7 @@ export namespace Prisma {
 
   export type LabelTypeMaxAggregateOutputType = {
     id: string | null
+    external_id: number | null
     name: string | null
     created_at: Date | null
     updated_at: Date | null
@@ -20507,6 +20716,7 @@ export namespace Prisma {
 
   export type LabelTypeCountAggregateOutputType = {
     id: number
+    external_id: number
     name: number
     created_at: number
     updated_at: number
@@ -20514,8 +20724,17 @@ export namespace Prisma {
   }
 
 
+  export type LabelTypeAvgAggregateInputType = {
+    external_id?: true
+  }
+
+  export type LabelTypeSumAggregateInputType = {
+    external_id?: true
+  }
+
   export type LabelTypeMinAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     created_at?: true
     updated_at?: true
@@ -20523,6 +20742,7 @@ export namespace Prisma {
 
   export type LabelTypeMaxAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     created_at?: true
     updated_at?: true
@@ -20530,6 +20750,7 @@ export namespace Prisma {
 
   export type LabelTypeCountAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     created_at?: true
     updated_at?: true
@@ -20579,6 +20800,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: LabelTypeAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: LabelTypeSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: LabelTypeMinAggregateInputType
@@ -20609,6 +20842,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: LabelTypeCountAggregateInputType | true
+    _avg?: LabelTypeAvgAggregateInputType
+    _sum?: LabelTypeSumAggregateInputType
     _min?: LabelTypeMinAggregateInputType
     _max?: LabelTypeMaxAggregateInputType
   }
@@ -20616,10 +20851,13 @@ export namespace Prisma {
 
   export type LabelTypeGroupByOutputType = {
     id: string
+    external_id: number | null
     name: string
     created_at: Date
     updated_at: Date
     _count: LabelTypeCountAggregateOutputType | null
+    _avg: LabelTypeAvgAggregateOutputType | null
+    _sum: LabelTypeSumAggregateOutputType | null
     _min: LabelTypeMinAggregateOutputType | null
     _max: LabelTypeMaxAggregateOutputType | null
   }
@@ -20640,6 +20878,7 @@ export namespace Prisma {
 
   export type LabelTypeSelect = {
     id?: boolean
+    external_id?: boolean
     name?: boolean
     labels?: boolean | LabelFindManyArgs
     created_at?: boolean
@@ -26325,12 +26564,23 @@ export namespace Prisma {
 
   export type AggregateWineType = {
     _count: WineTypeCountAggregateOutputType | null
+    _avg: WineTypeAvgAggregateOutputType | null
+    _sum: WineTypeSumAggregateOutputType | null
     _min: WineTypeMinAggregateOutputType | null
     _max: WineTypeMaxAggregateOutputType | null
   }
 
+  export type WineTypeAvgAggregateOutputType = {
+    external_id: number | null
+  }
+
+  export type WineTypeSumAggregateOutputType = {
+    external_id: number | null
+  }
+
   export type WineTypeMinAggregateOutputType = {
     id: string | null
+    external_id: number | null
     name: string | null
     slug: string | null
     created_at: Date | null
@@ -26339,6 +26589,7 @@ export namespace Prisma {
 
   export type WineTypeMaxAggregateOutputType = {
     id: string | null
+    external_id: number | null
     name: string | null
     slug: string | null
     created_at: Date | null
@@ -26347,6 +26598,7 @@ export namespace Prisma {
 
   export type WineTypeCountAggregateOutputType = {
     id: number
+    external_id: number
     name: number
     slug: number
     created_at: number
@@ -26355,8 +26607,17 @@ export namespace Prisma {
   }
 
 
+  export type WineTypeAvgAggregateInputType = {
+    external_id?: true
+  }
+
+  export type WineTypeSumAggregateInputType = {
+    external_id?: true
+  }
+
   export type WineTypeMinAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     slug?: true
     created_at?: true
@@ -26365,6 +26626,7 @@ export namespace Prisma {
 
   export type WineTypeMaxAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     slug?: true
     created_at?: true
@@ -26373,6 +26635,7 @@ export namespace Prisma {
 
   export type WineTypeCountAggregateInputType = {
     id?: true
+    external_id?: true
     name?: true
     slug?: true
     created_at?: true
@@ -26423,6 +26686,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: WineTypeAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: WineTypeSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: WineTypeMinAggregateInputType
@@ -26453,6 +26728,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: WineTypeCountAggregateInputType | true
+    _avg?: WineTypeAvgAggregateInputType
+    _sum?: WineTypeSumAggregateInputType
     _min?: WineTypeMinAggregateInputType
     _max?: WineTypeMaxAggregateInputType
   }
@@ -26460,11 +26737,14 @@ export namespace Prisma {
 
   export type WineTypeGroupByOutputType = {
     id: string
+    external_id: number | null
     name: string
     slug: string
     created_at: Date
     updated_at: Date
     _count: WineTypeCountAggregateOutputType | null
+    _avg: WineTypeAvgAggregateOutputType | null
+    _sum: WineTypeSumAggregateOutputType | null
     _min: WineTypeMinAggregateOutputType | null
     _max: WineTypeMaxAggregateOutputType | null
   }
@@ -26485,6 +26765,7 @@ export namespace Prisma {
 
   export type WineTypeSelect = {
     id?: boolean
+    external_id?: boolean
     name?: boolean
     slug?: boolean
     labels?: boolean | LabelFindManyArgs
@@ -29233,6 +29514,7 @@ export namespace Prisma {
   export type InvoiceMinAggregateOutputType = {
     id: string | null
     order_id: string | null
+    account_id: string | null
     created_at: Date | null
     updated_at: Date | null
   }
@@ -29240,6 +29522,7 @@ export namespace Prisma {
   export type InvoiceMaxAggregateOutputType = {
     id: string | null
     order_id: string | null
+    account_id: string | null
     created_at: Date | null
     updated_at: Date | null
   }
@@ -29247,6 +29530,7 @@ export namespace Prisma {
   export type InvoiceCountAggregateOutputType = {
     id: number
     order_id: number
+    account_id: number
     created_at: number
     updated_at: number
     _all: number
@@ -29256,6 +29540,7 @@ export namespace Prisma {
   export type InvoiceMinAggregateInputType = {
     id?: true
     order_id?: true
+    account_id?: true
     created_at?: true
     updated_at?: true
   }
@@ -29263,6 +29548,7 @@ export namespace Prisma {
   export type InvoiceMaxAggregateInputType = {
     id?: true
     order_id?: true
+    account_id?: true
     created_at?: true
     updated_at?: true
   }
@@ -29270,6 +29556,7 @@ export namespace Prisma {
   export type InvoiceCountAggregateInputType = {
     id?: true
     order_id?: true
+    account_id?: true
     created_at?: true
     updated_at?: true
     _all?: true
@@ -29356,6 +29643,7 @@ export namespace Prisma {
   export type InvoiceGroupByOutputType = {
     id: string
     order_id: string
+    account_id: string
     created_at: Date
     updated_at: Date
     _count: InvoiceCountAggregateOutputType | null
@@ -29381,12 +29669,15 @@ export namespace Prisma {
     id?: boolean
     order_id?: boolean
     order?: boolean | OrderArgs
+    account_id?: boolean
+    account?: boolean | AccountArgs
     created_at?: boolean
     updated_at?: boolean
   }
 
   export type InvoiceInclude = {
     order?: boolean | OrderArgs
+    account?: boolean | AccountArgs
   }
 
   export type InvoiceGetPayload<
@@ -29400,12 +29691,14 @@ export namespace Prisma {
     ?'include' extends U
     ? Invoice  & {
     [P in TrueKeys<S['include']>]:
-        P extends 'order' ? OrderGetPayload<Exclude<S['include'], undefined | null>[P]> :  never
+        P extends 'order' ? OrderGetPayload<Exclude<S['include'], undefined | null>[P]> :
+        P extends 'account' ? AccountGetPayload<Exclude<S['include'], undefined | null>[P]> :  never
   } 
     : 'select' extends U
     ? {
     [P in TrueKeys<S['select']>]:
-        P extends 'order' ? OrderGetPayload<Exclude<S['select'], undefined | null>[P]> :  P extends keyof Invoice ? Invoice[P] : never
+        P extends 'order' ? OrderGetPayload<Exclude<S['select'], undefined | null>[P]> :
+        P extends 'account' ? AccountGetPayload<Exclude<S['select'], undefined | null>[P]> :  P extends keyof Invoice ? Invoice[P] : never
   } 
     : Invoice
   : Invoice
@@ -29781,6 +30074,8 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: 'PrismaClientPromise';
 
     order<T extends OrderArgs = {}>(args?: Subset<T, OrderArgs>): CheckSelect<T, Prisma__OrderClient<Order | Null>, Prisma__OrderClient<OrderGetPayload<T> | Null>>;
+
+    account<T extends AccountArgs = {}>(args?: Subset<T, AccountArgs>): CheckSelect<T, Prisma__AccountClient<Account | Null>, Prisma__AccountClient<AccountGetPayload<T> | Null>>;
 
     private get _document();
     /**
@@ -39840,11 +40135,13 @@ export namespace Prisma {
   }
 
   export type StockLabelAvgAggregateOutputType = {
+    quantity: number | null
     min_quantity: number | null
     max_quantity: number | null
   }
 
   export type StockLabelSumAggregateOutputType = {
+    quantity: number | null
     min_quantity: number | null
     max_quantity: number | null
   }
@@ -39852,6 +40149,7 @@ export namespace Prisma {
   export type StockLabelMinAggregateOutputType = {
     label_id: string | null
     account_id: string | null
+    quantity: number | null
     min_quantity: number | null
     max_quantity: number | null
   }
@@ -39859,6 +40157,7 @@ export namespace Prisma {
   export type StockLabelMaxAggregateOutputType = {
     label_id: string | null
     account_id: string | null
+    quantity: number | null
     min_quantity: number | null
     max_quantity: number | null
   }
@@ -39866,6 +40165,7 @@ export namespace Prisma {
   export type StockLabelCountAggregateOutputType = {
     label_id: number
     account_id: number
+    quantity: number
     min_quantity: number
     max_quantity: number
     _all: number
@@ -39873,11 +40173,13 @@ export namespace Prisma {
 
 
   export type StockLabelAvgAggregateInputType = {
+    quantity?: true
     min_quantity?: true
     max_quantity?: true
   }
 
   export type StockLabelSumAggregateInputType = {
+    quantity?: true
     min_quantity?: true
     max_quantity?: true
   }
@@ -39885,6 +40187,7 @@ export namespace Prisma {
   export type StockLabelMinAggregateInputType = {
     label_id?: true
     account_id?: true
+    quantity?: true
     min_quantity?: true
     max_quantity?: true
   }
@@ -39892,6 +40195,7 @@ export namespace Prisma {
   export type StockLabelMaxAggregateInputType = {
     label_id?: true
     account_id?: true
+    quantity?: true
     min_quantity?: true
     max_quantity?: true
   }
@@ -39899,6 +40203,7 @@ export namespace Prisma {
   export type StockLabelCountAggregateInputType = {
     label_id?: true
     account_id?: true
+    quantity?: true
     min_quantity?: true
     max_quantity?: true
     _all?: true
@@ -39999,6 +40304,7 @@ export namespace Prisma {
   export type StockLabelGroupByOutputType = {
     label_id: string
     account_id: string
+    quantity: number
     min_quantity: number
     max_quantity: number
     _count: StockLabelCountAggregateOutputType | null
@@ -40027,6 +40333,7 @@ export namespace Prisma {
     labels?: boolean | LabelArgs
     account_id?: boolean
     account?: boolean | AccountArgs
+    quantity?: boolean
     min_quantity?: boolean
     max_quantity?: boolean
   }
@@ -41763,6 +42070,969 @@ export namespace Prisma {
 
 
   /**
+   * Model Winery
+   */
+
+
+  export type AggregateWinery = {
+    _count: WineryCountAggregateOutputType | null
+    _avg: WineryAvgAggregateOutputType | null
+    _sum: WinerySumAggregateOutputType | null
+    _min: WineryMinAggregateOutputType | null
+    _max: WineryMaxAggregateOutputType | null
+  }
+
+  export type WineryAvgAggregateOutputType = {
+    external_id: number | null
+  }
+
+  export type WinerySumAggregateOutputType = {
+    external_id: number | null
+  }
+
+  export type WineryMinAggregateOutputType = {
+    id: string | null
+    external_id: number | null
+    name: string | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type WineryMaxAggregateOutputType = {
+    id: string | null
+    external_id: number | null
+    name: string | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type WineryCountAggregateOutputType = {
+    id: number
+    external_id: number
+    name: number
+    created_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type WineryAvgAggregateInputType = {
+    external_id?: true
+  }
+
+  export type WinerySumAggregateInputType = {
+    external_id?: true
+  }
+
+  export type WineryMinAggregateInputType = {
+    id?: true
+    external_id?: true
+    name?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type WineryMaxAggregateInputType = {
+    id?: true
+    external_id?: true
+    name?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type WineryCountAggregateInputType = {
+    id?: true
+    external_id?: true
+    name?: true
+    created_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type WineryAggregateArgs = {
+    /**
+     * Filter which Winery to aggregate.
+     * 
+    **/
+    where?: WineryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Wineries to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<WineryOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     * 
+    **/
+    cursor?: WineryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Wineries from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Wineries.
+     * 
+    **/
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Wineries
+    **/
+    _count?: true | WineryCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: WineryAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: WinerySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WineryMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WineryMaxAggregateInputType
+  }
+
+  export type GetWineryAggregateType<T extends WineryAggregateArgs> = {
+        [P in keyof T & keyof AggregateWinery]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWinery[P]>
+      : GetScalarType<T[P], AggregateWinery[P]>
+  }
+
+
+
+
+  export type WineryGroupByArgs = {
+    where?: WineryWhereInput
+    orderBy?: Enumerable<WineryOrderByWithAggregationInput>
+    by: Array<WineryScalarFieldEnum>
+    having?: WineryScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WineryCountAggregateInputType | true
+    _avg?: WineryAvgAggregateInputType
+    _sum?: WinerySumAggregateInputType
+    _min?: WineryMinAggregateInputType
+    _max?: WineryMaxAggregateInputType
+  }
+
+
+  export type WineryGroupByOutputType = {
+    id: string
+    external_id: number | null
+    name: string
+    created_at: Date
+    updated_at: Date
+    _count: WineryCountAggregateOutputType | null
+    _avg: WineryAvgAggregateOutputType | null
+    _sum: WinerySumAggregateOutputType | null
+    _min: WineryMinAggregateOutputType | null
+    _max: WineryMaxAggregateOutputType | null
+  }
+
+  type GetWineryGroupByPayload<T extends WineryGroupByArgs> = PrismaPromise<
+    Array<
+      PickArray<WineryGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WineryGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WineryGroupByOutputType[P]>
+            : GetScalarType<T[P], WineryGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type WinerySelect = {
+    id?: boolean
+    external_id?: boolean
+    name?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    labels?: boolean | LabelFindManyArgs
+    _count?: boolean | WineryCountOutputTypeArgs
+  }
+
+  export type WineryInclude = {
+    labels?: boolean | LabelFindManyArgs
+    _count?: boolean | WineryCountOutputTypeArgs
+  }
+
+  export type WineryGetPayload<
+    S extends boolean | null | undefined | WineryArgs,
+    U = keyof S
+      > = S extends true
+        ? Winery
+    : S extends undefined
+    ? never
+    : S extends WineryArgs | WineryFindManyArgs
+    ?'include' extends U
+    ? Winery  & {
+    [P in TrueKeys<S['include']>]:
+        P extends 'labels' ? Array < LabelGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
+        P extends '_count' ? WineryCountOutputTypeGetPayload<Exclude<S['include'], undefined | null>[P]> :  never
+  } 
+    : 'select' extends U
+    ? {
+    [P in TrueKeys<S['select']>]:
+        P extends 'labels' ? Array < LabelGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
+        P extends '_count' ? WineryCountOutputTypeGetPayload<Exclude<S['select'], undefined | null>[P]> :  P extends keyof Winery ? Winery[P] : never
+  } 
+    : Winery
+  : Winery
+
+
+  type WineryCountArgs = Merge<
+    Omit<WineryFindManyArgs, 'select' | 'include'> & {
+      select?: WineryCountAggregateInputType | true
+    }
+  >
+
+  export interface WineryDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
+    /**
+     * Find zero or one Winery that matches the filter.
+     * @param {WineryFindUniqueArgs} args - Arguments to find a Winery
+     * @example
+     * // Get one Winery
+     * const winery = await prisma.winery.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUnique<T extends WineryFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args: SelectSubset<T, WineryFindUniqueArgs>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'Winery'> extends True ? CheckSelect<T, Prisma__WineryClient<Winery>, Prisma__WineryClient<WineryGetPayload<T>>> : CheckSelect<T, Prisma__WineryClient<Winery | null, null>, Prisma__WineryClient<WineryGetPayload<T> | null, null>>
+
+    /**
+     * Find the first Winery that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WineryFindFirstArgs} args - Arguments to find a Winery
+     * @example
+     * // Get one Winery
+     * const winery = await prisma.winery.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirst<T extends WineryFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args?: SelectSubset<T, WineryFindFirstArgs>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'Winery'> extends True ? CheckSelect<T, Prisma__WineryClient<Winery>, Prisma__WineryClient<WineryGetPayload<T>>> : CheckSelect<T, Prisma__WineryClient<Winery | null, null>, Prisma__WineryClient<WineryGetPayload<T> | null, null>>
+
+    /**
+     * Find zero or more Wineries that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WineryFindManyArgs=} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Wineries
+     * const wineries = await prisma.winery.findMany()
+     * 
+     * // Get first 10 Wineries
+     * const wineries = await prisma.winery.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const wineryWithIdOnly = await prisma.winery.findMany({ select: { id: true } })
+     * 
+    **/
+    findMany<T extends WineryFindManyArgs>(
+      args?: SelectSubset<T, WineryFindManyArgs>
+    ): CheckSelect<T, PrismaPromise<Array<Winery>>, PrismaPromise<Array<WineryGetPayload<T>>>>
+
+    /**
+     * Create a Winery.
+     * @param {WineryCreateArgs} args - Arguments to create a Winery.
+     * @example
+     * // Create one Winery
+     * const Winery = await prisma.winery.create({
+     *   data: {
+     *     // ... data to create a Winery
+     *   }
+     * })
+     * 
+    **/
+    create<T extends WineryCreateArgs>(
+      args: SelectSubset<T, WineryCreateArgs>
+    ): CheckSelect<T, Prisma__WineryClient<Winery>, Prisma__WineryClient<WineryGetPayload<T>>>
+
+    /**
+     * Create many Wineries.
+     *     @param {WineryCreateManyArgs} args - Arguments to create many Wineries.
+     *     @example
+     *     // Create many Wineries
+     *     const winery = await prisma.winery.createMany({
+     *       data: {
+     *         // ... provide data here
+     *       }
+     *     })
+     *     
+    **/
+    createMany<T extends WineryCreateManyArgs>(
+      args?: SelectSubset<T, WineryCreateManyArgs>
+    ): PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Winery.
+     * @param {WineryDeleteArgs} args - Arguments to delete one Winery.
+     * @example
+     * // Delete one Winery
+     * const Winery = await prisma.winery.delete({
+     *   where: {
+     *     // ... filter to delete one Winery
+     *   }
+     * })
+     * 
+    **/
+    delete<T extends WineryDeleteArgs>(
+      args: SelectSubset<T, WineryDeleteArgs>
+    ): CheckSelect<T, Prisma__WineryClient<Winery>, Prisma__WineryClient<WineryGetPayload<T>>>
+
+    /**
+     * Update one Winery.
+     * @param {WineryUpdateArgs} args - Arguments to update one Winery.
+     * @example
+     * // Update one Winery
+     * const winery = await prisma.winery.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    update<T extends WineryUpdateArgs>(
+      args: SelectSubset<T, WineryUpdateArgs>
+    ): CheckSelect<T, Prisma__WineryClient<Winery>, Prisma__WineryClient<WineryGetPayload<T>>>
+
+    /**
+     * Delete zero or more Wineries.
+     * @param {WineryDeleteManyArgs} args - Arguments to filter Wineries to delete.
+     * @example
+     * // Delete a few Wineries
+     * const { count } = await prisma.winery.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+    **/
+    deleteMany<T extends WineryDeleteManyArgs>(
+      args?: SelectSubset<T, WineryDeleteManyArgs>
+    ): PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Wineries.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WineryUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Wineries
+     * const winery = await prisma.winery.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    updateMany<T extends WineryUpdateManyArgs>(
+      args: SelectSubset<T, WineryUpdateManyArgs>
+    ): PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Winery.
+     * @param {WineryUpsertArgs} args - Arguments to update or create a Winery.
+     * @example
+     * // Update or create a Winery
+     * const winery = await prisma.winery.upsert({
+     *   create: {
+     *     // ... data to create a Winery
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Winery we want to update
+     *   }
+     * })
+    **/
+    upsert<T extends WineryUpsertArgs>(
+      args: SelectSubset<T, WineryUpsertArgs>
+    ): CheckSelect<T, Prisma__WineryClient<Winery>, Prisma__WineryClient<WineryGetPayload<T>>>
+
+    /**
+     * Find one Winery that matches the filter or throw
+     * `NotFoundError` if no matches were found.
+     * @param {WineryFindUniqueOrThrowArgs} args - Arguments to find a Winery
+     * @example
+     * // Get one Winery
+     * const winery = await prisma.winery.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends WineryFindUniqueOrThrowArgs>(
+      args?: SelectSubset<T, WineryFindUniqueOrThrowArgs>
+    ): CheckSelect<T, Prisma__WineryClient<Winery>, Prisma__WineryClient<WineryGetPayload<T>>>
+
+    /**
+     * Find the first Winery that matches the filter or
+     * throw `NotFoundError` if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WineryFindFirstOrThrowArgs} args - Arguments to find a Winery
+     * @example
+     * // Get one Winery
+     * const winery = await prisma.winery.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends WineryFindFirstOrThrowArgs>(
+      args?: SelectSubset<T, WineryFindFirstOrThrowArgs>
+    ): CheckSelect<T, Prisma__WineryClient<Winery>, Prisma__WineryClient<WineryGetPayload<T>>>
+
+    /**
+     * Count the number of Wineries.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WineryCountArgs} args - Arguments to filter Wineries to count.
+     * @example
+     * // Count the number of Wineries
+     * const count = await prisma.winery.count({
+     *   where: {
+     *     // ... the filter for the Wineries we want to count
+     *   }
+     * })
+    **/
+    count<T extends WineryCountArgs>(
+      args?: Subset<T, WineryCountArgs>,
+    ): PrismaPromise<
+      T extends _Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WineryCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Winery.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WineryAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WineryAggregateArgs>(args: Subset<T, WineryAggregateArgs>): PrismaPromise<GetWineryAggregateType<T>>
+
+    /**
+     * Group by Winery.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WineryGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends WineryGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: WineryGroupByArgs['orderBy'] }
+        : { orderBy?: WineryGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends TupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, WineryGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWineryGroupByPayload<T> : PrismaPromise<InputErrors>
+
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Winery.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export class Prisma__WineryClient<T, Null = never> implements PrismaPromise<T> {
+    [prisma]: true;
+    private readonly _dmmf;
+    private readonly _fetcher;
+    private readonly _queryType;
+    private readonly _rootField;
+    private readonly _clientMethod;
+    private readonly _args;
+    private readonly _dataPath;
+    private readonly _errorFormat;
+    private readonly _measurePerformance?;
+    private _isList;
+    private _callsite;
+    private _requestPromise?;
+    constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
+    readonly [Symbol.toStringTag]: 'PrismaClientPromise';
+
+    labels<T extends LabelFindManyArgs = {}>(args?: Subset<T, LabelFindManyArgs>): CheckSelect<T, PrismaPromise<Array<Label>| Null>, PrismaPromise<Array<LabelGetPayload<T>>| Null>>;
+
+    private get _document();
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): Promise<T>;
+  }
+
+
+
+  // Custom InputTypes
+
+  /**
+   * Winery base type for findUnique actions
+   */
+  export type WineryFindUniqueArgsBase = {
+    /**
+     * Select specific fields to fetch from the Winery
+     * 
+    **/
+    select?: WinerySelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: WineryInclude | null
+    /**
+     * Filter, which Winery to fetch.
+     * 
+    **/
+    where: WineryWhereUniqueInput
+  }
+
+  /**
+   * Winery: findUnique
+   */
+  export interface WineryFindUniqueArgs extends WineryFindUniqueArgsBase {
+   /**
+    * Throw an Error if query returns no results
+    * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
+    */
+    rejectOnNotFound?: RejectOnNotFound
+  }
+      
+
+  /**
+   * Winery base type for findFirst actions
+   */
+  export type WineryFindFirstArgsBase = {
+    /**
+     * Select specific fields to fetch from the Winery
+     * 
+    **/
+    select?: WinerySelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: WineryInclude | null
+    /**
+     * Filter, which Winery to fetch.
+     * 
+    **/
+    where?: WineryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Wineries to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<WineryOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Wineries.
+     * 
+    **/
+    cursor?: WineryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Wineries from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Wineries.
+     * 
+    **/
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Wineries.
+     * 
+    **/
+    distinct?: Enumerable<WineryScalarFieldEnum>
+  }
+
+  /**
+   * Winery: findFirst
+   */
+  export interface WineryFindFirstArgs extends WineryFindFirstArgsBase {
+   /**
+    * Throw an Error if query returns no results
+    * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
+    */
+    rejectOnNotFound?: RejectOnNotFound
+  }
+      
+
+  /**
+   * Winery findMany
+   */
+  export type WineryFindManyArgs = {
+    /**
+     * Select specific fields to fetch from the Winery
+     * 
+    **/
+    select?: WinerySelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: WineryInclude | null
+    /**
+     * Filter, which Wineries to fetch.
+     * 
+    **/
+    where?: WineryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Wineries to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<WineryOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Wineries.
+     * 
+    **/
+    cursor?: WineryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Wineries from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Wineries.
+     * 
+    **/
+    skip?: number
+    distinct?: Enumerable<WineryScalarFieldEnum>
+  }
+
+
+  /**
+   * Winery create
+   */
+  export type WineryCreateArgs = {
+    /**
+     * Select specific fields to fetch from the Winery
+     * 
+    **/
+    select?: WinerySelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: WineryInclude | null
+    /**
+     * The data needed to create a Winery.
+     * 
+    **/
+    data: XOR<WineryCreateInput, WineryUncheckedCreateInput>
+  }
+
+
+  /**
+   * Winery createMany
+   */
+  export type WineryCreateManyArgs = {
+    /**
+     * The data used to create many Wineries.
+     * 
+    **/
+    data: Enumerable<WineryCreateManyInput>
+    skipDuplicates?: boolean
+  }
+
+
+  /**
+   * Winery update
+   */
+  export type WineryUpdateArgs = {
+    /**
+     * Select specific fields to fetch from the Winery
+     * 
+    **/
+    select?: WinerySelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: WineryInclude | null
+    /**
+     * The data needed to update a Winery.
+     * 
+    **/
+    data: XOR<WineryUpdateInput, WineryUncheckedUpdateInput>
+    /**
+     * Choose, which Winery to update.
+     * 
+    **/
+    where: WineryWhereUniqueInput
+  }
+
+
+  /**
+   * Winery updateMany
+   */
+  export type WineryUpdateManyArgs = {
+    /**
+     * The data used to update Wineries.
+     * 
+    **/
+    data: XOR<WineryUpdateManyMutationInput, WineryUncheckedUpdateManyInput>
+    /**
+     * Filter which Wineries to update
+     * 
+    **/
+    where?: WineryWhereInput
+  }
+
+
+  /**
+   * Winery upsert
+   */
+  export type WineryUpsertArgs = {
+    /**
+     * Select specific fields to fetch from the Winery
+     * 
+    **/
+    select?: WinerySelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: WineryInclude | null
+    /**
+     * The filter to search for the Winery to update in case it exists.
+     * 
+    **/
+    where: WineryWhereUniqueInput
+    /**
+     * In case the Winery found by the `where` argument doesn't exist, create a new Winery with this data.
+     * 
+    **/
+    create: XOR<WineryCreateInput, WineryUncheckedCreateInput>
+    /**
+     * In case the Winery was found with the provided `where` argument, update it with this data.
+     * 
+    **/
+    update: XOR<WineryUpdateInput, WineryUncheckedUpdateInput>
+  }
+
+
+  /**
+   * Winery delete
+   */
+  export type WineryDeleteArgs = {
+    /**
+     * Select specific fields to fetch from the Winery
+     * 
+    **/
+    select?: WinerySelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: WineryInclude | null
+    /**
+     * Filter which Winery to delete.
+     * 
+    **/
+    where: WineryWhereUniqueInput
+  }
+
+
+  /**
+   * Winery deleteMany
+   */
+  export type WineryDeleteManyArgs = {
+    /**
+     * Filter which Wineries to delete
+     * 
+    **/
+    where?: WineryWhereInput
+  }
+
+
+  /**
+   * Winery: findUniqueOrThrow
+   */
+  export type WineryFindUniqueOrThrowArgs = WineryFindUniqueArgsBase
+      
+
+  /**
+   * Winery: findFirstOrThrow
+   */
+  export type WineryFindFirstOrThrowArgs = WineryFindFirstArgsBase
+      
+
+  /**
+   * Winery without action
+   */
+  export type WineryArgs = {
+    /**
+     * Select specific fields to fetch from the Winery
+     * 
+    **/
+    select?: WinerySelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: WineryInclude | null
+  }
+
+
+
+  /**
    * Enums
    */
 
@@ -41912,6 +43182,7 @@ export namespace Prisma {
   export const CouponScalarFieldEnum: {
     id: 'id',
     code: 'code',
+    account_id: 'account_id',
     dicount_type: 'dicount_type',
     discount_value: 'discount_value',
     couponUse_type: 'couponUse_type',
@@ -42009,6 +43280,7 @@ export namespace Prisma {
   export const InvoiceScalarFieldEnum: {
     id: 'id',
     order_id: 'order_id',
+    account_id: 'account_id',
     created_at: 'created_at',
     updated_at: 'updated_at'
   };
@@ -42044,14 +43316,17 @@ export namespace Prisma {
     type_id: 'type_id',
     country_id: 'country_id',
     region_id: 'region_id',
+    winery_id: 'winery_id',
     harvest: 'harvest',
+    no_harvest: 'no_harvest',
     wine_type_id: 'wine_type_id',
     alcohol_percentage: 'alcohol_percentage',
     price: 'price',
     promotional_price: 'promotional_price',
     photo: 'photo',
+    account_id: 'account_id',
     is_active: 'is_active',
-    stock: 'stock',
+    control_stock: 'control_stock',
     created_at: 'created_at',
     updated_at: 'updated_at'
   };
@@ -42061,6 +43336,7 @@ export namespace Prisma {
 
   export const LabelTypeScalarFieldEnum: {
     id: 'id',
+    external_id: 'external_id',
     name: 'name',
     created_at: 'created_at',
     updated_at: 'updated_at'
@@ -42237,6 +43513,7 @@ export namespace Prisma {
   export const StockLabelScalarFieldEnum: {
     label_id: 'label_id',
     account_id: 'account_id',
+    quantity: 'quantity',
     min_quantity: 'min_quantity',
     max_quantity: 'max_quantity'
   };
@@ -42314,6 +43591,7 @@ export namespace Prisma {
 
   export const WineTypeScalarFieldEnum: {
     id: 'id',
+    external_id: 'external_id',
     name: 'name',
     slug: 'slug',
     created_at: 'created_at',
@@ -42321,6 +43599,17 @@ export namespace Prisma {
   };
 
   export type WineTypeScalarFieldEnum = (typeof WineTypeScalarFieldEnum)[keyof typeof WineTypeScalarFieldEnum]
+
+
+  export const WineryScalarFieldEnum: {
+    id: 'id',
+    external_id: 'external_id',
+    name: 'name',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
+  };
+
+  export type WineryScalarFieldEnum = (typeof WineryScalarFieldEnum)[keyof typeof WineryScalarFieldEnum]
 
 
   /**
@@ -42366,8 +43655,11 @@ export namespace Prisma {
     account_activities?: AccountActivitiesListRelationFilter
     account_deliveries?: AccountDeliveryListRelationFilter
     account_users?: AccountUserListRelationFilter
+    invoices?: InvoiceListRelationFilter
     domain?: StringFilter | string
-    StockLabel?: StockLabelListRelationFilter
+    stock_label?: StockLabelListRelationFilter
+    labels?: LabelListRelationFilter
+    coupons?: CouponListRelationFilter
     account_configuration?: XOR<AccountConfigurationRelationFilter, AccountConfigurationWhereInput> | null
     isActive?: BoolFilter | boolean
   }
@@ -42407,8 +43699,11 @@ export namespace Prisma {
     account_activities?: AccountActivitiesOrderByRelationAggregateInput
     account_deliveries?: AccountDeliveryOrderByRelationAggregateInput
     account_users?: AccountUserOrderByRelationAggregateInput
+    invoices?: InvoiceOrderByRelationAggregateInput
     domain?: SortOrder
-    StockLabel?: StockLabelOrderByRelationAggregateInput
+    stock_label?: StockLabelOrderByRelationAggregateInput
+    labels?: LabelOrderByRelationAggregateInput
+    coupons?: CouponOrderByRelationAggregateInput
     account_configuration?: AccountConfigurationOrderByWithRelationInput
     isActive?: SortOrder
   }
@@ -43158,6 +44453,8 @@ export namespace Prisma {
     NOT?: Enumerable<CouponWhereInput>
     id?: StringFilter | string
     code?: StringFilter | string
+    account_id?: StringFilter | string
+    account?: XOR<AccountRelationFilter, AccountWhereInput>
     dicount_type?: EnumCouponDiscountTypeFilter | CouponDiscountType
     discount_value?: FloatFilter | number
     couponUse_type?: EnumCouponUseTypeFilter | CouponUseType
@@ -43172,6 +44469,8 @@ export namespace Prisma {
   export type CouponOrderByWithRelationInput = {
     id?: SortOrder
     code?: SortOrder
+    account_id?: SortOrder
+    account?: AccountOrderByWithRelationInput
     dicount_type?: SortOrder
     discount_value?: SortOrder
     couponUse_type?: SortOrder
@@ -43190,6 +44489,7 @@ export namespace Prisma {
   export type CouponOrderByWithAggregationInput = {
     id?: SortOrder
     code?: SortOrder
+    account_id?: SortOrder
     dicount_type?: SortOrder
     discount_value?: SortOrder
     couponUse_type?: SortOrder
@@ -43212,6 +44512,7 @@ export namespace Prisma {
     NOT?: Enumerable<CouponScalarWhereWithAggregatesInput>
     id?: StringWithAggregatesFilter | string
     code?: StringWithAggregatesFilter | string
+    account_id?: StringWithAggregatesFilter | string
     dicount_type?: EnumCouponDiscountTypeWithAggregatesFilter | CouponDiscountType
     discount_value?: FloatWithAggregatesFilter | number
     couponUse_type?: EnumCouponUseTypeWithAggregatesFilter | CouponUseType
@@ -43232,27 +44533,32 @@ export namespace Prisma {
     name?: StringFilter | string
     description?: StringNullableFilter | string | null
     type_id?: StringFilter | string
-    labelType?: XOR<LabelTypeRelationFilter, LabelTypeWhereInput>
-    country_id?: StringFilter | string
-    country?: XOR<CountryRelationFilter, CountryWhereInput>
-    region_id?: StringFilter | string
-    region?: XOR<RegionRelationFilter, RegionWhereInput>
+    label_type?: XOR<LabelTypeRelationFilter, LabelTypeWhereInput>
+    country_id?: StringNullableFilter | string | null
+    country?: XOR<CountryRelationFilter, CountryWhereInput> | null
+    region_id?: StringNullableFilter | string | null
+    region?: XOR<RegionRelationFilter, RegionWhereInput> | null
+    winery_id?: StringNullableFilter | string | null
+    winery?: XOR<WineryRelationFilter, WineryWhereInput> | null
     harvest?: StringNullableFilter | string | null
-    wine_type_id?: StringFilter | string
-    wine_type?: XOR<WineTypeRelationFilter, WineTypeWhereInput>
+    no_harvest?: BoolFilter | boolean
+    wine_type_id?: StringNullableFilter | string | null
+    wine_type?: XOR<WineTypeRelationFilter, WineTypeWhereInput> | null
     alcohol_percentage?: DecimalNullableFilter | Decimal | DecimalJsLike | number | string | null
     price?: FloatFilter | number
     promotional_price?: FloatNullableFilter | number | null
     photo?: StringNullableFilter | string | null
+    account_id?: StringFilter | string
+    account?: XOR<AccountRelationFilter, AccountWhereInput>
     is_active?: BoolFilter | boolean
-    stock?: BoolFilter | boolean
+    control_stock?: BoolFilter | boolean
     created_at?: DateTimeFilter | Date | string
     updated_at?: DateTimeFilter | Date | string
     label_grape?: LabelGrapeListRelationFilter
     order_label?: OrderLabelListRelationFilter
     label_campaign?: LabelCampaignListRelationFilter
-    StockLabel?: StockLabelListRelationFilter
-    StockHistory?: StockHistoryListRelationFilter
+    stock_label?: StockLabelListRelationFilter
+    stock_history?: StockHistoryListRelationFilter
   }
 
   export type LabelOrderByWithRelationInput = {
@@ -43261,27 +44567,32 @@ export namespace Prisma {
     name?: SortOrder
     description?: SortOrder
     type_id?: SortOrder
-    labelType?: LabelTypeOrderByWithRelationInput
+    label_type?: LabelTypeOrderByWithRelationInput
     country_id?: SortOrder
     country?: CountryOrderByWithRelationInput
     region_id?: SortOrder
     region?: RegionOrderByWithRelationInput
+    winery_id?: SortOrder
+    winery?: WineryOrderByWithRelationInput
     harvest?: SortOrder
+    no_harvest?: SortOrder
     wine_type_id?: SortOrder
     wine_type?: WineTypeOrderByWithRelationInput
     alcohol_percentage?: SortOrder
     price?: SortOrder
     promotional_price?: SortOrder
     photo?: SortOrder
+    account_id?: SortOrder
+    account?: AccountOrderByWithRelationInput
     is_active?: SortOrder
-    stock?: SortOrder
+    control_stock?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     label_grape?: LabelGrapeOrderByRelationAggregateInput
     order_label?: OrderLabelOrderByRelationAggregateInput
     label_campaign?: LabelCampaignOrderByRelationAggregateInput
-    StockLabel?: StockLabelOrderByRelationAggregateInput
-    StockHistory?: StockHistoryOrderByRelationAggregateInput
+    stock_label?: StockLabelOrderByRelationAggregateInput
+    stock_history?: StockHistoryOrderByRelationAggregateInput
   }
 
   export type LabelWhereUniqueInput = {
@@ -43297,14 +44608,17 @@ export namespace Prisma {
     type_id?: SortOrder
     country_id?: SortOrder
     region_id?: SortOrder
+    winery_id?: SortOrder
     harvest?: SortOrder
+    no_harvest?: SortOrder
     wine_type_id?: SortOrder
     alcohol_percentage?: SortOrder
     price?: SortOrder
     promotional_price?: SortOrder
     photo?: SortOrder
+    account_id?: SortOrder
     is_active?: SortOrder
-    stock?: SortOrder
+    control_stock?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     _count?: LabelCountOrderByAggregateInput
@@ -43323,16 +44637,19 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter | string
     description?: StringNullableWithAggregatesFilter | string | null
     type_id?: StringWithAggregatesFilter | string
-    country_id?: StringWithAggregatesFilter | string
-    region_id?: StringWithAggregatesFilter | string
+    country_id?: StringNullableWithAggregatesFilter | string | null
+    region_id?: StringNullableWithAggregatesFilter | string | null
+    winery_id?: StringNullableWithAggregatesFilter | string | null
     harvest?: StringNullableWithAggregatesFilter | string | null
-    wine_type_id?: StringWithAggregatesFilter | string
+    no_harvest?: BoolWithAggregatesFilter | boolean
+    wine_type_id?: StringNullableWithAggregatesFilter | string | null
     alcohol_percentage?: DecimalNullableWithAggregatesFilter | Decimal | DecimalJsLike | number | string | null
     price?: FloatWithAggregatesFilter | number
     promotional_price?: FloatNullableWithAggregatesFilter | number | null
     photo?: StringNullableWithAggregatesFilter | string | null
+    account_id?: StringWithAggregatesFilter | string
     is_active?: BoolWithAggregatesFilter | boolean
-    stock?: BoolWithAggregatesFilter | boolean
+    control_stock?: BoolWithAggregatesFilter | boolean
     created_at?: DateTimeWithAggregatesFilter | Date | string
     updated_at?: DateTimeWithAggregatesFilter | Date | string
   }
@@ -43482,6 +44799,7 @@ export namespace Prisma {
     OR?: Enumerable<LabelTypeWhereInput>
     NOT?: Enumerable<LabelTypeWhereInput>
     id?: StringFilter | string
+    external_id?: IntNullableFilter | number | null
     name?: StringFilter | string
     labels?: LabelListRelationFilter
     created_at?: DateTimeFilter | Date | string
@@ -43490,6 +44808,7 @@ export namespace Prisma {
 
   export type LabelTypeOrderByWithRelationInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     labels?: LabelOrderByRelationAggregateInput
     created_at?: SortOrder
@@ -43498,16 +44817,20 @@ export namespace Prisma {
 
   export type LabelTypeWhereUniqueInput = {
     id?: string
+    external_id?: number
   }
 
   export type LabelTypeOrderByWithAggregationInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     _count?: LabelTypeCountOrderByAggregateInput
+    _avg?: LabelTypeAvgOrderByAggregateInput
     _max?: LabelTypeMaxOrderByAggregateInput
     _min?: LabelTypeMinOrderByAggregateInput
+    _sum?: LabelTypeSumOrderByAggregateInput
   }
 
   export type LabelTypeScalarWhereWithAggregatesInput = {
@@ -43515,6 +44838,7 @@ export namespace Prisma {
     OR?: Enumerable<LabelTypeScalarWhereWithAggregatesInput>
     NOT?: Enumerable<LabelTypeScalarWhereWithAggregatesInput>
     id?: StringWithAggregatesFilter | string
+    external_id?: IntNullableWithAggregatesFilter | number | null
     name?: StringWithAggregatesFilter | string
     created_at?: DateTimeWithAggregatesFilter | Date | string
     updated_at?: DateTimeWithAggregatesFilter | Date | string
@@ -43827,6 +45151,7 @@ export namespace Prisma {
     OR?: Enumerable<WineTypeWhereInput>
     NOT?: Enumerable<WineTypeWhereInput>
     id?: StringFilter | string
+    external_id?: IntNullableFilter | number | null
     name?: StringFilter | string
     slug?: StringFilter | string
     labels?: LabelListRelationFilter
@@ -43836,6 +45161,7 @@ export namespace Prisma {
 
   export type WineTypeOrderByWithRelationInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     labels?: LabelOrderByRelationAggregateInput
@@ -43845,17 +45171,21 @@ export namespace Prisma {
 
   export type WineTypeWhereUniqueInput = {
     id?: string
+    external_id?: number
   }
 
   export type WineTypeOrderByWithAggregationInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     _count?: WineTypeCountOrderByAggregateInput
+    _avg?: WineTypeAvgOrderByAggregateInput
     _max?: WineTypeMaxOrderByAggregateInput
     _min?: WineTypeMinOrderByAggregateInput
+    _sum?: WineTypeSumOrderByAggregateInput
   }
 
   export type WineTypeScalarWhereWithAggregatesInput = {
@@ -43863,6 +45193,7 @@ export namespace Prisma {
     OR?: Enumerable<WineTypeScalarWhereWithAggregatesInput>
     NOT?: Enumerable<WineTypeScalarWhereWithAggregatesInput>
     id?: StringWithAggregatesFilter | string
+    external_id?: IntNullableWithAggregatesFilter | number | null
     name?: StringWithAggregatesFilter | string
     slug?: StringWithAggregatesFilter | string
     created_at?: DateTimeWithAggregatesFilter | Date | string
@@ -43994,6 +45325,8 @@ export namespace Prisma {
     id?: StringFilter | string
     order_id?: StringFilter | string
     order?: XOR<OrderRelationFilter, OrderWhereInput>
+    account_id?: StringFilter | string
+    account?: XOR<AccountRelationFilter, AccountWhereInput>
     created_at?: DateTimeFilter | Date | string
     updated_at?: DateTimeFilter | Date | string
   }
@@ -44002,6 +45335,8 @@ export namespace Prisma {
     id?: SortOrder
     order_id?: SortOrder
     order?: OrderOrderByWithRelationInput
+    account_id?: SortOrder
+    account?: AccountOrderByWithRelationInput
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -44013,6 +45348,7 @@ export namespace Prisma {
   export type InvoiceOrderByWithAggregationInput = {
     id?: SortOrder
     order_id?: SortOrder
+    account_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     _count?: InvoiceCountOrderByAggregateInput
@@ -44026,6 +45362,7 @@ export namespace Prisma {
     NOT?: Enumerable<InvoiceScalarWhereWithAggregatesInput>
     id?: StringWithAggregatesFilter | string
     order_id?: StringWithAggregatesFilter | string
+    account_id?: StringWithAggregatesFilter | string
     created_at?: DateTimeWithAggregatesFilter | Date | string
     updated_at?: DateTimeWithAggregatesFilter | Date | string
   }
@@ -44660,6 +45997,7 @@ export namespace Prisma {
     labels?: XOR<LabelRelationFilter, LabelWhereInput>
     account_id?: StringFilter | string
     account?: XOR<AccountRelationFilter, AccountWhereInput>
+    quantity?: IntFilter | number
     min_quantity?: IntFilter | number
     max_quantity?: IntFilter | number
   }
@@ -44669,6 +46007,7 @@ export namespace Prisma {
     labels?: LabelOrderByWithRelationInput
     account_id?: SortOrder
     account?: AccountOrderByWithRelationInput
+    quantity?: SortOrder
     min_quantity?: SortOrder
     max_quantity?: SortOrder
   }
@@ -44680,6 +46019,7 @@ export namespace Prisma {
   export type StockLabelOrderByWithAggregationInput = {
     label_id?: SortOrder
     account_id?: SortOrder
+    quantity?: SortOrder
     min_quantity?: SortOrder
     max_quantity?: SortOrder
     _count?: StockLabelCountOrderByAggregateInput
@@ -44695,6 +46035,7 @@ export namespace Prisma {
     NOT?: Enumerable<StockLabelScalarWhereWithAggregatesInput>
     label_id?: StringWithAggregatesFilter | string
     account_id?: StringWithAggregatesFilter | string
+    quantity?: IntWithAggregatesFilter | number
     min_quantity?: IntWithAggregatesFilter | number
     max_quantity?: IntWithAggregatesFilter | number
   }
@@ -44756,6 +46097,56 @@ export namespace Prisma {
     updated_at?: DateTimeWithAggregatesFilter | Date | string
   }
 
+  export type WineryWhereInput = {
+    AND?: Enumerable<WineryWhereInput>
+    OR?: Enumerable<WineryWhereInput>
+    NOT?: Enumerable<WineryWhereInput>
+    id?: StringFilter | string
+    external_id?: IntNullableFilter | number | null
+    name?: StringFilter | string
+    created_at?: DateTimeFilter | Date | string
+    updated_at?: DateTimeFilter | Date | string
+    labels?: LabelListRelationFilter
+  }
+
+  export type WineryOrderByWithRelationInput = {
+    id?: SortOrder
+    external_id?: SortOrder
+    name?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    labels?: LabelOrderByRelationAggregateInput
+  }
+
+  export type WineryWhereUniqueInput = {
+    id?: string
+    external_id?: number
+  }
+
+  export type WineryOrderByWithAggregationInput = {
+    id?: SortOrder
+    external_id?: SortOrder
+    name?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: WineryCountOrderByAggregateInput
+    _avg?: WineryAvgOrderByAggregateInput
+    _max?: WineryMaxOrderByAggregateInput
+    _min?: WineryMinOrderByAggregateInput
+    _sum?: WinerySumOrderByAggregateInput
+  }
+
+  export type WineryScalarWhereWithAggregatesInput = {
+    AND?: Enumerable<WineryScalarWhereWithAggregatesInput>
+    OR?: Enumerable<WineryScalarWhereWithAggregatesInput>
+    NOT?: Enumerable<WineryScalarWhereWithAggregatesInput>
+    id?: StringWithAggregatesFilter | string
+    external_id?: IntNullableWithAggregatesFilter | number | null
+    name?: StringWithAggregatesFilter | string
+    created_at?: DateTimeWithAggregatesFilter | Date | string
+    updated_at?: DateTimeWithAggregatesFilter | Date | string
+  }
+
   export type AccountCreateInput = {
     id?: string
     external_id?: number | null
@@ -44790,8 +46181,11 @@ export namespace Prisma {
     account_activities?: AccountActivitiesCreateNestedManyWithoutAccountInput
     account_deliveries?: AccountDeliveryCreateNestedManyWithoutAccountInput
     account_users?: AccountUserCreateNestedManyWithoutAccountInput
+    invoices?: InvoiceCreateNestedManyWithoutAccountInput
     domain: string
-    StockLabel?: StockLabelCreateNestedManyWithoutAccountInput
+    stock_label?: StockLabelCreateNestedManyWithoutAccountInput
+    labels?: LabelCreateNestedManyWithoutAccountInput
+    coupons?: CouponCreateNestedManyWithoutAccountInput
     account_configuration?: AccountConfigurationCreateNestedOneWithoutAccountInput
     isActive?: boolean
   }
@@ -44830,8 +46224,11 @@ export namespace Prisma {
     account_activities?: AccountActivitiesUncheckedCreateNestedManyWithoutAccountInput
     account_deliveries?: AccountDeliveryUncheckedCreateNestedManyWithoutAccountInput
     account_users?: AccountUserUncheckedCreateNestedManyWithoutAccountInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutAccountInput
     domain: string
-    StockLabel?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
+    stock_label?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
+    labels?: LabelUncheckedCreateNestedManyWithoutAccountInput
+    coupons?: CouponUncheckedCreateNestedManyWithoutAccountInput
     account_configuration?: AccountConfigurationUncheckedCreateNestedOneWithoutAccountInput
     isActive?: boolean
   }
@@ -44870,8 +46267,11 @@ export namespace Prisma {
     account_activities?: AccountActivitiesUpdateManyWithoutAccountNestedInput
     account_deliveries?: AccountDeliveryUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUpdateManyWithoutAccountNestedInput
+    invoices?: InvoiceUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
-    StockLabel?: StockLabelUpdateManyWithoutAccountNestedInput
+    stock_label?: StockLabelUpdateManyWithoutAccountNestedInput
+    labels?: LabelUpdateManyWithoutAccountNestedInput
+    coupons?: CouponUpdateManyWithoutAccountNestedInput
     account_configuration?: AccountConfigurationUpdateOneWithoutAccountNestedInput
     isActive?: BoolFieldUpdateOperationsInput | boolean
   }
@@ -44910,8 +46310,11 @@ export namespace Prisma {
     account_activities?: AccountActivitiesUncheckedUpdateManyWithoutAccountNestedInput
     account_deliveries?: AccountDeliveryUncheckedUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUncheckedUpdateManyWithoutAccountNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
-    StockLabel?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
+    stock_label?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
+    labels?: LabelUncheckedUpdateManyWithoutAccountNestedInput
+    coupons?: CouponUncheckedUpdateManyWithoutAccountNestedInput
     account_configuration?: AccountConfigurationUncheckedUpdateOneWithoutAccountNestedInput
     isActive?: BoolFieldUpdateOperationsInput | boolean
   }
@@ -45819,6 +47222,7 @@ export namespace Prisma {
   export type CouponCreateInput = {
     id?: string
     code: string
+    account: AccountCreateNestedOneWithoutCouponsInput
     dicount_type: CouponDiscountType
     discount_value: number
     couponUse_type: CouponUseType
@@ -45833,6 +47237,7 @@ export namespace Prisma {
   export type CouponUncheckedCreateInput = {
     id?: string
     code: string
+    account_id: string
     dicount_type: CouponDiscountType
     discount_value: number
     couponUse_type: CouponUseType
@@ -45847,6 +47252,7 @@ export namespace Prisma {
   export type CouponUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     code?: StringFieldUpdateOperationsInput | string
+    account?: AccountUpdateOneRequiredWithoutCouponsNestedInput
     dicount_type?: EnumCouponDiscountTypeFieldUpdateOperationsInput | CouponDiscountType
     discount_value?: FloatFieldUpdateOperationsInput | number
     couponUse_type?: EnumCouponUseTypeFieldUpdateOperationsInput | CouponUseType
@@ -45861,6 +47267,7 @@ export namespace Prisma {
   export type CouponUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     code?: StringFieldUpdateOperationsInput | string
+    account_id?: StringFieldUpdateOperationsInput | string
     dicount_type?: EnumCouponDiscountTypeFieldUpdateOperationsInput | CouponDiscountType
     discount_value?: FloatFieldUpdateOperationsInput | number
     couponUse_type?: EnumCouponUseTypeFieldUpdateOperationsInput | CouponUseType
@@ -45875,6 +47282,7 @@ export namespace Prisma {
   export type CouponCreateManyInput = {
     id?: string
     code: string
+    account_id: string
     dicount_type: CouponDiscountType
     discount_value: number
     couponUse_type: CouponUseType
@@ -45903,6 +47311,7 @@ export namespace Prisma {
   export type CouponUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     code?: StringFieldUpdateOperationsInput | string
+    account_id?: StringFieldUpdateOperationsInput | string
     dicount_type?: EnumCouponDiscountTypeFieldUpdateOperationsInput | CouponDiscountType
     discount_value?: FloatFieldUpdateOperationsInput | number
     couponUse_type?: EnumCouponUseTypeFieldUpdateOperationsInput | CouponUseType
@@ -45919,24 +47328,27 @@ export namespace Prisma {
     external_id?: number | null
     name: string
     description?: string | null
-    labelType: LabelTypeCreateNestedOneWithoutLabelsInput
-    country: CountryCreateNestedOneWithoutLabelsInput
-    region: RegionCreateNestedOneWithoutLabelsInput
+    label_type: LabelTypeCreateNestedOneWithoutLabelsInput
+    country?: CountryCreateNestedOneWithoutLabelsInput
+    region?: RegionCreateNestedOneWithoutLabelsInput
+    winery?: WineryCreateNestedOneWithoutLabelsInput
     harvest?: string | null
-    wine_type: WineTypeCreateNestedOneWithoutLabelsInput
+    no_harvest?: boolean
+    wine_type?: WineTypeCreateNestedOneWithoutLabelsInput
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
     photo?: string | null
+    account: AccountCreateNestedOneWithoutLabelsInput
     is_active?: boolean
-    stock?: boolean
+    control_stock?: boolean
     created_at?: Date | string
     updated_at?: Date | string
     label_grape?: LabelGrapeCreateNestedManyWithoutLabelInput
     order_label?: OrderLabelCreateNestedManyWithoutLabelInput
     label_campaign?: LabelCampaignCreateNestedManyWithoutLabelInput
-    StockLabel?: StockLabelCreateNestedManyWithoutLabelsInput
-    StockHistory?: StockHistoryCreateNestedManyWithoutLabelsInput
+    stock_label?: StockLabelCreateNestedManyWithoutLabelsInput
+    stock_history?: StockHistoryCreateNestedManyWithoutLabelsInput
   }
 
   export type LabelUncheckedCreateInput = {
@@ -45945,23 +47357,26 @@ export namespace Prisma {
     name: string
     description?: string | null
     type_id: string
-    country_id: string
-    region_id: string
+    country_id?: string | null
+    region_id?: string | null
+    winery_id?: string | null
     harvest?: string | null
-    wine_type_id: string
+    no_harvest?: boolean
+    wine_type_id?: string | null
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
     photo?: string | null
+    account_id: string
     is_active?: boolean
-    stock?: boolean
+    control_stock?: boolean
     created_at?: Date | string
     updated_at?: Date | string
     label_grape?: LabelGrapeUncheckedCreateNestedManyWithoutLabelInput
     order_label?: OrderLabelUncheckedCreateNestedManyWithoutLabelInput
     label_campaign?: LabelCampaignUncheckedCreateNestedManyWithoutLabelInput
-    StockLabel?: StockLabelUncheckedCreateNestedManyWithoutLabelsInput
-    StockHistory?: StockHistoryUncheckedCreateNestedManyWithoutLabelsInput
+    stock_label?: StockLabelUncheckedCreateNestedManyWithoutLabelsInput
+    stock_history?: StockHistoryUncheckedCreateNestedManyWithoutLabelsInput
   }
 
   export type LabelUpdateInput = {
@@ -45969,24 +47384,27 @@ export namespace Prisma {
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    labelType?: LabelTypeUpdateOneRequiredWithoutLabelsNestedInput
-    country?: CountryUpdateOneRequiredWithoutLabelsNestedInput
-    region?: RegionUpdateOneRequiredWithoutLabelsNestedInput
+    label_type?: LabelTypeUpdateOneRequiredWithoutLabelsNestedInput
+    country?: CountryUpdateOneWithoutLabelsNestedInput
+    region?: RegionUpdateOneWithoutLabelsNestedInput
+    winery?: WineryUpdateOneWithoutLabelsNestedInput
     harvest?: NullableStringFieldUpdateOperationsInput | string | null
-    wine_type?: WineTypeUpdateOneRequiredWithoutLabelsNestedInput
+    no_harvest?: BoolFieldUpdateOperationsInput | boolean
+    wine_type?: WineTypeUpdateOneWithoutLabelsNestedInput
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
     photo?: NullableStringFieldUpdateOperationsInput | string | null
+    account?: AccountUpdateOneRequiredWithoutLabelsNestedInput
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    stock?: BoolFieldUpdateOperationsInput | boolean
+    control_stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     label_grape?: LabelGrapeUpdateManyWithoutLabelNestedInput
     order_label?: OrderLabelUpdateManyWithoutLabelNestedInput
     label_campaign?: LabelCampaignUpdateManyWithoutLabelNestedInput
-    StockLabel?: StockLabelUpdateManyWithoutLabelsNestedInput
-    StockHistory?: StockHistoryUpdateManyWithoutLabelsNestedInput
+    stock_label?: StockLabelUpdateManyWithoutLabelsNestedInput
+    stock_history?: StockHistoryUpdateManyWithoutLabelsNestedInput
   }
 
   export type LabelUncheckedUpdateInput = {
@@ -45995,23 +47413,26 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type_id?: StringFieldUpdateOperationsInput | string
-    country_id?: StringFieldUpdateOperationsInput | string
-    region_id?: StringFieldUpdateOperationsInput | string
+    country_id?: NullableStringFieldUpdateOperationsInput | string | null
+    region_id?: NullableStringFieldUpdateOperationsInput | string | null
+    winery_id?: NullableStringFieldUpdateOperationsInput | string | null
     harvest?: NullableStringFieldUpdateOperationsInput | string | null
-    wine_type_id?: StringFieldUpdateOperationsInput | string
+    no_harvest?: BoolFieldUpdateOperationsInput | boolean
+    wine_type_id?: NullableStringFieldUpdateOperationsInput | string | null
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
     photo?: NullableStringFieldUpdateOperationsInput | string | null
+    account_id?: StringFieldUpdateOperationsInput | string
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    stock?: BoolFieldUpdateOperationsInput | boolean
+    control_stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     label_grape?: LabelGrapeUncheckedUpdateManyWithoutLabelNestedInput
     order_label?: OrderLabelUncheckedUpdateManyWithoutLabelNestedInput
     label_campaign?: LabelCampaignUncheckedUpdateManyWithoutLabelNestedInput
-    StockLabel?: StockLabelUncheckedUpdateManyWithoutLabelsNestedInput
-    StockHistory?: StockHistoryUncheckedUpdateManyWithoutLabelsNestedInput
+    stock_label?: StockLabelUncheckedUpdateManyWithoutLabelsNestedInput
+    stock_history?: StockHistoryUncheckedUpdateManyWithoutLabelsNestedInput
   }
 
   export type LabelCreateManyInput = {
@@ -46020,16 +47441,19 @@ export namespace Prisma {
     name: string
     description?: string | null
     type_id: string
-    country_id: string
-    region_id: string
+    country_id?: string | null
+    region_id?: string | null
+    winery_id?: string | null
     harvest?: string | null
-    wine_type_id: string
+    no_harvest?: boolean
+    wine_type_id?: string | null
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
     photo?: string | null
+    account_id: string
     is_active?: boolean
-    stock?: boolean
+    control_stock?: boolean
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -46040,12 +47464,13 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     harvest?: NullableStringFieldUpdateOperationsInput | string | null
+    no_harvest?: BoolFieldUpdateOperationsInput | boolean
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    stock?: BoolFieldUpdateOperationsInput | boolean
+    control_stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -46056,16 +47481,19 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type_id?: StringFieldUpdateOperationsInput | string
-    country_id?: StringFieldUpdateOperationsInput | string
-    region_id?: StringFieldUpdateOperationsInput | string
+    country_id?: NullableStringFieldUpdateOperationsInput | string | null
+    region_id?: NullableStringFieldUpdateOperationsInput | string | null
+    winery_id?: NullableStringFieldUpdateOperationsInput | string | null
     harvest?: NullableStringFieldUpdateOperationsInput | string | null
-    wine_type_id?: StringFieldUpdateOperationsInput | string
+    no_harvest?: BoolFieldUpdateOperationsInput | boolean
+    wine_type_id?: NullableStringFieldUpdateOperationsInput | string | null
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
     photo?: NullableStringFieldUpdateOperationsInput | string | null
+    account_id?: StringFieldUpdateOperationsInput | string
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    stock?: BoolFieldUpdateOperationsInput | boolean
+    control_stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -46226,38 +47654,43 @@ export namespace Prisma {
 
   export type LabelTypeCreateInput = {
     id?: string
+    external_id?: number | null
     name: string
-    labels?: LabelCreateNestedManyWithoutLabelTypeInput
+    labels?: LabelCreateNestedManyWithoutLabel_typeInput
     created_at?: Date | string
     updated_at?: Date | string
   }
 
   export type LabelTypeUncheckedCreateInput = {
     id?: string
+    external_id?: number | null
     name: string
-    labels?: LabelUncheckedCreateNestedManyWithoutLabelTypeInput
+    labels?: LabelUncheckedCreateNestedManyWithoutLabel_typeInput
     created_at?: Date | string
     updated_at?: Date | string
   }
 
   export type LabelTypeUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
-    labels?: LabelUpdateManyWithoutLabelTypeNestedInput
+    labels?: LabelUpdateManyWithoutLabel_typeNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type LabelTypeUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
-    labels?: LabelUncheckedUpdateManyWithoutLabelTypeNestedInput
+    labels?: LabelUncheckedUpdateManyWithoutLabel_typeNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type LabelTypeCreateManyInput = {
     id?: string
+    external_id?: number | null
     name: string
     created_at?: Date | string
     updated_at?: Date | string
@@ -46265,6 +47698,7 @@ export namespace Prisma {
 
   export type LabelTypeUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -46272,6 +47706,7 @@ export namespace Prisma {
 
   export type LabelTypeUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -46649,6 +48084,7 @@ export namespace Prisma {
 
   export type WineTypeCreateInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     labels?: LabelCreateNestedManyWithoutWine_typeInput
@@ -46658,6 +48094,7 @@ export namespace Prisma {
 
   export type WineTypeUncheckedCreateInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     labels?: LabelUncheckedCreateNestedManyWithoutWine_typeInput
@@ -46667,6 +48104,7 @@ export namespace Prisma {
 
   export type WineTypeUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     labels?: LabelUpdateManyWithoutWine_typeNestedInput
@@ -46676,6 +48114,7 @@ export namespace Prisma {
 
   export type WineTypeUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     labels?: LabelUncheckedUpdateManyWithoutWine_typeNestedInput
@@ -46685,6 +48124,7 @@ export namespace Prisma {
 
   export type WineTypeCreateManyInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     created_at?: Date | string
@@ -46693,6 +48133,7 @@ export namespace Prisma {
 
   export type WineTypeUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -46701,6 +48142,7 @@ export namespace Prisma {
 
   export type WineTypeUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -46848,6 +48290,7 @@ export namespace Prisma {
   export type InvoiceCreateInput = {
     id?: string
     order: OrderCreateNestedOneWithoutInvoiceInput
+    account: AccountCreateNestedOneWithoutInvoicesInput
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -46855,6 +48298,7 @@ export namespace Prisma {
   export type InvoiceUncheckedCreateInput = {
     id?: string
     order_id: string
+    account_id: string
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -46862,6 +48306,7 @@ export namespace Prisma {
   export type InvoiceUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     order?: OrderUpdateOneRequiredWithoutInvoiceNestedInput
+    account?: AccountUpdateOneRequiredWithoutInvoicesNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -46869,6 +48314,7 @@ export namespace Prisma {
   export type InvoiceUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     order_id?: StringFieldUpdateOperationsInput | string
+    account_id?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -46876,6 +48322,7 @@ export namespace Prisma {
   export type InvoiceCreateManyInput = {
     id?: string
     order_id: string
+    account_id: string
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -46889,6 +48336,7 @@ export namespace Prisma {
   export type InvoiceUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     order_id?: StringFieldUpdateOperationsInput | string
+    account_id?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -47689,22 +49137,25 @@ export namespace Prisma {
   }
 
   export type StockLabelCreateInput = {
-    labels: LabelCreateNestedOneWithoutStockLabelInput
-    account: AccountCreateNestedOneWithoutStockLabelInput
-    min_quantity: number
-    max_quantity: number
+    labels: LabelCreateNestedOneWithoutStock_labelInput
+    account: AccountCreateNestedOneWithoutStock_labelInput
+    quantity: number
+    min_quantity?: number
+    max_quantity?: number
   }
 
   export type StockLabelUncheckedCreateInput = {
     label_id: string
     account_id: string
-    min_quantity: number
-    max_quantity: number
+    quantity: number
+    min_quantity?: number
+    max_quantity?: number
   }
 
   export type StockLabelUpdateInput = {
-    labels?: LabelUpdateOneRequiredWithoutStockLabelNestedInput
-    account?: AccountUpdateOneRequiredWithoutStockLabelNestedInput
+    labels?: LabelUpdateOneRequiredWithoutStock_labelNestedInput
+    account?: AccountUpdateOneRequiredWithoutStock_labelNestedInput
+    quantity?: IntFieldUpdateOperationsInput | number
     min_quantity?: IntFieldUpdateOperationsInput | number
     max_quantity?: IntFieldUpdateOperationsInput | number
   }
@@ -47712,6 +49163,7 @@ export namespace Prisma {
   export type StockLabelUncheckedUpdateInput = {
     label_id?: StringFieldUpdateOperationsInput | string
     account_id?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
     min_quantity?: IntFieldUpdateOperationsInput | number
     max_quantity?: IntFieldUpdateOperationsInput | number
   }
@@ -47719,11 +49171,13 @@ export namespace Prisma {
   export type StockLabelCreateManyInput = {
     label_id: string
     account_id: string
-    min_quantity: number
-    max_quantity: number
+    quantity: number
+    min_quantity?: number
+    max_quantity?: number
   }
 
   export type StockLabelUpdateManyMutationInput = {
+    quantity?: IntFieldUpdateOperationsInput | number
     min_quantity?: IntFieldUpdateOperationsInput | number
     max_quantity?: IntFieldUpdateOperationsInput | number
   }
@@ -47731,13 +49185,14 @@ export namespace Prisma {
   export type StockLabelUncheckedUpdateManyInput = {
     label_id?: StringFieldUpdateOperationsInput | string
     account_id?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
     min_quantity?: IntFieldUpdateOperationsInput | number
     max_quantity?: IntFieldUpdateOperationsInput | number
   }
 
   export type StockHistoryCreateInput = {
     id?: string
-    labels: LabelCreateNestedOneWithoutStockHistoryInput
+    labels: LabelCreateNestedOneWithoutStock_historyInput
     reason: string
     quantity: number
     date: Date | string
@@ -47757,7 +49212,7 @@ export namespace Prisma {
 
   export type StockHistoryUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    labels?: LabelUpdateOneRequiredWithoutStockHistoryNestedInput
+    labels?: LabelUpdateOneRequiredWithoutStock_historyNestedInput
     reason?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -47800,6 +49255,66 @@ export namespace Prisma {
     reason?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
     date?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WineryCreateInput = {
+    id?: string
+    external_id?: number | null
+    name: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    labels?: LabelCreateNestedManyWithoutWineryInput
+  }
+
+  export type WineryUncheckedCreateInput = {
+    id?: string
+    external_id?: number | null
+    name: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    labels?: LabelUncheckedCreateNestedManyWithoutWineryInput
+  }
+
+  export type WineryUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    labels?: LabelUpdateManyWithoutWineryNestedInput
+  }
+
+  export type WineryUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    labels?: LabelUncheckedUpdateManyWithoutWineryNestedInput
+  }
+
+  export type WineryCreateManyInput = {
+    id?: string
+    external_id?: number | null
+    name: string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type WineryUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WineryUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -47909,10 +49424,28 @@ export namespace Prisma {
     none?: AccountUserWhereInput
   }
 
+  export type InvoiceListRelationFilter = {
+    every?: InvoiceWhereInput
+    some?: InvoiceWhereInput
+    none?: InvoiceWhereInput
+  }
+
   export type StockLabelListRelationFilter = {
     every?: StockLabelWhereInput
     some?: StockLabelWhereInput
     none?: StockLabelWhereInput
+  }
+
+  export type LabelListRelationFilter = {
+    every?: LabelWhereInput
+    some?: LabelWhereInput
+    none?: LabelWhereInput
+  }
+
+  export type CouponListRelationFilter = {
+    every?: CouponWhereInput
+    some?: CouponWhereInput
+    none?: CouponWhereInput
   }
 
   export type AccountConfigurationRelationFilter = {
@@ -47949,7 +49482,19 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type InvoiceOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type StockLabelOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type LabelOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CouponOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -48692,6 +50237,7 @@ export namespace Prisma {
   export type CouponCountOrderByAggregateInput = {
     id?: SortOrder
     code?: SortOrder
+    account_id?: SortOrder
     dicount_type?: SortOrder
     discount_value?: SortOrder
     couponUse_type?: SortOrder
@@ -48712,6 +50258,7 @@ export namespace Prisma {
   export type CouponMaxOrderByAggregateInput = {
     id?: SortOrder
     code?: SortOrder
+    account_id?: SortOrder
     dicount_type?: SortOrder
     discount_value?: SortOrder
     couponUse_type?: SortOrder
@@ -48726,6 +50273,7 @@ export namespace Prisma {
   export type CouponMinOrderByAggregateInput = {
     id?: SortOrder
     code?: SortOrder
+    account_id?: SortOrder
     dicount_type?: SortOrder
     discount_value?: SortOrder
     couponUse_type?: SortOrder
@@ -48794,9 +50342,14 @@ export namespace Prisma {
     isNot?: RegionWhereInput
   }
 
+  export type WineryRelationFilter = {
+    is?: WineryWhereInput | null
+    isNot?: WineryWhereInput | null
+  }
+
   export type WineTypeRelationFilter = {
-    is?: WineTypeWhereInput
-    isNot?: WineTypeWhereInput
+    is?: WineTypeWhereInput | null
+    isNot?: WineTypeWhereInput | null
   }
 
   export type DecimalNullableFilter = {
@@ -48848,14 +50401,17 @@ export namespace Prisma {
     type_id?: SortOrder
     country_id?: SortOrder
     region_id?: SortOrder
+    winery_id?: SortOrder
     harvest?: SortOrder
+    no_harvest?: SortOrder
     wine_type_id?: SortOrder
     alcohol_percentage?: SortOrder
     price?: SortOrder
     promotional_price?: SortOrder
     photo?: SortOrder
+    account_id?: SortOrder
     is_active?: SortOrder
-    stock?: SortOrder
+    control_stock?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -48875,14 +50431,17 @@ export namespace Prisma {
     type_id?: SortOrder
     country_id?: SortOrder
     region_id?: SortOrder
+    winery_id?: SortOrder
     harvest?: SortOrder
+    no_harvest?: SortOrder
     wine_type_id?: SortOrder
     alcohol_percentage?: SortOrder
     price?: SortOrder
     promotional_price?: SortOrder
     photo?: SortOrder
+    account_id?: SortOrder
     is_active?: SortOrder
-    stock?: SortOrder
+    control_stock?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -48895,14 +50454,17 @@ export namespace Prisma {
     type_id?: SortOrder
     country_id?: SortOrder
     region_id?: SortOrder
+    winery_id?: SortOrder
     harvest?: SortOrder
+    no_harvest?: SortOrder
     wine_type_id?: SortOrder
     alcohol_percentage?: SortOrder
     price?: SortOrder
     promotional_price?: SortOrder
     photo?: SortOrder
+    account_id?: SortOrder
     is_active?: SortOrder
-    stock?: SortOrder
+    control_stock?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -49029,25 +50591,21 @@ export namespace Prisma {
     external_id?: SortOrder
   }
 
-  export type LabelListRelationFilter = {
-    every?: LabelWhereInput
-    some?: LabelWhereInput
-    none?: LabelWhereInput
-  }
-
-  export type LabelOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
   export type LabelTypeCountOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
 
+  export type LabelTypeAvgOrderByAggregateInput = {
+    external_id?: SortOrder
+  }
+
   export type LabelTypeMaxOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -49055,9 +50613,14 @@ export namespace Prisma {
 
   export type LabelTypeMinOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+  }
+
+  export type LabelTypeSumOrderByAggregateInput = {
+    external_id?: SortOrder
   }
 
   export type StateListRelationFilter = {
@@ -49297,14 +50860,20 @@ export namespace Prisma {
 
   export type WineTypeCountOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
 
+  export type WineTypeAvgOrderByAggregateInput = {
+    external_id?: SortOrder
+  }
+
   export type WineTypeMaxOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     created_at?: SortOrder
@@ -49313,20 +50882,15 @@ export namespace Prisma {
 
   export type WineTypeMinOrderByAggregateInput = {
     id?: SortOrder
+    external_id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
 
-  export type InvoiceListRelationFilter = {
-    every?: InvoiceWhereInput
-    some?: InvoiceWhereInput
-    none?: InvoiceWhereInput
-  }
-
-  export type InvoiceOrderByRelationAggregateInput = {
-    _count?: SortOrder
+  export type WineTypeSumOrderByAggregateInput = {
+    external_id?: SortOrder
   }
 
   export type OrderCountOrderByAggregateInput = {
@@ -49446,6 +51010,7 @@ export namespace Prisma {
   export type InvoiceCountOrderByAggregateInput = {
     id?: SortOrder
     order_id?: SortOrder
+    account_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -49453,6 +51018,7 @@ export namespace Prisma {
   export type InvoiceMaxOrderByAggregateInput = {
     id?: SortOrder
     order_id?: SortOrder
+    account_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -49460,6 +51026,7 @@ export namespace Prisma {
   export type InvoiceMinOrderByAggregateInput = {
     id?: SortOrder
     order_id?: SortOrder
+    account_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -49965,11 +51532,13 @@ export namespace Prisma {
   export type StockLabelCountOrderByAggregateInput = {
     label_id?: SortOrder
     account_id?: SortOrder
+    quantity?: SortOrder
     min_quantity?: SortOrder
     max_quantity?: SortOrder
   }
 
   export type StockLabelAvgOrderByAggregateInput = {
+    quantity?: SortOrder
     min_quantity?: SortOrder
     max_quantity?: SortOrder
   }
@@ -49977,6 +51546,7 @@ export namespace Prisma {
   export type StockLabelMaxOrderByAggregateInput = {
     label_id?: SortOrder
     account_id?: SortOrder
+    quantity?: SortOrder
     min_quantity?: SortOrder
     max_quantity?: SortOrder
   }
@@ -49984,11 +51554,13 @@ export namespace Prisma {
   export type StockLabelMinOrderByAggregateInput = {
     label_id?: SortOrder
     account_id?: SortOrder
+    quantity?: SortOrder
     min_quantity?: SortOrder
     max_quantity?: SortOrder
   }
 
   export type StockLabelSumOrderByAggregateInput = {
+    quantity?: SortOrder
     min_quantity?: SortOrder
     max_quantity?: SortOrder
   }
@@ -50029,6 +51601,38 @@ export namespace Prisma {
 
   export type StockHistorySumOrderByAggregateInput = {
     quantity?: SortOrder
+  }
+
+  export type WineryCountOrderByAggregateInput = {
+    id?: SortOrder
+    external_id?: SortOrder
+    name?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type WineryAvgOrderByAggregateInput = {
+    external_id?: SortOrder
+  }
+
+  export type WineryMaxOrderByAggregateInput = {
+    id?: SortOrder
+    external_id?: SortOrder
+    name?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type WineryMinOrderByAggregateInput = {
+    id?: SortOrder
+    external_id?: SortOrder
+    name?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type WinerySumOrderByAggregateInput = {
+    external_id?: SortOrder
   }
 
   export type CampaignCreateNestedManyWithoutAccountInput = {
@@ -50079,11 +51683,32 @@ export namespace Prisma {
     connect?: Enumerable<AccountUserWhereUniqueInput>
   }
 
+  export type InvoiceCreateNestedManyWithoutAccountInput = {
+    create?: XOR<Enumerable<InvoiceCreateWithoutAccountInput>, Enumerable<InvoiceUncheckedCreateWithoutAccountInput>>
+    connectOrCreate?: Enumerable<InvoiceCreateOrConnectWithoutAccountInput>
+    createMany?: InvoiceCreateManyAccountInputEnvelope
+    connect?: Enumerable<InvoiceWhereUniqueInput>
+  }
+
   export type StockLabelCreateNestedManyWithoutAccountInput = {
     create?: XOR<Enumerable<StockLabelCreateWithoutAccountInput>, Enumerable<StockLabelUncheckedCreateWithoutAccountInput>>
     connectOrCreate?: Enumerable<StockLabelCreateOrConnectWithoutAccountInput>
     createMany?: StockLabelCreateManyAccountInputEnvelope
     connect?: Enumerable<StockLabelWhereUniqueInput>
+  }
+
+  export type LabelCreateNestedManyWithoutAccountInput = {
+    create?: XOR<Enumerable<LabelCreateWithoutAccountInput>, Enumerable<LabelUncheckedCreateWithoutAccountInput>>
+    connectOrCreate?: Enumerable<LabelCreateOrConnectWithoutAccountInput>
+    createMany?: LabelCreateManyAccountInputEnvelope
+    connect?: Enumerable<LabelWhereUniqueInput>
+  }
+
+  export type CouponCreateNestedManyWithoutAccountInput = {
+    create?: XOR<Enumerable<CouponCreateWithoutAccountInput>, Enumerable<CouponUncheckedCreateWithoutAccountInput>>
+    connectOrCreate?: Enumerable<CouponCreateOrConnectWithoutAccountInput>
+    createMany?: CouponCreateManyAccountInputEnvelope
+    connect?: Enumerable<CouponWhereUniqueInput>
   }
 
   export type AccountConfigurationCreateNestedOneWithoutAccountInput = {
@@ -50134,11 +51759,32 @@ export namespace Prisma {
     connect?: Enumerable<AccountUserWhereUniqueInput>
   }
 
+  export type InvoiceUncheckedCreateNestedManyWithoutAccountInput = {
+    create?: XOR<Enumerable<InvoiceCreateWithoutAccountInput>, Enumerable<InvoiceUncheckedCreateWithoutAccountInput>>
+    connectOrCreate?: Enumerable<InvoiceCreateOrConnectWithoutAccountInput>
+    createMany?: InvoiceCreateManyAccountInputEnvelope
+    connect?: Enumerable<InvoiceWhereUniqueInput>
+  }
+
   export type StockLabelUncheckedCreateNestedManyWithoutAccountInput = {
     create?: XOR<Enumerable<StockLabelCreateWithoutAccountInput>, Enumerable<StockLabelUncheckedCreateWithoutAccountInput>>
     connectOrCreate?: Enumerable<StockLabelCreateOrConnectWithoutAccountInput>
     createMany?: StockLabelCreateManyAccountInputEnvelope
     connect?: Enumerable<StockLabelWhereUniqueInput>
+  }
+
+  export type LabelUncheckedCreateNestedManyWithoutAccountInput = {
+    create?: XOR<Enumerable<LabelCreateWithoutAccountInput>, Enumerable<LabelUncheckedCreateWithoutAccountInput>>
+    connectOrCreate?: Enumerable<LabelCreateOrConnectWithoutAccountInput>
+    createMany?: LabelCreateManyAccountInputEnvelope
+    connect?: Enumerable<LabelWhereUniqueInput>
+  }
+
+  export type CouponUncheckedCreateNestedManyWithoutAccountInput = {
+    create?: XOR<Enumerable<CouponCreateWithoutAccountInput>, Enumerable<CouponUncheckedCreateWithoutAccountInput>>
+    connectOrCreate?: Enumerable<CouponCreateOrConnectWithoutAccountInput>
+    createMany?: CouponCreateManyAccountInputEnvelope
+    connect?: Enumerable<CouponWhereUniqueInput>
   }
 
   export type AccountConfigurationUncheckedCreateNestedOneWithoutAccountInput = {
@@ -50269,6 +51915,20 @@ export namespace Prisma {
     deleteMany?: Enumerable<AccountUserScalarWhereInput>
   }
 
+  export type InvoiceUpdateManyWithoutAccountNestedInput = {
+    create?: XOR<Enumerable<InvoiceCreateWithoutAccountInput>, Enumerable<InvoiceUncheckedCreateWithoutAccountInput>>
+    connectOrCreate?: Enumerable<InvoiceCreateOrConnectWithoutAccountInput>
+    upsert?: Enumerable<InvoiceUpsertWithWhereUniqueWithoutAccountInput>
+    createMany?: InvoiceCreateManyAccountInputEnvelope
+    set?: Enumerable<InvoiceWhereUniqueInput>
+    disconnect?: Enumerable<InvoiceWhereUniqueInput>
+    delete?: Enumerable<InvoiceWhereUniqueInput>
+    connect?: Enumerable<InvoiceWhereUniqueInput>
+    update?: Enumerable<InvoiceUpdateWithWhereUniqueWithoutAccountInput>
+    updateMany?: Enumerable<InvoiceUpdateManyWithWhereWithoutAccountInput>
+    deleteMany?: Enumerable<InvoiceScalarWhereInput>
+  }
+
   export type StockLabelUpdateManyWithoutAccountNestedInput = {
     create?: XOR<Enumerable<StockLabelCreateWithoutAccountInput>, Enumerable<StockLabelUncheckedCreateWithoutAccountInput>>
     connectOrCreate?: Enumerable<StockLabelCreateOrConnectWithoutAccountInput>
@@ -50281,6 +51941,34 @@ export namespace Prisma {
     update?: Enumerable<StockLabelUpdateWithWhereUniqueWithoutAccountInput>
     updateMany?: Enumerable<StockLabelUpdateManyWithWhereWithoutAccountInput>
     deleteMany?: Enumerable<StockLabelScalarWhereInput>
+  }
+
+  export type LabelUpdateManyWithoutAccountNestedInput = {
+    create?: XOR<Enumerable<LabelCreateWithoutAccountInput>, Enumerable<LabelUncheckedCreateWithoutAccountInput>>
+    connectOrCreate?: Enumerable<LabelCreateOrConnectWithoutAccountInput>
+    upsert?: Enumerable<LabelUpsertWithWhereUniqueWithoutAccountInput>
+    createMany?: LabelCreateManyAccountInputEnvelope
+    set?: Enumerable<LabelWhereUniqueInput>
+    disconnect?: Enumerable<LabelWhereUniqueInput>
+    delete?: Enumerable<LabelWhereUniqueInput>
+    connect?: Enumerable<LabelWhereUniqueInput>
+    update?: Enumerable<LabelUpdateWithWhereUniqueWithoutAccountInput>
+    updateMany?: Enumerable<LabelUpdateManyWithWhereWithoutAccountInput>
+    deleteMany?: Enumerable<LabelScalarWhereInput>
+  }
+
+  export type CouponUpdateManyWithoutAccountNestedInput = {
+    create?: XOR<Enumerable<CouponCreateWithoutAccountInput>, Enumerable<CouponUncheckedCreateWithoutAccountInput>>
+    connectOrCreate?: Enumerable<CouponCreateOrConnectWithoutAccountInput>
+    upsert?: Enumerable<CouponUpsertWithWhereUniqueWithoutAccountInput>
+    createMany?: CouponCreateManyAccountInputEnvelope
+    set?: Enumerable<CouponWhereUniqueInput>
+    disconnect?: Enumerable<CouponWhereUniqueInput>
+    delete?: Enumerable<CouponWhereUniqueInput>
+    connect?: Enumerable<CouponWhereUniqueInput>
+    update?: Enumerable<CouponUpdateWithWhereUniqueWithoutAccountInput>
+    updateMany?: Enumerable<CouponUpdateManyWithWhereWithoutAccountInput>
+    deleteMany?: Enumerable<CouponScalarWhereInput>
   }
 
   export type AccountConfigurationUpdateOneWithoutAccountNestedInput = {
@@ -50381,6 +52069,20 @@ export namespace Prisma {
     deleteMany?: Enumerable<AccountUserScalarWhereInput>
   }
 
+  export type InvoiceUncheckedUpdateManyWithoutAccountNestedInput = {
+    create?: XOR<Enumerable<InvoiceCreateWithoutAccountInput>, Enumerable<InvoiceUncheckedCreateWithoutAccountInput>>
+    connectOrCreate?: Enumerable<InvoiceCreateOrConnectWithoutAccountInput>
+    upsert?: Enumerable<InvoiceUpsertWithWhereUniqueWithoutAccountInput>
+    createMany?: InvoiceCreateManyAccountInputEnvelope
+    set?: Enumerable<InvoiceWhereUniqueInput>
+    disconnect?: Enumerable<InvoiceWhereUniqueInput>
+    delete?: Enumerable<InvoiceWhereUniqueInput>
+    connect?: Enumerable<InvoiceWhereUniqueInput>
+    update?: Enumerable<InvoiceUpdateWithWhereUniqueWithoutAccountInput>
+    updateMany?: Enumerable<InvoiceUpdateManyWithWhereWithoutAccountInput>
+    deleteMany?: Enumerable<InvoiceScalarWhereInput>
+  }
+
   export type StockLabelUncheckedUpdateManyWithoutAccountNestedInput = {
     create?: XOR<Enumerable<StockLabelCreateWithoutAccountInput>, Enumerable<StockLabelUncheckedCreateWithoutAccountInput>>
     connectOrCreate?: Enumerable<StockLabelCreateOrConnectWithoutAccountInput>
@@ -50393,6 +52095,34 @@ export namespace Prisma {
     update?: Enumerable<StockLabelUpdateWithWhereUniqueWithoutAccountInput>
     updateMany?: Enumerable<StockLabelUpdateManyWithWhereWithoutAccountInput>
     deleteMany?: Enumerable<StockLabelScalarWhereInput>
+  }
+
+  export type LabelUncheckedUpdateManyWithoutAccountNestedInput = {
+    create?: XOR<Enumerable<LabelCreateWithoutAccountInput>, Enumerable<LabelUncheckedCreateWithoutAccountInput>>
+    connectOrCreate?: Enumerable<LabelCreateOrConnectWithoutAccountInput>
+    upsert?: Enumerable<LabelUpsertWithWhereUniqueWithoutAccountInput>
+    createMany?: LabelCreateManyAccountInputEnvelope
+    set?: Enumerable<LabelWhereUniqueInput>
+    disconnect?: Enumerable<LabelWhereUniqueInput>
+    delete?: Enumerable<LabelWhereUniqueInput>
+    connect?: Enumerable<LabelWhereUniqueInput>
+    update?: Enumerable<LabelUpdateWithWhereUniqueWithoutAccountInput>
+    updateMany?: Enumerable<LabelUpdateManyWithWhereWithoutAccountInput>
+    deleteMany?: Enumerable<LabelScalarWhereInput>
+  }
+
+  export type CouponUncheckedUpdateManyWithoutAccountNestedInput = {
+    create?: XOR<Enumerable<CouponCreateWithoutAccountInput>, Enumerable<CouponUncheckedCreateWithoutAccountInput>>
+    connectOrCreate?: Enumerable<CouponCreateOrConnectWithoutAccountInput>
+    upsert?: Enumerable<CouponUpsertWithWhereUniqueWithoutAccountInput>
+    createMany?: CouponCreateManyAccountInputEnvelope
+    set?: Enumerable<CouponWhereUniqueInput>
+    disconnect?: Enumerable<CouponWhereUniqueInput>
+    delete?: Enumerable<CouponWhereUniqueInput>
+    connect?: Enumerable<CouponWhereUniqueInput>
+    update?: Enumerable<CouponUpdateWithWhereUniqueWithoutAccountInput>
+    updateMany?: Enumerable<CouponUpdateManyWithWhereWithoutAccountInput>
+    deleteMany?: Enumerable<CouponScalarWhereInput>
   }
 
   export type AccountConfigurationUncheckedUpdateOneWithoutAccountNestedInput = {
@@ -51023,6 +52753,20 @@ export namespace Prisma {
     deleteMany?: Enumerable<CampaignScalarWhereInput>
   }
 
+  export type AccountCreateNestedOneWithoutCouponsInput = {
+    create?: XOR<AccountCreateWithoutCouponsInput, AccountUncheckedCreateWithoutCouponsInput>
+    connectOrCreate?: AccountCreateOrConnectWithoutCouponsInput
+    connect?: AccountWhereUniqueInput
+  }
+
+  export type AccountUpdateOneRequiredWithoutCouponsNestedInput = {
+    create?: XOR<AccountCreateWithoutCouponsInput, AccountUncheckedCreateWithoutCouponsInput>
+    connectOrCreate?: AccountCreateOrConnectWithoutCouponsInput
+    upsert?: AccountUpsertWithoutCouponsInput
+    connect?: AccountWhereUniqueInput
+    update?: XOR<AccountUpdateWithoutCouponsInput, AccountUncheckedUpdateWithoutCouponsInput>
+  }
+
   export type EnumCouponDiscountTypeFieldUpdateOperationsInput = {
     set?: CouponDiscountType
   }
@@ -51057,10 +52801,22 @@ export namespace Prisma {
     connect?: RegionWhereUniqueInput
   }
 
+  export type WineryCreateNestedOneWithoutLabelsInput = {
+    create?: XOR<WineryCreateWithoutLabelsInput, WineryUncheckedCreateWithoutLabelsInput>
+    connectOrCreate?: WineryCreateOrConnectWithoutLabelsInput
+    connect?: WineryWhereUniqueInput
+  }
+
   export type WineTypeCreateNestedOneWithoutLabelsInput = {
     create?: XOR<WineTypeCreateWithoutLabelsInput, WineTypeUncheckedCreateWithoutLabelsInput>
     connectOrCreate?: WineTypeCreateOrConnectWithoutLabelsInput
     connect?: WineTypeWhereUniqueInput
+  }
+
+  export type AccountCreateNestedOneWithoutLabelsInput = {
+    create?: XOR<AccountCreateWithoutLabelsInput, AccountUncheckedCreateWithoutLabelsInput>
+    connectOrCreate?: AccountCreateOrConnectWithoutLabelsInput
+    connect?: AccountWhereUniqueInput
   }
 
   export type LabelGrapeCreateNestedManyWithoutLabelInput = {
@@ -51141,26 +52897,42 @@ export namespace Prisma {
     update?: XOR<LabelTypeUpdateWithoutLabelsInput, LabelTypeUncheckedUpdateWithoutLabelsInput>
   }
 
-  export type CountryUpdateOneRequiredWithoutLabelsNestedInput = {
+  export type CountryUpdateOneWithoutLabelsNestedInput = {
     create?: XOR<CountryCreateWithoutLabelsInput, CountryUncheckedCreateWithoutLabelsInput>
     connectOrCreate?: CountryCreateOrConnectWithoutLabelsInput
     upsert?: CountryUpsertWithoutLabelsInput
+    disconnect?: boolean
+    delete?: boolean
     connect?: CountryWhereUniqueInput
     update?: XOR<CountryUpdateWithoutLabelsInput, CountryUncheckedUpdateWithoutLabelsInput>
   }
 
-  export type RegionUpdateOneRequiredWithoutLabelsNestedInput = {
+  export type RegionUpdateOneWithoutLabelsNestedInput = {
     create?: XOR<RegionCreateWithoutLabelsInput, RegionUncheckedCreateWithoutLabelsInput>
     connectOrCreate?: RegionCreateOrConnectWithoutLabelsInput
     upsert?: RegionUpsertWithoutLabelsInput
+    disconnect?: boolean
+    delete?: boolean
     connect?: RegionWhereUniqueInput
     update?: XOR<RegionUpdateWithoutLabelsInput, RegionUncheckedUpdateWithoutLabelsInput>
   }
 
-  export type WineTypeUpdateOneRequiredWithoutLabelsNestedInput = {
+  export type WineryUpdateOneWithoutLabelsNestedInput = {
+    create?: XOR<WineryCreateWithoutLabelsInput, WineryUncheckedCreateWithoutLabelsInput>
+    connectOrCreate?: WineryCreateOrConnectWithoutLabelsInput
+    upsert?: WineryUpsertWithoutLabelsInput
+    disconnect?: boolean
+    delete?: boolean
+    connect?: WineryWhereUniqueInput
+    update?: XOR<WineryUpdateWithoutLabelsInput, WineryUncheckedUpdateWithoutLabelsInput>
+  }
+
+  export type WineTypeUpdateOneWithoutLabelsNestedInput = {
     create?: XOR<WineTypeCreateWithoutLabelsInput, WineTypeUncheckedCreateWithoutLabelsInput>
     connectOrCreate?: WineTypeCreateOrConnectWithoutLabelsInput
     upsert?: WineTypeUpsertWithoutLabelsInput
+    disconnect?: boolean
+    delete?: boolean
     connect?: WineTypeWhereUniqueInput
     update?: XOR<WineTypeUpdateWithoutLabelsInput, WineTypeUncheckedUpdateWithoutLabelsInput>
   }
@@ -51171,6 +52943,14 @@ export namespace Prisma {
     decrement?: Decimal | DecimalJsLike | number | string
     multiply?: Decimal | DecimalJsLike | number | string
     divide?: Decimal | DecimalJsLike | number | string
+  }
+
+  export type AccountUpdateOneRequiredWithoutLabelsNestedInput = {
+    create?: XOR<AccountCreateWithoutLabelsInput, AccountUncheckedCreateWithoutLabelsInput>
+    connectOrCreate?: AccountCreateOrConnectWithoutLabelsInput
+    upsert?: AccountUpsertWithoutLabelsInput
+    connect?: AccountWhereUniqueInput
+    update?: XOR<AccountUpdateWithoutLabelsInput, AccountUncheckedUpdateWithoutLabelsInput>
   }
 
   export type LabelGrapeUpdateManyWithoutLabelNestedInput = {
@@ -51411,45 +53191,45 @@ export namespace Prisma {
     deleteMany?: Enumerable<LabelGrapeScalarWhereInput>
   }
 
-  export type LabelCreateNestedManyWithoutLabelTypeInput = {
-    create?: XOR<Enumerable<LabelCreateWithoutLabelTypeInput>, Enumerable<LabelUncheckedCreateWithoutLabelTypeInput>>
-    connectOrCreate?: Enumerable<LabelCreateOrConnectWithoutLabelTypeInput>
-    createMany?: LabelCreateManyLabelTypeInputEnvelope
+  export type LabelCreateNestedManyWithoutLabel_typeInput = {
+    create?: XOR<Enumerable<LabelCreateWithoutLabel_typeInput>, Enumerable<LabelUncheckedCreateWithoutLabel_typeInput>>
+    connectOrCreate?: Enumerable<LabelCreateOrConnectWithoutLabel_typeInput>
+    createMany?: LabelCreateManyLabel_typeInputEnvelope
     connect?: Enumerable<LabelWhereUniqueInput>
   }
 
-  export type LabelUncheckedCreateNestedManyWithoutLabelTypeInput = {
-    create?: XOR<Enumerable<LabelCreateWithoutLabelTypeInput>, Enumerable<LabelUncheckedCreateWithoutLabelTypeInput>>
-    connectOrCreate?: Enumerable<LabelCreateOrConnectWithoutLabelTypeInput>
-    createMany?: LabelCreateManyLabelTypeInputEnvelope
+  export type LabelUncheckedCreateNestedManyWithoutLabel_typeInput = {
+    create?: XOR<Enumerable<LabelCreateWithoutLabel_typeInput>, Enumerable<LabelUncheckedCreateWithoutLabel_typeInput>>
+    connectOrCreate?: Enumerable<LabelCreateOrConnectWithoutLabel_typeInput>
+    createMany?: LabelCreateManyLabel_typeInputEnvelope
     connect?: Enumerable<LabelWhereUniqueInput>
   }
 
-  export type LabelUpdateManyWithoutLabelTypeNestedInput = {
-    create?: XOR<Enumerable<LabelCreateWithoutLabelTypeInput>, Enumerable<LabelUncheckedCreateWithoutLabelTypeInput>>
-    connectOrCreate?: Enumerable<LabelCreateOrConnectWithoutLabelTypeInput>
-    upsert?: Enumerable<LabelUpsertWithWhereUniqueWithoutLabelTypeInput>
-    createMany?: LabelCreateManyLabelTypeInputEnvelope
+  export type LabelUpdateManyWithoutLabel_typeNestedInput = {
+    create?: XOR<Enumerable<LabelCreateWithoutLabel_typeInput>, Enumerable<LabelUncheckedCreateWithoutLabel_typeInput>>
+    connectOrCreate?: Enumerable<LabelCreateOrConnectWithoutLabel_typeInput>
+    upsert?: Enumerable<LabelUpsertWithWhereUniqueWithoutLabel_typeInput>
+    createMany?: LabelCreateManyLabel_typeInputEnvelope
     set?: Enumerable<LabelWhereUniqueInput>
     disconnect?: Enumerable<LabelWhereUniqueInput>
     delete?: Enumerable<LabelWhereUniqueInput>
     connect?: Enumerable<LabelWhereUniqueInput>
-    update?: Enumerable<LabelUpdateWithWhereUniqueWithoutLabelTypeInput>
-    updateMany?: Enumerable<LabelUpdateManyWithWhereWithoutLabelTypeInput>
+    update?: Enumerable<LabelUpdateWithWhereUniqueWithoutLabel_typeInput>
+    updateMany?: Enumerable<LabelUpdateManyWithWhereWithoutLabel_typeInput>
     deleteMany?: Enumerable<LabelScalarWhereInput>
   }
 
-  export type LabelUncheckedUpdateManyWithoutLabelTypeNestedInput = {
-    create?: XOR<Enumerable<LabelCreateWithoutLabelTypeInput>, Enumerable<LabelUncheckedCreateWithoutLabelTypeInput>>
-    connectOrCreate?: Enumerable<LabelCreateOrConnectWithoutLabelTypeInput>
-    upsert?: Enumerable<LabelUpsertWithWhereUniqueWithoutLabelTypeInput>
-    createMany?: LabelCreateManyLabelTypeInputEnvelope
+  export type LabelUncheckedUpdateManyWithoutLabel_typeNestedInput = {
+    create?: XOR<Enumerable<LabelCreateWithoutLabel_typeInput>, Enumerable<LabelUncheckedCreateWithoutLabel_typeInput>>
+    connectOrCreate?: Enumerable<LabelCreateOrConnectWithoutLabel_typeInput>
+    upsert?: Enumerable<LabelUpsertWithWhereUniqueWithoutLabel_typeInput>
+    createMany?: LabelCreateManyLabel_typeInputEnvelope
     set?: Enumerable<LabelWhereUniqueInput>
     disconnect?: Enumerable<LabelWhereUniqueInput>
     delete?: Enumerable<LabelWhereUniqueInput>
     connect?: Enumerable<LabelWhereUniqueInput>
-    update?: Enumerable<LabelUpdateWithWhereUniqueWithoutLabelTypeInput>
-    updateMany?: Enumerable<LabelUpdateManyWithWhereWithoutLabelTypeInput>
+    update?: Enumerable<LabelUpdateWithWhereUniqueWithoutLabel_typeInput>
+    updateMany?: Enumerable<LabelUpdateManyWithWhereWithoutLabel_typeInput>
     deleteMany?: Enumerable<LabelScalarWhereInput>
   }
 
@@ -51943,12 +53723,26 @@ export namespace Prisma {
     connect?: OrderWhereUniqueInput
   }
 
+  export type AccountCreateNestedOneWithoutInvoicesInput = {
+    create?: XOR<AccountCreateWithoutInvoicesInput, AccountUncheckedCreateWithoutInvoicesInput>
+    connectOrCreate?: AccountCreateOrConnectWithoutInvoicesInput
+    connect?: AccountWhereUniqueInput
+  }
+
   export type OrderUpdateOneRequiredWithoutInvoiceNestedInput = {
     create?: XOR<OrderCreateWithoutInvoiceInput, OrderUncheckedCreateWithoutInvoiceInput>
     connectOrCreate?: OrderCreateOrConnectWithoutInvoiceInput
     upsert?: OrderUpsertWithoutInvoiceInput
     connect?: OrderWhereUniqueInput
     update?: XOR<OrderUpdateWithoutInvoiceInput, OrderUncheckedUpdateWithoutInvoiceInput>
+  }
+
+  export type AccountUpdateOneRequiredWithoutInvoicesNestedInput = {
+    create?: XOR<AccountCreateWithoutInvoicesInput, AccountUncheckedCreateWithoutInvoicesInput>
+    connectOrCreate?: AccountCreateOrConnectWithoutInvoicesInput
+    upsert?: AccountUpsertWithoutInvoicesInput
+    connect?: AccountWhereUniqueInput
+    update?: XOR<AccountUpdateWithoutInvoicesInput, AccountUncheckedUpdateWithoutInvoicesInput>
   }
 
   export type DeviceUserCreateNestedManyWithoutDeviceInput = {
@@ -52593,46 +54387,88 @@ export namespace Prisma {
     update?: XOR<AccountUpdateWithoutSubscriptionInput, AccountUncheckedUpdateWithoutSubscriptionInput>
   }
 
-  export type LabelCreateNestedOneWithoutStockLabelInput = {
-    create?: XOR<LabelCreateWithoutStockLabelInput, LabelUncheckedCreateWithoutStockLabelInput>
-    connectOrCreate?: LabelCreateOrConnectWithoutStockLabelInput
+  export type LabelCreateNestedOneWithoutStock_labelInput = {
+    create?: XOR<LabelCreateWithoutStock_labelInput, LabelUncheckedCreateWithoutStock_labelInput>
+    connectOrCreate?: LabelCreateOrConnectWithoutStock_labelInput
     connect?: LabelWhereUniqueInput
   }
 
-  export type AccountCreateNestedOneWithoutStockLabelInput = {
-    create?: XOR<AccountCreateWithoutStockLabelInput, AccountUncheckedCreateWithoutStockLabelInput>
-    connectOrCreate?: AccountCreateOrConnectWithoutStockLabelInput
+  export type AccountCreateNestedOneWithoutStock_labelInput = {
+    create?: XOR<AccountCreateWithoutStock_labelInput, AccountUncheckedCreateWithoutStock_labelInput>
+    connectOrCreate?: AccountCreateOrConnectWithoutStock_labelInput
     connect?: AccountWhereUniqueInput
   }
 
-  export type LabelUpdateOneRequiredWithoutStockLabelNestedInput = {
-    create?: XOR<LabelCreateWithoutStockLabelInput, LabelUncheckedCreateWithoutStockLabelInput>
-    connectOrCreate?: LabelCreateOrConnectWithoutStockLabelInput
-    upsert?: LabelUpsertWithoutStockLabelInput
+  export type LabelUpdateOneRequiredWithoutStock_labelNestedInput = {
+    create?: XOR<LabelCreateWithoutStock_labelInput, LabelUncheckedCreateWithoutStock_labelInput>
+    connectOrCreate?: LabelCreateOrConnectWithoutStock_labelInput
+    upsert?: LabelUpsertWithoutStock_labelInput
     connect?: LabelWhereUniqueInput
-    update?: XOR<LabelUpdateWithoutStockLabelInput, LabelUncheckedUpdateWithoutStockLabelInput>
+    update?: XOR<LabelUpdateWithoutStock_labelInput, LabelUncheckedUpdateWithoutStock_labelInput>
   }
 
-  export type AccountUpdateOneRequiredWithoutStockLabelNestedInput = {
-    create?: XOR<AccountCreateWithoutStockLabelInput, AccountUncheckedCreateWithoutStockLabelInput>
-    connectOrCreate?: AccountCreateOrConnectWithoutStockLabelInput
-    upsert?: AccountUpsertWithoutStockLabelInput
+  export type AccountUpdateOneRequiredWithoutStock_labelNestedInput = {
+    create?: XOR<AccountCreateWithoutStock_labelInput, AccountUncheckedCreateWithoutStock_labelInput>
+    connectOrCreate?: AccountCreateOrConnectWithoutStock_labelInput
+    upsert?: AccountUpsertWithoutStock_labelInput
     connect?: AccountWhereUniqueInput
-    update?: XOR<AccountUpdateWithoutStockLabelInput, AccountUncheckedUpdateWithoutStockLabelInput>
+    update?: XOR<AccountUpdateWithoutStock_labelInput, AccountUncheckedUpdateWithoutStock_labelInput>
   }
 
-  export type LabelCreateNestedOneWithoutStockHistoryInput = {
-    create?: XOR<LabelCreateWithoutStockHistoryInput, LabelUncheckedCreateWithoutStockHistoryInput>
-    connectOrCreate?: LabelCreateOrConnectWithoutStockHistoryInput
+  export type LabelCreateNestedOneWithoutStock_historyInput = {
+    create?: XOR<LabelCreateWithoutStock_historyInput, LabelUncheckedCreateWithoutStock_historyInput>
+    connectOrCreate?: LabelCreateOrConnectWithoutStock_historyInput
     connect?: LabelWhereUniqueInput
   }
 
-  export type LabelUpdateOneRequiredWithoutStockHistoryNestedInput = {
-    create?: XOR<LabelCreateWithoutStockHistoryInput, LabelUncheckedCreateWithoutStockHistoryInput>
-    connectOrCreate?: LabelCreateOrConnectWithoutStockHistoryInput
-    upsert?: LabelUpsertWithoutStockHistoryInput
+  export type LabelUpdateOneRequiredWithoutStock_historyNestedInput = {
+    create?: XOR<LabelCreateWithoutStock_historyInput, LabelUncheckedCreateWithoutStock_historyInput>
+    connectOrCreate?: LabelCreateOrConnectWithoutStock_historyInput
+    upsert?: LabelUpsertWithoutStock_historyInput
     connect?: LabelWhereUniqueInput
-    update?: XOR<LabelUpdateWithoutStockHistoryInput, LabelUncheckedUpdateWithoutStockHistoryInput>
+    update?: XOR<LabelUpdateWithoutStock_historyInput, LabelUncheckedUpdateWithoutStock_historyInput>
+  }
+
+  export type LabelCreateNestedManyWithoutWineryInput = {
+    create?: XOR<Enumerable<LabelCreateWithoutWineryInput>, Enumerable<LabelUncheckedCreateWithoutWineryInput>>
+    connectOrCreate?: Enumerable<LabelCreateOrConnectWithoutWineryInput>
+    createMany?: LabelCreateManyWineryInputEnvelope
+    connect?: Enumerable<LabelWhereUniqueInput>
+  }
+
+  export type LabelUncheckedCreateNestedManyWithoutWineryInput = {
+    create?: XOR<Enumerable<LabelCreateWithoutWineryInput>, Enumerable<LabelUncheckedCreateWithoutWineryInput>>
+    connectOrCreate?: Enumerable<LabelCreateOrConnectWithoutWineryInput>
+    createMany?: LabelCreateManyWineryInputEnvelope
+    connect?: Enumerable<LabelWhereUniqueInput>
+  }
+
+  export type LabelUpdateManyWithoutWineryNestedInput = {
+    create?: XOR<Enumerable<LabelCreateWithoutWineryInput>, Enumerable<LabelUncheckedCreateWithoutWineryInput>>
+    connectOrCreate?: Enumerable<LabelCreateOrConnectWithoutWineryInput>
+    upsert?: Enumerable<LabelUpsertWithWhereUniqueWithoutWineryInput>
+    createMany?: LabelCreateManyWineryInputEnvelope
+    set?: Enumerable<LabelWhereUniqueInput>
+    disconnect?: Enumerable<LabelWhereUniqueInput>
+    delete?: Enumerable<LabelWhereUniqueInput>
+    connect?: Enumerable<LabelWhereUniqueInput>
+    update?: Enumerable<LabelUpdateWithWhereUniqueWithoutWineryInput>
+    updateMany?: Enumerable<LabelUpdateManyWithWhereWithoutWineryInput>
+    deleteMany?: Enumerable<LabelScalarWhereInput>
+  }
+
+  export type LabelUncheckedUpdateManyWithoutWineryNestedInput = {
+    create?: XOR<Enumerable<LabelCreateWithoutWineryInput>, Enumerable<LabelUncheckedCreateWithoutWineryInput>>
+    connectOrCreate?: Enumerable<LabelCreateOrConnectWithoutWineryInput>
+    upsert?: Enumerable<LabelUpsertWithWhereUniqueWithoutWineryInput>
+    createMany?: LabelCreateManyWineryInputEnvelope
+    set?: Enumerable<LabelWhereUniqueInput>
+    disconnect?: Enumerable<LabelWhereUniqueInput>
+    delete?: Enumerable<LabelWhereUniqueInput>
+    connect?: Enumerable<LabelWhereUniqueInput>
+    update?: Enumerable<LabelUpdateWithWhereUniqueWithoutWineryInput>
+    updateMany?: Enumerable<LabelUpdateManyWithWhereWithoutWineryInput>
+    deleteMany?: Enumerable<LabelScalarWhereInput>
   }
 
   export type NestedStringFilter = {
@@ -53232,16 +55068,42 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type InvoiceCreateWithoutAccountInput = {
+    id?: string
+    order: OrderCreateNestedOneWithoutInvoiceInput
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type InvoiceUncheckedCreateWithoutAccountInput = {
+    id?: string
+    order_id: string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type InvoiceCreateOrConnectWithoutAccountInput = {
+    where: InvoiceWhereUniqueInput
+    create: XOR<InvoiceCreateWithoutAccountInput, InvoiceUncheckedCreateWithoutAccountInput>
+  }
+
+  export type InvoiceCreateManyAccountInputEnvelope = {
+    data: Enumerable<InvoiceCreateManyAccountInput>
+    skipDuplicates?: boolean
+  }
+
   export type StockLabelCreateWithoutAccountInput = {
-    labels: LabelCreateNestedOneWithoutStockLabelInput
-    min_quantity: number
-    max_quantity: number
+    labels: LabelCreateNestedOneWithoutStock_labelInput
+    quantity: number
+    min_quantity?: number
+    max_quantity?: number
   }
 
   export type StockLabelUncheckedCreateWithoutAccountInput = {
     label_id: string
-    min_quantity: number
-    max_quantity: number
+    quantity: number
+    min_quantity?: number
+    max_quantity?: number
   }
 
   export type StockLabelCreateOrConnectWithoutAccountInput = {
@@ -53251,6 +55113,108 @@ export namespace Prisma {
 
   export type StockLabelCreateManyAccountInputEnvelope = {
     data: Enumerable<StockLabelCreateManyAccountInput>
+    skipDuplicates?: boolean
+  }
+
+  export type LabelCreateWithoutAccountInput = {
+    id?: string
+    external_id?: number | null
+    name: string
+    description?: string | null
+    label_type: LabelTypeCreateNestedOneWithoutLabelsInput
+    country?: CountryCreateNestedOneWithoutLabelsInput
+    region?: RegionCreateNestedOneWithoutLabelsInput
+    winery?: WineryCreateNestedOneWithoutLabelsInput
+    harvest?: string | null
+    no_harvest?: boolean
+    wine_type?: WineTypeCreateNestedOneWithoutLabelsInput
+    alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
+    price: number
+    promotional_price?: number | null
+    photo?: string | null
+    is_active?: boolean
+    control_stock?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    label_grape?: LabelGrapeCreateNestedManyWithoutLabelInput
+    order_label?: OrderLabelCreateNestedManyWithoutLabelInput
+    label_campaign?: LabelCampaignCreateNestedManyWithoutLabelInput
+    stock_label?: StockLabelCreateNestedManyWithoutLabelsInput
+    stock_history?: StockHistoryCreateNestedManyWithoutLabelsInput
+  }
+
+  export type LabelUncheckedCreateWithoutAccountInput = {
+    id?: string
+    external_id?: number | null
+    name: string
+    description?: string | null
+    type_id: string
+    country_id?: string | null
+    region_id?: string | null
+    winery_id?: string | null
+    harvest?: string | null
+    no_harvest?: boolean
+    wine_type_id?: string | null
+    alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
+    price: number
+    promotional_price?: number | null
+    photo?: string | null
+    is_active?: boolean
+    control_stock?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    label_grape?: LabelGrapeUncheckedCreateNestedManyWithoutLabelInput
+    order_label?: OrderLabelUncheckedCreateNestedManyWithoutLabelInput
+    label_campaign?: LabelCampaignUncheckedCreateNestedManyWithoutLabelInput
+    stock_label?: StockLabelUncheckedCreateNestedManyWithoutLabelsInput
+    stock_history?: StockHistoryUncheckedCreateNestedManyWithoutLabelsInput
+  }
+
+  export type LabelCreateOrConnectWithoutAccountInput = {
+    where: LabelWhereUniqueInput
+    create: XOR<LabelCreateWithoutAccountInput, LabelUncheckedCreateWithoutAccountInput>
+  }
+
+  export type LabelCreateManyAccountInputEnvelope = {
+    data: Enumerable<LabelCreateManyAccountInput>
+    skipDuplicates?: boolean
+  }
+
+  export type CouponCreateWithoutAccountInput = {
+    id?: string
+    code: string
+    dicount_type: CouponDiscountType
+    discount_value: number
+    couponUse_type: CouponUseType
+    inital_date?: Date | string
+    expiration_date?: Date | string | null
+    min_value?: number | null
+    max_value?: number | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type CouponUncheckedCreateWithoutAccountInput = {
+    id?: string
+    code: string
+    dicount_type: CouponDiscountType
+    discount_value: number
+    couponUse_type: CouponUseType
+    inital_date?: Date | string
+    expiration_date?: Date | string | null
+    min_value?: number | null
+    max_value?: number | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type CouponCreateOrConnectWithoutAccountInput = {
+    where: CouponWhereUniqueInput
+    create: XOR<CouponCreateWithoutAccountInput, CouponUncheckedCreateWithoutAccountInput>
+  }
+
+  export type CouponCreateManyAccountInputEnvelope = {
+    data: Enumerable<CouponCreateManyAccountInput>
     skipDuplicates?: boolean
   }
 
@@ -53477,6 +55441,33 @@ export namespace Prisma {
     role_id?: StringFilter | string
   }
 
+  export type InvoiceUpsertWithWhereUniqueWithoutAccountInput = {
+    where: InvoiceWhereUniqueInput
+    update: XOR<InvoiceUpdateWithoutAccountInput, InvoiceUncheckedUpdateWithoutAccountInput>
+    create: XOR<InvoiceCreateWithoutAccountInput, InvoiceUncheckedCreateWithoutAccountInput>
+  }
+
+  export type InvoiceUpdateWithWhereUniqueWithoutAccountInput = {
+    where: InvoiceWhereUniqueInput
+    data: XOR<InvoiceUpdateWithoutAccountInput, InvoiceUncheckedUpdateWithoutAccountInput>
+  }
+
+  export type InvoiceUpdateManyWithWhereWithoutAccountInput = {
+    where: InvoiceScalarWhereInput
+    data: XOR<InvoiceUpdateManyMutationInput, InvoiceUncheckedUpdateManyWithoutInvoicesInput>
+  }
+
+  export type InvoiceScalarWhereInput = {
+    AND?: Enumerable<InvoiceScalarWhereInput>
+    OR?: Enumerable<InvoiceScalarWhereInput>
+    NOT?: Enumerable<InvoiceScalarWhereInput>
+    id?: StringFilter | string
+    order_id?: StringFilter | string
+    account_id?: StringFilter | string
+    created_at?: DateTimeFilter | Date | string
+    updated_at?: DateTimeFilter | Date | string
+  }
+
   export type StockLabelUpsertWithWhereUniqueWithoutAccountInput = {
     where: StockLabelWhereUniqueInput
     update: XOR<StockLabelUpdateWithoutAccountInput, StockLabelUncheckedUpdateWithoutAccountInput>
@@ -53490,7 +55481,7 @@ export namespace Prisma {
 
   export type StockLabelUpdateManyWithWhereWithoutAccountInput = {
     where: StockLabelScalarWhereInput
-    data: XOR<StockLabelUpdateManyMutationInput, StockLabelUncheckedUpdateManyWithoutStockLabelInput>
+    data: XOR<StockLabelUpdateManyMutationInput, StockLabelUncheckedUpdateManyWithoutStock_labelInput>
   }
 
   export type StockLabelScalarWhereInput = {
@@ -53499,8 +55490,85 @@ export namespace Prisma {
     NOT?: Enumerable<StockLabelScalarWhereInput>
     label_id?: StringFilter | string
     account_id?: StringFilter | string
+    quantity?: IntFilter | number
     min_quantity?: IntFilter | number
     max_quantity?: IntFilter | number
+  }
+
+  export type LabelUpsertWithWhereUniqueWithoutAccountInput = {
+    where: LabelWhereUniqueInput
+    update: XOR<LabelUpdateWithoutAccountInput, LabelUncheckedUpdateWithoutAccountInput>
+    create: XOR<LabelCreateWithoutAccountInput, LabelUncheckedCreateWithoutAccountInput>
+  }
+
+  export type LabelUpdateWithWhereUniqueWithoutAccountInput = {
+    where: LabelWhereUniqueInput
+    data: XOR<LabelUpdateWithoutAccountInput, LabelUncheckedUpdateWithoutAccountInput>
+  }
+
+  export type LabelUpdateManyWithWhereWithoutAccountInput = {
+    where: LabelScalarWhereInput
+    data: XOR<LabelUpdateManyMutationInput, LabelUncheckedUpdateManyWithoutLabelsInput>
+  }
+
+  export type LabelScalarWhereInput = {
+    AND?: Enumerable<LabelScalarWhereInput>
+    OR?: Enumerable<LabelScalarWhereInput>
+    NOT?: Enumerable<LabelScalarWhereInput>
+    id?: StringFilter | string
+    external_id?: IntNullableFilter | number | null
+    name?: StringFilter | string
+    description?: StringNullableFilter | string | null
+    type_id?: StringFilter | string
+    country_id?: StringNullableFilter | string | null
+    region_id?: StringNullableFilter | string | null
+    winery_id?: StringNullableFilter | string | null
+    harvest?: StringNullableFilter | string | null
+    no_harvest?: BoolFilter | boolean
+    wine_type_id?: StringNullableFilter | string | null
+    alcohol_percentage?: DecimalNullableFilter | Decimal | DecimalJsLike | number | string | null
+    price?: FloatFilter | number
+    promotional_price?: FloatNullableFilter | number | null
+    photo?: StringNullableFilter | string | null
+    account_id?: StringFilter | string
+    is_active?: BoolFilter | boolean
+    control_stock?: BoolFilter | boolean
+    created_at?: DateTimeFilter | Date | string
+    updated_at?: DateTimeFilter | Date | string
+  }
+
+  export type CouponUpsertWithWhereUniqueWithoutAccountInput = {
+    where: CouponWhereUniqueInput
+    update: XOR<CouponUpdateWithoutAccountInput, CouponUncheckedUpdateWithoutAccountInput>
+    create: XOR<CouponCreateWithoutAccountInput, CouponUncheckedCreateWithoutAccountInput>
+  }
+
+  export type CouponUpdateWithWhereUniqueWithoutAccountInput = {
+    where: CouponWhereUniqueInput
+    data: XOR<CouponUpdateWithoutAccountInput, CouponUncheckedUpdateWithoutAccountInput>
+  }
+
+  export type CouponUpdateManyWithWhereWithoutAccountInput = {
+    where: CouponScalarWhereInput
+    data: XOR<CouponUpdateManyMutationInput, CouponUncheckedUpdateManyWithoutCouponsInput>
+  }
+
+  export type CouponScalarWhereInput = {
+    AND?: Enumerable<CouponScalarWhereInput>
+    OR?: Enumerable<CouponScalarWhereInput>
+    NOT?: Enumerable<CouponScalarWhereInput>
+    id?: StringFilter | string
+    code?: StringFilter | string
+    account_id?: StringFilter | string
+    dicount_type?: EnumCouponDiscountTypeFilter | CouponDiscountType
+    discount_value?: FloatFilter | number
+    couponUse_type?: EnumCouponUseTypeFilter | CouponUseType
+    inital_date?: DateTimeFilter | Date | string
+    expiration_date?: DateTimeNullableFilter | Date | string | null
+    min_value?: FloatNullableFilter | number | null
+    max_value?: FloatNullableFilter | number | null
+    created_at?: DateTimeFilter | Date | string
+    updated_at?: DateTimeFilter | Date | string
   }
 
   export type AccountConfigurationUpsertWithoutAccountInput = {
@@ -53554,8 +55622,11 @@ export namespace Prisma {
     account_activities?: AccountActivitiesCreateNestedManyWithoutAccountInput
     account_deliveries?: AccountDeliveryCreateNestedManyWithoutAccountInput
     account_users?: AccountUserCreateNestedManyWithoutAccountInput
+    invoices?: InvoiceCreateNestedManyWithoutAccountInput
     domain: string
-    StockLabel?: StockLabelCreateNestedManyWithoutAccountInput
+    stock_label?: StockLabelCreateNestedManyWithoutAccountInput
+    labels?: LabelCreateNestedManyWithoutAccountInput
+    coupons?: CouponCreateNestedManyWithoutAccountInput
     isActive?: boolean
   }
 
@@ -53593,8 +55664,11 @@ export namespace Prisma {
     account_activities?: AccountActivitiesUncheckedCreateNestedManyWithoutAccountInput
     account_deliveries?: AccountDeliveryUncheckedCreateNestedManyWithoutAccountInput
     account_users?: AccountUserUncheckedCreateNestedManyWithoutAccountInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutAccountInput
     domain: string
-    StockLabel?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
+    stock_label?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
+    labels?: LabelUncheckedCreateNestedManyWithoutAccountInput
+    coupons?: CouponUncheckedCreateNestedManyWithoutAccountInput
     isActive?: boolean
   }
 
@@ -53642,8 +55716,11 @@ export namespace Prisma {
     account_activities?: AccountActivitiesUpdateManyWithoutAccountNestedInput
     account_deliveries?: AccountDeliveryUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUpdateManyWithoutAccountNestedInput
+    invoices?: InvoiceUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
-    StockLabel?: StockLabelUpdateManyWithoutAccountNestedInput
+    stock_label?: StockLabelUpdateManyWithoutAccountNestedInput
+    labels?: LabelUpdateManyWithoutAccountNestedInput
+    coupons?: CouponUpdateManyWithoutAccountNestedInput
     isActive?: BoolFieldUpdateOperationsInput | boolean
   }
 
@@ -53681,8 +55758,11 @@ export namespace Prisma {
     account_activities?: AccountActivitiesUncheckedUpdateManyWithoutAccountNestedInput
     account_deliveries?: AccountDeliveryUncheckedUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUncheckedUpdateManyWithoutAccountNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
-    StockLabel?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
+    stock_label?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
+    labels?: LabelUncheckedUpdateManyWithoutAccountNestedInput
+    coupons?: CouponUncheckedUpdateManyWithoutAccountNestedInput
     isActive?: BoolFieldUpdateOperationsInput | boolean
   }
 
@@ -53719,8 +55799,11 @@ export namespace Prisma {
     order?: OrderCreateNestedManyWithoutAccountInput
     account_deliveries?: AccountDeliveryCreateNestedManyWithoutAccountInput
     account_users?: AccountUserCreateNestedManyWithoutAccountInput
+    invoices?: InvoiceCreateNestedManyWithoutAccountInput
     domain: string
-    StockLabel?: StockLabelCreateNestedManyWithoutAccountInput
+    stock_label?: StockLabelCreateNestedManyWithoutAccountInput
+    labels?: LabelCreateNestedManyWithoutAccountInput
+    coupons?: CouponCreateNestedManyWithoutAccountInput
     account_configuration?: AccountConfigurationCreateNestedOneWithoutAccountInput
     isActive?: boolean
   }
@@ -53758,8 +55841,11 @@ export namespace Prisma {
     order?: OrderUncheckedCreateNestedManyWithoutAccountInput
     account_deliveries?: AccountDeliveryUncheckedCreateNestedManyWithoutAccountInput
     account_users?: AccountUserUncheckedCreateNestedManyWithoutAccountInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutAccountInput
     domain: string
-    StockLabel?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
+    stock_label?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
+    labels?: LabelUncheckedCreateNestedManyWithoutAccountInput
+    coupons?: CouponUncheckedCreateNestedManyWithoutAccountInput
     account_configuration?: AccountConfigurationUncheckedCreateNestedOneWithoutAccountInput
     isActive?: boolean
   }
@@ -53830,8 +55916,11 @@ export namespace Prisma {
     order?: OrderUpdateManyWithoutAccountNestedInput
     account_deliveries?: AccountDeliveryUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUpdateManyWithoutAccountNestedInput
+    invoices?: InvoiceUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
-    StockLabel?: StockLabelUpdateManyWithoutAccountNestedInput
+    stock_label?: StockLabelUpdateManyWithoutAccountNestedInput
+    labels?: LabelUpdateManyWithoutAccountNestedInput
+    coupons?: CouponUpdateManyWithoutAccountNestedInput
     account_configuration?: AccountConfigurationUpdateOneWithoutAccountNestedInput
     isActive?: BoolFieldUpdateOperationsInput | boolean
   }
@@ -53869,8 +55958,11 @@ export namespace Prisma {
     order?: OrderUncheckedUpdateManyWithoutAccountNestedInput
     account_deliveries?: AccountDeliveryUncheckedUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUncheckedUpdateManyWithoutAccountNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
-    StockLabel?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
+    stock_label?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
+    labels?: LabelUncheckedUpdateManyWithoutAccountNestedInput
+    coupons?: CouponUncheckedUpdateManyWithoutAccountNestedInput
     account_configuration?: AccountConfigurationUncheckedUpdateOneWithoutAccountNestedInput
     isActive?: BoolFieldUpdateOperationsInput | boolean
   }
@@ -54007,8 +56099,11 @@ export namespace Prisma {
     order?: OrderCreateNestedManyWithoutAccountInput
     account_activities?: AccountActivitiesCreateNestedManyWithoutAccountInput
     account_users?: AccountUserCreateNestedManyWithoutAccountInput
+    invoices?: InvoiceCreateNestedManyWithoutAccountInput
     domain: string
-    StockLabel?: StockLabelCreateNestedManyWithoutAccountInput
+    stock_label?: StockLabelCreateNestedManyWithoutAccountInput
+    labels?: LabelCreateNestedManyWithoutAccountInput
+    coupons?: CouponCreateNestedManyWithoutAccountInput
     account_configuration?: AccountConfigurationCreateNestedOneWithoutAccountInput
     isActive?: boolean
   }
@@ -54046,8 +56141,11 @@ export namespace Prisma {
     order?: OrderUncheckedCreateNestedManyWithoutAccountInput
     account_activities?: AccountActivitiesUncheckedCreateNestedManyWithoutAccountInput
     account_users?: AccountUserUncheckedCreateNestedManyWithoutAccountInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutAccountInput
     domain: string
-    StockLabel?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
+    stock_label?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
+    labels?: LabelUncheckedCreateNestedManyWithoutAccountInput
+    coupons?: CouponUncheckedCreateNestedManyWithoutAccountInput
     account_configuration?: AccountConfigurationUncheckedCreateNestedOneWithoutAccountInput
     isActive?: boolean
   }
@@ -54118,8 +56216,11 @@ export namespace Prisma {
     order?: OrderUpdateManyWithoutAccountNestedInput
     account_activities?: AccountActivitiesUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUpdateManyWithoutAccountNestedInput
+    invoices?: InvoiceUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
-    StockLabel?: StockLabelUpdateManyWithoutAccountNestedInput
+    stock_label?: StockLabelUpdateManyWithoutAccountNestedInput
+    labels?: LabelUpdateManyWithoutAccountNestedInput
+    coupons?: CouponUpdateManyWithoutAccountNestedInput
     account_configuration?: AccountConfigurationUpdateOneWithoutAccountNestedInput
     isActive?: BoolFieldUpdateOperationsInput | boolean
   }
@@ -54157,8 +56258,11 @@ export namespace Prisma {
     order?: OrderUncheckedUpdateManyWithoutAccountNestedInput
     account_activities?: AccountActivitiesUncheckedUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUncheckedUpdateManyWithoutAccountNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
-    StockLabel?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
+    stock_label?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
+    labels?: LabelUncheckedUpdateManyWithoutAccountNestedInput
+    coupons?: CouponUncheckedUpdateManyWithoutAccountNestedInput
     account_configuration?: AccountConfigurationUncheckedUpdateOneWithoutAccountNestedInput
     isActive?: BoolFieldUpdateOperationsInput | boolean
   }
@@ -54307,8 +56411,11 @@ export namespace Prisma {
     order?: OrderCreateNestedManyWithoutAccountInput
     account_activities?: AccountActivitiesCreateNestedManyWithoutAccountInput
     account_deliveries?: AccountDeliveryCreateNestedManyWithoutAccountInput
+    invoices?: InvoiceCreateNestedManyWithoutAccountInput
     domain: string
-    StockLabel?: StockLabelCreateNestedManyWithoutAccountInput
+    stock_label?: StockLabelCreateNestedManyWithoutAccountInput
+    labels?: LabelCreateNestedManyWithoutAccountInput
+    coupons?: CouponCreateNestedManyWithoutAccountInput
     account_configuration?: AccountConfigurationCreateNestedOneWithoutAccountInput
     isActive?: boolean
   }
@@ -54346,8 +56453,11 @@ export namespace Prisma {
     order?: OrderUncheckedCreateNestedManyWithoutAccountInput
     account_activities?: AccountActivitiesUncheckedCreateNestedManyWithoutAccountInput
     account_deliveries?: AccountDeliveryUncheckedCreateNestedManyWithoutAccountInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutAccountInput
     domain: string
-    StockLabel?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
+    stock_label?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
+    labels?: LabelUncheckedCreateNestedManyWithoutAccountInput
+    coupons?: CouponUncheckedCreateNestedManyWithoutAccountInput
     account_configuration?: AccountConfigurationUncheckedCreateNestedOneWithoutAccountInput
     isActive?: boolean
   }
@@ -54517,8 +56627,11 @@ export namespace Prisma {
     order?: OrderUpdateManyWithoutAccountNestedInput
     account_activities?: AccountActivitiesUpdateManyWithoutAccountNestedInput
     account_deliveries?: AccountDeliveryUpdateManyWithoutAccountNestedInput
+    invoices?: InvoiceUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
-    StockLabel?: StockLabelUpdateManyWithoutAccountNestedInput
+    stock_label?: StockLabelUpdateManyWithoutAccountNestedInput
+    labels?: LabelUpdateManyWithoutAccountNestedInput
+    coupons?: CouponUpdateManyWithoutAccountNestedInput
     account_configuration?: AccountConfigurationUpdateOneWithoutAccountNestedInput
     isActive?: BoolFieldUpdateOperationsInput | boolean
   }
@@ -54556,8 +56669,11 @@ export namespace Prisma {
     order?: OrderUncheckedUpdateManyWithoutAccountNestedInput
     account_activities?: AccountActivitiesUncheckedUpdateManyWithoutAccountNestedInput
     account_deliveries?: AccountDeliveryUncheckedUpdateManyWithoutAccountNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
-    StockLabel?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
+    stock_label?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
+    labels?: LabelUncheckedUpdateManyWithoutAccountNestedInput
+    coupons?: CouponUncheckedUpdateManyWithoutAccountNestedInput
     account_configuration?: AccountConfigurationUncheckedUpdateOneWithoutAccountNestedInput
     isActive?: BoolFieldUpdateOperationsInput | boolean
   }
@@ -54890,8 +57006,11 @@ export namespace Prisma {
     account_activities?: AccountActivitiesCreateNestedManyWithoutAccountInput
     account_deliveries?: AccountDeliveryCreateNestedManyWithoutAccountInput
     account_users?: AccountUserCreateNestedManyWithoutAccountInput
+    invoices?: InvoiceCreateNestedManyWithoutAccountInput
     domain: string
-    StockLabel?: StockLabelCreateNestedManyWithoutAccountInput
+    stock_label?: StockLabelCreateNestedManyWithoutAccountInput
+    labels?: LabelCreateNestedManyWithoutAccountInput
+    coupons?: CouponCreateNestedManyWithoutAccountInput
     account_configuration?: AccountConfigurationCreateNestedOneWithoutAccountInput
     isActive?: boolean
   }
@@ -54929,8 +57048,11 @@ export namespace Prisma {
     account_activities?: AccountActivitiesUncheckedCreateNestedManyWithoutAccountInput
     account_deliveries?: AccountDeliveryUncheckedCreateNestedManyWithoutAccountInput
     account_users?: AccountUserUncheckedCreateNestedManyWithoutAccountInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutAccountInput
     domain: string
-    StockLabel?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
+    stock_label?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
+    labels?: LabelUncheckedCreateNestedManyWithoutAccountInput
+    coupons?: CouponUncheckedCreateNestedManyWithoutAccountInput
     account_configuration?: AccountConfigurationUncheckedCreateNestedOneWithoutAccountInput
     isActive?: boolean
   }
@@ -55036,8 +57158,11 @@ export namespace Prisma {
     account_activities?: AccountActivitiesUpdateManyWithoutAccountNestedInput
     account_deliveries?: AccountDeliveryUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUpdateManyWithoutAccountNestedInput
+    invoices?: InvoiceUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
-    StockLabel?: StockLabelUpdateManyWithoutAccountNestedInput
+    stock_label?: StockLabelUpdateManyWithoutAccountNestedInput
+    labels?: LabelUpdateManyWithoutAccountNestedInput
+    coupons?: CouponUpdateManyWithoutAccountNestedInput
     account_configuration?: AccountConfigurationUpdateOneWithoutAccountNestedInput
     isActive?: BoolFieldUpdateOperationsInput | boolean
   }
@@ -55075,8 +57200,11 @@ export namespace Prisma {
     account_activities?: AccountActivitiesUncheckedUpdateManyWithoutAccountNestedInput
     account_deliveries?: AccountDeliveryUncheckedUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUncheckedUpdateManyWithoutAccountNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
-    StockLabel?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
+    stock_label?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
+    labels?: LabelUncheckedUpdateManyWithoutAccountNestedInput
+    coupons?: CouponUncheckedUpdateManyWithoutAccountNestedInput
     account_configuration?: AccountConfigurationUncheckedUpdateOneWithoutAccountNestedInput
     isActive?: BoolFieldUpdateOperationsInput | boolean
   }
@@ -55182,8 +57310,187 @@ export namespace Prisma {
     data: XOR<CampaignUpdateManyMutationInput, CampaignUncheckedUpdateManyWithoutCampaignInput>
   }
 
+  export type AccountCreateWithoutCouponsInput = {
+    id?: string
+    external_id?: number | null
+    name: string
+    email: string
+    cpf_cnpj?: string | null
+    market_name: string
+    phone?: string | null
+    whatsapp?: string | null
+    logo?: string | null
+    person_type: PersonType
+    site?: string | null
+    social_reason?: string | null
+    facebook_url?: string | null
+    instagram_url?: string | null
+    banner?: string | null
+    gender: GenderType
+    campaign?: CampaignCreateNestedManyWithoutAccountInput
+    street: string
+    number: string
+    complement?: string | null
+    district: string
+    city: string
+    state: string
+    zipcode: string
+    country: string
+    plan?: PlanCreateNestedOneWithoutAccountInput
+    subscription?: SubscriptionCreateNestedManyWithoutAccountInput
+    created_at?: Date | string
+    updated_at?: Date | string
+    order?: OrderCreateNestedManyWithoutAccountInput
+    account_activities?: AccountActivitiesCreateNestedManyWithoutAccountInput
+    account_deliveries?: AccountDeliveryCreateNestedManyWithoutAccountInput
+    account_users?: AccountUserCreateNestedManyWithoutAccountInput
+    invoices?: InvoiceCreateNestedManyWithoutAccountInput
+    domain: string
+    stock_label?: StockLabelCreateNestedManyWithoutAccountInput
+    labels?: LabelCreateNestedManyWithoutAccountInput
+    account_configuration?: AccountConfigurationCreateNestedOneWithoutAccountInput
+    isActive?: boolean
+  }
+
+  export type AccountUncheckedCreateWithoutCouponsInput = {
+    id?: string
+    external_id?: number | null
+    name: string
+    email: string
+    cpf_cnpj?: string | null
+    market_name: string
+    phone?: string | null
+    whatsapp?: string | null
+    logo?: string | null
+    person_type: PersonType
+    site?: string | null
+    social_reason?: string | null
+    facebook_url?: string | null
+    instagram_url?: string | null
+    banner?: string | null
+    gender: GenderType
+    campaign?: CampaignUncheckedCreateNestedManyWithoutAccountInput
+    street: string
+    number: string
+    complement?: string | null
+    district: string
+    city: string
+    state: string
+    zipcode: string
+    country: string
+    plan_id?: string | null
+    subscription?: SubscriptionUncheckedCreateNestedManyWithoutAccountInput
+    created_at?: Date | string
+    updated_at?: Date | string
+    order?: OrderUncheckedCreateNestedManyWithoutAccountInput
+    account_activities?: AccountActivitiesUncheckedCreateNestedManyWithoutAccountInput
+    account_deliveries?: AccountDeliveryUncheckedCreateNestedManyWithoutAccountInput
+    account_users?: AccountUserUncheckedCreateNestedManyWithoutAccountInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutAccountInput
+    domain: string
+    stock_label?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
+    labels?: LabelUncheckedCreateNestedManyWithoutAccountInput
+    account_configuration?: AccountConfigurationUncheckedCreateNestedOneWithoutAccountInput
+    isActive?: boolean
+  }
+
+  export type AccountCreateOrConnectWithoutCouponsInput = {
+    where: AccountWhereUniqueInput
+    create: XOR<AccountCreateWithoutCouponsInput, AccountUncheckedCreateWithoutCouponsInput>
+  }
+
+  export type AccountUpsertWithoutCouponsInput = {
+    update: XOR<AccountUpdateWithoutCouponsInput, AccountUncheckedUpdateWithoutCouponsInput>
+    create: XOR<AccountCreateWithoutCouponsInput, AccountUncheckedCreateWithoutCouponsInput>
+  }
+
+  export type AccountUpdateWithoutCouponsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
+    market_name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    person_type?: EnumPersonTypeFieldUpdateOperationsInput | PersonType
+    site?: NullableStringFieldUpdateOperationsInput | string | null
+    social_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    facebook_url?: NullableStringFieldUpdateOperationsInput | string | null
+    instagram_url?: NullableStringFieldUpdateOperationsInput | string | null
+    banner?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
+    campaign?: CampaignUpdateManyWithoutAccountNestedInput
+    street?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    zipcode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    plan?: PlanUpdateOneWithoutAccountNestedInput
+    subscription?: SubscriptionUpdateManyWithoutAccountNestedInput
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    order?: OrderUpdateManyWithoutAccountNestedInput
+    account_activities?: AccountActivitiesUpdateManyWithoutAccountNestedInput
+    account_deliveries?: AccountDeliveryUpdateManyWithoutAccountNestedInput
+    account_users?: AccountUserUpdateManyWithoutAccountNestedInput
+    invoices?: InvoiceUpdateManyWithoutAccountNestedInput
+    domain?: StringFieldUpdateOperationsInput | string
+    stock_label?: StockLabelUpdateManyWithoutAccountNestedInput
+    labels?: LabelUpdateManyWithoutAccountNestedInput
+    account_configuration?: AccountConfigurationUpdateOneWithoutAccountNestedInput
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type AccountUncheckedUpdateWithoutCouponsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
+    market_name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    person_type?: EnumPersonTypeFieldUpdateOperationsInput | PersonType
+    site?: NullableStringFieldUpdateOperationsInput | string | null
+    social_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    facebook_url?: NullableStringFieldUpdateOperationsInput | string | null
+    instagram_url?: NullableStringFieldUpdateOperationsInput | string | null
+    banner?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
+    campaign?: CampaignUncheckedUpdateManyWithoutAccountNestedInput
+    street?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    zipcode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    plan_id?: NullableStringFieldUpdateOperationsInput | string | null
+    subscription?: SubscriptionUncheckedUpdateManyWithoutAccountNestedInput
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    order?: OrderUncheckedUpdateManyWithoutAccountNestedInput
+    account_activities?: AccountActivitiesUncheckedUpdateManyWithoutAccountNestedInput
+    account_deliveries?: AccountDeliveryUncheckedUpdateManyWithoutAccountNestedInput
+    account_users?: AccountUserUncheckedUpdateManyWithoutAccountNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutAccountNestedInput
+    domain?: StringFieldUpdateOperationsInput | string
+    stock_label?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
+    labels?: LabelUncheckedUpdateManyWithoutAccountNestedInput
+    account_configuration?: AccountConfigurationUncheckedUpdateOneWithoutAccountNestedInput
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+  }
+
   export type LabelTypeCreateWithoutLabelsInput = {
     id?: string
+    external_id?: number | null
     name: string
     created_at?: Date | string
     updated_at?: Date | string
@@ -55191,6 +57498,7 @@ export namespace Prisma {
 
   export type LabelTypeUncheckedCreateWithoutLabelsInput = {
     id?: string
+    external_id?: number | null
     name: string
     created_at?: Date | string
     updated_at?: Date | string
@@ -55255,8 +57563,30 @@ export namespace Prisma {
     create: XOR<RegionCreateWithoutLabelsInput, RegionUncheckedCreateWithoutLabelsInput>
   }
 
+  export type WineryCreateWithoutLabelsInput = {
+    id?: string
+    external_id?: number | null
+    name: string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type WineryUncheckedCreateWithoutLabelsInput = {
+    id?: string
+    external_id?: number | null
+    name: string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type WineryCreateOrConnectWithoutLabelsInput = {
+    where: WineryWhereUniqueInput
+    create: XOR<WineryCreateWithoutLabelsInput, WineryUncheckedCreateWithoutLabelsInput>
+  }
+
   export type WineTypeCreateWithoutLabelsInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     created_at?: Date | string
@@ -55265,6 +57595,7 @@ export namespace Prisma {
 
   export type WineTypeUncheckedCreateWithoutLabelsInput = {
     id?: string
+    external_id?: number | null
     name: string
     slug: string
     created_at?: Date | string
@@ -55274,6 +57605,95 @@ export namespace Prisma {
   export type WineTypeCreateOrConnectWithoutLabelsInput = {
     where: WineTypeWhereUniqueInput
     create: XOR<WineTypeCreateWithoutLabelsInput, WineTypeUncheckedCreateWithoutLabelsInput>
+  }
+
+  export type AccountCreateWithoutLabelsInput = {
+    id?: string
+    external_id?: number | null
+    name: string
+    email: string
+    cpf_cnpj?: string | null
+    market_name: string
+    phone?: string | null
+    whatsapp?: string | null
+    logo?: string | null
+    person_type: PersonType
+    site?: string | null
+    social_reason?: string | null
+    facebook_url?: string | null
+    instagram_url?: string | null
+    banner?: string | null
+    gender: GenderType
+    campaign?: CampaignCreateNestedManyWithoutAccountInput
+    street: string
+    number: string
+    complement?: string | null
+    district: string
+    city: string
+    state: string
+    zipcode: string
+    country: string
+    plan?: PlanCreateNestedOneWithoutAccountInput
+    subscription?: SubscriptionCreateNestedManyWithoutAccountInput
+    created_at?: Date | string
+    updated_at?: Date | string
+    order?: OrderCreateNestedManyWithoutAccountInput
+    account_activities?: AccountActivitiesCreateNestedManyWithoutAccountInput
+    account_deliveries?: AccountDeliveryCreateNestedManyWithoutAccountInput
+    account_users?: AccountUserCreateNestedManyWithoutAccountInput
+    invoices?: InvoiceCreateNestedManyWithoutAccountInput
+    domain: string
+    stock_label?: StockLabelCreateNestedManyWithoutAccountInput
+    coupons?: CouponCreateNestedManyWithoutAccountInput
+    account_configuration?: AccountConfigurationCreateNestedOneWithoutAccountInput
+    isActive?: boolean
+  }
+
+  export type AccountUncheckedCreateWithoutLabelsInput = {
+    id?: string
+    external_id?: number | null
+    name: string
+    email: string
+    cpf_cnpj?: string | null
+    market_name: string
+    phone?: string | null
+    whatsapp?: string | null
+    logo?: string | null
+    person_type: PersonType
+    site?: string | null
+    social_reason?: string | null
+    facebook_url?: string | null
+    instagram_url?: string | null
+    banner?: string | null
+    gender: GenderType
+    campaign?: CampaignUncheckedCreateNestedManyWithoutAccountInput
+    street: string
+    number: string
+    complement?: string | null
+    district: string
+    city: string
+    state: string
+    zipcode: string
+    country: string
+    plan_id?: string | null
+    subscription?: SubscriptionUncheckedCreateNestedManyWithoutAccountInput
+    created_at?: Date | string
+    updated_at?: Date | string
+    order?: OrderUncheckedCreateNestedManyWithoutAccountInput
+    account_activities?: AccountActivitiesUncheckedCreateNestedManyWithoutAccountInput
+    account_deliveries?: AccountDeliveryUncheckedCreateNestedManyWithoutAccountInput
+    account_users?: AccountUserUncheckedCreateNestedManyWithoutAccountInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutAccountInput
+    domain: string
+    stock_label?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
+    coupons?: CouponUncheckedCreateNestedManyWithoutAccountInput
+    account_configuration?: AccountConfigurationUncheckedCreateNestedOneWithoutAccountInput
+    isActive?: boolean
+  }
+
+  export type AccountCreateOrConnectWithoutLabelsInput = {
+    where: AccountWhereUniqueInput
+    create: XOR<AccountCreateWithoutLabelsInput, AccountUncheckedCreateWithoutLabelsInput>
   }
 
   export type LabelGrapeCreateWithoutLabelInput = {
@@ -55345,15 +57765,17 @@ export namespace Prisma {
   }
 
   export type StockLabelCreateWithoutLabelsInput = {
-    account: AccountCreateNestedOneWithoutStockLabelInput
-    min_quantity: number
-    max_quantity: number
+    account: AccountCreateNestedOneWithoutStock_labelInput
+    quantity: number
+    min_quantity?: number
+    max_quantity?: number
   }
 
   export type StockLabelUncheckedCreateWithoutLabelsInput = {
     account_id: string
-    min_quantity: number
-    max_quantity: number
+    quantity: number
+    min_quantity?: number
+    max_quantity?: number
   }
 
   export type StockLabelCreateOrConnectWithoutLabelsInput = {
@@ -55401,6 +57823,7 @@ export namespace Prisma {
 
   export type LabelTypeUpdateWithoutLabelsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55408,6 +57831,7 @@ export namespace Prisma {
 
   export type LabelTypeUncheckedUpdateWithoutLabelsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55467,6 +57891,27 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type WineryUpsertWithoutLabelsInput = {
+    update: XOR<WineryUpdateWithoutLabelsInput, WineryUncheckedUpdateWithoutLabelsInput>
+    create: XOR<WineryCreateWithoutLabelsInput, WineryUncheckedCreateWithoutLabelsInput>
+  }
+
+  export type WineryUpdateWithoutLabelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WineryUncheckedUpdateWithoutLabelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type WineTypeUpsertWithoutLabelsInput = {
     update: XOR<WineTypeUpdateWithoutLabelsInput, WineTypeUncheckedUpdateWithoutLabelsInput>
     create: XOR<WineTypeCreateWithoutLabelsInput, WineTypeUncheckedCreateWithoutLabelsInput>
@@ -55474,6 +57919,7 @@ export namespace Prisma {
 
   export type WineTypeUpdateWithoutLabelsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -55482,10 +57928,100 @@ export namespace Prisma {
 
   export type WineTypeUncheckedUpdateWithoutLabelsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AccountUpsertWithoutLabelsInput = {
+    update: XOR<AccountUpdateWithoutLabelsInput, AccountUncheckedUpdateWithoutLabelsInput>
+    create: XOR<AccountCreateWithoutLabelsInput, AccountUncheckedCreateWithoutLabelsInput>
+  }
+
+  export type AccountUpdateWithoutLabelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
+    market_name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    person_type?: EnumPersonTypeFieldUpdateOperationsInput | PersonType
+    site?: NullableStringFieldUpdateOperationsInput | string | null
+    social_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    facebook_url?: NullableStringFieldUpdateOperationsInput | string | null
+    instagram_url?: NullableStringFieldUpdateOperationsInput | string | null
+    banner?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
+    campaign?: CampaignUpdateManyWithoutAccountNestedInput
+    street?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    zipcode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    plan?: PlanUpdateOneWithoutAccountNestedInput
+    subscription?: SubscriptionUpdateManyWithoutAccountNestedInput
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    order?: OrderUpdateManyWithoutAccountNestedInput
+    account_activities?: AccountActivitiesUpdateManyWithoutAccountNestedInput
+    account_deliveries?: AccountDeliveryUpdateManyWithoutAccountNestedInput
+    account_users?: AccountUserUpdateManyWithoutAccountNestedInput
+    invoices?: InvoiceUpdateManyWithoutAccountNestedInput
+    domain?: StringFieldUpdateOperationsInput | string
+    stock_label?: StockLabelUpdateManyWithoutAccountNestedInput
+    coupons?: CouponUpdateManyWithoutAccountNestedInput
+    account_configuration?: AccountConfigurationUpdateOneWithoutAccountNestedInput
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type AccountUncheckedUpdateWithoutLabelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
+    market_name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    person_type?: EnumPersonTypeFieldUpdateOperationsInput | PersonType
+    site?: NullableStringFieldUpdateOperationsInput | string | null
+    social_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    facebook_url?: NullableStringFieldUpdateOperationsInput | string | null
+    instagram_url?: NullableStringFieldUpdateOperationsInput | string | null
+    banner?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
+    campaign?: CampaignUncheckedUpdateManyWithoutAccountNestedInput
+    street?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    zipcode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    plan_id?: NullableStringFieldUpdateOperationsInput | string | null
+    subscription?: SubscriptionUncheckedUpdateManyWithoutAccountNestedInput
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    order?: OrderUncheckedUpdateManyWithoutAccountNestedInput
+    account_activities?: AccountActivitiesUncheckedUpdateManyWithoutAccountNestedInput
+    account_deliveries?: AccountDeliveryUncheckedUpdateManyWithoutAccountNestedInput
+    account_users?: AccountUserUncheckedUpdateManyWithoutAccountNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutAccountNestedInput
+    domain?: StringFieldUpdateOperationsInput | string
+    stock_label?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
+    coupons?: CouponUncheckedUpdateManyWithoutAccountNestedInput
+    account_configuration?: AccountConfigurationUncheckedUpdateOneWithoutAccountNestedInput
+    isActive?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type LabelGrapeUpsertWithWhereUniqueWithoutLabelInput = {
@@ -55570,7 +58106,7 @@ export namespace Prisma {
 
   export type StockLabelUpdateManyWithWhereWithoutLabelsInput = {
     where: StockLabelScalarWhereInput
-    data: XOR<StockLabelUpdateManyMutationInput, StockLabelUncheckedUpdateManyWithoutStockLabelInput>
+    data: XOR<StockLabelUpdateManyMutationInput, StockLabelUncheckedUpdateManyWithoutStock_labelInput>
   }
 
   export type StockHistoryUpsertWithWhereUniqueWithoutLabelsInput = {
@@ -55586,7 +58122,7 @@ export namespace Prisma {
 
   export type StockHistoryUpdateManyWithWhereWithoutLabelsInput = {
     where: StockHistoryScalarWhereInput
-    data: XOR<StockHistoryUpdateManyMutationInput, StockHistoryUncheckedUpdateManyWithoutStockHistoryInput>
+    data: XOR<StockHistoryUpdateManyMutationInput, StockHistoryUncheckedUpdateManyWithoutStock_historyInput>
   }
 
   export type StockHistoryScalarWhereInput = {
@@ -55607,23 +58143,26 @@ export namespace Prisma {
     external_id?: number | null
     name: string
     description?: string | null
-    labelType: LabelTypeCreateNestedOneWithoutLabelsInput
-    country: CountryCreateNestedOneWithoutLabelsInput
-    region: RegionCreateNestedOneWithoutLabelsInput
+    label_type: LabelTypeCreateNestedOneWithoutLabelsInput
+    country?: CountryCreateNestedOneWithoutLabelsInput
+    region?: RegionCreateNestedOneWithoutLabelsInput
+    winery?: WineryCreateNestedOneWithoutLabelsInput
     harvest?: string | null
-    wine_type: WineTypeCreateNestedOneWithoutLabelsInput
+    no_harvest?: boolean
+    wine_type?: WineTypeCreateNestedOneWithoutLabelsInput
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
     photo?: string | null
+    account: AccountCreateNestedOneWithoutLabelsInput
     is_active?: boolean
-    stock?: boolean
+    control_stock?: boolean
     created_at?: Date | string
     updated_at?: Date | string
     label_grape?: LabelGrapeCreateNestedManyWithoutLabelInput
     order_label?: OrderLabelCreateNestedManyWithoutLabelInput
-    StockLabel?: StockLabelCreateNestedManyWithoutLabelsInput
-    StockHistory?: StockHistoryCreateNestedManyWithoutLabelsInput
+    stock_label?: StockLabelCreateNestedManyWithoutLabelsInput
+    stock_history?: StockHistoryCreateNestedManyWithoutLabelsInput
   }
 
   export type LabelUncheckedCreateWithoutLabel_campaignInput = {
@@ -55632,22 +58171,25 @@ export namespace Prisma {
     name: string
     description?: string | null
     type_id: string
-    country_id: string
-    region_id: string
+    country_id?: string | null
+    region_id?: string | null
+    winery_id?: string | null
     harvest?: string | null
-    wine_type_id: string
+    no_harvest?: boolean
+    wine_type_id?: string | null
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
     photo?: string | null
+    account_id: string
     is_active?: boolean
-    stock?: boolean
+    control_stock?: boolean
     created_at?: Date | string
     updated_at?: Date | string
     label_grape?: LabelGrapeUncheckedCreateNestedManyWithoutLabelInput
     order_label?: OrderLabelUncheckedCreateNestedManyWithoutLabelInput
-    StockLabel?: StockLabelUncheckedCreateNestedManyWithoutLabelsInput
-    StockHistory?: StockHistoryUncheckedCreateNestedManyWithoutLabelsInput
+    stock_label?: StockLabelUncheckedCreateNestedManyWithoutLabelsInput
+    stock_history?: StockHistoryUncheckedCreateNestedManyWithoutLabelsInput
   }
 
   export type LabelCreateOrConnectWithoutLabel_campaignInput = {
@@ -55700,23 +58242,26 @@ export namespace Prisma {
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    labelType?: LabelTypeUpdateOneRequiredWithoutLabelsNestedInput
-    country?: CountryUpdateOneRequiredWithoutLabelsNestedInput
-    region?: RegionUpdateOneRequiredWithoutLabelsNestedInput
+    label_type?: LabelTypeUpdateOneRequiredWithoutLabelsNestedInput
+    country?: CountryUpdateOneWithoutLabelsNestedInput
+    region?: RegionUpdateOneWithoutLabelsNestedInput
+    winery?: WineryUpdateOneWithoutLabelsNestedInput
     harvest?: NullableStringFieldUpdateOperationsInput | string | null
-    wine_type?: WineTypeUpdateOneRequiredWithoutLabelsNestedInput
+    no_harvest?: BoolFieldUpdateOperationsInput | boolean
+    wine_type?: WineTypeUpdateOneWithoutLabelsNestedInput
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
     photo?: NullableStringFieldUpdateOperationsInput | string | null
+    account?: AccountUpdateOneRequiredWithoutLabelsNestedInput
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    stock?: BoolFieldUpdateOperationsInput | boolean
+    control_stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     label_grape?: LabelGrapeUpdateManyWithoutLabelNestedInput
     order_label?: OrderLabelUpdateManyWithoutLabelNestedInput
-    StockLabel?: StockLabelUpdateManyWithoutLabelsNestedInput
-    StockHistory?: StockHistoryUpdateManyWithoutLabelsNestedInput
+    stock_label?: StockLabelUpdateManyWithoutLabelsNestedInput
+    stock_history?: StockHistoryUpdateManyWithoutLabelsNestedInput
   }
 
   export type LabelUncheckedUpdateWithoutLabel_campaignInput = {
@@ -55725,22 +58270,25 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type_id?: StringFieldUpdateOperationsInput | string
-    country_id?: StringFieldUpdateOperationsInput | string
-    region_id?: StringFieldUpdateOperationsInput | string
+    country_id?: NullableStringFieldUpdateOperationsInput | string | null
+    region_id?: NullableStringFieldUpdateOperationsInput | string | null
+    winery_id?: NullableStringFieldUpdateOperationsInput | string | null
     harvest?: NullableStringFieldUpdateOperationsInput | string | null
-    wine_type_id?: StringFieldUpdateOperationsInput | string
+    no_harvest?: BoolFieldUpdateOperationsInput | boolean
+    wine_type_id?: NullableStringFieldUpdateOperationsInput | string | null
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
     photo?: NullableStringFieldUpdateOperationsInput | string | null
+    account_id?: StringFieldUpdateOperationsInput | string
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    stock?: BoolFieldUpdateOperationsInput | boolean
+    control_stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     label_grape?: LabelGrapeUncheckedUpdateManyWithoutLabelNestedInput
     order_label?: OrderLabelUncheckedUpdateManyWithoutLabelNestedInput
-    StockLabel?: StockLabelUncheckedUpdateManyWithoutLabelsNestedInput
-    StockHistory?: StockHistoryUncheckedUpdateManyWithoutLabelsNestedInput
+    stock_label?: StockLabelUncheckedUpdateManyWithoutLabelsNestedInput
+    stock_history?: StockHistoryUncheckedUpdateManyWithoutLabelsNestedInput
   }
 
   export type CampaignUpsertWithoutLabel_campaignInput = {
@@ -55783,23 +58331,26 @@ export namespace Prisma {
     external_id?: number | null
     name: string
     description?: string | null
-    labelType: LabelTypeCreateNestedOneWithoutLabelsInput
-    country: CountryCreateNestedOneWithoutLabelsInput
-    region: RegionCreateNestedOneWithoutLabelsInput
+    label_type: LabelTypeCreateNestedOneWithoutLabelsInput
+    country?: CountryCreateNestedOneWithoutLabelsInput
+    region?: RegionCreateNestedOneWithoutLabelsInput
+    winery?: WineryCreateNestedOneWithoutLabelsInput
     harvest?: string | null
-    wine_type: WineTypeCreateNestedOneWithoutLabelsInput
+    no_harvest?: boolean
+    wine_type?: WineTypeCreateNestedOneWithoutLabelsInput
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
     photo?: string | null
+    account: AccountCreateNestedOneWithoutLabelsInput
     is_active?: boolean
-    stock?: boolean
+    control_stock?: boolean
     created_at?: Date | string
     updated_at?: Date | string
     order_label?: OrderLabelCreateNestedManyWithoutLabelInput
     label_campaign?: LabelCampaignCreateNestedManyWithoutLabelInput
-    StockLabel?: StockLabelCreateNestedManyWithoutLabelsInput
-    StockHistory?: StockHistoryCreateNestedManyWithoutLabelsInput
+    stock_label?: StockLabelCreateNestedManyWithoutLabelsInput
+    stock_history?: StockHistoryCreateNestedManyWithoutLabelsInput
   }
 
   export type LabelUncheckedCreateWithoutLabel_grapeInput = {
@@ -55808,22 +58359,25 @@ export namespace Prisma {
     name: string
     description?: string | null
     type_id: string
-    country_id: string
-    region_id: string
+    country_id?: string | null
+    region_id?: string | null
+    winery_id?: string | null
     harvest?: string | null
-    wine_type_id: string
+    no_harvest?: boolean
+    wine_type_id?: string | null
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
     photo?: string | null
+    account_id: string
     is_active?: boolean
-    stock?: boolean
+    control_stock?: boolean
     created_at?: Date | string
     updated_at?: Date | string
     order_label?: OrderLabelUncheckedCreateNestedManyWithoutLabelInput
     label_campaign?: LabelCampaignUncheckedCreateNestedManyWithoutLabelInput
-    StockLabel?: StockLabelUncheckedCreateNestedManyWithoutLabelsInput
-    StockHistory?: StockHistoryUncheckedCreateNestedManyWithoutLabelsInput
+    stock_label?: StockLabelUncheckedCreateNestedManyWithoutLabelsInput
+    stock_history?: StockHistoryUncheckedCreateNestedManyWithoutLabelsInput
   }
 
   export type LabelCreateOrConnectWithoutLabel_grapeInput = {
@@ -55862,23 +58416,26 @@ export namespace Prisma {
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    labelType?: LabelTypeUpdateOneRequiredWithoutLabelsNestedInput
-    country?: CountryUpdateOneRequiredWithoutLabelsNestedInput
-    region?: RegionUpdateOneRequiredWithoutLabelsNestedInput
+    label_type?: LabelTypeUpdateOneRequiredWithoutLabelsNestedInput
+    country?: CountryUpdateOneWithoutLabelsNestedInput
+    region?: RegionUpdateOneWithoutLabelsNestedInput
+    winery?: WineryUpdateOneWithoutLabelsNestedInput
     harvest?: NullableStringFieldUpdateOperationsInput | string | null
-    wine_type?: WineTypeUpdateOneRequiredWithoutLabelsNestedInput
+    no_harvest?: BoolFieldUpdateOperationsInput | boolean
+    wine_type?: WineTypeUpdateOneWithoutLabelsNestedInput
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
     photo?: NullableStringFieldUpdateOperationsInput | string | null
+    account?: AccountUpdateOneRequiredWithoutLabelsNestedInput
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    stock?: BoolFieldUpdateOperationsInput | boolean
+    control_stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     order_label?: OrderLabelUpdateManyWithoutLabelNestedInput
     label_campaign?: LabelCampaignUpdateManyWithoutLabelNestedInput
-    StockLabel?: StockLabelUpdateManyWithoutLabelsNestedInput
-    StockHistory?: StockHistoryUpdateManyWithoutLabelsNestedInput
+    stock_label?: StockLabelUpdateManyWithoutLabelsNestedInput
+    stock_history?: StockHistoryUpdateManyWithoutLabelsNestedInput
   }
 
   export type LabelUncheckedUpdateWithoutLabel_grapeInput = {
@@ -55887,22 +58444,25 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type_id?: StringFieldUpdateOperationsInput | string
-    country_id?: StringFieldUpdateOperationsInput | string
-    region_id?: StringFieldUpdateOperationsInput | string
+    country_id?: NullableStringFieldUpdateOperationsInput | string | null
+    region_id?: NullableStringFieldUpdateOperationsInput | string | null
+    winery_id?: NullableStringFieldUpdateOperationsInput | string | null
     harvest?: NullableStringFieldUpdateOperationsInput | string | null
-    wine_type_id?: StringFieldUpdateOperationsInput | string
+    no_harvest?: BoolFieldUpdateOperationsInput | boolean
+    wine_type_id?: NullableStringFieldUpdateOperationsInput | string | null
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
     photo?: NullableStringFieldUpdateOperationsInput | string | null
+    account_id?: StringFieldUpdateOperationsInput | string
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    stock?: BoolFieldUpdateOperationsInput | boolean
+    control_stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     order_label?: OrderLabelUncheckedUpdateManyWithoutLabelNestedInput
     label_campaign?: LabelCampaignUncheckedUpdateManyWithoutLabelNestedInput
-    StockLabel?: StockLabelUncheckedUpdateManyWithoutLabelsNestedInput
-    StockHistory?: StockHistoryUncheckedUpdateManyWithoutLabelsNestedInput
+    stock_label?: StockLabelUncheckedUpdateManyWithoutLabelsNestedInput
+    stock_history?: StockHistoryUncheckedUpdateManyWithoutLabelsNestedInput
   }
 
   export type GrapeUpsertWithoutLabelGrapeInput = {
@@ -55964,101 +58524,84 @@ export namespace Prisma {
     data: XOR<LabelGrapeUpdateManyMutationInput, LabelGrapeUncheckedUpdateManyWithoutLabelGrapeInput>
   }
 
-  export type LabelCreateWithoutLabelTypeInput = {
+  export type LabelCreateWithoutLabel_typeInput = {
     id?: string
     external_id?: number | null
     name: string
     description?: string | null
-    country: CountryCreateNestedOneWithoutLabelsInput
-    region: RegionCreateNestedOneWithoutLabelsInput
+    country?: CountryCreateNestedOneWithoutLabelsInput
+    region?: RegionCreateNestedOneWithoutLabelsInput
+    winery?: WineryCreateNestedOneWithoutLabelsInput
     harvest?: string | null
-    wine_type: WineTypeCreateNestedOneWithoutLabelsInput
+    no_harvest?: boolean
+    wine_type?: WineTypeCreateNestedOneWithoutLabelsInput
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
     photo?: string | null
+    account: AccountCreateNestedOneWithoutLabelsInput
     is_active?: boolean
-    stock?: boolean
+    control_stock?: boolean
     created_at?: Date | string
     updated_at?: Date | string
     label_grape?: LabelGrapeCreateNestedManyWithoutLabelInput
     order_label?: OrderLabelCreateNestedManyWithoutLabelInput
     label_campaign?: LabelCampaignCreateNestedManyWithoutLabelInput
-    StockLabel?: StockLabelCreateNestedManyWithoutLabelsInput
-    StockHistory?: StockHistoryCreateNestedManyWithoutLabelsInput
+    stock_label?: StockLabelCreateNestedManyWithoutLabelsInput
+    stock_history?: StockHistoryCreateNestedManyWithoutLabelsInput
   }
 
-  export type LabelUncheckedCreateWithoutLabelTypeInput = {
+  export type LabelUncheckedCreateWithoutLabel_typeInput = {
     id?: string
     external_id?: number | null
     name: string
     description?: string | null
-    country_id: string
-    region_id: string
+    country_id?: string | null
+    region_id?: string | null
+    winery_id?: string | null
     harvest?: string | null
-    wine_type_id: string
+    no_harvest?: boolean
+    wine_type_id?: string | null
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
     photo?: string | null
+    account_id: string
     is_active?: boolean
-    stock?: boolean
+    control_stock?: boolean
     created_at?: Date | string
     updated_at?: Date | string
     label_grape?: LabelGrapeUncheckedCreateNestedManyWithoutLabelInput
     order_label?: OrderLabelUncheckedCreateNestedManyWithoutLabelInput
     label_campaign?: LabelCampaignUncheckedCreateNestedManyWithoutLabelInput
-    StockLabel?: StockLabelUncheckedCreateNestedManyWithoutLabelsInput
-    StockHistory?: StockHistoryUncheckedCreateNestedManyWithoutLabelsInput
+    stock_label?: StockLabelUncheckedCreateNestedManyWithoutLabelsInput
+    stock_history?: StockHistoryUncheckedCreateNestedManyWithoutLabelsInput
   }
 
-  export type LabelCreateOrConnectWithoutLabelTypeInput = {
+  export type LabelCreateOrConnectWithoutLabel_typeInput = {
     where: LabelWhereUniqueInput
-    create: XOR<LabelCreateWithoutLabelTypeInput, LabelUncheckedCreateWithoutLabelTypeInput>
+    create: XOR<LabelCreateWithoutLabel_typeInput, LabelUncheckedCreateWithoutLabel_typeInput>
   }
 
-  export type LabelCreateManyLabelTypeInputEnvelope = {
-    data: Enumerable<LabelCreateManyLabelTypeInput>
+  export type LabelCreateManyLabel_typeInputEnvelope = {
+    data: Enumerable<LabelCreateManyLabel_typeInput>
     skipDuplicates?: boolean
   }
 
-  export type LabelUpsertWithWhereUniqueWithoutLabelTypeInput = {
+  export type LabelUpsertWithWhereUniqueWithoutLabel_typeInput = {
     where: LabelWhereUniqueInput
-    update: XOR<LabelUpdateWithoutLabelTypeInput, LabelUncheckedUpdateWithoutLabelTypeInput>
-    create: XOR<LabelCreateWithoutLabelTypeInput, LabelUncheckedCreateWithoutLabelTypeInput>
+    update: XOR<LabelUpdateWithoutLabel_typeInput, LabelUncheckedUpdateWithoutLabel_typeInput>
+    create: XOR<LabelCreateWithoutLabel_typeInput, LabelUncheckedCreateWithoutLabel_typeInput>
   }
 
-  export type LabelUpdateWithWhereUniqueWithoutLabelTypeInput = {
+  export type LabelUpdateWithWhereUniqueWithoutLabel_typeInput = {
     where: LabelWhereUniqueInput
-    data: XOR<LabelUpdateWithoutLabelTypeInput, LabelUncheckedUpdateWithoutLabelTypeInput>
+    data: XOR<LabelUpdateWithoutLabel_typeInput, LabelUncheckedUpdateWithoutLabel_typeInput>
   }
 
-  export type LabelUpdateManyWithWhereWithoutLabelTypeInput = {
+  export type LabelUpdateManyWithWhereWithoutLabel_typeInput = {
     where: LabelScalarWhereInput
     data: XOR<LabelUpdateManyMutationInput, LabelUncheckedUpdateManyWithoutLabelsInput>
-  }
-
-  export type LabelScalarWhereInput = {
-    AND?: Enumerable<LabelScalarWhereInput>
-    OR?: Enumerable<LabelScalarWhereInput>
-    NOT?: Enumerable<LabelScalarWhereInput>
-    id?: StringFilter | string
-    external_id?: IntNullableFilter | number | null
-    name?: StringFilter | string
-    description?: StringNullableFilter | string | null
-    type_id?: StringFilter | string
-    country_id?: StringFilter | string
-    region_id?: StringFilter | string
-    harvest?: StringNullableFilter | string | null
-    wine_type_id?: StringFilter | string
-    alcohol_percentage?: DecimalNullableFilter | Decimal | DecimalJsLike | number | string | null
-    price?: FloatFilter | number
-    promotional_price?: FloatNullableFilter | number | null
-    photo?: StringNullableFilter | string | null
-    is_active?: BoolFilter | boolean
-    stock?: BoolFilter | boolean
-    created_at?: DateTimeFilter | Date | string
-    updated_at?: DateTimeFilter | Date | string
   }
 
   export type StateCreateWithoutCountryInput = {
@@ -56098,23 +58641,26 @@ export namespace Prisma {
     external_id?: number | null
     name: string
     description?: string | null
-    labelType: LabelTypeCreateNestedOneWithoutLabelsInput
-    region: RegionCreateNestedOneWithoutLabelsInput
+    label_type: LabelTypeCreateNestedOneWithoutLabelsInput
+    region?: RegionCreateNestedOneWithoutLabelsInput
+    winery?: WineryCreateNestedOneWithoutLabelsInput
     harvest?: string | null
-    wine_type: WineTypeCreateNestedOneWithoutLabelsInput
+    no_harvest?: boolean
+    wine_type?: WineTypeCreateNestedOneWithoutLabelsInput
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
     photo?: string | null
+    account: AccountCreateNestedOneWithoutLabelsInput
     is_active?: boolean
-    stock?: boolean
+    control_stock?: boolean
     created_at?: Date | string
     updated_at?: Date | string
     label_grape?: LabelGrapeCreateNestedManyWithoutLabelInput
     order_label?: OrderLabelCreateNestedManyWithoutLabelInput
     label_campaign?: LabelCampaignCreateNestedManyWithoutLabelInput
-    StockLabel?: StockLabelCreateNestedManyWithoutLabelsInput
-    StockHistory?: StockHistoryCreateNestedManyWithoutLabelsInput
+    stock_label?: StockLabelCreateNestedManyWithoutLabelsInput
+    stock_history?: StockHistoryCreateNestedManyWithoutLabelsInput
   }
 
   export type LabelUncheckedCreateWithoutCountryInput = {
@@ -56123,22 +58669,25 @@ export namespace Prisma {
     name: string
     description?: string | null
     type_id: string
-    region_id: string
+    region_id?: string | null
+    winery_id?: string | null
     harvest?: string | null
-    wine_type_id: string
+    no_harvest?: boolean
+    wine_type_id?: string | null
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
     photo?: string | null
+    account_id: string
     is_active?: boolean
-    stock?: boolean
+    control_stock?: boolean
     created_at?: Date | string
     updated_at?: Date | string
     label_grape?: LabelGrapeUncheckedCreateNestedManyWithoutLabelInput
     order_label?: OrderLabelUncheckedCreateNestedManyWithoutLabelInput
     label_campaign?: LabelCampaignUncheckedCreateNestedManyWithoutLabelInput
-    StockLabel?: StockLabelUncheckedCreateNestedManyWithoutLabelsInput
-    StockHistory?: StockHistoryUncheckedCreateNestedManyWithoutLabelsInput
+    stock_label?: StockLabelUncheckedCreateNestedManyWithoutLabelsInput
+    stock_history?: StockHistoryUncheckedCreateNestedManyWithoutLabelsInput
   }
 
   export type LabelCreateOrConnectWithoutCountryInput = {
@@ -56482,23 +59031,26 @@ export namespace Prisma {
     external_id?: number | null
     name: string
     description?: string | null
-    labelType: LabelTypeCreateNestedOneWithoutLabelsInput
-    country: CountryCreateNestedOneWithoutLabelsInput
+    label_type: LabelTypeCreateNestedOneWithoutLabelsInput
+    country?: CountryCreateNestedOneWithoutLabelsInput
+    winery?: WineryCreateNestedOneWithoutLabelsInput
     harvest?: string | null
-    wine_type: WineTypeCreateNestedOneWithoutLabelsInput
+    no_harvest?: boolean
+    wine_type?: WineTypeCreateNestedOneWithoutLabelsInput
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
     photo?: string | null
+    account: AccountCreateNestedOneWithoutLabelsInput
     is_active?: boolean
-    stock?: boolean
+    control_stock?: boolean
     created_at?: Date | string
     updated_at?: Date | string
     label_grape?: LabelGrapeCreateNestedManyWithoutLabelInput
     order_label?: OrderLabelCreateNestedManyWithoutLabelInput
     label_campaign?: LabelCampaignCreateNestedManyWithoutLabelInput
-    StockLabel?: StockLabelCreateNestedManyWithoutLabelsInput
-    StockHistory?: StockHistoryCreateNestedManyWithoutLabelsInput
+    stock_label?: StockLabelCreateNestedManyWithoutLabelsInput
+    stock_history?: StockHistoryCreateNestedManyWithoutLabelsInput
   }
 
   export type LabelUncheckedCreateWithoutRegionInput = {
@@ -56507,22 +59059,25 @@ export namespace Prisma {
     name: string
     description?: string | null
     type_id: string
-    country_id: string
+    country_id?: string | null
+    winery_id?: string | null
     harvest?: string | null
-    wine_type_id: string
+    no_harvest?: boolean
+    wine_type_id?: string | null
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
     photo?: string | null
+    account_id: string
     is_active?: boolean
-    stock?: boolean
+    control_stock?: boolean
     created_at?: Date | string
     updated_at?: Date | string
     label_grape?: LabelGrapeUncheckedCreateNestedManyWithoutLabelInput
     order_label?: OrderLabelUncheckedCreateNestedManyWithoutLabelInput
     label_campaign?: LabelCampaignUncheckedCreateNestedManyWithoutLabelInput
-    StockLabel?: StockLabelUncheckedCreateNestedManyWithoutLabelsInput
-    StockHistory?: StockHistoryUncheckedCreateNestedManyWithoutLabelsInput
+    stock_label?: StockLabelUncheckedCreateNestedManyWithoutLabelsInput
+    stock_history?: StockHistoryUncheckedCreateNestedManyWithoutLabelsInput
   }
 
   export type LabelCreateOrConnectWithoutRegionInput = {
@@ -56666,23 +59221,26 @@ export namespace Prisma {
     external_id?: number | null
     name: string
     description?: string | null
-    labelType: LabelTypeCreateNestedOneWithoutLabelsInput
-    country: CountryCreateNestedOneWithoutLabelsInput
-    region: RegionCreateNestedOneWithoutLabelsInput
+    label_type: LabelTypeCreateNestedOneWithoutLabelsInput
+    country?: CountryCreateNestedOneWithoutLabelsInput
+    region?: RegionCreateNestedOneWithoutLabelsInput
+    winery?: WineryCreateNestedOneWithoutLabelsInput
     harvest?: string | null
+    no_harvest?: boolean
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
     photo?: string | null
+    account: AccountCreateNestedOneWithoutLabelsInput
     is_active?: boolean
-    stock?: boolean
+    control_stock?: boolean
     created_at?: Date | string
     updated_at?: Date | string
     label_grape?: LabelGrapeCreateNestedManyWithoutLabelInput
     order_label?: OrderLabelCreateNestedManyWithoutLabelInput
     label_campaign?: LabelCampaignCreateNestedManyWithoutLabelInput
-    StockLabel?: StockLabelCreateNestedManyWithoutLabelsInput
-    StockHistory?: StockHistoryCreateNestedManyWithoutLabelsInput
+    stock_label?: StockLabelCreateNestedManyWithoutLabelsInput
+    stock_history?: StockHistoryCreateNestedManyWithoutLabelsInput
   }
 
   export type LabelUncheckedCreateWithoutWine_typeInput = {
@@ -56691,22 +59249,25 @@ export namespace Prisma {
     name: string
     description?: string | null
     type_id: string
-    country_id: string
-    region_id: string
+    country_id?: string | null
+    region_id?: string | null
+    winery_id?: string | null
     harvest?: string | null
+    no_harvest?: boolean
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
     photo?: string | null
+    account_id: string
     is_active?: boolean
-    stock?: boolean
+    control_stock?: boolean
     created_at?: Date | string
     updated_at?: Date | string
     label_grape?: LabelGrapeUncheckedCreateNestedManyWithoutLabelInput
     order_label?: OrderLabelUncheckedCreateNestedManyWithoutLabelInput
     label_campaign?: LabelCampaignUncheckedCreateNestedManyWithoutLabelInput
-    StockLabel?: StockLabelUncheckedCreateNestedManyWithoutLabelsInput
-    StockHistory?: StockHistoryUncheckedCreateNestedManyWithoutLabelsInput
+    stock_label?: StockLabelUncheckedCreateNestedManyWithoutLabelsInput
+    stock_history?: StockHistoryUncheckedCreateNestedManyWithoutLabelsInput
   }
 
   export type LabelCreateOrConnectWithoutWine_typeInput = {
@@ -56768,8 +59329,11 @@ export namespace Prisma {
     account_activities?: AccountActivitiesCreateNestedManyWithoutAccountInput
     account_deliveries?: AccountDeliveryCreateNestedManyWithoutAccountInput
     account_users?: AccountUserCreateNestedManyWithoutAccountInput
+    invoices?: InvoiceCreateNestedManyWithoutAccountInput
     domain: string
-    StockLabel?: StockLabelCreateNestedManyWithoutAccountInput
+    stock_label?: StockLabelCreateNestedManyWithoutAccountInput
+    labels?: LabelCreateNestedManyWithoutAccountInput
+    coupons?: CouponCreateNestedManyWithoutAccountInput
     account_configuration?: AccountConfigurationCreateNestedOneWithoutAccountInput
     isActive?: boolean
   }
@@ -56807,8 +59371,11 @@ export namespace Prisma {
     account_activities?: AccountActivitiesUncheckedCreateNestedManyWithoutAccountInput
     account_deliveries?: AccountDeliveryUncheckedCreateNestedManyWithoutAccountInput
     account_users?: AccountUserUncheckedCreateNestedManyWithoutAccountInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutAccountInput
     domain: string
-    StockLabel?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
+    stock_label?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
+    labels?: LabelUncheckedCreateNestedManyWithoutAccountInput
+    coupons?: CouponUncheckedCreateNestedManyWithoutAccountInput
     account_configuration?: AccountConfigurationUncheckedCreateNestedOneWithoutAccountInput
     isActive?: boolean
   }
@@ -56844,12 +59411,14 @@ export namespace Prisma {
 
   export type InvoiceCreateWithoutOrderInput = {
     id?: string
+    account: AccountCreateNestedOneWithoutInvoicesInput
     created_at?: Date | string
     updated_at?: Date | string
   }
 
   export type InvoiceUncheckedCreateWithoutOrderInput = {
     id?: string
+    account_id: string
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -56902,8 +59471,11 @@ export namespace Prisma {
     account_activities?: AccountActivitiesUpdateManyWithoutAccountNestedInput
     account_deliveries?: AccountDeliveryUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUpdateManyWithoutAccountNestedInput
+    invoices?: InvoiceUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
-    StockLabel?: StockLabelUpdateManyWithoutAccountNestedInput
+    stock_label?: StockLabelUpdateManyWithoutAccountNestedInput
+    labels?: LabelUpdateManyWithoutAccountNestedInput
+    coupons?: CouponUpdateManyWithoutAccountNestedInput
     account_configuration?: AccountConfigurationUpdateOneWithoutAccountNestedInput
     isActive?: BoolFieldUpdateOperationsInput | boolean
   }
@@ -56941,8 +59513,11 @@ export namespace Prisma {
     account_activities?: AccountActivitiesUncheckedUpdateManyWithoutAccountNestedInput
     account_deliveries?: AccountDeliveryUncheckedUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUncheckedUpdateManyWithoutAccountNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
-    StockLabel?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
+    stock_label?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
+    labels?: LabelUncheckedUpdateManyWithoutAccountNestedInput
+    coupons?: CouponUncheckedUpdateManyWithoutAccountNestedInput
     account_configuration?: AccountConfigurationUncheckedUpdateOneWithoutAccountNestedInput
     isActive?: BoolFieldUpdateOperationsInput | boolean
   }
@@ -56979,16 +59554,6 @@ export namespace Prisma {
     data: XOR<InvoiceUpdateManyMutationInput, InvoiceUncheckedUpdateManyWithoutInvoiceInput>
   }
 
-  export type InvoiceScalarWhereInput = {
-    AND?: Enumerable<InvoiceScalarWhereInput>
-    OR?: Enumerable<InvoiceScalarWhereInput>
-    NOT?: Enumerable<InvoiceScalarWhereInput>
-    id?: StringFilter | string
-    order_id?: StringFilter | string
-    created_at?: DateTimeFilter | Date | string
-    updated_at?: DateTimeFilter | Date | string
-  }
-
   export type OrderCreateWithoutOrder_labelInput = {
     id?: string
     external_id?: number | null
@@ -57023,23 +59588,26 @@ export namespace Prisma {
     external_id?: number | null
     name: string
     description?: string | null
-    labelType: LabelTypeCreateNestedOneWithoutLabelsInput
-    country: CountryCreateNestedOneWithoutLabelsInput
-    region: RegionCreateNestedOneWithoutLabelsInput
+    label_type: LabelTypeCreateNestedOneWithoutLabelsInput
+    country?: CountryCreateNestedOneWithoutLabelsInput
+    region?: RegionCreateNestedOneWithoutLabelsInput
+    winery?: WineryCreateNestedOneWithoutLabelsInput
     harvest?: string | null
-    wine_type: WineTypeCreateNestedOneWithoutLabelsInput
+    no_harvest?: boolean
+    wine_type?: WineTypeCreateNestedOneWithoutLabelsInput
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
     photo?: string | null
+    account: AccountCreateNestedOneWithoutLabelsInput
     is_active?: boolean
-    stock?: boolean
+    control_stock?: boolean
     created_at?: Date | string
     updated_at?: Date | string
     label_grape?: LabelGrapeCreateNestedManyWithoutLabelInput
     label_campaign?: LabelCampaignCreateNestedManyWithoutLabelInput
-    StockLabel?: StockLabelCreateNestedManyWithoutLabelsInput
-    StockHistory?: StockHistoryCreateNestedManyWithoutLabelsInput
+    stock_label?: StockLabelCreateNestedManyWithoutLabelsInput
+    stock_history?: StockHistoryCreateNestedManyWithoutLabelsInput
   }
 
   export type LabelUncheckedCreateWithoutOrder_labelInput = {
@@ -57048,22 +59616,25 @@ export namespace Prisma {
     name: string
     description?: string | null
     type_id: string
-    country_id: string
-    region_id: string
+    country_id?: string | null
+    region_id?: string | null
+    winery_id?: string | null
     harvest?: string | null
-    wine_type_id: string
+    no_harvest?: boolean
+    wine_type_id?: string | null
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
     photo?: string | null
+    account_id: string
     is_active?: boolean
-    stock?: boolean
+    control_stock?: boolean
     created_at?: Date | string
     updated_at?: Date | string
     label_grape?: LabelGrapeUncheckedCreateNestedManyWithoutLabelInput
     label_campaign?: LabelCampaignUncheckedCreateNestedManyWithoutLabelInput
-    StockLabel?: StockLabelUncheckedCreateNestedManyWithoutLabelsInput
-    StockHistory?: StockHistoryUncheckedCreateNestedManyWithoutLabelsInput
+    stock_label?: StockLabelUncheckedCreateNestedManyWithoutLabelsInput
+    stock_history?: StockHistoryUncheckedCreateNestedManyWithoutLabelsInput
   }
 
   export type LabelCreateOrConnectWithoutOrder_labelInput = {
@@ -57110,23 +59681,26 @@ export namespace Prisma {
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    labelType?: LabelTypeUpdateOneRequiredWithoutLabelsNestedInput
-    country?: CountryUpdateOneRequiredWithoutLabelsNestedInput
-    region?: RegionUpdateOneRequiredWithoutLabelsNestedInput
+    label_type?: LabelTypeUpdateOneRequiredWithoutLabelsNestedInput
+    country?: CountryUpdateOneWithoutLabelsNestedInput
+    region?: RegionUpdateOneWithoutLabelsNestedInput
+    winery?: WineryUpdateOneWithoutLabelsNestedInput
     harvest?: NullableStringFieldUpdateOperationsInput | string | null
-    wine_type?: WineTypeUpdateOneRequiredWithoutLabelsNestedInput
+    no_harvest?: BoolFieldUpdateOperationsInput | boolean
+    wine_type?: WineTypeUpdateOneWithoutLabelsNestedInput
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
     photo?: NullableStringFieldUpdateOperationsInput | string | null
+    account?: AccountUpdateOneRequiredWithoutLabelsNestedInput
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    stock?: BoolFieldUpdateOperationsInput | boolean
+    control_stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     label_grape?: LabelGrapeUpdateManyWithoutLabelNestedInput
     label_campaign?: LabelCampaignUpdateManyWithoutLabelNestedInput
-    StockLabel?: StockLabelUpdateManyWithoutLabelsNestedInput
-    StockHistory?: StockHistoryUpdateManyWithoutLabelsNestedInput
+    stock_label?: StockLabelUpdateManyWithoutLabelsNestedInput
+    stock_history?: StockHistoryUpdateManyWithoutLabelsNestedInput
   }
 
   export type LabelUncheckedUpdateWithoutOrder_labelInput = {
@@ -57135,22 +59709,25 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type_id?: StringFieldUpdateOperationsInput | string
-    country_id?: StringFieldUpdateOperationsInput | string
-    region_id?: StringFieldUpdateOperationsInput | string
+    country_id?: NullableStringFieldUpdateOperationsInput | string | null
+    region_id?: NullableStringFieldUpdateOperationsInput | string | null
+    winery_id?: NullableStringFieldUpdateOperationsInput | string | null
     harvest?: NullableStringFieldUpdateOperationsInput | string | null
-    wine_type_id?: StringFieldUpdateOperationsInput | string
+    no_harvest?: BoolFieldUpdateOperationsInput | boolean
+    wine_type_id?: NullableStringFieldUpdateOperationsInput | string | null
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
     photo?: NullableStringFieldUpdateOperationsInput | string | null
+    account_id?: StringFieldUpdateOperationsInput | string
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    stock?: BoolFieldUpdateOperationsInput | boolean
+    control_stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     label_grape?: LabelGrapeUncheckedUpdateManyWithoutLabelNestedInput
     label_campaign?: LabelCampaignUncheckedUpdateManyWithoutLabelNestedInput
-    StockLabel?: StockLabelUncheckedUpdateManyWithoutLabelsNestedInput
-    StockHistory?: StockHistoryUncheckedUpdateManyWithoutLabelsNestedInput
+    stock_label?: StockLabelUncheckedUpdateManyWithoutLabelsNestedInput
+    stock_history?: StockHistoryUncheckedUpdateManyWithoutLabelsNestedInput
   }
 
   export type OrderCreateWithoutInvoiceInput = {
@@ -57182,6 +59759,95 @@ export namespace Prisma {
     create: XOR<OrderCreateWithoutInvoiceInput, OrderUncheckedCreateWithoutInvoiceInput>
   }
 
+  export type AccountCreateWithoutInvoicesInput = {
+    id?: string
+    external_id?: number | null
+    name: string
+    email: string
+    cpf_cnpj?: string | null
+    market_name: string
+    phone?: string | null
+    whatsapp?: string | null
+    logo?: string | null
+    person_type: PersonType
+    site?: string | null
+    social_reason?: string | null
+    facebook_url?: string | null
+    instagram_url?: string | null
+    banner?: string | null
+    gender: GenderType
+    campaign?: CampaignCreateNestedManyWithoutAccountInput
+    street: string
+    number: string
+    complement?: string | null
+    district: string
+    city: string
+    state: string
+    zipcode: string
+    country: string
+    plan?: PlanCreateNestedOneWithoutAccountInput
+    subscription?: SubscriptionCreateNestedManyWithoutAccountInput
+    created_at?: Date | string
+    updated_at?: Date | string
+    order?: OrderCreateNestedManyWithoutAccountInput
+    account_activities?: AccountActivitiesCreateNestedManyWithoutAccountInput
+    account_deliveries?: AccountDeliveryCreateNestedManyWithoutAccountInput
+    account_users?: AccountUserCreateNestedManyWithoutAccountInput
+    domain: string
+    stock_label?: StockLabelCreateNestedManyWithoutAccountInput
+    labels?: LabelCreateNestedManyWithoutAccountInput
+    coupons?: CouponCreateNestedManyWithoutAccountInput
+    account_configuration?: AccountConfigurationCreateNestedOneWithoutAccountInput
+    isActive?: boolean
+  }
+
+  export type AccountUncheckedCreateWithoutInvoicesInput = {
+    id?: string
+    external_id?: number | null
+    name: string
+    email: string
+    cpf_cnpj?: string | null
+    market_name: string
+    phone?: string | null
+    whatsapp?: string | null
+    logo?: string | null
+    person_type: PersonType
+    site?: string | null
+    social_reason?: string | null
+    facebook_url?: string | null
+    instagram_url?: string | null
+    banner?: string | null
+    gender: GenderType
+    campaign?: CampaignUncheckedCreateNestedManyWithoutAccountInput
+    street: string
+    number: string
+    complement?: string | null
+    district: string
+    city: string
+    state: string
+    zipcode: string
+    country: string
+    plan_id?: string | null
+    subscription?: SubscriptionUncheckedCreateNestedManyWithoutAccountInput
+    created_at?: Date | string
+    updated_at?: Date | string
+    order?: OrderUncheckedCreateNestedManyWithoutAccountInput
+    account_activities?: AccountActivitiesUncheckedCreateNestedManyWithoutAccountInput
+    account_deliveries?: AccountDeliveryUncheckedCreateNestedManyWithoutAccountInput
+    account_users?: AccountUserUncheckedCreateNestedManyWithoutAccountInput
+    domain: string
+    stock_label?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
+    labels?: LabelUncheckedCreateNestedManyWithoutAccountInput
+    coupons?: CouponUncheckedCreateNestedManyWithoutAccountInput
+    account_configuration?: AccountConfigurationUncheckedCreateNestedOneWithoutAccountInput
+    isActive?: boolean
+  }
+
+  export type AccountCreateOrConnectWithoutInvoicesInput = {
+    where: AccountWhereUniqueInput
+    create: XOR<AccountCreateWithoutInvoicesInput, AccountUncheckedCreateWithoutInvoicesInput>
+  }
+
   export type OrderUpsertWithoutInvoiceInput = {
     update: XOR<OrderUpdateWithoutInvoiceInput, OrderUncheckedUpdateWithoutInvoiceInput>
     create: XOR<OrderCreateWithoutInvoiceInput, OrderUncheckedCreateWithoutInvoiceInput>
@@ -57209,6 +59875,95 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     order_label?: OrderLabelUncheckedUpdateManyWithoutOrderNestedInput
+  }
+
+  export type AccountUpsertWithoutInvoicesInput = {
+    update: XOR<AccountUpdateWithoutInvoicesInput, AccountUncheckedUpdateWithoutInvoicesInput>
+    create: XOR<AccountCreateWithoutInvoicesInput, AccountUncheckedCreateWithoutInvoicesInput>
+  }
+
+  export type AccountUpdateWithoutInvoicesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
+    market_name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    person_type?: EnumPersonTypeFieldUpdateOperationsInput | PersonType
+    site?: NullableStringFieldUpdateOperationsInput | string | null
+    social_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    facebook_url?: NullableStringFieldUpdateOperationsInput | string | null
+    instagram_url?: NullableStringFieldUpdateOperationsInput | string | null
+    banner?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
+    campaign?: CampaignUpdateManyWithoutAccountNestedInput
+    street?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    zipcode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    plan?: PlanUpdateOneWithoutAccountNestedInput
+    subscription?: SubscriptionUpdateManyWithoutAccountNestedInput
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    order?: OrderUpdateManyWithoutAccountNestedInput
+    account_activities?: AccountActivitiesUpdateManyWithoutAccountNestedInput
+    account_deliveries?: AccountDeliveryUpdateManyWithoutAccountNestedInput
+    account_users?: AccountUserUpdateManyWithoutAccountNestedInput
+    domain?: StringFieldUpdateOperationsInput | string
+    stock_label?: StockLabelUpdateManyWithoutAccountNestedInput
+    labels?: LabelUpdateManyWithoutAccountNestedInput
+    coupons?: CouponUpdateManyWithoutAccountNestedInput
+    account_configuration?: AccountConfigurationUpdateOneWithoutAccountNestedInput
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type AccountUncheckedUpdateWithoutInvoicesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
+    market_name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    person_type?: EnumPersonTypeFieldUpdateOperationsInput | PersonType
+    site?: NullableStringFieldUpdateOperationsInput | string | null
+    social_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    facebook_url?: NullableStringFieldUpdateOperationsInput | string | null
+    instagram_url?: NullableStringFieldUpdateOperationsInput | string | null
+    banner?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
+    campaign?: CampaignUncheckedUpdateManyWithoutAccountNestedInput
+    street?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    complement?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    zipcode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    plan_id?: NullableStringFieldUpdateOperationsInput | string | null
+    subscription?: SubscriptionUncheckedUpdateManyWithoutAccountNestedInput
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    order?: OrderUncheckedUpdateManyWithoutAccountNestedInput
+    account_activities?: AccountActivitiesUncheckedUpdateManyWithoutAccountNestedInput
+    account_deliveries?: AccountDeliveryUncheckedUpdateManyWithoutAccountNestedInput
+    account_users?: AccountUserUncheckedUpdateManyWithoutAccountNestedInput
+    domain?: StringFieldUpdateOperationsInput | string
+    stock_label?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
+    labels?: LabelUncheckedUpdateManyWithoutAccountNestedInput
+    coupons?: CouponUncheckedUpdateManyWithoutAccountNestedInput
+    account_configuration?: AccountConfigurationUncheckedUpdateOneWithoutAccountNestedInput
+    isActive?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type DeviceUserCreateWithoutDeviceInput = {
@@ -58319,8 +61074,11 @@ export namespace Prisma {
     account_activities?: AccountActivitiesCreateNestedManyWithoutAccountInput
     account_deliveries?: AccountDeliveryCreateNestedManyWithoutAccountInput
     account_users?: AccountUserCreateNestedManyWithoutAccountInput
+    invoices?: InvoiceCreateNestedManyWithoutAccountInput
     domain: string
-    StockLabel?: StockLabelCreateNestedManyWithoutAccountInput
+    stock_label?: StockLabelCreateNestedManyWithoutAccountInput
+    labels?: LabelCreateNestedManyWithoutAccountInput
+    coupons?: CouponCreateNestedManyWithoutAccountInput
     account_configuration?: AccountConfigurationCreateNestedOneWithoutAccountInput
     isActive?: boolean
   }
@@ -58358,8 +61116,11 @@ export namespace Prisma {
     account_activities?: AccountActivitiesUncheckedCreateNestedManyWithoutAccountInput
     account_deliveries?: AccountDeliveryUncheckedCreateNestedManyWithoutAccountInput
     account_users?: AccountUserUncheckedCreateNestedManyWithoutAccountInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutAccountInput
     domain: string
-    StockLabel?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
+    stock_label?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
+    labels?: LabelUncheckedCreateNestedManyWithoutAccountInput
+    coupons?: CouponUncheckedCreateNestedManyWithoutAccountInput
     account_configuration?: AccountConfigurationUncheckedCreateNestedOneWithoutAccountInput
     isActive?: boolean
   }
@@ -58631,8 +61392,11 @@ export namespace Prisma {
     account_activities?: AccountActivitiesCreateNestedManyWithoutAccountInput
     account_deliveries?: AccountDeliveryCreateNestedManyWithoutAccountInput
     account_users?: AccountUserCreateNestedManyWithoutAccountInput
+    invoices?: InvoiceCreateNestedManyWithoutAccountInput
     domain: string
-    StockLabel?: StockLabelCreateNestedManyWithoutAccountInput
+    stock_label?: StockLabelCreateNestedManyWithoutAccountInput
+    labels?: LabelCreateNestedManyWithoutAccountInput
+    coupons?: CouponCreateNestedManyWithoutAccountInput
     account_configuration?: AccountConfigurationCreateNestedOneWithoutAccountInput
     isActive?: boolean
   }
@@ -58670,8 +61434,11 @@ export namespace Prisma {
     account_activities?: AccountActivitiesUncheckedCreateNestedManyWithoutAccountInput
     account_deliveries?: AccountDeliveryUncheckedCreateNestedManyWithoutAccountInput
     account_users?: AccountUserUncheckedCreateNestedManyWithoutAccountInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutAccountInput
     domain: string
-    StockLabel?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
+    stock_label?: StockLabelUncheckedCreateNestedManyWithoutAccountInput
+    labels?: LabelUncheckedCreateNestedManyWithoutAccountInput
+    coupons?: CouponUncheckedCreateNestedManyWithoutAccountInput
     account_configuration?: AccountConfigurationUncheckedCreateNestedOneWithoutAccountInput
     isActive?: boolean
   }
@@ -58754,8 +61521,11 @@ export namespace Prisma {
     account_activities?: AccountActivitiesUpdateManyWithoutAccountNestedInput
     account_deliveries?: AccountDeliveryUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUpdateManyWithoutAccountNestedInput
+    invoices?: InvoiceUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
-    StockLabel?: StockLabelUpdateManyWithoutAccountNestedInput
+    stock_label?: StockLabelUpdateManyWithoutAccountNestedInput
+    labels?: LabelUpdateManyWithoutAccountNestedInput
+    coupons?: CouponUpdateManyWithoutAccountNestedInput
     account_configuration?: AccountConfigurationUpdateOneWithoutAccountNestedInput
     isActive?: BoolFieldUpdateOperationsInput | boolean
   }
@@ -58793,66 +61563,75 @@ export namespace Prisma {
     account_activities?: AccountActivitiesUncheckedUpdateManyWithoutAccountNestedInput
     account_deliveries?: AccountDeliveryUncheckedUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUncheckedUpdateManyWithoutAccountNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
-    StockLabel?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
+    stock_label?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
+    labels?: LabelUncheckedUpdateManyWithoutAccountNestedInput
+    coupons?: CouponUncheckedUpdateManyWithoutAccountNestedInput
     account_configuration?: AccountConfigurationUncheckedUpdateOneWithoutAccountNestedInput
     isActive?: BoolFieldUpdateOperationsInput | boolean
   }
 
-  export type LabelCreateWithoutStockLabelInput = {
+  export type LabelCreateWithoutStock_labelInput = {
     id?: string
     external_id?: number | null
     name: string
     description?: string | null
-    labelType: LabelTypeCreateNestedOneWithoutLabelsInput
-    country: CountryCreateNestedOneWithoutLabelsInput
-    region: RegionCreateNestedOneWithoutLabelsInput
+    label_type: LabelTypeCreateNestedOneWithoutLabelsInput
+    country?: CountryCreateNestedOneWithoutLabelsInput
+    region?: RegionCreateNestedOneWithoutLabelsInput
+    winery?: WineryCreateNestedOneWithoutLabelsInput
     harvest?: string | null
-    wine_type: WineTypeCreateNestedOneWithoutLabelsInput
+    no_harvest?: boolean
+    wine_type?: WineTypeCreateNestedOneWithoutLabelsInput
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
     photo?: string | null
+    account: AccountCreateNestedOneWithoutLabelsInput
     is_active?: boolean
-    stock?: boolean
+    control_stock?: boolean
     created_at?: Date | string
     updated_at?: Date | string
     label_grape?: LabelGrapeCreateNestedManyWithoutLabelInput
     order_label?: OrderLabelCreateNestedManyWithoutLabelInput
     label_campaign?: LabelCampaignCreateNestedManyWithoutLabelInput
-    StockHistory?: StockHistoryCreateNestedManyWithoutLabelsInput
+    stock_history?: StockHistoryCreateNestedManyWithoutLabelsInput
   }
 
-  export type LabelUncheckedCreateWithoutStockLabelInput = {
+  export type LabelUncheckedCreateWithoutStock_labelInput = {
     id?: string
     external_id?: number | null
     name: string
     description?: string | null
     type_id: string
-    country_id: string
-    region_id: string
+    country_id?: string | null
+    region_id?: string | null
+    winery_id?: string | null
     harvest?: string | null
-    wine_type_id: string
+    no_harvest?: boolean
+    wine_type_id?: string | null
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
     photo?: string | null
+    account_id: string
     is_active?: boolean
-    stock?: boolean
+    control_stock?: boolean
     created_at?: Date | string
     updated_at?: Date | string
     label_grape?: LabelGrapeUncheckedCreateNestedManyWithoutLabelInput
     order_label?: OrderLabelUncheckedCreateNestedManyWithoutLabelInput
     label_campaign?: LabelCampaignUncheckedCreateNestedManyWithoutLabelInput
-    StockHistory?: StockHistoryUncheckedCreateNestedManyWithoutLabelsInput
+    stock_history?: StockHistoryUncheckedCreateNestedManyWithoutLabelsInput
   }
 
-  export type LabelCreateOrConnectWithoutStockLabelInput = {
+  export type LabelCreateOrConnectWithoutStock_labelInput = {
     where: LabelWhereUniqueInput
-    create: XOR<LabelCreateWithoutStockLabelInput, LabelUncheckedCreateWithoutStockLabelInput>
+    create: XOR<LabelCreateWithoutStock_labelInput, LabelUncheckedCreateWithoutStock_labelInput>
   }
 
-  export type AccountCreateWithoutStockLabelInput = {
+  export type AccountCreateWithoutStock_labelInput = {
     id?: string
     external_id?: number | null
     name: string
@@ -58886,12 +61665,15 @@ export namespace Prisma {
     account_activities?: AccountActivitiesCreateNestedManyWithoutAccountInput
     account_deliveries?: AccountDeliveryCreateNestedManyWithoutAccountInput
     account_users?: AccountUserCreateNestedManyWithoutAccountInput
+    invoices?: InvoiceCreateNestedManyWithoutAccountInput
     domain: string
+    labels?: LabelCreateNestedManyWithoutAccountInput
+    coupons?: CouponCreateNestedManyWithoutAccountInput
     account_configuration?: AccountConfigurationCreateNestedOneWithoutAccountInput
     isActive?: boolean
   }
 
-  export type AccountUncheckedCreateWithoutStockLabelInput = {
+  export type AccountUncheckedCreateWithoutStock_labelInput = {
     id?: string
     external_id?: number | null
     name: string
@@ -58925,75 +61707,84 @@ export namespace Prisma {
     account_activities?: AccountActivitiesUncheckedCreateNestedManyWithoutAccountInput
     account_deliveries?: AccountDeliveryUncheckedCreateNestedManyWithoutAccountInput
     account_users?: AccountUserUncheckedCreateNestedManyWithoutAccountInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutAccountInput
     domain: string
+    labels?: LabelUncheckedCreateNestedManyWithoutAccountInput
+    coupons?: CouponUncheckedCreateNestedManyWithoutAccountInput
     account_configuration?: AccountConfigurationUncheckedCreateNestedOneWithoutAccountInput
     isActive?: boolean
   }
 
-  export type AccountCreateOrConnectWithoutStockLabelInput = {
+  export type AccountCreateOrConnectWithoutStock_labelInput = {
     where: AccountWhereUniqueInput
-    create: XOR<AccountCreateWithoutStockLabelInput, AccountUncheckedCreateWithoutStockLabelInput>
+    create: XOR<AccountCreateWithoutStock_labelInput, AccountUncheckedCreateWithoutStock_labelInput>
   }
 
-  export type LabelUpsertWithoutStockLabelInput = {
-    update: XOR<LabelUpdateWithoutStockLabelInput, LabelUncheckedUpdateWithoutStockLabelInput>
-    create: XOR<LabelCreateWithoutStockLabelInput, LabelUncheckedCreateWithoutStockLabelInput>
+  export type LabelUpsertWithoutStock_labelInput = {
+    update: XOR<LabelUpdateWithoutStock_labelInput, LabelUncheckedUpdateWithoutStock_labelInput>
+    create: XOR<LabelCreateWithoutStock_labelInput, LabelUncheckedCreateWithoutStock_labelInput>
   }
 
-  export type LabelUpdateWithoutStockLabelInput = {
+  export type LabelUpdateWithoutStock_labelInput = {
     id?: StringFieldUpdateOperationsInput | string
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    labelType?: LabelTypeUpdateOneRequiredWithoutLabelsNestedInput
-    country?: CountryUpdateOneRequiredWithoutLabelsNestedInput
-    region?: RegionUpdateOneRequiredWithoutLabelsNestedInput
+    label_type?: LabelTypeUpdateOneRequiredWithoutLabelsNestedInput
+    country?: CountryUpdateOneWithoutLabelsNestedInput
+    region?: RegionUpdateOneWithoutLabelsNestedInput
+    winery?: WineryUpdateOneWithoutLabelsNestedInput
     harvest?: NullableStringFieldUpdateOperationsInput | string | null
-    wine_type?: WineTypeUpdateOneRequiredWithoutLabelsNestedInput
+    no_harvest?: BoolFieldUpdateOperationsInput | boolean
+    wine_type?: WineTypeUpdateOneWithoutLabelsNestedInput
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
     photo?: NullableStringFieldUpdateOperationsInput | string | null
+    account?: AccountUpdateOneRequiredWithoutLabelsNestedInput
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    stock?: BoolFieldUpdateOperationsInput | boolean
+    control_stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     label_grape?: LabelGrapeUpdateManyWithoutLabelNestedInput
     order_label?: OrderLabelUpdateManyWithoutLabelNestedInput
     label_campaign?: LabelCampaignUpdateManyWithoutLabelNestedInput
-    StockHistory?: StockHistoryUpdateManyWithoutLabelsNestedInput
+    stock_history?: StockHistoryUpdateManyWithoutLabelsNestedInput
   }
 
-  export type LabelUncheckedUpdateWithoutStockLabelInput = {
+  export type LabelUncheckedUpdateWithoutStock_labelInput = {
     id?: StringFieldUpdateOperationsInput | string
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type_id?: StringFieldUpdateOperationsInput | string
-    country_id?: StringFieldUpdateOperationsInput | string
-    region_id?: StringFieldUpdateOperationsInput | string
+    country_id?: NullableStringFieldUpdateOperationsInput | string | null
+    region_id?: NullableStringFieldUpdateOperationsInput | string | null
+    winery_id?: NullableStringFieldUpdateOperationsInput | string | null
     harvest?: NullableStringFieldUpdateOperationsInput | string | null
-    wine_type_id?: StringFieldUpdateOperationsInput | string
+    no_harvest?: BoolFieldUpdateOperationsInput | boolean
+    wine_type_id?: NullableStringFieldUpdateOperationsInput | string | null
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
     photo?: NullableStringFieldUpdateOperationsInput | string | null
+    account_id?: StringFieldUpdateOperationsInput | string
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    stock?: BoolFieldUpdateOperationsInput | boolean
+    control_stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     label_grape?: LabelGrapeUncheckedUpdateManyWithoutLabelNestedInput
     order_label?: OrderLabelUncheckedUpdateManyWithoutLabelNestedInput
     label_campaign?: LabelCampaignUncheckedUpdateManyWithoutLabelNestedInput
-    StockHistory?: StockHistoryUncheckedUpdateManyWithoutLabelsNestedInput
+    stock_history?: StockHistoryUncheckedUpdateManyWithoutLabelsNestedInput
   }
 
-  export type AccountUpsertWithoutStockLabelInput = {
-    update: XOR<AccountUpdateWithoutStockLabelInput, AccountUncheckedUpdateWithoutStockLabelInput>
-    create: XOR<AccountCreateWithoutStockLabelInput, AccountUncheckedCreateWithoutStockLabelInput>
+  export type AccountUpsertWithoutStock_labelInput = {
+    update: XOR<AccountUpdateWithoutStock_labelInput, AccountUncheckedUpdateWithoutStock_labelInput>
+    create: XOR<AccountCreateWithoutStock_labelInput, AccountUncheckedCreateWithoutStock_labelInput>
   }
 
-  export type AccountUpdateWithoutStockLabelInput = {
+  export type AccountUpdateWithoutStock_labelInput = {
     id?: StringFieldUpdateOperationsInput | string
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
@@ -59027,12 +61818,15 @@ export namespace Prisma {
     account_activities?: AccountActivitiesUpdateManyWithoutAccountNestedInput
     account_deliveries?: AccountDeliveryUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUpdateManyWithoutAccountNestedInput
+    invoices?: InvoiceUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
+    labels?: LabelUpdateManyWithoutAccountNestedInput
+    coupons?: CouponUpdateManyWithoutAccountNestedInput
     account_configuration?: AccountConfigurationUpdateOneWithoutAccountNestedInput
     isActive?: BoolFieldUpdateOperationsInput | boolean
   }
 
-  export type AccountUncheckedUpdateWithoutStockLabelInput = {
+  export type AccountUncheckedUpdateWithoutStock_labelInput = {
     id?: StringFieldUpdateOperationsInput | string
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
@@ -59066,115 +61860,210 @@ export namespace Prisma {
     account_activities?: AccountActivitiesUncheckedUpdateManyWithoutAccountNestedInput
     account_deliveries?: AccountDeliveryUncheckedUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUncheckedUpdateManyWithoutAccountNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
+    labels?: LabelUncheckedUpdateManyWithoutAccountNestedInput
+    coupons?: CouponUncheckedUpdateManyWithoutAccountNestedInput
     account_configuration?: AccountConfigurationUncheckedUpdateOneWithoutAccountNestedInput
     isActive?: BoolFieldUpdateOperationsInput | boolean
   }
 
-  export type LabelCreateWithoutStockHistoryInput = {
+  export type LabelCreateWithoutStock_historyInput = {
     id?: string
     external_id?: number | null
     name: string
     description?: string | null
-    labelType: LabelTypeCreateNestedOneWithoutLabelsInput
-    country: CountryCreateNestedOneWithoutLabelsInput
-    region: RegionCreateNestedOneWithoutLabelsInput
+    label_type: LabelTypeCreateNestedOneWithoutLabelsInput
+    country?: CountryCreateNestedOneWithoutLabelsInput
+    region?: RegionCreateNestedOneWithoutLabelsInput
+    winery?: WineryCreateNestedOneWithoutLabelsInput
     harvest?: string | null
-    wine_type: WineTypeCreateNestedOneWithoutLabelsInput
+    no_harvest?: boolean
+    wine_type?: WineTypeCreateNestedOneWithoutLabelsInput
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
     photo?: string | null
+    account: AccountCreateNestedOneWithoutLabelsInput
     is_active?: boolean
-    stock?: boolean
+    control_stock?: boolean
     created_at?: Date | string
     updated_at?: Date | string
     label_grape?: LabelGrapeCreateNestedManyWithoutLabelInput
     order_label?: OrderLabelCreateNestedManyWithoutLabelInput
     label_campaign?: LabelCampaignCreateNestedManyWithoutLabelInput
-    StockLabel?: StockLabelCreateNestedManyWithoutLabelsInput
+    stock_label?: StockLabelCreateNestedManyWithoutLabelsInput
   }
 
-  export type LabelUncheckedCreateWithoutStockHistoryInput = {
+  export type LabelUncheckedCreateWithoutStock_historyInput = {
     id?: string
     external_id?: number | null
     name: string
     description?: string | null
     type_id: string
-    country_id: string
-    region_id: string
+    country_id?: string | null
+    region_id?: string | null
+    winery_id?: string | null
     harvest?: string | null
-    wine_type_id: string
+    no_harvest?: boolean
+    wine_type_id?: string | null
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
     photo?: string | null
+    account_id: string
     is_active?: boolean
-    stock?: boolean
+    control_stock?: boolean
     created_at?: Date | string
     updated_at?: Date | string
     label_grape?: LabelGrapeUncheckedCreateNestedManyWithoutLabelInput
     order_label?: OrderLabelUncheckedCreateNestedManyWithoutLabelInput
     label_campaign?: LabelCampaignUncheckedCreateNestedManyWithoutLabelInput
-    StockLabel?: StockLabelUncheckedCreateNestedManyWithoutLabelsInput
+    stock_label?: StockLabelUncheckedCreateNestedManyWithoutLabelsInput
   }
 
-  export type LabelCreateOrConnectWithoutStockHistoryInput = {
+  export type LabelCreateOrConnectWithoutStock_historyInput = {
     where: LabelWhereUniqueInput
-    create: XOR<LabelCreateWithoutStockHistoryInput, LabelUncheckedCreateWithoutStockHistoryInput>
+    create: XOR<LabelCreateWithoutStock_historyInput, LabelUncheckedCreateWithoutStock_historyInput>
   }
 
-  export type LabelUpsertWithoutStockHistoryInput = {
-    update: XOR<LabelUpdateWithoutStockHistoryInput, LabelUncheckedUpdateWithoutStockHistoryInput>
-    create: XOR<LabelCreateWithoutStockHistoryInput, LabelUncheckedCreateWithoutStockHistoryInput>
+  export type LabelUpsertWithoutStock_historyInput = {
+    update: XOR<LabelUpdateWithoutStock_historyInput, LabelUncheckedUpdateWithoutStock_historyInput>
+    create: XOR<LabelCreateWithoutStock_historyInput, LabelUncheckedCreateWithoutStock_historyInput>
   }
 
-  export type LabelUpdateWithoutStockHistoryInput = {
+  export type LabelUpdateWithoutStock_historyInput = {
     id?: StringFieldUpdateOperationsInput | string
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    labelType?: LabelTypeUpdateOneRequiredWithoutLabelsNestedInput
-    country?: CountryUpdateOneRequiredWithoutLabelsNestedInput
-    region?: RegionUpdateOneRequiredWithoutLabelsNestedInput
+    label_type?: LabelTypeUpdateOneRequiredWithoutLabelsNestedInput
+    country?: CountryUpdateOneWithoutLabelsNestedInput
+    region?: RegionUpdateOneWithoutLabelsNestedInput
+    winery?: WineryUpdateOneWithoutLabelsNestedInput
     harvest?: NullableStringFieldUpdateOperationsInput | string | null
-    wine_type?: WineTypeUpdateOneRequiredWithoutLabelsNestedInput
+    no_harvest?: BoolFieldUpdateOperationsInput | boolean
+    wine_type?: WineTypeUpdateOneWithoutLabelsNestedInput
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
     photo?: NullableStringFieldUpdateOperationsInput | string | null
+    account?: AccountUpdateOneRequiredWithoutLabelsNestedInput
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    stock?: BoolFieldUpdateOperationsInput | boolean
+    control_stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     label_grape?: LabelGrapeUpdateManyWithoutLabelNestedInput
     order_label?: OrderLabelUpdateManyWithoutLabelNestedInput
     label_campaign?: LabelCampaignUpdateManyWithoutLabelNestedInput
-    StockLabel?: StockLabelUpdateManyWithoutLabelsNestedInput
+    stock_label?: StockLabelUpdateManyWithoutLabelsNestedInput
   }
 
-  export type LabelUncheckedUpdateWithoutStockHistoryInput = {
+  export type LabelUncheckedUpdateWithoutStock_historyInput = {
     id?: StringFieldUpdateOperationsInput | string
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type_id?: StringFieldUpdateOperationsInput | string
-    country_id?: StringFieldUpdateOperationsInput | string
-    region_id?: StringFieldUpdateOperationsInput | string
+    country_id?: NullableStringFieldUpdateOperationsInput | string | null
+    region_id?: NullableStringFieldUpdateOperationsInput | string | null
+    winery_id?: NullableStringFieldUpdateOperationsInput | string | null
     harvest?: NullableStringFieldUpdateOperationsInput | string | null
-    wine_type_id?: StringFieldUpdateOperationsInput | string
+    no_harvest?: BoolFieldUpdateOperationsInput | boolean
+    wine_type_id?: NullableStringFieldUpdateOperationsInput | string | null
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
     photo?: NullableStringFieldUpdateOperationsInput | string | null
+    account_id?: StringFieldUpdateOperationsInput | string
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    stock?: BoolFieldUpdateOperationsInput | boolean
+    control_stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     label_grape?: LabelGrapeUncheckedUpdateManyWithoutLabelNestedInput
     order_label?: OrderLabelUncheckedUpdateManyWithoutLabelNestedInput
     label_campaign?: LabelCampaignUncheckedUpdateManyWithoutLabelNestedInput
-    StockLabel?: StockLabelUncheckedUpdateManyWithoutLabelsNestedInput
+    stock_label?: StockLabelUncheckedUpdateManyWithoutLabelsNestedInput
+  }
+
+  export type LabelCreateWithoutWineryInput = {
+    id?: string
+    external_id?: number | null
+    name: string
+    description?: string | null
+    label_type: LabelTypeCreateNestedOneWithoutLabelsInput
+    country?: CountryCreateNestedOneWithoutLabelsInput
+    region?: RegionCreateNestedOneWithoutLabelsInput
+    harvest?: string | null
+    no_harvest?: boolean
+    wine_type?: WineTypeCreateNestedOneWithoutLabelsInput
+    alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
+    price: number
+    promotional_price?: number | null
+    photo?: string | null
+    account: AccountCreateNestedOneWithoutLabelsInput
+    is_active?: boolean
+    control_stock?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    label_grape?: LabelGrapeCreateNestedManyWithoutLabelInput
+    order_label?: OrderLabelCreateNestedManyWithoutLabelInput
+    label_campaign?: LabelCampaignCreateNestedManyWithoutLabelInput
+    stock_label?: StockLabelCreateNestedManyWithoutLabelsInput
+    stock_history?: StockHistoryCreateNestedManyWithoutLabelsInput
+  }
+
+  export type LabelUncheckedCreateWithoutWineryInput = {
+    id?: string
+    external_id?: number | null
+    name: string
+    description?: string | null
+    type_id: string
+    country_id?: string | null
+    region_id?: string | null
+    harvest?: string | null
+    no_harvest?: boolean
+    wine_type_id?: string | null
+    alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
+    price: number
+    promotional_price?: number | null
+    photo?: string | null
+    account_id: string
+    is_active?: boolean
+    control_stock?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    label_grape?: LabelGrapeUncheckedCreateNestedManyWithoutLabelInput
+    order_label?: OrderLabelUncheckedCreateNestedManyWithoutLabelInput
+    label_campaign?: LabelCampaignUncheckedCreateNestedManyWithoutLabelInput
+    stock_label?: StockLabelUncheckedCreateNestedManyWithoutLabelsInput
+    stock_history?: StockHistoryUncheckedCreateNestedManyWithoutLabelsInput
+  }
+
+  export type LabelCreateOrConnectWithoutWineryInput = {
+    where: LabelWhereUniqueInput
+    create: XOR<LabelCreateWithoutWineryInput, LabelUncheckedCreateWithoutWineryInput>
+  }
+
+  export type LabelCreateManyWineryInputEnvelope = {
+    data: Enumerable<LabelCreateManyWineryInput>
+    skipDuplicates?: boolean
+  }
+
+  export type LabelUpsertWithWhereUniqueWithoutWineryInput = {
+    where: LabelWhereUniqueInput
+    update: XOR<LabelUpdateWithoutWineryInput, LabelUncheckedUpdateWithoutWineryInput>
+    create: XOR<LabelCreateWithoutWineryInput, LabelUncheckedCreateWithoutWineryInput>
+  }
+
+  export type LabelUpdateWithWhereUniqueWithoutWineryInput = {
+    where: LabelWhereUniqueInput
+    data: XOR<LabelUpdateWithoutWineryInput, LabelUncheckedUpdateWithoutWineryInput>
+  }
+
+  export type LabelUpdateManyWithWhereWithoutWineryInput = {
+    where: LabelScalarWhereInput
+    data: XOR<LabelUpdateManyMutationInput, LabelUncheckedUpdateManyWithoutLabelsInput>
   }
 
   export type CampaignCreateManyAccountInput = {
@@ -59228,10 +62117,54 @@ export namespace Prisma {
     role_id: string
   }
 
+  export type InvoiceCreateManyAccountInput = {
+    id?: string
+    order_id: string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
   export type StockLabelCreateManyAccountInput = {
     label_id: string
-    min_quantity: number
-    max_quantity: number
+    quantity: number
+    min_quantity?: number
+    max_quantity?: number
+  }
+
+  export type LabelCreateManyAccountInput = {
+    id?: string
+    external_id?: number | null
+    name: string
+    description?: string | null
+    type_id: string
+    country_id?: string | null
+    region_id?: string | null
+    winery_id?: string | null
+    harvest?: string | null
+    no_harvest?: boolean
+    wine_type_id?: string | null
+    alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
+    price: number
+    promotional_price?: number | null
+    photo?: string | null
+    is_active?: boolean
+    control_stock?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type CouponCreateManyAccountInput = {
+    id?: string
+    code: string
+    dicount_type: CouponDiscountType
+    discount_value: number
+    couponUse_type: CouponUseType
+    inital_date?: Date | string
+    expiration_date?: Date | string | null
+    min_value?: number | null
+    max_value?: number | null
+    created_at?: Date | string
+    updated_at?: Date | string
   }
 
   export type CampaignUpdateWithoutAccountInput = {
@@ -59395,22 +62328,164 @@ export namespace Prisma {
     role_id?: StringFieldUpdateOperationsInput | string
   }
 
+  export type InvoiceUpdateWithoutAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    order?: OrderUpdateOneRequiredWithoutInvoiceNestedInput
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InvoiceUncheckedUpdateWithoutAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    order_id?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InvoiceUncheckedUpdateManyWithoutInvoicesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    order_id?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StockLabelUpdateWithoutAccountInput = {
-    labels?: LabelUpdateOneRequiredWithoutStockLabelNestedInput
+    labels?: LabelUpdateOneRequiredWithoutStock_labelNestedInput
+    quantity?: IntFieldUpdateOperationsInput | number
     min_quantity?: IntFieldUpdateOperationsInput | number
     max_quantity?: IntFieldUpdateOperationsInput | number
   }
 
   export type StockLabelUncheckedUpdateWithoutAccountInput = {
     label_id?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
     min_quantity?: IntFieldUpdateOperationsInput | number
     max_quantity?: IntFieldUpdateOperationsInput | number
   }
 
-  export type StockLabelUncheckedUpdateManyWithoutStockLabelInput = {
+  export type StockLabelUncheckedUpdateManyWithoutStock_labelInput = {
     label_id?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
     min_quantity?: IntFieldUpdateOperationsInput | number
     max_quantity?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type LabelUpdateWithoutAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    label_type?: LabelTypeUpdateOneRequiredWithoutLabelsNestedInput
+    country?: CountryUpdateOneWithoutLabelsNestedInput
+    region?: RegionUpdateOneWithoutLabelsNestedInput
+    winery?: WineryUpdateOneWithoutLabelsNestedInput
+    harvest?: NullableStringFieldUpdateOperationsInput | string | null
+    no_harvest?: BoolFieldUpdateOperationsInput | boolean
+    wine_type?: WineTypeUpdateOneWithoutLabelsNestedInput
+    alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    price?: FloatFieldUpdateOperationsInput | number
+    promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
+    is_active?: BoolFieldUpdateOperationsInput | boolean
+    control_stock?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    label_grape?: LabelGrapeUpdateManyWithoutLabelNestedInput
+    order_label?: OrderLabelUpdateManyWithoutLabelNestedInput
+    label_campaign?: LabelCampaignUpdateManyWithoutLabelNestedInput
+    stock_label?: StockLabelUpdateManyWithoutLabelsNestedInput
+    stock_history?: StockHistoryUpdateManyWithoutLabelsNestedInput
+  }
+
+  export type LabelUncheckedUpdateWithoutAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    type_id?: StringFieldUpdateOperationsInput | string
+    country_id?: NullableStringFieldUpdateOperationsInput | string | null
+    region_id?: NullableStringFieldUpdateOperationsInput | string | null
+    winery_id?: NullableStringFieldUpdateOperationsInput | string | null
+    harvest?: NullableStringFieldUpdateOperationsInput | string | null
+    no_harvest?: BoolFieldUpdateOperationsInput | boolean
+    wine_type_id?: NullableStringFieldUpdateOperationsInput | string | null
+    alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    price?: FloatFieldUpdateOperationsInput | number
+    promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
+    is_active?: BoolFieldUpdateOperationsInput | boolean
+    control_stock?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    label_grape?: LabelGrapeUncheckedUpdateManyWithoutLabelNestedInput
+    order_label?: OrderLabelUncheckedUpdateManyWithoutLabelNestedInput
+    label_campaign?: LabelCampaignUncheckedUpdateManyWithoutLabelNestedInput
+    stock_label?: StockLabelUncheckedUpdateManyWithoutLabelsNestedInput
+    stock_history?: StockHistoryUncheckedUpdateManyWithoutLabelsNestedInput
+  }
+
+  export type LabelUncheckedUpdateManyWithoutLabelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    type_id?: StringFieldUpdateOperationsInput | string
+    country_id?: NullableStringFieldUpdateOperationsInput | string | null
+    region_id?: NullableStringFieldUpdateOperationsInput | string | null
+    winery_id?: NullableStringFieldUpdateOperationsInput | string | null
+    harvest?: NullableStringFieldUpdateOperationsInput | string | null
+    no_harvest?: BoolFieldUpdateOperationsInput | boolean
+    wine_type_id?: NullableStringFieldUpdateOperationsInput | string | null
+    alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    price?: FloatFieldUpdateOperationsInput | number
+    promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
+    is_active?: BoolFieldUpdateOperationsInput | boolean
+    control_stock?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CouponUpdateWithoutAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    dicount_type?: EnumCouponDiscountTypeFieldUpdateOperationsInput | CouponDiscountType
+    discount_value?: FloatFieldUpdateOperationsInput | number
+    couponUse_type?: EnumCouponUseTypeFieldUpdateOperationsInput | CouponUseType
+    inital_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiration_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    min_value?: NullableFloatFieldUpdateOperationsInput | number | null
+    max_value?: NullableFloatFieldUpdateOperationsInput | number | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CouponUncheckedUpdateWithoutAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    dicount_type?: EnumCouponDiscountTypeFieldUpdateOperationsInput | CouponDiscountType
+    discount_value?: FloatFieldUpdateOperationsInput | number
+    couponUse_type?: EnumCouponUseTypeFieldUpdateOperationsInput | CouponUseType
+    inital_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiration_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    min_value?: NullableFloatFieldUpdateOperationsInput | number | null
+    max_value?: NullableFloatFieldUpdateOperationsInput | number | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CouponUncheckedUpdateManyWithoutCouponsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    dicount_type?: EnumCouponDiscountTypeFieldUpdateOperationsInput | CouponDiscountType
+    discount_value?: FloatFieldUpdateOperationsInput | number
+    couponUse_type?: EnumCouponUseTypeFieldUpdateOperationsInput | CouponUseType
+    inital_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiration_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    min_value?: NullableFloatFieldUpdateOperationsInput | number | null
+    max_value?: NullableFloatFieldUpdateOperationsInput | number | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AccountActivitiesCreateManyActivitiesInput = {
@@ -59700,8 +62775,9 @@ export namespace Prisma {
 
   export type StockLabelCreateManyLabelsInput = {
     account_id: string
-    min_quantity: number
-    max_quantity: number
+    quantity: number
+    min_quantity?: number
+    max_quantity?: number
   }
 
   export type StockHistoryCreateManyLabelsInput = {
@@ -59765,13 +62841,15 @@ export namespace Prisma {
   }
 
   export type StockLabelUpdateWithoutLabelsInput = {
-    account?: AccountUpdateOneRequiredWithoutStockLabelNestedInput
+    account?: AccountUpdateOneRequiredWithoutStock_labelNestedInput
+    quantity?: IntFieldUpdateOperationsInput | number
     min_quantity?: IntFieldUpdateOperationsInput | number
     max_quantity?: IntFieldUpdateOperationsInput | number
   }
 
   export type StockLabelUncheckedUpdateWithoutLabelsInput = {
     account_id?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
     min_quantity?: IntFieldUpdateOperationsInput | number
     max_quantity?: IntFieldUpdateOperationsInput | number
   }
@@ -59794,7 +62872,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type StockHistoryUncheckedUpdateManyWithoutStockHistoryInput = {
+  export type StockHistoryUncheckedUpdateManyWithoutStock_historyInput = {
     id?: StringFieldUpdateOperationsInput | string
     reason?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
@@ -59827,90 +62905,80 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type LabelCreateManyLabelTypeInput = {
+  export type LabelCreateManyLabel_typeInput = {
     id?: string
     external_id?: number | null
     name: string
     description?: string | null
-    country_id: string
-    region_id: string
+    country_id?: string | null
+    region_id?: string | null
+    winery_id?: string | null
     harvest?: string | null
-    wine_type_id: string
+    no_harvest?: boolean
+    wine_type_id?: string | null
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
     photo?: string | null
+    account_id: string
     is_active?: boolean
-    stock?: boolean
+    control_stock?: boolean
     created_at?: Date | string
     updated_at?: Date | string
   }
 
-  export type LabelUpdateWithoutLabelTypeInput = {
+  export type LabelUpdateWithoutLabel_typeInput = {
     id?: StringFieldUpdateOperationsInput | string
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    country?: CountryUpdateOneRequiredWithoutLabelsNestedInput
-    region?: RegionUpdateOneRequiredWithoutLabelsNestedInput
+    country?: CountryUpdateOneWithoutLabelsNestedInput
+    region?: RegionUpdateOneWithoutLabelsNestedInput
+    winery?: WineryUpdateOneWithoutLabelsNestedInput
     harvest?: NullableStringFieldUpdateOperationsInput | string | null
-    wine_type?: WineTypeUpdateOneRequiredWithoutLabelsNestedInput
+    no_harvest?: BoolFieldUpdateOperationsInput | boolean
+    wine_type?: WineTypeUpdateOneWithoutLabelsNestedInput
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
     photo?: NullableStringFieldUpdateOperationsInput | string | null
+    account?: AccountUpdateOneRequiredWithoutLabelsNestedInput
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    stock?: BoolFieldUpdateOperationsInput | boolean
+    control_stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     label_grape?: LabelGrapeUpdateManyWithoutLabelNestedInput
     order_label?: OrderLabelUpdateManyWithoutLabelNestedInput
     label_campaign?: LabelCampaignUpdateManyWithoutLabelNestedInput
-    StockLabel?: StockLabelUpdateManyWithoutLabelsNestedInput
-    StockHistory?: StockHistoryUpdateManyWithoutLabelsNestedInput
+    stock_label?: StockLabelUpdateManyWithoutLabelsNestedInput
+    stock_history?: StockHistoryUpdateManyWithoutLabelsNestedInput
   }
 
-  export type LabelUncheckedUpdateWithoutLabelTypeInput = {
+  export type LabelUncheckedUpdateWithoutLabel_typeInput = {
     id?: StringFieldUpdateOperationsInput | string
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    country_id?: StringFieldUpdateOperationsInput | string
-    region_id?: StringFieldUpdateOperationsInput | string
+    country_id?: NullableStringFieldUpdateOperationsInput | string | null
+    region_id?: NullableStringFieldUpdateOperationsInput | string | null
+    winery_id?: NullableStringFieldUpdateOperationsInput | string | null
     harvest?: NullableStringFieldUpdateOperationsInput | string | null
-    wine_type_id?: StringFieldUpdateOperationsInput | string
+    no_harvest?: BoolFieldUpdateOperationsInput | boolean
+    wine_type_id?: NullableStringFieldUpdateOperationsInput | string | null
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
     photo?: NullableStringFieldUpdateOperationsInput | string | null
+    account_id?: StringFieldUpdateOperationsInput | string
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    stock?: BoolFieldUpdateOperationsInput | boolean
+    control_stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     label_grape?: LabelGrapeUncheckedUpdateManyWithoutLabelNestedInput
     order_label?: OrderLabelUncheckedUpdateManyWithoutLabelNestedInput
     label_campaign?: LabelCampaignUncheckedUpdateManyWithoutLabelNestedInput
-    StockLabel?: StockLabelUncheckedUpdateManyWithoutLabelsNestedInput
-    StockHistory?: StockHistoryUncheckedUpdateManyWithoutLabelsNestedInput
-  }
-
-  export type LabelUncheckedUpdateManyWithoutLabelsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    external_id?: NullableIntFieldUpdateOperationsInput | number | null
-    name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    country_id?: StringFieldUpdateOperationsInput | string
-    region_id?: StringFieldUpdateOperationsInput | string
-    harvest?: NullableStringFieldUpdateOperationsInput | string | null
-    wine_type_id?: StringFieldUpdateOperationsInput | string
-    alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    price?: FloatFieldUpdateOperationsInput | number
-    promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
-    photo?: NullableStringFieldUpdateOperationsInput | string | null
-    is_active?: BoolFieldUpdateOperationsInput | boolean
-    stock?: BoolFieldUpdateOperationsInput | boolean
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    stock_label?: StockLabelUncheckedUpdateManyWithoutLabelsNestedInput
+    stock_history?: StockHistoryUncheckedUpdateManyWithoutLabelsNestedInput
   }
 
   export type StateCreateManyCountryInput = {
@@ -59928,15 +62996,18 @@ export namespace Prisma {
     name: string
     description?: string | null
     type_id: string
-    region_id: string
+    region_id?: string | null
+    winery_id?: string | null
     harvest?: string | null
-    wine_type_id: string
+    no_harvest?: boolean
+    wine_type_id?: string | null
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
     photo?: string | null
+    account_id: string
     is_active?: boolean
-    stock?: boolean
+    control_stock?: boolean
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -59977,23 +63048,26 @@ export namespace Prisma {
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    labelType?: LabelTypeUpdateOneRequiredWithoutLabelsNestedInput
-    region?: RegionUpdateOneRequiredWithoutLabelsNestedInput
+    label_type?: LabelTypeUpdateOneRequiredWithoutLabelsNestedInput
+    region?: RegionUpdateOneWithoutLabelsNestedInput
+    winery?: WineryUpdateOneWithoutLabelsNestedInput
     harvest?: NullableStringFieldUpdateOperationsInput | string | null
-    wine_type?: WineTypeUpdateOneRequiredWithoutLabelsNestedInput
+    no_harvest?: BoolFieldUpdateOperationsInput | boolean
+    wine_type?: WineTypeUpdateOneWithoutLabelsNestedInput
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
     photo?: NullableStringFieldUpdateOperationsInput | string | null
+    account?: AccountUpdateOneRequiredWithoutLabelsNestedInput
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    stock?: BoolFieldUpdateOperationsInput | boolean
+    control_stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     label_grape?: LabelGrapeUpdateManyWithoutLabelNestedInput
     order_label?: OrderLabelUpdateManyWithoutLabelNestedInput
     label_campaign?: LabelCampaignUpdateManyWithoutLabelNestedInput
-    StockLabel?: StockLabelUpdateManyWithoutLabelsNestedInput
-    StockHistory?: StockHistoryUpdateManyWithoutLabelsNestedInput
+    stock_label?: StockLabelUpdateManyWithoutLabelsNestedInput
+    stock_history?: StockHistoryUpdateManyWithoutLabelsNestedInput
   }
 
   export type LabelUncheckedUpdateWithoutCountryInput = {
@@ -60002,22 +63076,25 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type_id?: StringFieldUpdateOperationsInput | string
-    region_id?: StringFieldUpdateOperationsInput | string
+    region_id?: NullableStringFieldUpdateOperationsInput | string | null
+    winery_id?: NullableStringFieldUpdateOperationsInput | string | null
     harvest?: NullableStringFieldUpdateOperationsInput | string | null
-    wine_type_id?: StringFieldUpdateOperationsInput | string
+    no_harvest?: BoolFieldUpdateOperationsInput | boolean
+    wine_type_id?: NullableStringFieldUpdateOperationsInput | string | null
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
     photo?: NullableStringFieldUpdateOperationsInput | string | null
+    account_id?: StringFieldUpdateOperationsInput | string
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    stock?: BoolFieldUpdateOperationsInput | boolean
+    control_stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     label_grape?: LabelGrapeUncheckedUpdateManyWithoutLabelNestedInput
     order_label?: OrderLabelUncheckedUpdateManyWithoutLabelNestedInput
     label_campaign?: LabelCampaignUncheckedUpdateManyWithoutLabelNestedInput
-    StockLabel?: StockLabelUncheckedUpdateManyWithoutLabelsNestedInput
-    StockHistory?: StockHistoryUncheckedUpdateManyWithoutLabelsNestedInput
+    stock_label?: StockLabelUncheckedUpdateManyWithoutLabelsNestedInput
+    stock_history?: StockHistoryUncheckedUpdateManyWithoutLabelsNestedInput
   }
 
   export type RegionCreateManyStateInput = {
@@ -60111,15 +63188,18 @@ export namespace Prisma {
     name: string
     description?: string | null
     type_id: string
-    country_id: string
+    country_id?: string | null
+    winery_id?: string | null
     harvest?: string | null
-    wine_type_id: string
+    no_harvest?: boolean
+    wine_type_id?: string | null
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
     photo?: string | null
+    account_id: string
     is_active?: boolean
-    stock?: boolean
+    control_stock?: boolean
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -60156,23 +63236,26 @@ export namespace Prisma {
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    labelType?: LabelTypeUpdateOneRequiredWithoutLabelsNestedInput
-    country?: CountryUpdateOneRequiredWithoutLabelsNestedInput
+    label_type?: LabelTypeUpdateOneRequiredWithoutLabelsNestedInput
+    country?: CountryUpdateOneWithoutLabelsNestedInput
+    winery?: WineryUpdateOneWithoutLabelsNestedInput
     harvest?: NullableStringFieldUpdateOperationsInput | string | null
-    wine_type?: WineTypeUpdateOneRequiredWithoutLabelsNestedInput
+    no_harvest?: BoolFieldUpdateOperationsInput | boolean
+    wine_type?: WineTypeUpdateOneWithoutLabelsNestedInput
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
     photo?: NullableStringFieldUpdateOperationsInput | string | null
+    account?: AccountUpdateOneRequiredWithoutLabelsNestedInput
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    stock?: BoolFieldUpdateOperationsInput | boolean
+    control_stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     label_grape?: LabelGrapeUpdateManyWithoutLabelNestedInput
     order_label?: OrderLabelUpdateManyWithoutLabelNestedInput
     label_campaign?: LabelCampaignUpdateManyWithoutLabelNestedInput
-    StockLabel?: StockLabelUpdateManyWithoutLabelsNestedInput
-    StockHistory?: StockHistoryUpdateManyWithoutLabelsNestedInput
+    stock_label?: StockLabelUpdateManyWithoutLabelsNestedInput
+    stock_history?: StockHistoryUpdateManyWithoutLabelsNestedInput
   }
 
   export type LabelUncheckedUpdateWithoutRegionInput = {
@@ -60181,22 +63264,25 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type_id?: StringFieldUpdateOperationsInput | string
-    country_id?: StringFieldUpdateOperationsInput | string
+    country_id?: NullableStringFieldUpdateOperationsInput | string | null
+    winery_id?: NullableStringFieldUpdateOperationsInput | string | null
     harvest?: NullableStringFieldUpdateOperationsInput | string | null
-    wine_type_id?: StringFieldUpdateOperationsInput | string
+    no_harvest?: BoolFieldUpdateOperationsInput | boolean
+    wine_type_id?: NullableStringFieldUpdateOperationsInput | string | null
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
     photo?: NullableStringFieldUpdateOperationsInput | string | null
+    account_id?: StringFieldUpdateOperationsInput | string
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    stock?: BoolFieldUpdateOperationsInput | boolean
+    control_stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     label_grape?: LabelGrapeUncheckedUpdateManyWithoutLabelNestedInput
     order_label?: OrderLabelUncheckedUpdateManyWithoutLabelNestedInput
     label_campaign?: LabelCampaignUncheckedUpdateManyWithoutLabelNestedInput
-    StockLabel?: StockLabelUncheckedUpdateManyWithoutLabelsNestedInput
-    StockHistory?: StockHistoryUncheckedUpdateManyWithoutLabelsNestedInput
+    stock_label?: StockLabelUncheckedUpdateManyWithoutLabelsNestedInput
+    stock_history?: StockHistoryUncheckedUpdateManyWithoutLabelsNestedInput
   }
 
   export type LabelCreateManyWine_typeInput = {
@@ -60205,15 +63291,18 @@ export namespace Prisma {
     name: string
     description?: string | null
     type_id: string
-    country_id: string
-    region_id: string
+    country_id?: string | null
+    region_id?: string | null
+    winery_id?: string | null
     harvest?: string | null
+    no_harvest?: boolean
     alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
     price: number
     promotional_price?: number | null
     photo?: string | null
+    account_id: string
     is_active?: boolean
-    stock?: boolean
+    control_stock?: boolean
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -60223,23 +63312,26 @@ export namespace Prisma {
     external_id?: NullableIntFieldUpdateOperationsInput | number | null
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    labelType?: LabelTypeUpdateOneRequiredWithoutLabelsNestedInput
-    country?: CountryUpdateOneRequiredWithoutLabelsNestedInput
-    region?: RegionUpdateOneRequiredWithoutLabelsNestedInput
+    label_type?: LabelTypeUpdateOneRequiredWithoutLabelsNestedInput
+    country?: CountryUpdateOneWithoutLabelsNestedInput
+    region?: RegionUpdateOneWithoutLabelsNestedInput
+    winery?: WineryUpdateOneWithoutLabelsNestedInput
     harvest?: NullableStringFieldUpdateOperationsInput | string | null
+    no_harvest?: BoolFieldUpdateOperationsInput | boolean
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
     photo?: NullableStringFieldUpdateOperationsInput | string | null
+    account?: AccountUpdateOneRequiredWithoutLabelsNestedInput
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    stock?: BoolFieldUpdateOperationsInput | boolean
+    control_stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     label_grape?: LabelGrapeUpdateManyWithoutLabelNestedInput
     order_label?: OrderLabelUpdateManyWithoutLabelNestedInput
     label_campaign?: LabelCampaignUpdateManyWithoutLabelNestedInput
-    StockLabel?: StockLabelUpdateManyWithoutLabelsNestedInput
-    StockHistory?: StockHistoryUpdateManyWithoutLabelsNestedInput
+    stock_label?: StockLabelUpdateManyWithoutLabelsNestedInput
+    stock_history?: StockHistoryUpdateManyWithoutLabelsNestedInput
   }
 
   export type LabelUncheckedUpdateWithoutWine_typeInput = {
@@ -60248,22 +63340,25 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
     type_id?: StringFieldUpdateOperationsInput | string
-    country_id?: StringFieldUpdateOperationsInput | string
-    region_id?: StringFieldUpdateOperationsInput | string
+    country_id?: NullableStringFieldUpdateOperationsInput | string | null
+    region_id?: NullableStringFieldUpdateOperationsInput | string | null
+    winery_id?: NullableStringFieldUpdateOperationsInput | string | null
     harvest?: NullableStringFieldUpdateOperationsInput | string | null
+    no_harvest?: BoolFieldUpdateOperationsInput | boolean
     alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     price?: FloatFieldUpdateOperationsInput | number
     promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
     photo?: NullableStringFieldUpdateOperationsInput | string | null
+    account_id?: StringFieldUpdateOperationsInput | string
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    stock?: BoolFieldUpdateOperationsInput | boolean
+    control_stock?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     label_grape?: LabelGrapeUncheckedUpdateManyWithoutLabelNestedInput
     order_label?: OrderLabelUncheckedUpdateManyWithoutLabelNestedInput
     label_campaign?: LabelCampaignUncheckedUpdateManyWithoutLabelNestedInput
-    StockLabel?: StockLabelUncheckedUpdateManyWithoutLabelsNestedInput
-    StockHistory?: StockHistoryUncheckedUpdateManyWithoutLabelsNestedInput
+    stock_label?: StockLabelUncheckedUpdateManyWithoutLabelsNestedInput
+    stock_history?: StockHistoryUncheckedUpdateManyWithoutLabelsNestedInput
   }
 
   export type OrderLabelCreateManyOrderInput = {
@@ -60275,6 +63370,7 @@ export namespace Prisma {
 
   export type InvoiceCreateManyOrderInput = {
     id?: string
+    account_id: string
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -60295,18 +63391,21 @@ export namespace Prisma {
 
   export type InvoiceUpdateWithoutOrderInput = {
     id?: StringFieldUpdateOperationsInput | string
+    account?: AccountUpdateOneRequiredWithoutInvoicesNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type InvoiceUncheckedUpdateWithoutOrderInput = {
     id?: StringFieldUpdateOperationsInput | string
+    account_id?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type InvoiceUncheckedUpdateManyWithoutInvoiceInput = {
     id?: StringFieldUpdateOperationsInput | string
+    account_id?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -60667,8 +63766,11 @@ export namespace Prisma {
     account_activities?: AccountActivitiesUpdateManyWithoutAccountNestedInput
     account_deliveries?: AccountDeliveryUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUpdateManyWithoutAccountNestedInput
+    invoices?: InvoiceUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
-    StockLabel?: StockLabelUpdateManyWithoutAccountNestedInput
+    stock_label?: StockLabelUpdateManyWithoutAccountNestedInput
+    labels?: LabelUpdateManyWithoutAccountNestedInput
+    coupons?: CouponUpdateManyWithoutAccountNestedInput
     account_configuration?: AccountConfigurationUpdateOneWithoutAccountNestedInput
     isActive?: BoolFieldUpdateOperationsInput | boolean
   }
@@ -60706,8 +63808,11 @@ export namespace Prisma {
     account_activities?: AccountActivitiesUncheckedUpdateManyWithoutAccountNestedInput
     account_deliveries?: AccountDeliveryUncheckedUpdateManyWithoutAccountNestedInput
     account_users?: AccountUserUncheckedUpdateManyWithoutAccountNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutAccountNestedInput
     domain?: StringFieldUpdateOperationsInput | string
-    StockLabel?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
+    stock_label?: StockLabelUncheckedUpdateManyWithoutAccountNestedInput
+    labels?: LabelUncheckedUpdateManyWithoutAccountNestedInput
+    coupons?: CouponUncheckedUpdateManyWithoutAccountNestedInput
     account_configuration?: AccountConfigurationUncheckedUpdateOneWithoutAccountNestedInput
     isActive?: BoolFieldUpdateOperationsInput | boolean
   }
@@ -60815,6 +63920,82 @@ export namespace Prisma {
     max_labels?: IntFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LabelCreateManyWineryInput = {
+    id?: string
+    external_id?: number | null
+    name: string
+    description?: string | null
+    type_id: string
+    country_id?: string | null
+    region_id?: string | null
+    harvest?: string | null
+    no_harvest?: boolean
+    wine_type_id?: string | null
+    alcohol_percentage?: Decimal | DecimalJsLike | number | string | null
+    price: number
+    promotional_price?: number | null
+    photo?: string | null
+    account_id: string
+    is_active?: boolean
+    control_stock?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type LabelUpdateWithoutWineryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    label_type?: LabelTypeUpdateOneRequiredWithoutLabelsNestedInput
+    country?: CountryUpdateOneWithoutLabelsNestedInput
+    region?: RegionUpdateOneWithoutLabelsNestedInput
+    harvest?: NullableStringFieldUpdateOperationsInput | string | null
+    no_harvest?: BoolFieldUpdateOperationsInput | boolean
+    wine_type?: WineTypeUpdateOneWithoutLabelsNestedInput
+    alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    price?: FloatFieldUpdateOperationsInput | number
+    promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
+    account?: AccountUpdateOneRequiredWithoutLabelsNestedInput
+    is_active?: BoolFieldUpdateOperationsInput | boolean
+    control_stock?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    label_grape?: LabelGrapeUpdateManyWithoutLabelNestedInput
+    order_label?: OrderLabelUpdateManyWithoutLabelNestedInput
+    label_campaign?: LabelCampaignUpdateManyWithoutLabelNestedInput
+    stock_label?: StockLabelUpdateManyWithoutLabelsNestedInput
+    stock_history?: StockHistoryUpdateManyWithoutLabelsNestedInput
+  }
+
+  export type LabelUncheckedUpdateWithoutWineryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    type_id?: StringFieldUpdateOperationsInput | string
+    country_id?: NullableStringFieldUpdateOperationsInput | string | null
+    region_id?: NullableStringFieldUpdateOperationsInput | string | null
+    harvest?: NullableStringFieldUpdateOperationsInput | string | null
+    no_harvest?: BoolFieldUpdateOperationsInput | boolean
+    wine_type_id?: NullableStringFieldUpdateOperationsInput | string | null
+    alcohol_percentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    price?: FloatFieldUpdateOperationsInput | number
+    promotional_price?: NullableFloatFieldUpdateOperationsInput | number | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
+    account_id?: StringFieldUpdateOperationsInput | string
+    is_active?: BoolFieldUpdateOperationsInput | boolean
+    control_stock?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    label_grape?: LabelGrapeUncheckedUpdateManyWithoutLabelNestedInput
+    order_label?: OrderLabelUncheckedUpdateManyWithoutLabelNestedInput
+    label_campaign?: LabelCampaignUncheckedUpdateManyWithoutLabelNestedInput
+    stock_label?: StockLabelUncheckedUpdateManyWithoutLabelsNestedInput
+    stock_history?: StockHistoryUncheckedUpdateManyWithoutLabelsNestedInput
   }
 
 

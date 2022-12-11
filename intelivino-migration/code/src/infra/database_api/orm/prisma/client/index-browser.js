@@ -201,6 +201,7 @@ exports.Prisma.CountryScalarFieldEnum = makeEnum({
 exports.Prisma.CouponScalarFieldEnum = makeEnum({
   id: 'id',
   code: 'code',
+  account_id: 'account_id',
   dicount_type: 'dicount_type',
   discount_value: 'discount_value',
   couponUse_type: 'couponUse_type',
@@ -277,6 +278,7 @@ exports.Prisma.GrapeScalarFieldEnum = makeEnum({
 exports.Prisma.InvoiceScalarFieldEnum = makeEnum({
   id: 'id',
   order_id: 'order_id',
+  account_id: 'account_id',
   created_at: 'created_at',
   updated_at: 'updated_at'
 });
@@ -303,20 +305,24 @@ exports.Prisma.LabelScalarFieldEnum = makeEnum({
   type_id: 'type_id',
   country_id: 'country_id',
   region_id: 'region_id',
+  winery_id: 'winery_id',
   harvest: 'harvest',
+  no_harvest: 'no_harvest',
   wine_type_id: 'wine_type_id',
   alcohol_percentage: 'alcohol_percentage',
   price: 'price',
   promotional_price: 'promotional_price',
   photo: 'photo',
+  account_id: 'account_id',
   is_active: 'is_active',
-  stock: 'stock',
+  control_stock: 'control_stock',
   created_at: 'created_at',
   updated_at: 'updated_at'
 });
 
 exports.Prisma.LabelTypeScalarFieldEnum = makeEnum({
   id: 'id',
+  external_id: 'external_id',
   name: 'name',
   created_at: 'created_at',
   updated_at: 'updated_at'
@@ -448,6 +454,7 @@ exports.Prisma.StockHistoryScalarFieldEnum = makeEnum({
 exports.Prisma.StockLabelScalarFieldEnum = makeEnum({
   label_id: 'label_id',
   account_id: 'account_id',
+  quantity: 'quantity',
   min_quantity: 'min_quantity',
   max_quantity: 'max_quantity'
 });
@@ -510,8 +517,17 @@ exports.Prisma.UserScalarFieldEnum = makeEnum({
 
 exports.Prisma.WineTypeScalarFieldEnum = makeEnum({
   id: 'id',
+  external_id: 'external_id',
   name: 'name',
   slug: 'slug',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+});
+
+exports.Prisma.WineryScalarFieldEnum = makeEnum({
+  id: 'id',
+  external_id: 'external_id',
+  name: 'name',
   created_at: 'created_at',
   updated_at: 'updated_at'
 });
@@ -593,7 +609,8 @@ exports.Prisma.ModelName = makeEnum({
   PaymentCycle: 'PaymentCycle',
   Subscription: 'Subscription',
   StockLabel: 'StockLabel',
-  StockHistory: 'StockHistory'
+  StockHistory: 'StockHistory',
+  Winery: 'Winery'
 });
 
 /**

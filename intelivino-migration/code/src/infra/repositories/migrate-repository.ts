@@ -33,6 +33,9 @@ export class MigrateRepository {
       await this.migratePlans()
       await this.migrateActivities()
       await this.migrateDeliveries()
+      await this.migrateWinery()
+      await this.migrateWineType()
+      await this.migrateLabelType()
     } catch (error) {
       console.log('Deu merda')
       throw new Error((error as Error).message)
@@ -68,6 +71,98 @@ export class MigrateRepository {
       throw new Error((error as Error).message)
     }
   }
+
+  async migrateWinery() {
+    try {
+      let page = 1
+      const perPage = 50
+      let itemsPaginated = 0
+      await this.prismaDbProd.winery.deleteMany({})
+      do {
+        itemsPaginated = 0
+        const wineries = await this.prismaDbOlder.vinicolas.findMany({
+          take: perPage,
+          skip: this.calculatePage(page, perPage),
+        })
+        for (const winery of wineries) {
+          if (winery.nome.length > 200) {
+            continue
+          }
+          await this.prismaDbProd.winery.create({
+            data: {
+              name: winery.nome,
+              external_id: winery.id,
+            },
+          })
+        }
+        itemsPaginated = wineries.length
+        page++
+      } while (itemsPaginated === perPage)
+    } catch (error) {
+      console.log('Deu merda')
+      throw new Error((error as Error).message)
+    }
+  }
+
+  async migrateWineType() {
+    try {
+      let page = 1
+      const perPage = 50
+      let itemsPaginated = 0
+      await this.prismaDbProd.wineType.deleteMany({})
+      do {
+        itemsPaginated = 0
+        const wineTypes = await this.prismaDbOlder.meta_tipos_vinhos.findMany({
+          take: perPage,
+          skip: this.calculatePage(page, perPage),
+        })
+        for (const type of wineTypes) {
+          await this.prismaDbProd.wineType.create({
+            data: {
+              name: type.descricao,
+              slug: slugGenerator(cleanString(type.descricao)),
+              external_id: type.id,
+            },
+          })
+        }
+        itemsPaginated = wineTypes.length
+        page++
+      } while (itemsPaginated === perPage)
+    } catch (error) {
+      console.log('Deu merda')
+      throw new Error((error as Error).message)
+    }
+  }
+
+  async migrateLabelType() {
+    try {
+      let page = 1
+      const perPage = 50
+      let itemsPaginated = 0
+      await this.prismaDbProd.labelType.deleteMany({})
+      do {
+        itemsPaginated = 0
+        const labelTypes = await this.prismaDbOlder.tipos_indicacoes.findMany({
+          take: perPage,
+          skip: this.calculatePage(page, perPage),
+        })
+        for (const type of labelTypes) {
+          await this.prismaDbProd.labelType.create({
+            data: {
+              name: type.nome,
+              external_id: type.id,
+            },
+          })
+        }
+        itemsPaginated = labelTypes.length
+        page++
+      } while (itemsPaginated === perPage)
+    } catch (error) {
+      console.log('Deu merda')
+      throw new Error((error as Error).message)
+    }
+  }
+
   async migrateDeliveries() {
     try {
       let page = 1
@@ -98,6 +193,7 @@ export class MigrateRepository {
       throw new Error((error as Error).message)
     }
   }
+
   async migrateGrapes() {
     try {
       let page = 1
@@ -263,14 +359,10 @@ export class MigrateRepository {
     let page = 1
     const perPage = 50
     let itemsPaginated = 0
-    const roleBusiness = await this.getRole('Business')
-    const roleSeller = await this.getRole('Seller')
-    if (!roleBusiness || !roleSeller) {
-      throw new Error('Business role not found')
-    }
     await this.prismaDbProd.account.deleteMany({})
     await this.prismaDbProd.user.deleteMany({})
     await this.prismaDbProd.accountUser.deleteMany({})
+    await this.prismaDbProd.label.deleteMany({})
     do {
       itemsPaginated = 0
       const accounts = accountIds
@@ -282,6 +374,7 @@ export class MigrateRepository {
         await this.createAccountUser(account, responseCreateAccount)
         await this.createAccountSeller(account.user_id!)
         await this.createAccountDeliveries(account, responseCreateAccount)
+        await this.migrateLabels(account, responseCreateAccount)
       }
       itemsPaginated = accounts.length
       page++
@@ -447,6 +540,7 @@ export class MigrateRepository {
       })
     }
   }
+
   async createAccountDeliveries(
     account: business & {
       activities_business: activities_business[]
@@ -478,6 +572,7 @@ export class MigrateRepository {
       })
     }
   }
+
   async createAccountUser(
     account: business & {
       activities_business: activities_business[]
@@ -583,13 +678,15 @@ export class MigrateRepository {
       })
     }
   }
-  async migrateLabels() {
+
+  async migrateLabels(
+    account: business & {
+      activities_business: activities_business[]
+      users: users | null
+    },
+    newAccount: Account
+  ) {
     try {
-      await this.prismaDbProd.label.deleteMany()
-      await this.prismaDbProd.labelCampaign.deleteMany()
-      await this.prismaDbProd.labelGrape.deleteMany()
-      await this.prismaDbProd.labelType.deleteMany()
-      await this.prismaDbProd.orderLabel.deleteMany()
       let page = 1
       const perPage = 50
       let itemsPaginated = 0
@@ -600,19 +697,70 @@ export class MigrateRepository {
             campaigns_indicacoes: true,
             indicacoes_uvas: true,
           },
+          where: {
+            user_id: account.user_id,
+          },
         })
         for (const label of labels) {
-          // const responseCreateLabels = await this.prismaDbProd.label.create({
-          //   data: {
-          //     name: label.nome || '',
-          //     price: Number(label.preco),
-          //     promotional_price: Number(label.preco_promocional),
-          //     description: label.descricao,
-          //     alcohol_percentage: label.porcentagem_alcool,
-          //     harvest: label.safra,
-          //     is_active: label.status_indicacao_id === 1 ? true : false,
-          //   },
-          // })
+          const photoUrl = await this.prismaDbOlder.$queryRaw<
+            { photo_url: string }[]
+          >`select p.photo_url  from photos p
+          inner join albums a on a.id = p.album_id
+          inner join indicacoes i on i.id = a.type_id
+          where i.id = ${label.id}`
+          const labelCountry = label.meta_pais_id
+            ? await this.getLabelCountry(label.meta_pais_id!)
+            : null
+          const labelRegion = label.meta_regiao_id
+            ? await this.getLabelRegion(label.meta_regiao_id!)
+            : null
+          const labelWinery = label.vinicola_id
+            ? await this.getLabelWinery(label.vinicola_id)
+            : null
+          const labelWineType = label.meta_tipo_vinho_id
+            ? await this.getLabelWineType(label.meta_tipo_vinho_id)
+            : null
+          const labelType = await this.getLabelType(label.tipo_indicacao_id!)
+          console.log(photoUrl)
+          const responseCreateLabels = await this.prismaDbProd.label.create({
+            data: {
+              name: label.nome || '',
+              price: Number(label.preco),
+              account_id: newAccount.id,
+              promotional_price: Number(label.preco_promocional),
+              description: label.descricao,
+              alcohol_percentage: label.porcentagem_alcool,
+              harvest: label.safra,
+              is_active: label.status_indicacao_id === 1 ? true : false,
+              photo: photoUrl.length ? photoUrl[0].photo_url : '',
+              country_id: labelCountry?.id,
+              region_id: labelRegion?.id,
+              winery_id: labelWinery?.id,
+              wine_type_id: labelWineType?.id,
+              type_id: labelType?.id!,
+              external_id: label.id,
+              no_harvest: label.sem_safra!,
+              control_stock: true,
+            },
+          })
+
+          if (label.estoque && label.estoque > 0) {
+            await this.prismaDbProd.stockLabel.create({
+              data: {
+                label_id: responseCreateLabels.id,
+                account_id: newAccount.id,
+                quantity: label.estoque,
+              },
+            })
+            await this.prismaDbProd.stockHistory.create({
+              data: {
+                label_id: responseCreateLabels.id,
+                date: new Date(),
+                quantity: label.estoque,
+                reason: 'insert',
+              },
+            })
+          }
         }
         itemsPaginated = labels.length
         page++
@@ -621,6 +769,46 @@ export class MigrateRepository {
       console.log('Deu merda')
       throw new Error((error as Error).message)
     }
+  }
+
+  async getLabelCountry(countryId: number) {
+    return await this.prismaDbProd.country.findUnique({
+      where: {
+        external_id: countryId,
+      },
+    })
+  }
+
+  async getLabelWineType(wineTypeId: number) {
+    return await this.prismaDbProd.wineType.findUnique({
+      where: {
+        external_id: wineTypeId,
+      },
+    })
+  }
+
+  async getLabelType(labelType: number) {
+    return await this.prismaDbProd.labelType.findUnique({
+      where: {
+        external_id: labelType,
+      },
+    })
+  }
+
+  async getLabelWinery(wineryId: number) {
+    return await this.prismaDbProd.winery.findUnique({
+      where: {
+        external_id: wineryId,
+      },
+    })
+  }
+
+  async getLabelRegion(regionId: number) {
+    return await this.prismaDbProd.region.findUnique({
+      where: {
+        external_id: regionId,
+      },
+    })
   }
 
   async migrateSellers() {}
