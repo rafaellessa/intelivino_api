@@ -56,26 +56,38 @@ async function main() {
     ],
   })
 
-  const typeLabels = await prisma.labelType.createMany({
+  const orderStatus = await prisma.orderStatus.createMany({
     data: [
       {
-        name: 'Promoção',
+        name: 'Pendente',
+        slug: slugGenerator('Pendente'),
       },
       {
-        name: 'Lançamento',
+        name: 'Cancelado',
+        slug: slugGenerator('Cancelado'),
       },
       {
-        name: 'Normal',
+        name: 'Aguadando Pagamento',
+        slug: slugGenerator('Aguadando Pagamento'),
       },
       {
-        name: 'Diversos',
+        name: 'Pagamento Recusado',
+        slug: slugGenerator('Pagamento Recusado'),
+      },
+      {
+        name: 'Entrega em Andamento',
+        slug: slugGenerator('Entrega em Andamento'),
+      },
+      {
+        name: 'Finalizado',
+        slug: slugGenerator('Finalizado'),
       },
     ],
   })
 
   console.log({ activities })
   console.log({ roles })
-  console.log({ typeLabels })
+  console.log({ orderStatus })
 }
 main()
   .catch((e) => {

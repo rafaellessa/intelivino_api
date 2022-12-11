@@ -157,6 +157,21 @@ exports.Prisma.ActivitiesScalarFieldEnum = makeEnum({
   updated_at: 'updated_at'
 });
 
+exports.Prisma.AddressScalarFieldEnum = makeEnum({
+  id: 'id',
+  street: 'street',
+  number: 'number',
+  district: 'district',
+  state: 'state',
+  complement: 'complement',
+  additionalInformation: 'additionalInformation',
+  city: 'city',
+  zipcode: 'zipcode',
+  type_address: 'type_address',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+});
+
 exports.Prisma.CampaignScalarFieldEnum = makeEnum({
   id: 'id',
   external_id: 'external_id',
@@ -167,13 +182,13 @@ exports.Prisma.CampaignScalarFieldEnum = makeEnum({
   expiration_date: 'expiration_date',
   type_id: 'type_id',
   account_id: 'account_id',
-  account_user_id: 'account_user_id',
   created_at: 'created_at',
   updated_at: 'updated_at'
 });
 
 exports.Prisma.CampaignTypeScalarFieldEnum = makeEnum({
   id: 'id',
+  external_id: 'external_id',
   name: 'name',
   slug: 'slug'
 });
@@ -342,6 +357,7 @@ exports.Prisma.OrderLabelScalarFieldEnum = makeEnum({
   label_id: 'label_id',
   created_at: 'created_at',
   updated_at: 'updated_at',
+  price: 'price',
   quantity: 'quantity'
 });
 
@@ -352,6 +368,17 @@ exports.Prisma.OrderScalarFieldEnum = makeEnum({
   account_id: 'account_id',
   total: 'total',
   coupon_id: 'coupon_id',
+  user_id: 'user_id',
+  is_read: 'is_read',
+  order_status_id: 'order_status_id',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+});
+
+exports.Prisma.OrderStatusScalarFieldEnum = makeEnum({
+  id: 'id',
+  name: 'name',
+  slug: 'slug',
   created_at: 'created_at',
   updated_at: 'updated_at'
 });
@@ -486,6 +513,13 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
+exports.Prisma.UserAddressScalarFieldEnum = makeEnum({
+  user_id: 'user_id',
+  address_id: 'address_id',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+});
+
 exports.Prisma.UserScalarFieldEnum = makeEnum({
   id: 'id',
   name: 'name',
@@ -494,14 +528,6 @@ exports.Prisma.UserScalarFieldEnum = makeEnum({
   whatsapp: 'whatsapp',
   phone: 'phone',
   cpf_cnpj: 'cpf_cnpj',
-  street: 'street',
-  number: 'number',
-  district: 'district',
-  country: 'country',
-  state: 'state',
-  complement: 'complement',
-  city: 'city',
-  zipcode: 'zipcode',
   photo: 'photo',
   gender: 'gender',
   birthdate: 'birthdate',
@@ -563,6 +589,11 @@ exports.PlatformType = makeEnum({
   ios: 'ios'
 });
 
+exports.TypeAddress = makeEnum({
+  PRINCIPAL: 'PRINCIPAL',
+  DELIVERY: 'DELIVERY'
+});
+
 exports.TypeNotification = makeEnum({
   email: 'email',
   sms: 'sms',
@@ -577,6 +608,8 @@ exports.Prisma.ModelName = makeEnum({
   Delivery: 'Delivery',
   AccountDelivery: 'AccountDelivery',
   User: 'User',
+  Address: 'Address',
+  UserAddress: 'UserAddress',
   AccountUser: 'AccountUser',
   Permision: 'Permision',
   RolePermission: 'RolePermission',
@@ -596,6 +629,7 @@ exports.Prisma.ModelName = makeEnum({
   SubRegion: 'SubRegion',
   WineType: 'WineType',
   Order: 'Order',
+  OrderStatus: 'OrderStatus',
   OrderLabel: 'OrderLabel',
   Invoice: 'Invoice',
   Device: 'Device',

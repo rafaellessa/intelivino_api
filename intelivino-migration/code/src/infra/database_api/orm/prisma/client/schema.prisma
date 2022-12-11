@@ -47,11 +47,11 @@ model Account {
   account_activities    AccountActivities[]
   account_deliveries    AccountDelivery[]
   account_users         AccountUser[]
-  invoices Invoice[]
+  invoices              Invoice[]
   domain                String                @unique
-  stock_label            StockLabel[]
-  labels      Label[]
-  coupons Coupon[]
+  stock_label           StockLabel[]
+  labels                Label[]
+  coupons               Coupon[]
   account_configuration AccountConfiguration?
   isActive              Boolean               @default(false)
 
@@ -122,14 +122,6 @@ model User {
   whatsapp        String?
   phone           String?
   cpf_cnpj        String?       @unique
-  street          String
-  number          String
-  district        String
-  country         String
-  state           String
-  complement      String?
-  city            String
-  zipcode         String
   photo           String?
   gender          GenderType    @default(ND)
   birthdate       DateTime?
@@ -143,19 +135,55 @@ model User {
   lastLogin       DateTime      @default(now()) @db.Timestamp(3)
   device_user     DeviceUser[]
   account_user    AccountUser[]
+  orders          Order[]
+  user_addresses  UserAddress[]
 
   @@map("users")
 }
 
-model AccountUser {
-  id         String     @unique @default(uuid())
-  account_id String
-  account    Account    @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+model Address {
+  id                    String        @id @default(uuid())
+  street                String
+  number                String
+  district              String
+  state                 String
+  complement            String?
+  additionalInformation String?
+  city                  String
+  zipcode               String
+  user_addresses        UserAddress[]
+  type_address          TypeAddress
+  created_at            DateTime      @default(now()) @db.Timestamp(3)
+  updated_at            DateTime      @updatedAt @db.Timestamp(3)
+
+  @@map("address")
+}
+
+model UserAddress {
   user_id    String
-  user       User       @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  address_id String
+  address    Address  @relation(fields: [address_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  created_at DateTime @default(now()) @db.Timestamp(3)
+  updated_at DateTime @updatedAt @db.Timestamp(3)
+
+  @@id([address_id, user_id])
+  @@map("user_addresses")
+}
+
+enum TypeAddress {
+  PRINCIPAL
+  DELIVERY
+}
+
+model AccountUser {
+  id         String  @unique @default(uuid())
+  account_id String
+  account    Account @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user_id    String
+  user       User    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   role_id    String
-  role       Role       @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  campaigns  Campaign[]
+  role       Role    @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@id([account_id, user_id, id])
   @@map("account_user")
@@ -203,7 +231,7 @@ model Campaign {
   id                  String       @id @default(uuid())
   external_id         Int?         @unique
   name                String
-  description         String?
+  description         String? @db.VarChar(255)
   percentage_discount Float?
   start_date          DateTime?
   expiration_date     DateTime?
@@ -211,8 +239,6 @@ model Campaign {
   campaign_type       CampaignType @relation(fields: [type_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   account             Account      @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   account_id          String
-  account_user_id     String
-  account_user        AccountUser  @relation(fields: [account_user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   created_at          DateTime     @default(now()) @db.Timestamp(3)
   updated_at          DateTime     @updatedAt @db.Timestamp(3)
 
@@ -222,10 +248,11 @@ model Campaign {
 }
 
 model CampaignType {
-  id       String     @id @default(uuid())
-  name     String
-  slug     String
-  Campaign Campaign[]
+  id          String     @id @default(uuid())
+  external_id Int?       @unique
+  name        String
+  slug        String
+  Campaign    Campaign[]
 
   @@map("campaign_type")
 }
@@ -233,8 +260,8 @@ model CampaignType {
 model Coupon {
   id              String             @id @default(uuid())
   code            String
-  account_id String
-  account     Account  @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  account_id      String
+  account         Account            @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   dicount_type    CouponDiscountType
   discount_value  Float
   couponUse_type  CouponUseType
@@ -244,6 +271,7 @@ model Coupon {
   max_value       Float?
   created_at      DateTime           @default(now()) @db.Timestamp(3)
   updated_at      DateTime           @updatedAt @db.Timestamp(3)
+  orders          Order[]
 
   @@map("coupon")
 }
@@ -280,8 +308,8 @@ model Label {
   price              Float
   promotional_price  Float?
   photo              String?
-  account_id String
-  account     Account  @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  account_id         String
+  account            Account   @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   is_active          Boolean   @default(true)
   control_stock      Boolean   @default(true)
   created_at         DateTime  @default(now()) @db.Timestamp(3)
@@ -425,20 +453,37 @@ model WineType {
 }
 
 model Order {
-  id          String   @id @default(uuid())
-  external_id Int?     @unique
-  code        String   @unique
-  account_id  String
-  account     Account  @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  total       Float
-  coupon_id   Int?
-  created_at  DateTime @default(now()) @db.Timestamp(3)
-  updated_at  DateTime @updatedAt @db.Timestamp(3)
+  id              String      @id @default(uuid())
+  external_id     Int?        @unique
+  code            String      @unique
+  account_id      String
+  account         Account     @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  total           Float
+  coupon_id       String?
+  coupon          Coupon?     @relation(fields: [coupon_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  user_id         String
+  user            User        @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  is_read         Boolean     @default(false)
+  order_status_id String
+  order_status    OrderStatus @relation(fields: [order_status_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  created_at      DateTime    @default(now()) @db.Timestamp(3)
+  updated_at      DateTime    @updatedAt @db.Timestamp(3)
 
   order_label OrderLabel[]
   invoice     Invoice[]
 
   @@map("order")
+}
+
+model OrderStatus {
+  id         String   @id @default(uuid())
+  name       String   @unique
+  slug       String
+  created_at DateTime @default(now()) @db.Timestamp(3)
+  updated_at DateTime @updatedAt @db.Timestamp(3)
+  orders     Order[]
+
+  @@map("order_status")
 }
 
 model OrderLabel {
@@ -448,8 +493,8 @@ model OrderLabel {
   label      Label    @relation(fields: [label_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   created_at DateTime @default(now()) @db.Timestamp(3)
   updated_at DateTime @updatedAt @db.Timestamp(3)
-
-  quantity Int
+  price      Float
+  quantity   Int
 
   @@id([order_id, label_id])
   @@map("order_label")
@@ -460,7 +505,7 @@ model Invoice {
   order_id   String
   order      Order    @relation(fields: [order_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   account_id String
-  account    Account    @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  account    Account  @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   created_at DateTime @default(now()) @db.Timestamp(3)
   updated_at DateTime @updatedAt @db.Timestamp(3)
 
