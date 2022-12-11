@@ -44,10 +44,13 @@ model Account {
   updated_at            DateTime              @updatedAt @db.Timestamp(3)
   order                 Order[]
   account_activities    AccountActivities[]
-  account_deliveries AccountDelivery[]
+  account_deliveries    AccountDelivery[]
   account_users         AccountUser[]
+  invoices Invoice[]
   domain                String                @unique
-  StockLabel            StockLabel[]
+  stock_label            StockLabel[]
+  labels      Label[]
+  coupons Coupon[]
   account_configuration AccountConfiguration?
   isActive              Boolean               @default(false)
 
@@ -87,24 +90,24 @@ model Activities {
 }
 
 model Delivery {
-  id                 String              @id @default(uuid())
-  external_id        Int?                @unique
+  id                 String            @id @default(uuid())
+  external_id        Int?              @unique
   name               String
   slug               String
-  created_at         DateTime            @default(now()) @db.Timestamp(3)
-  updated_at         DateTime            @updatedAt @db.Timestamp(3)
+  created_at         DateTime          @default(now()) @db.Timestamp(3)
+  updated_at         DateTime          @updatedAt @db.Timestamp(3)
   account_deliveries AccountDelivery[]
 
   @@map("deliveries")
 }
 
 model AccountDelivery {
-  account_id    String
-  account       Account    @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  account_id  String
+  account     Account  @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   delivery_id String
   delivery    Delivery @relation(fields: [delivery_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  created_at    DateTime   @default(now()) @db.Timestamp(3)
-  updated_at    DateTime   @updatedAt @db.Timestamp(3)
+  created_at  DateTime @default(now()) @db.Timestamp(3)
+  updated_at  DateTime @updatedAt @db.Timestamp(3)
 
   @@id([account_id, delivery_id])
   @@map("account_deliveries")
@@ -229,6 +232,8 @@ model CampaignType {
 model Coupon {
   id              String             @id @default(uuid())
   code            String
+  account_id String
+  account     Account  @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   dicount_type    CouponDiscountType
   discount_value  Float
   couponUse_type  CouponUseType
@@ -257,30 +262,35 @@ model Label {
   id                 String    @id @default(uuid())
   external_id        Int?      @unique
   name               String
-  description        String?
+  description        String?   @db.Text
   type_id            String
-  labelType          LabelType @relation(fields: [type_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  country_id         String
-  country            Country   @relation(fields: [country_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  region_id          String
-  region             Region    @relation(fields: [region_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  label_type         LabelType @relation(fields: [type_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  country_id         String?
+  country            Country?  @relation(fields: [country_id], references: [id], onUpdate: SetNull, onDelete: Cascade)
+  region_id          String?
+  region             Region?   @relation(fields: [region_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  winery_id          String?
+  winery             Winery?   @relation(fields: [winery_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
   harvest            String?
-  wine_type_id       String
-  wine_type          WineType  @relation(fields: [wine_type_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  no_harvest         Boolean   @default(false)
+  wine_type_id       String?
+  wine_type          WineType? @relation(fields: [wine_type_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   alcohol_percentage Decimal?
   price              Float
   promotional_price  Float?
   photo              String?
+  account_id String
+  account     Account  @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   is_active          Boolean   @default(true)
-  stock              Boolean   @default(true)
+  control_stock      Boolean   @default(true)
   created_at         DateTime  @default(now()) @db.Timestamp(3)
   updated_at         DateTime  @updatedAt @db.Timestamp(3)
 
   label_grape    LabelGrape[]
   order_label    OrderLabel[]
   label_campaign LabelCampaign[]
-  StockLabel     StockLabel[]
-  StockHistory   StockHistory[]
+  stock_label    StockLabel[]
+  stock_history  StockHistory[]
 
   @@map("label")
 }
@@ -321,11 +331,12 @@ model Grape {
 }
 
 model LabelType {
-  id         String   @id @default(uuid())
-  name       String
-  labels     Label[]
-  created_at DateTime @default(now()) @db.Timestamp(3)
-  updated_at DateTime @updatedAt @db.Timestamp(3)
+  id          String   @id @default(uuid())
+  external_id Int?     @unique
+  name        String
+  labels      Label[]
+  created_at  DateTime @default(now()) @db.Timestamp(3)
+  updated_at  DateTime @updatedAt @db.Timestamp(3)
 
   @@map("label_type")
 }
@@ -401,12 +412,13 @@ model SubRegion {
 }
 
 model WineType {
-  id         String   @id @default(uuid())
-  name       String
-  slug       String
-  labels     Label[]
-  created_at DateTime @default(now()) @db.Timestamp(3)
-  updated_at DateTime @updatedAt @db.Timestamp(3)
+  id          String   @id @default(uuid())
+  external_id Int?     @unique
+  name        String
+  slug        String
+  labels      Label[]
+  created_at  DateTime @default(now()) @db.Timestamp(3)
+  updated_at  DateTime @updatedAt @db.Timestamp(3)
 
   @@map("wine_type")
 }
@@ -446,6 +458,8 @@ model Invoice {
   id         String   @id @default(uuid())
   order_id   String
   order      Order    @relation(fields: [order_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  account_id String
+  account    Account    @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   created_at DateTime @default(now()) @db.Timestamp(3)
   updated_at DateTime @updatedAt @db.Timestamp(3)
 
@@ -631,8 +645,9 @@ model StockLabel {
   labels       Label   @relation(fields: [label_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   account_id   String
   account      Account @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  min_quantity Int
-  max_quantity Int
+  quantity     Int
+  min_quantity Int     @default(5)
+  max_quantity Int     @default(100)
 
   @@id([label_id, account_id])
   @@map("stock_labels")
@@ -649,4 +664,16 @@ model StockHistory {
   updated_at DateTime @updatedAt @db.Timestamp(3)
 
   @@map("stock_history")
+}
+
+model Winery {
+  id          String   @id @default(uuid())
+  external_id Int?     @unique
+  name        String
+  created_at  DateTime @default(now()) @db.Timestamp(3)
+  updated_at  DateTime @updatedAt @db.Timestamp(3)
+
+  labels Label[]
+
+  @@map("winery")
 }
