@@ -518,6 +518,8 @@ model pedidos {
   uid                Int?
   created_at         DateTime?            @db.Timestamp(0)
   updated_at         DateTime?            @db.Timestamp(0)
+  coupon_id          Int?                 @db.UnsignedInt
+  coupon             Coupon?              @relation(fields: [coupon_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
   users              users?               @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "pedidos_user_id_foreign")
   pedidos_indicacoes pedidos_indicacoes[]
 
@@ -727,6 +729,7 @@ model users {
   planos_users                              planos_users[]
   sorteios_users                            sorteios_users[]
   users_roles                               users_roles[]
+  coupons                                   Coupon[]
 }
 
 model users_roles {
@@ -786,4 +789,35 @@ model vinicolas {
   nome       String    @db.VarChar(255)
   created_at DateTime? @db.Timestamp(0)
   updated_at DateTime? @db.Timestamp(0)
+}
+
+model Coupon {
+  id              Int                @id @default(autoincrement()) @db.UnsignedInt
+  code            String             @unique
+  user_id         Int                @db.UnsignedInt
+  user            users              @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  discount_type   CouponDiscountType
+  discount_value  Float
+  couponUse_type  CouponUseType
+  initial_date    DateTime           @default(now()) @db.Timestamp(3)
+  expiration_date DateTime?
+  min_value       Float?
+  max_value       Float?
+  created_at      DateTime           @default(now()) @db.Timestamp(3)
+  updated_at      DateTime           @updatedAt @db.Timestamp(3)
+  orders          pedidos[]
+
+  @@index([code, user_id])
+  @@map("coupon")
+}
+
+enum CouponDiscountType {
+  PERCENTAGE
+  VALUE
+}
+
+enum CouponUseType {
+  UNLIMITED
+  UNIQUE_BY_USER
+  UNIQUE
 }
