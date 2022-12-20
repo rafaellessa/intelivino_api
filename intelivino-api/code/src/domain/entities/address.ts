@@ -2,7 +2,6 @@ export type AddressProps = {
   street: string
   number: string
   district: string
-  country: string
   city: string
   state: string
   zipcode: string
@@ -12,7 +11,6 @@ export class Address {
   street: string
   number: string
   district: string
-  country: string
   city: string
   state: string
   zipcode: string
@@ -21,7 +19,6 @@ export class Address {
     street,
     number,
     district,
-    country,
     city,
     state,
     zipcode,
@@ -32,7 +29,6 @@ export class Address {
     this.city = city
     this.number = number
     this.district = district
-    this.country = country
     this.state = state
     this.zipcode = zipcode
   }

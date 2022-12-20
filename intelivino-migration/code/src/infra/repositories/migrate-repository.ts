@@ -535,7 +535,6 @@ export class MigrateRepository {
       data: {
         external_id: account.user_id!,
         name: account.main_contact_name || '',
-        country: account.users?.address_country || '',
         city: account.users?.city || '',
         district: account.users?.address_neighborhood || '',
         street: account.users?.address_street || '',

@@ -40,7 +40,6 @@ export type Account = {
   city: string
   state: string
   zipcode: string
-  country: string
   plan_id: string | null
   created_at: Date
   updated_at: Date
@@ -3271,7 +3270,6 @@ export namespace Prisma {
     city: string | null
     state: string | null
     zipcode: string | null
-    country: string | null
     plan_id: string | null
     created_at: Date | null
     updated_at: Date | null
@@ -3303,7 +3301,6 @@ export namespace Prisma {
     city: string | null
     state: string | null
     zipcode: string | null
-    country: string | null
     plan_id: string | null
     created_at: Date | null
     updated_at: Date | null
@@ -3335,7 +3332,6 @@ export namespace Prisma {
     city: number
     state: number
     zipcode: number
-    country: number
     plan_id: number
     created_at: number
     updated_at: number
@@ -3377,7 +3373,6 @@ export namespace Prisma {
     city?: true
     state?: true
     zipcode?: true
-    country?: true
     plan_id?: true
     created_at?: true
     updated_at?: true
@@ -3409,7 +3404,6 @@ export namespace Prisma {
     city?: true
     state?: true
     zipcode?: true
-    country?: true
     plan_id?: true
     created_at?: true
     updated_at?: true
@@ -3441,7 +3435,6 @@ export namespace Prisma {
     city?: true
     state?: true
     zipcode?: true
-    country?: true
     plan_id?: true
     created_at?: true
     updated_at?: true
@@ -3566,7 +3559,6 @@ export namespace Prisma {
     city: string
     state: string
     zipcode: string
-    country: string
     plan_id: string | null
     created_at: Date
     updated_at: Date
@@ -3618,7 +3610,6 @@ export namespace Prisma {
     city?: boolean
     state?: boolean
     zipcode?: boolean
-    country?: boolean
     plan_id?: boolean
     plan?: boolean | PlanArgs
     subscription?: boolean | SubscriptionFindManyArgs
@@ -46137,7 +46128,6 @@ export namespace Prisma {
     city: 'city',
     state: 'state',
     zipcode: 'zipcode',
-    country: 'country',
     plan_id: 'plan_id',
     created_at: 'created_at',
     updated_at: 'updated_at',
@@ -46724,7 +46714,6 @@ export namespace Prisma {
     city?: StringFilter | string
     state?: StringFilter | string
     zipcode?: StringFilter | string
-    country?: StringFilter | string
     plan_id?: StringNullableFilter | string | null
     plan?: XOR<PlanRelationFilter, PlanWhereInput> | null
     subscription?: SubscriptionListRelationFilter
@@ -46768,7 +46757,6 @@ export namespace Prisma {
     city?: SortOrder
     state?: SortOrder
     zipcode?: SortOrder
-    country?: SortOrder
     plan_id?: SortOrder
     plan?: PlanOrderByWithRelationInput
     subscription?: SubscriptionOrderByRelationAggregateInput
@@ -46818,7 +46806,6 @@ export namespace Prisma {
     city?: SortOrder
     state?: SortOrder
     zipcode?: SortOrder
-    country?: SortOrder
     plan_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -46858,7 +46845,6 @@ export namespace Prisma {
     city?: StringWithAggregatesFilter | string
     state?: StringWithAggregatesFilter | string
     zipcode?: StringWithAggregatesFilter | string
-    country?: StringWithAggregatesFilter | string
     plan_id?: StringNullableWithAggregatesFilter | string | null
     created_at?: DateTimeWithAggregatesFilter | Date | string
     updated_at?: DateTimeWithAggregatesFilter | Date | string
@@ -49414,7 +49400,6 @@ export namespace Prisma {
     city: string
     state: string
     zipcode: string
-    country: string
     plan?: PlanCreateNestedOneWithoutAccountInput
     subscription?: SubscriptionCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -49457,7 +49442,6 @@ export namespace Prisma {
     city: string
     state: string
     zipcode: string
-    country: string
     plan_id?: string | null
     subscription?: SubscriptionUncheckedCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -49500,7 +49484,6 @@ export namespace Prisma {
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
     plan?: PlanUpdateOneWithoutAccountNestedInput
     subscription?: SubscriptionUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -49543,7 +49526,6 @@ export namespace Prisma {
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
     plan_id?: NullableStringFieldUpdateOperationsInput | string | null
     subscription?: SubscriptionUncheckedUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -49585,7 +49567,6 @@ export namespace Prisma {
     city: string
     state: string
     zipcode: string
-    country: string
     plan_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
@@ -49617,7 +49598,6 @@ export namespace Prisma {
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     domain?: StringFieldUpdateOperationsInput | string
@@ -49648,7 +49628,6 @@ export namespace Prisma {
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
     plan_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -52958,7 +52937,6 @@ export namespace Prisma {
     city?: SortOrder
     state?: SortOrder
     zipcode?: SortOrder
-    country?: SortOrder
     plan_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -52994,7 +52972,6 @@ export namespace Prisma {
     city?: SortOrder
     state?: SortOrder
     zipcode?: SortOrder
-    country?: SortOrder
     plan_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -53026,7 +53003,6 @@ export namespace Prisma {
     city?: SortOrder
     state?: SortOrder
     zipcode?: SortOrder
-    country?: SortOrder
     plan_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -59430,7 +59406,6 @@ export namespace Prisma {
     city: string
     state: string
     zipcode: string
-    country: string
     plan?: PlanCreateNestedOneWithoutAccountInput
     subscription?: SubscriptionCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -59472,7 +59447,6 @@ export namespace Prisma {
     city: string
     state: string
     zipcode: string
-    country: string
     plan_id?: string | null
     subscription?: SubscriptionUncheckedCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -59524,7 +59498,6 @@ export namespace Prisma {
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
     plan?: PlanUpdateOneWithoutAccountNestedInput
     subscription?: SubscriptionUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -59566,7 +59539,6 @@ export namespace Prisma {
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
     plan_id?: NullableStringFieldUpdateOperationsInput | string | null
     subscription?: SubscriptionUncheckedUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -59608,7 +59580,6 @@ export namespace Prisma {
     city: string
     state: string
     zipcode: string
-    country: string
     plan?: PlanCreateNestedOneWithoutAccountInput
     subscription?: SubscriptionCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -59650,7 +59621,6 @@ export namespace Prisma {
     city: string
     state: string
     zipcode: string
-    country: string
     plan_id?: string | null
     subscription?: SubscriptionUncheckedCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -59725,7 +59695,6 @@ export namespace Prisma {
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
     plan?: PlanUpdateOneWithoutAccountNestedInput
     subscription?: SubscriptionUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -59767,7 +59736,6 @@ export namespace Prisma {
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
     plan_id?: NullableStringFieldUpdateOperationsInput | string | null
     subscription?: SubscriptionUncheckedUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -59908,7 +59876,6 @@ export namespace Prisma {
     city: string
     state: string
     zipcode: string
-    country: string
     plan?: PlanCreateNestedOneWithoutAccountInput
     subscription?: SubscriptionCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -59950,7 +59917,6 @@ export namespace Prisma {
     city: string
     state: string
     zipcode: string
-    country: string
     plan_id?: string | null
     subscription?: SubscriptionUncheckedCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -60025,7 +59991,6 @@ export namespace Prisma {
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
     plan?: PlanUpdateOneWithoutAccountNestedInput
     subscription?: SubscriptionUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -60067,7 +60032,6 @@ export namespace Prisma {
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
     plan_id?: NullableStringFieldUpdateOperationsInput | string | null
     subscription?: SubscriptionUncheckedUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -60536,7 +60500,6 @@ export namespace Prisma {
     city: string
     state: string
     zipcode: string
-    country: string
     plan?: PlanCreateNestedOneWithoutAccountInput
     subscription?: SubscriptionCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -60578,7 +60541,6 @@ export namespace Prisma {
     city: string
     state: string
     zipcode: string
-    country: string
     plan_id?: string | null
     subscription?: SubscriptionUncheckedCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -60700,7 +60662,6 @@ export namespace Prisma {
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
     plan?: PlanUpdateOneWithoutAccountNestedInput
     subscription?: SubscriptionUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -60742,7 +60703,6 @@ export namespace Prisma {
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
     plan_id?: NullableStringFieldUpdateOperationsInput | string | null
     subscription?: SubscriptionUncheckedUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -61050,7 +61010,6 @@ export namespace Prisma {
     city: string
     state: string
     zipcode: string
-    country: string
     plan?: PlanCreateNestedOneWithoutAccountInput
     subscription?: SubscriptionCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -61092,7 +61051,6 @@ export namespace Prisma {
     city: string
     state: string
     zipcode: string
-    country: string
     plan_id?: string | null
     subscription?: SubscriptionUncheckedCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -61185,7 +61143,6 @@ export namespace Prisma {
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
     plan?: PlanUpdateOneWithoutAccountNestedInput
     subscription?: SubscriptionUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -61227,7 +61184,6 @@ export namespace Prisma {
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
     plan_id?: NullableStringFieldUpdateOperationsInput | string | null
     subscription?: SubscriptionUncheckedUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -61350,7 +61306,6 @@ export namespace Prisma {
     city: string
     state: string
     zipcode: string
-    country: string
     plan?: PlanCreateNestedOneWithoutAccountInput
     subscription?: SubscriptionCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -61392,7 +61347,6 @@ export namespace Prisma {
     city: string
     state: string
     zipcode: string
-    country: string
     plan_id?: string | null
     subscription?: SubscriptionUncheckedCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -61484,7 +61438,6 @@ export namespace Prisma {
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
     plan?: PlanUpdateOneWithoutAccountNestedInput
     subscription?: SubscriptionUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -61526,7 +61479,6 @@ export namespace Prisma {
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
     plan_id?: NullableStringFieldUpdateOperationsInput | string | null
     subscription?: SubscriptionUncheckedUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -61703,7 +61655,6 @@ export namespace Prisma {
     city: string
     state: string
     zipcode: string
-    country: string
     plan?: PlanCreateNestedOneWithoutAccountInput
     subscription?: SubscriptionCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -61745,7 +61696,6 @@ export namespace Prisma {
     city: string
     state: string
     zipcode: string
-    country: string
     plan_id?: string | null
     subscription?: SubscriptionUncheckedCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -62038,7 +61988,6 @@ export namespace Prisma {
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
     plan?: PlanUpdateOneWithoutAccountNestedInput
     subscription?: SubscriptionUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -62080,7 +62029,6 @@ export namespace Prisma {
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
     plan_id?: NullableStringFieldUpdateOperationsInput | string | null
     subscription?: SubscriptionUncheckedUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -63391,7 +63339,6 @@ export namespace Prisma {
     city: string
     state: string
     zipcode: string
-    country: string
     plan?: PlanCreateNestedOneWithoutAccountInput
     subscription?: SubscriptionCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -63433,7 +63380,6 @@ export namespace Prisma {
     city: string
     state: string
     zipcode: string
-    country: string
     plan_id?: string | null
     subscription?: SubscriptionUncheckedCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -63644,7 +63590,6 @@ export namespace Prisma {
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
     plan?: PlanUpdateOneWithoutAccountNestedInput
     subscription?: SubscriptionUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -63686,7 +63631,6 @@ export namespace Prisma {
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
     plan_id?: NullableStringFieldUpdateOperationsInput | string | null
     subscription?: SubscriptionUncheckedUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -64148,7 +64092,6 @@ export namespace Prisma {
     city: string
     state: string
     zipcode: string
-    country: string
     plan?: PlanCreateNestedOneWithoutAccountInput
     subscription?: SubscriptionCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -64190,7 +64133,6 @@ export namespace Prisma {
     city: string
     state: string
     zipcode: string
-    country: string
     plan_id?: string | null
     subscription?: SubscriptionUncheckedCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -64277,7 +64219,6 @@ export namespace Prisma {
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
     plan?: PlanUpdateOneWithoutAccountNestedInput
     subscription?: SubscriptionUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -64319,7 +64260,6 @@ export namespace Prisma {
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
     plan_id?: NullableStringFieldUpdateOperationsInput | string | null
     subscription?: SubscriptionUncheckedUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -65412,7 +65352,6 @@ export namespace Prisma {
     city: string
     state: string
     zipcode: string
-    country: string
     subscription?: SubscriptionCreateNestedManyWithoutAccountInput
     created_at?: Date | string
     updated_at?: Date | string
@@ -65454,7 +65393,6 @@ export namespace Prisma {
     city: string
     state: string
     zipcode: string
-    country: string
     subscription?: SubscriptionUncheckedCreateNestedManyWithoutAccountInput
     created_at?: Date | string
     updated_at?: Date | string
@@ -65573,7 +65511,6 @@ export namespace Prisma {
     city?: StringFilter | string
     state?: StringFilter | string
     zipcode?: StringFilter | string
-    country?: StringFilter | string
     plan_id?: StringNullableFilter | string | null
     created_at?: DateTimeFilter | Date | string
     updated_at?: DateTimeFilter | Date | string
@@ -65730,7 +65667,6 @@ export namespace Prisma {
     city: string
     state: string
     zipcode: string
-    country: string
     plan?: PlanCreateNestedOneWithoutAccountInput
     created_at?: Date | string
     updated_at?: Date | string
@@ -65772,7 +65708,6 @@ export namespace Prisma {
     city: string
     state: string
     zipcode: string
-    country: string
     plan_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
@@ -65859,7 +65794,6 @@ export namespace Prisma {
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
     plan?: PlanUpdateOneWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -65901,7 +65835,6 @@ export namespace Prisma {
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
     plan_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -66002,7 +65935,6 @@ export namespace Prisma {
     city: string
     state: string
     zipcode: string
-    country: string
     plan?: PlanCreateNestedOneWithoutAccountInput
     subscription?: SubscriptionCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -66044,7 +65976,6 @@ export namespace Prisma {
     city: string
     state: string
     zipcode: string
-    country: string
     plan_id?: string | null
     subscription?: SubscriptionUncheckedCreateNestedManyWithoutAccountInput
     created_at?: Date | string
@@ -66155,7 +66086,6 @@ export namespace Prisma {
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
     plan?: PlanUpdateOneWithoutAccountNestedInput
     subscription?: SubscriptionUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -66197,7 +66127,6 @@ export namespace Prisma {
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
     plan_id?: NullableStringFieldUpdateOperationsInput | string | null
     subscription?: SubscriptionUncheckedUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -68197,7 +68126,6 @@ export namespace Prisma {
     city: string
     state: string
     zipcode: string
-    country: string
     created_at?: Date | string
     updated_at?: Date | string
     domain: string
@@ -68238,7 +68166,6 @@ export namespace Prisma {
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
     subscription?: SubscriptionUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -68280,7 +68207,6 @@ export namespace Prisma {
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
     subscription?: SubscriptionUncheckedUpdateManyWithoutAccountNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -68321,7 +68247,6 @@ export namespace Prisma {
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     zipcode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     domain?: StringFieldUpdateOperationsInput | string

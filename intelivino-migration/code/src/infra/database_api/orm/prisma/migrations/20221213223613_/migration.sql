@@ -23,7 +23,6 @@ CREATE TABLE `account` (
     `city` VARCHAR(191) NOT NULL,
     `state` VARCHAR(191) NOT NULL,
     `zipcode` VARCHAR(191) NOT NULL,
-    `country` VARCHAR(191) NOT NULL,
     `plan_id` VARCHAR(191) NULL,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,

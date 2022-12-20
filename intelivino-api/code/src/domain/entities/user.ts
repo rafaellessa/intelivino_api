@@ -9,6 +9,8 @@ export type UserProps = PersonProps & {
   appleId?: string
   facebookId?: string
   lastLogin: Date
+  rdStationId?: string
+  rdStationSync?: string
 }
 
 export class User extends Person {
@@ -20,6 +22,8 @@ export class User extends Person {
   appleId?: string
   facebookId?: string
   lastLogin: Date
+  rdStationId?: string
+  rdStationSync?: string
   constructor({
     id,
     name,
@@ -28,16 +32,29 @@ export class User extends Person {
     whatsapp,
     address,
     photo,
-    cpf,
+    cpfCnpj,
     phone,
     gender,
     birthdate,
     googleId,
     appleId,
     facebookId,
+    personType,
     lastLogin,
+    rdStationId,
+    rdStationSync,
   }: UserProps) {
-    super({ id, address, cpf, email, name, phone, whatsapp })
+    super({
+      id,
+      address,
+      cpfCnpj,
+      email,
+      gender,
+      name,
+      phone,
+      whatsapp,
+      personType,
+    })
     this.name = name
     this.password = password
     this.whatsapp = whatsapp
@@ -49,5 +66,7 @@ export class User extends Person {
     this.appleId = appleId
     this.facebookId = facebookId
     this.lastLogin = lastLogin
+    this.rdStationId = rdStationId
+    this.rdStationSync = rdStationSync
   }
 }

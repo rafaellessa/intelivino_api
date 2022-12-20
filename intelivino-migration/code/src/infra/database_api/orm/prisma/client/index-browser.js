@@ -133,7 +133,6 @@ exports.Prisma.AccountScalarFieldEnum = makeEnum({
   city: 'city',
   state: 'state',
   zipcode: 'zipcode',
-  country: 'country',
   plan_id: 'plan_id',
   created_at: 'created_at',
   updated_at: 'updated_at',

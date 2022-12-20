@@ -36,7 +36,6 @@ model Account {
   city                  String
   state                 String
   zipcode               String
-  country               String
   plan_id               String?
   plan                  Plan?                 @relation(fields: [plan_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   subscription          Subscription[]
