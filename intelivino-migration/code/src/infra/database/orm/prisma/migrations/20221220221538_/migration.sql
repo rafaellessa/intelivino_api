@@ -552,6 +552,7 @@ CREATE TABLE `pedidos` (
     `uid` INTEGER NULL,
     `created_at` TIMESTAMP(0) NULL,
     `updated_at` TIMESTAMP(0) NULL,
+    `coupon_id` INTEGER UNSIGNED NULL,
 
     INDEX `pedidos_user_id_foreign`(`user_id`),
     PRIMARY KEY (`id`)
@@ -765,6 +766,7 @@ CREATE TABLE `users` (
     `name_business_slug` VARCHAR(255) NULL,
     `plano_id` INTEGER NULL,
     `cod_ref` VARCHAR(255) NULL,
+    `show_catalog_prices` TINYINT NULL DEFAULT 1,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -836,6 +838,26 @@ CREATE TABLE `vinicolas` (
     `created_at` TIMESTAMP(0) NULL,
     `updated_at` TIMESTAMP(0) NULL,
 
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `coupon` (
+    `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+    `code` VARCHAR(191) NOT NULL,
+    `user_id` INTEGER UNSIGNED NOT NULL,
+    `discount_type` ENUM('PERCENTAGE', 'VALUE') NOT NULL,
+    `discount_value` DOUBLE NOT NULL,
+    `couponUse_type` ENUM('UNLIMITED', 'UNIQUE_BY_USER', 'UNIQUE') NOT NULL,
+    `initial_date` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `expiration_date` DATETIME(3) NULL,
+    `min_value` DOUBLE NULL,
+    `max_value` DOUBLE NULL,
+    `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` TIMESTAMP(3) NOT NULL,
+
+    UNIQUE INDEX `coupon_code_key`(`code`),
+    INDEX `coupon_code_user_id_idx`(`code`, `user_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -912,6 +934,9 @@ ALTER TABLE `indicacoes_uvas` ADD CONSTRAINT `indicacoes_uvas_indicacao_id_forei
 ALTER TABLE `indicacoes_uvas` ADD CONSTRAINT `indicacoes_uvas_uva_id_foreign` FOREIGN KEY (`uva_id`) REFERENCES `uvas`(`id`) ON DELETE SET NULL ON UPDATE NO ACTION;
 
 -- AddForeignKey
+ALTER TABLE `pedidos` ADD CONSTRAINT `pedidos_coupon_id_fkey` FOREIGN KEY (`coupon_id`) REFERENCES `coupon`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `pedidos` ADD CONSTRAINT `pedidos_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE SET NULL ON UPDATE NO ACTION;
 
 -- AddForeignKey
@@ -961,3 +986,6 @@ ALTER TABLE `valores_indicacoes` ADD CONSTRAINT `valores_indicacoes_category_id_
 
 -- AddForeignKey
 ALTER TABLE `valores_indicacoes` ADD CONSTRAINT `valores_indicacoes_indicacao_id_foreign` FOREIGN KEY (`indicacao_id`) REFERENCES `indicacoes`(`id`) ON DELETE SET NULL ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE `coupon` ADD CONSTRAINT `coupon_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

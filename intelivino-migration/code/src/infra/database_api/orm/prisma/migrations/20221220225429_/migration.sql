@@ -138,12 +138,21 @@ CREATE TABLE `address` (
 
 -- CreateTable
 CREATE TABLE `user_addresses` (
+    `id` VARCHAR(191) NOT NULL,
     `user_id` VARCHAR(191) NOT NULL,
-    `address_id` VARCHAR(191) NOT NULL,
+    `street` VARCHAR(191) NOT NULL,
+    `number` VARCHAR(191) NOT NULL,
+    `district` VARCHAR(191) NOT NULL,
+    `state` VARCHAR(191) NOT NULL,
+    `complement` VARCHAR(191) NULL,
+    `additional_information` VARCHAR(191) NULL,
+    `city` VARCHAR(191) NOT NULL,
+    `zip_code` VARCHAR(191) NOT NULL,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
+    `addressId` VARCHAR(191) NOT NULL,
 
-    PRIMARY KEY (`address_id`, `user_id`)
+    PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
@@ -394,8 +403,10 @@ CREATE TABLE `order` (
     `total` DOUBLE NOT NULL,
     `coupon_id` VARCHAR(191) NULL,
     `user_id` VARCHAR(191) NOT NULL,
+    `user_address_id` VARCHAR(191) NOT NULL,
     `is_read` BOOLEAN NOT NULL DEFAULT false,
     `order_status_id` VARCHAR(191) NOT NULL,
+    `campaign_id` VARCHAR(191) NULL,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
 
@@ -413,6 +424,23 @@ CREATE TABLE `order_status` (
     `updated_at` TIMESTAMP(3) NOT NULL,
 
     UNIQUE INDEX `order_status_name_key`(`name`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `customers` (
+    `id` VARCHAR(191) NOT NULL,
+    `account_id` VARCHAR(191) NOT NULL,
+    `email` VARCHAR(191) NOT NULL,
+    `mobile_phone` VARCHAR(191) NOT NULL,
+    `phone` VARCHAR(191) NOT NULL,
+    `is_active` BOOLEAN NOT NULL DEFAULT true,
+    `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` TIMESTAMP(3) NOT NULL,
+    `origin_registration` ENUM('SINGLE_REGISTRATION', 'CAMPAIGN', 'MAIN_CATALOG') NOT NULL,
+    `cpf_cnpj` VARCHAR(191) NOT NULL,
+    `note` TEXT NOT NULL,
+
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -640,7 +668,7 @@ ALTER TABLE `account_deliveries` ADD CONSTRAINT `account_deliveries_delivery_id_
 ALTER TABLE `user_addresses` ADD CONSTRAINT `user_addresses_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `user_addresses` ADD CONSTRAINT `user_addresses_address_id_fkey` FOREIGN KEY (`address_id`) REFERENCES `address`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `user_addresses` ADD CONSTRAINT `user_addresses_addressId_fkey` FOREIGN KEY (`addressId`) REFERENCES `address`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `account_user` ADD CONSTRAINT `account_user_account_id_fkey` FOREIGN KEY (`account_id`) REFERENCES `account`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -718,7 +746,16 @@ ALTER TABLE `order` ADD CONSTRAINT `order_coupon_id_fkey` FOREIGN KEY (`coupon_i
 ALTER TABLE `order` ADD CONSTRAINT `order_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE `order` ADD CONSTRAINT `order_user_address_id_fkey` FOREIGN KEY (`user_address_id`) REFERENCES `user_addresses`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `order` ADD CONSTRAINT `order_order_status_id_fkey` FOREIGN KEY (`order_status_id`) REFERENCES `order_status`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `order` ADD CONSTRAINT `order_campaign_id_fkey` FOREIGN KEY (`campaign_id`) REFERENCES `campaign`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `customers` ADD CONSTRAINT `customers_account_id_fkey` FOREIGN KEY (`account_id`) REFERENCES `account`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `order_label` ADD CONSTRAINT `order_label_order_id_fkey` FOREIGN KEY (`order_id`) REFERENCES `order`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

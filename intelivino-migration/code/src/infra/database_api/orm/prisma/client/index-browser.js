@@ -227,6 +227,20 @@ exports.Prisma.CouponScalarFieldEnum = makeEnum({
   updated_at: 'updated_at'
 });
 
+exports.Prisma.CustomerScalarFieldEnum = makeEnum({
+  id: 'id',
+  account_id: 'account_id',
+  email: 'email',
+  mobile_phone: 'mobile_phone',
+  phone: 'phone',
+  is_active: 'is_active',
+  created_at: 'created_at',
+  updated_at: 'updated_at',
+  origin_registration: 'origin_registration',
+  cpf_cnpj: 'cpf_cnpj',
+  note: 'note'
+});
+
 exports.Prisma.DeliveryScalarFieldEnum = makeEnum({
   id: 'id',
   external_id: 'external_id',
@@ -368,8 +382,10 @@ exports.Prisma.OrderScalarFieldEnum = makeEnum({
   total: 'total',
   coupon_id: 'coupon_id',
   user_id: 'user_id',
+  user_address_id: 'user_address_id',
   is_read: 'is_read',
   order_status_id: 'order_status_id',
+  campaign_id: 'campaign_id',
   created_at: 'created_at',
   updated_at: 'updated_at'
 });
@@ -513,10 +529,19 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
 });
 
 exports.Prisma.UserAddressScalarFieldEnum = makeEnum({
+  id: 'id',
   user_id: 'user_id',
-  address_id: 'address_id',
+  street: 'street',
+  number: 'number',
+  district: 'district',
+  state: 'state',
+  complement: 'complement',
+  additional_information: 'additional_information',
+  city: 'city',
+  zip_code: 'zip_code',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
+  addressId: 'addressId'
 });
 
 exports.Prisma.UserScalarFieldEnum = makeEnum({
@@ -565,6 +590,12 @@ exports.CouponUseType = makeEnum({
   UNLIMITED: 'UNLIMITED',
   UNIQUE_BY_USER: 'UNIQUE_BY_USER',
   UNIQUE: 'UNIQUE'
+});
+
+exports.CustomerOriginRegistration = makeEnum({
+  SINGLE_REGISTRATION: 'SINGLE_REGISTRATION',
+  CAMPAIGN: 'CAMPAIGN',
+  MAIN_CATALOG: 'MAIN_CATALOG'
 });
 
 exports.EmailTypeNotification = makeEnum({
@@ -629,6 +660,7 @@ exports.Prisma.ModelName = makeEnum({
   WineType: 'WineType',
   Order: 'Order',
   OrderStatus: 'OrderStatus',
+  Customer: 'Customer',
   OrderLabel: 'OrderLabel',
   Invoice: 'Invoice',
   Device: 'Device',
