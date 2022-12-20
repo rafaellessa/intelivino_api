@@ -4,6 +4,7 @@
 generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl"]
+  output        = "./client"
 }
 
 datasource db {
@@ -51,6 +52,7 @@ model Account {
   labels                Label[]
   coupons               Coupon[]
   account_configuration AccountConfiguration?
+  customers             Customer[]
   isActive              Boolean               @default(false)
 
   @@map("account")
@@ -158,14 +160,23 @@ model Address {
 }
 
 model UserAddress {
-  user_id    String
-  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  address_id String
-  address    Address  @relation(fields: [address_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  created_at DateTime @default(now()) @db.Timestamp(3)
-  updated_at DateTime @updatedAt @db.Timestamp(3)
+  id                     String   @id @default(uuid())
+  user_id                String
+  user                   User     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  street                 String
+  number                 String
+  district               String
+  state                  String
+  complement             String?
+  additional_information String?
+  city                   String
+  zip_code               String
+  orders                 Order[]
+  created_at             DateTime @default(now()) @db.Timestamp(3)
+  updated_at             DateTime @updatedAt @db.Timestamp(3)
+  Address                Address  @relation(fields: [addressId], references: [id])
+  addressId              String
 
-  @@id([address_id, user_id])
   @@map("user_addresses")
 }
 
@@ -229,7 +240,7 @@ model Campaign {
   id                  String       @id @default(uuid())
   external_id         Int?         @unique
   name                String
-  description         String? @db.VarChar(255)
+  description         String?      @db.VarChar(255)
   percentage_discount Float?
   start_date          DateTime?
   expiration_date     DateTime?
@@ -239,6 +250,7 @@ model Campaign {
   account_id          String
   created_at          DateTime     @default(now()) @db.Timestamp(3)
   updated_at          DateTime     @updatedAt @db.Timestamp(3)
+  orders              Order[]
 
   label_campaign LabelCampaign[]
 
@@ -461,9 +473,13 @@ model Order {
   coupon          Coupon?     @relation(fields: [coupon_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
   user_id         String
   user            User        @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user_address_id String
+  user_address    UserAddress @relation(fields: [user_address_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   is_read         Boolean     @default(false)
   order_status_id String
   order_status    OrderStatus @relation(fields: [order_status_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  campaign_id     String?
+  campaign        Campaign?   @relation(fields: [campaign_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
   created_at      DateTime    @default(now()) @db.Timestamp(3)
   updated_at      DateTime    @updatedAt @db.Timestamp(3)
 
@@ -482,6 +498,29 @@ model OrderStatus {
   orders     Order[]
 
   @@map("order_status")
+}
+
+model Customer {
+  id                  String                     @id @default(uuid())
+  account_id          String
+  account             Account                    @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  email               String
+  mobile_phone        String
+  phone               String
+  is_active           Boolean                    @default(true)
+  created_at          DateTime                   @default(now()) @db.Timestamp(3)
+  updated_at          DateTime                   @updatedAt @db.Timestamp(3)
+  origin_registration CustomerOriginRegistration
+  cpf_cnpj            String
+  note                String                     @db.Text
+
+  @@map("customers")
+}
+
+enum CustomerOriginRegistration {
+  SINGLE_REGISTRATION
+  CAMPAIGN
+  MAIN_CATALOG
 }
 
 model OrderLabel {
