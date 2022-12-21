@@ -132,31 +132,13 @@ export type User = {
 }
 
 /**
- * Model Address
- * 
- */
-export type Address = {
-  id: string
-  street: string
-  number: string
-  district: string
-  state: string
-  complement: string | null
-  additionalInformation: string | null
-  city: string
-  zipcode: string
-  type_address: TypeAddress
-  created_at: Date
-  updated_at: Date
-}
-
-/**
  * Model UserAddress
  * 
  */
 export type UserAddress = {
   id: string
   user_id: string
+  name: string | null
   street: string
   number: string
   district: string
@@ -167,7 +149,6 @@ export type UserAddress = {
   zip_code: string
   created_at: Date
   updated_at: Date
-  addressId: string
 }
 
 /**
@@ -460,6 +441,7 @@ export type Customer = {
   origin_registration: CustomerOriginRegistration
   cpf_cnpj: string
   note: string
+  converted: boolean
 }
 
 /**
@@ -741,14 +723,6 @@ export const PlatformType: {
 export type PlatformType = (typeof PlatformType)[keyof typeof PlatformType]
 
 
-export const TypeAddress: {
-  PRINCIPAL: 'PRINCIPAL',
-  DELIVERY: 'DELIVERY'
-};
-
-export type TypeAddress = (typeof TypeAddress)[keyof typeof TypeAddress]
-
-
 export const TypeNotification: {
   email: 'email',
   sms: 'sms',
@@ -967,16 +941,6 @@ export class PrismaClient<
     * ```
     */
   get user(): Prisma.UserDelegate<GlobalReject>;
-
-  /**
-   * `prisma.address`: Exposes CRUD operations for the **Address** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more Addresses
-    * const addresses = await prisma.address.findMany()
-    * ```
-    */
-  get address(): Prisma.AddressDelegate<GlobalReject>;
 
   /**
    * `prisma.userAddress`: Exposes CRUD operations for the **UserAddress** model.
@@ -1842,7 +1806,6 @@ export namespace Prisma {
     Delivery: 'Delivery',
     AccountDelivery: 'AccountDelivery',
     User: 'User',
-    Address: 'Address',
     UserAddress: 'UserAddress',
     AccountUser: 'AccountUser',
     Permision: 'Permision',
@@ -2256,55 +2219,6 @@ export namespace Prisma {
      * 
     **/
     select?: UserCountOutputTypeSelect | null
-  }
-
-
-
-  /**
-   * Count Type AddressCountOutputType
-   */
-
-
-  export type AddressCountOutputType = {
-    user_addresses: number
-  }
-
-  export type AddressCountOutputTypeSelect = {
-    user_addresses?: boolean
-  }
-
-  export type AddressCountOutputTypeGetPayload<
-    S extends boolean | null | undefined | AddressCountOutputTypeArgs,
-    U = keyof S
-      > = S extends true
-        ? AddressCountOutputType
-    : S extends undefined
-    ? never
-    : S extends AddressCountOutputTypeArgs
-    ?'include' extends U
-    ? AddressCountOutputType 
-    : 'select' extends U
-    ? {
-    [P in TrueKeys<S['select']>]:
-    P extends keyof AddressCountOutputType ? AddressCountOutputType[P] : never
-  } 
-    : AddressCountOutputType
-  : AddressCountOutputType
-
-
-
-
-  // Custom InputTypes
-
-  /**
-   * AddressCountOutputType without action
-   */
-  export type AddressCountOutputTypeArgs = {
-    /**
-     * Select specific fields to fetch from the AddressCountOutputType
-     * 
-    **/
-    select?: AddressCountOutputTypeSelect | null
   }
 
 
@@ -10303,991 +10217,6 @@ export namespace Prisma {
 
 
   /**
-   * Model Address
-   */
-
-
-  export type AggregateAddress = {
-    _count: AddressCountAggregateOutputType | null
-    _min: AddressMinAggregateOutputType | null
-    _max: AddressMaxAggregateOutputType | null
-  }
-
-  export type AddressMinAggregateOutputType = {
-    id: string | null
-    street: string | null
-    number: string | null
-    district: string | null
-    state: string | null
-    complement: string | null
-    additionalInformation: string | null
-    city: string | null
-    zipcode: string | null
-    type_address: TypeAddress | null
-    created_at: Date | null
-    updated_at: Date | null
-  }
-
-  export type AddressMaxAggregateOutputType = {
-    id: string | null
-    street: string | null
-    number: string | null
-    district: string | null
-    state: string | null
-    complement: string | null
-    additionalInformation: string | null
-    city: string | null
-    zipcode: string | null
-    type_address: TypeAddress | null
-    created_at: Date | null
-    updated_at: Date | null
-  }
-
-  export type AddressCountAggregateOutputType = {
-    id: number
-    street: number
-    number: number
-    district: number
-    state: number
-    complement: number
-    additionalInformation: number
-    city: number
-    zipcode: number
-    type_address: number
-    created_at: number
-    updated_at: number
-    _all: number
-  }
-
-
-  export type AddressMinAggregateInputType = {
-    id?: true
-    street?: true
-    number?: true
-    district?: true
-    state?: true
-    complement?: true
-    additionalInformation?: true
-    city?: true
-    zipcode?: true
-    type_address?: true
-    created_at?: true
-    updated_at?: true
-  }
-
-  export type AddressMaxAggregateInputType = {
-    id?: true
-    street?: true
-    number?: true
-    district?: true
-    state?: true
-    complement?: true
-    additionalInformation?: true
-    city?: true
-    zipcode?: true
-    type_address?: true
-    created_at?: true
-    updated_at?: true
-  }
-
-  export type AddressCountAggregateInputType = {
-    id?: true
-    street?: true
-    number?: true
-    district?: true
-    state?: true
-    complement?: true
-    additionalInformation?: true
-    city?: true
-    zipcode?: true
-    type_address?: true
-    created_at?: true
-    updated_at?: true
-    _all?: true
-  }
-
-  export type AddressAggregateArgs = {
-    /**
-     * Filter which Address to aggregate.
-     * 
-    **/
-    where?: AddressWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Addresses to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<AddressOrderByWithRelationInput>
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     * 
-    **/
-    cursor?: AddressWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Addresses from the position of the cursor.
-     * 
-    **/
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Addresses.
-     * 
-    **/
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned Addresses
-    **/
-    _count?: true | AddressCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: AddressMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: AddressMaxAggregateInputType
-  }
-
-  export type GetAddressAggregateType<T extends AddressAggregateArgs> = {
-        [P in keyof T & keyof AggregateAddress]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateAddress[P]>
-      : GetScalarType<T[P], AggregateAddress[P]>
-  }
-
-
-
-
-  export type AddressGroupByArgs = {
-    where?: AddressWhereInput
-    orderBy?: Enumerable<AddressOrderByWithAggregationInput>
-    by: Array<AddressScalarFieldEnum>
-    having?: AddressScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: AddressCountAggregateInputType | true
-    _min?: AddressMinAggregateInputType
-    _max?: AddressMaxAggregateInputType
-  }
-
-
-  export type AddressGroupByOutputType = {
-    id: string
-    street: string
-    number: string
-    district: string
-    state: string
-    complement: string | null
-    additionalInformation: string | null
-    city: string
-    zipcode: string
-    type_address: TypeAddress
-    created_at: Date
-    updated_at: Date
-    _count: AddressCountAggregateOutputType | null
-    _min: AddressMinAggregateOutputType | null
-    _max: AddressMaxAggregateOutputType | null
-  }
-
-  type GetAddressGroupByPayload<T extends AddressGroupByArgs> = PrismaPromise<
-    Array<
-      PickArray<AddressGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof AddressGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], AddressGroupByOutputType[P]>
-            : GetScalarType<T[P], AddressGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type AddressSelect = {
-    id?: boolean
-    street?: boolean
-    number?: boolean
-    district?: boolean
-    state?: boolean
-    complement?: boolean
-    additionalInformation?: boolean
-    city?: boolean
-    zipcode?: boolean
-    user_addresses?: boolean | UserAddressFindManyArgs
-    type_address?: boolean
-    created_at?: boolean
-    updated_at?: boolean
-    _count?: boolean | AddressCountOutputTypeArgs
-  }
-
-  export type AddressInclude = {
-    user_addresses?: boolean | UserAddressFindManyArgs
-    _count?: boolean | AddressCountOutputTypeArgs
-  }
-
-  export type AddressGetPayload<
-    S extends boolean | null | undefined | AddressArgs,
-    U = keyof S
-      > = S extends true
-        ? Address
-    : S extends undefined
-    ? never
-    : S extends AddressArgs | AddressFindManyArgs
-    ?'include' extends U
-    ? Address  & {
-    [P in TrueKeys<S['include']>]:
-        P extends 'user_addresses' ? Array < UserAddressGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
-        P extends '_count' ? AddressCountOutputTypeGetPayload<Exclude<S['include'], undefined | null>[P]> :  never
-  } 
-    : 'select' extends U
-    ? {
-    [P in TrueKeys<S['select']>]:
-        P extends 'user_addresses' ? Array < UserAddressGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
-        P extends '_count' ? AddressCountOutputTypeGetPayload<Exclude<S['select'], undefined | null>[P]> :  P extends keyof Address ? Address[P] : never
-  } 
-    : Address
-  : Address
-
-
-  type AddressCountArgs = Merge<
-    Omit<AddressFindManyArgs, 'select' | 'include'> & {
-      select?: AddressCountAggregateInputType | true
-    }
-  >
-
-  export interface AddressDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
-    /**
-     * Find zero or one Address that matches the filter.
-     * @param {AddressFindUniqueArgs} args - Arguments to find a Address
-     * @example
-     * // Get one Address
-     * const address = await prisma.address.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findUnique<T extends AddressFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args: SelectSubset<T, AddressFindUniqueArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'Address'> extends True ? CheckSelect<T, Prisma__AddressClient<Address>, Prisma__AddressClient<AddressGetPayload<T>>> : CheckSelect<T, Prisma__AddressClient<Address | null, null>, Prisma__AddressClient<AddressGetPayload<T> | null, null>>
-
-    /**
-     * Find the first Address that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {AddressFindFirstArgs} args - Arguments to find a Address
-     * @example
-     * // Get one Address
-     * const address = await prisma.address.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findFirst<T extends AddressFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args?: SelectSubset<T, AddressFindFirstArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'Address'> extends True ? CheckSelect<T, Prisma__AddressClient<Address>, Prisma__AddressClient<AddressGetPayload<T>>> : CheckSelect<T, Prisma__AddressClient<Address | null, null>, Prisma__AddressClient<AddressGetPayload<T> | null, null>>
-
-    /**
-     * Find zero or more Addresses that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {AddressFindManyArgs=} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all Addresses
-     * const addresses = await prisma.address.findMany()
-     * 
-     * // Get first 10 Addresses
-     * const addresses = await prisma.address.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const addressWithIdOnly = await prisma.address.findMany({ select: { id: true } })
-     * 
-    **/
-    findMany<T extends AddressFindManyArgs>(
-      args?: SelectSubset<T, AddressFindManyArgs>
-    ): CheckSelect<T, PrismaPromise<Array<Address>>, PrismaPromise<Array<AddressGetPayload<T>>>>
-
-    /**
-     * Create a Address.
-     * @param {AddressCreateArgs} args - Arguments to create a Address.
-     * @example
-     * // Create one Address
-     * const Address = await prisma.address.create({
-     *   data: {
-     *     // ... data to create a Address
-     *   }
-     * })
-     * 
-    **/
-    create<T extends AddressCreateArgs>(
-      args: SelectSubset<T, AddressCreateArgs>
-    ): CheckSelect<T, Prisma__AddressClient<Address>, Prisma__AddressClient<AddressGetPayload<T>>>
-
-    /**
-     * Create many Addresses.
-     *     @param {AddressCreateManyArgs} args - Arguments to create many Addresses.
-     *     @example
-     *     // Create many Addresses
-     *     const address = await prisma.address.createMany({
-     *       data: {
-     *         // ... provide data here
-     *       }
-     *     })
-     *     
-    **/
-    createMany<T extends AddressCreateManyArgs>(
-      args?: SelectSubset<T, AddressCreateManyArgs>
-    ): PrismaPromise<BatchPayload>
-
-    /**
-     * Delete a Address.
-     * @param {AddressDeleteArgs} args - Arguments to delete one Address.
-     * @example
-     * // Delete one Address
-     * const Address = await prisma.address.delete({
-     *   where: {
-     *     // ... filter to delete one Address
-     *   }
-     * })
-     * 
-    **/
-    delete<T extends AddressDeleteArgs>(
-      args: SelectSubset<T, AddressDeleteArgs>
-    ): CheckSelect<T, Prisma__AddressClient<Address>, Prisma__AddressClient<AddressGetPayload<T>>>
-
-    /**
-     * Update one Address.
-     * @param {AddressUpdateArgs} args - Arguments to update one Address.
-     * @example
-     * // Update one Address
-     * const address = await prisma.address.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-    **/
-    update<T extends AddressUpdateArgs>(
-      args: SelectSubset<T, AddressUpdateArgs>
-    ): CheckSelect<T, Prisma__AddressClient<Address>, Prisma__AddressClient<AddressGetPayload<T>>>
-
-    /**
-     * Delete zero or more Addresses.
-     * @param {AddressDeleteManyArgs} args - Arguments to filter Addresses to delete.
-     * @example
-     * // Delete a few Addresses
-     * const { count } = await prisma.address.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-    **/
-    deleteMany<T extends AddressDeleteManyArgs>(
-      args?: SelectSubset<T, AddressDeleteManyArgs>
-    ): PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Addresses.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {AddressUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many Addresses
-     * const address = await prisma.address.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-    **/
-    updateMany<T extends AddressUpdateManyArgs>(
-      args: SelectSubset<T, AddressUpdateManyArgs>
-    ): PrismaPromise<BatchPayload>
-
-    /**
-     * Create or update one Address.
-     * @param {AddressUpsertArgs} args - Arguments to update or create a Address.
-     * @example
-     * // Update or create a Address
-     * const address = await prisma.address.upsert({
-     *   create: {
-     *     // ... data to create a Address
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the Address we want to update
-     *   }
-     * })
-    **/
-    upsert<T extends AddressUpsertArgs>(
-      args: SelectSubset<T, AddressUpsertArgs>
-    ): CheckSelect<T, Prisma__AddressClient<Address>, Prisma__AddressClient<AddressGetPayload<T>>>
-
-    /**
-     * Find one Address that matches the filter or throw
-     * `NotFoundError` if no matches were found.
-     * @param {AddressFindUniqueOrThrowArgs} args - Arguments to find a Address
-     * @example
-     * // Get one Address
-     * const address = await prisma.address.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findUniqueOrThrow<T extends AddressFindUniqueOrThrowArgs>(
-      args?: SelectSubset<T, AddressFindUniqueOrThrowArgs>
-    ): CheckSelect<T, Prisma__AddressClient<Address>, Prisma__AddressClient<AddressGetPayload<T>>>
-
-    /**
-     * Find the first Address that matches the filter or
-     * throw `NotFoundError` if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {AddressFindFirstOrThrowArgs} args - Arguments to find a Address
-     * @example
-     * // Get one Address
-     * const address = await prisma.address.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findFirstOrThrow<T extends AddressFindFirstOrThrowArgs>(
-      args?: SelectSubset<T, AddressFindFirstOrThrowArgs>
-    ): CheckSelect<T, Prisma__AddressClient<Address>, Prisma__AddressClient<AddressGetPayload<T>>>
-
-    /**
-     * Count the number of Addresses.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {AddressCountArgs} args - Arguments to filter Addresses to count.
-     * @example
-     * // Count the number of Addresses
-     * const count = await prisma.address.count({
-     *   where: {
-     *     // ... the filter for the Addresses we want to count
-     *   }
-     * })
-    **/
-    count<T extends AddressCountArgs>(
-      args?: Subset<T, AddressCountArgs>,
-    ): PrismaPromise<
-      T extends _Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], AddressCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a Address.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {AddressAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends AddressAggregateArgs>(args: Subset<T, AddressAggregateArgs>): PrismaPromise<GetAddressAggregateType<T>>
-
-    /**
-     * Group by Address.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {AddressGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends AddressGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: AddressGroupByArgs['orderBy'] }
-        : { orderBy?: AddressGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends TupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, AddressGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAddressGroupByPayload<T> : PrismaPromise<InputErrors>
-
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for Address.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export class Prisma__AddressClient<T, Null = never> implements PrismaPromise<T> {
-    [prisma]: true;
-    private readonly _dmmf;
-    private readonly _fetcher;
-    private readonly _queryType;
-    private readonly _rootField;
-    private readonly _clientMethod;
-    private readonly _args;
-    private readonly _dataPath;
-    private readonly _errorFormat;
-    private readonly _measurePerformance?;
-    private _isList;
-    private _callsite;
-    private _requestPromise?;
-    constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
-    readonly [Symbol.toStringTag]: 'PrismaClientPromise';
-
-    user_addresses<T extends UserAddressFindManyArgs = {}>(args?: Subset<T, UserAddressFindManyArgs>): CheckSelect<T, PrismaPromise<Array<UserAddress>| Null>, PrismaPromise<Array<UserAddressGetPayload<T>>| Null>>;
-
-    private get _document();
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<T | TResult>;
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): Promise<T>;
-  }
-
-
-
-  // Custom InputTypes
-
-  /**
-   * Address base type for findUnique actions
-   */
-  export type AddressFindUniqueArgsBase = {
-    /**
-     * Select specific fields to fetch from the Address
-     * 
-    **/
-    select?: AddressSelect | null
-    /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: AddressInclude | null
-    /**
-     * Filter, which Address to fetch.
-     * 
-    **/
-    where: AddressWhereUniqueInput
-  }
-
-  /**
-   * Address: findUnique
-   */
-  export interface AddressFindUniqueArgs extends AddressFindUniqueArgsBase {
-   /**
-    * Throw an Error if query returns no results
-    * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
-    */
-    rejectOnNotFound?: RejectOnNotFound
-  }
-      
-
-  /**
-   * Address base type for findFirst actions
-   */
-  export type AddressFindFirstArgsBase = {
-    /**
-     * Select specific fields to fetch from the Address
-     * 
-    **/
-    select?: AddressSelect | null
-    /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: AddressInclude | null
-    /**
-     * Filter, which Address to fetch.
-     * 
-    **/
-    where?: AddressWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Addresses to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<AddressOrderByWithRelationInput>
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Addresses.
-     * 
-    **/
-    cursor?: AddressWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Addresses from the position of the cursor.
-     * 
-    **/
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Addresses.
-     * 
-    **/
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Addresses.
-     * 
-    **/
-    distinct?: Enumerable<AddressScalarFieldEnum>
-  }
-
-  /**
-   * Address: findFirst
-   */
-  export interface AddressFindFirstArgs extends AddressFindFirstArgsBase {
-   /**
-    * Throw an Error if query returns no results
-    * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
-    */
-    rejectOnNotFound?: RejectOnNotFound
-  }
-      
-
-  /**
-   * Address findMany
-   */
-  export type AddressFindManyArgs = {
-    /**
-     * Select specific fields to fetch from the Address
-     * 
-    **/
-    select?: AddressSelect | null
-    /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: AddressInclude | null
-    /**
-     * Filter, which Addresses to fetch.
-     * 
-    **/
-    where?: AddressWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Addresses to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<AddressOrderByWithRelationInput>
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing Addresses.
-     * 
-    **/
-    cursor?: AddressWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Addresses from the position of the cursor.
-     * 
-    **/
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Addresses.
-     * 
-    **/
-    skip?: number
-    distinct?: Enumerable<AddressScalarFieldEnum>
-  }
-
-
-  /**
-   * Address create
-   */
-  export type AddressCreateArgs = {
-    /**
-     * Select specific fields to fetch from the Address
-     * 
-    **/
-    select?: AddressSelect | null
-    /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: AddressInclude | null
-    /**
-     * The data needed to create a Address.
-     * 
-    **/
-    data: XOR<AddressCreateInput, AddressUncheckedCreateInput>
-  }
-
-
-  /**
-   * Address createMany
-   */
-  export type AddressCreateManyArgs = {
-    /**
-     * The data used to create many Addresses.
-     * 
-    **/
-    data: Enumerable<AddressCreateManyInput>
-    skipDuplicates?: boolean
-  }
-
-
-  /**
-   * Address update
-   */
-  export type AddressUpdateArgs = {
-    /**
-     * Select specific fields to fetch from the Address
-     * 
-    **/
-    select?: AddressSelect | null
-    /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: AddressInclude | null
-    /**
-     * The data needed to update a Address.
-     * 
-    **/
-    data: XOR<AddressUpdateInput, AddressUncheckedUpdateInput>
-    /**
-     * Choose, which Address to update.
-     * 
-    **/
-    where: AddressWhereUniqueInput
-  }
-
-
-  /**
-   * Address updateMany
-   */
-  export type AddressUpdateManyArgs = {
-    /**
-     * The data used to update Addresses.
-     * 
-    **/
-    data: XOR<AddressUpdateManyMutationInput, AddressUncheckedUpdateManyInput>
-    /**
-     * Filter which Addresses to update
-     * 
-    **/
-    where?: AddressWhereInput
-  }
-
-
-  /**
-   * Address upsert
-   */
-  export type AddressUpsertArgs = {
-    /**
-     * Select specific fields to fetch from the Address
-     * 
-    **/
-    select?: AddressSelect | null
-    /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: AddressInclude | null
-    /**
-     * The filter to search for the Address to update in case it exists.
-     * 
-    **/
-    where: AddressWhereUniqueInput
-    /**
-     * In case the Address found by the `where` argument doesn't exist, create a new Address with this data.
-     * 
-    **/
-    create: XOR<AddressCreateInput, AddressUncheckedCreateInput>
-    /**
-     * In case the Address was found with the provided `where` argument, update it with this data.
-     * 
-    **/
-    update: XOR<AddressUpdateInput, AddressUncheckedUpdateInput>
-  }
-
-
-  /**
-   * Address delete
-   */
-  export type AddressDeleteArgs = {
-    /**
-     * Select specific fields to fetch from the Address
-     * 
-    **/
-    select?: AddressSelect | null
-    /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: AddressInclude | null
-    /**
-     * Filter which Address to delete.
-     * 
-    **/
-    where: AddressWhereUniqueInput
-  }
-
-
-  /**
-   * Address deleteMany
-   */
-  export type AddressDeleteManyArgs = {
-    /**
-     * Filter which Addresses to delete
-     * 
-    **/
-    where?: AddressWhereInput
-  }
-
-
-  /**
-   * Address: findUniqueOrThrow
-   */
-  export type AddressFindUniqueOrThrowArgs = AddressFindUniqueArgsBase
-      
-
-  /**
-   * Address: findFirstOrThrow
-   */
-  export type AddressFindFirstOrThrowArgs = AddressFindFirstArgsBase
-      
-
-  /**
-   * Address without action
-   */
-  export type AddressArgs = {
-    /**
-     * Select specific fields to fetch from the Address
-     * 
-    **/
-    select?: AddressSelect | null
-    /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: AddressInclude | null
-  }
-
-
-
-  /**
    * Model UserAddress
    */
 
@@ -11301,6 +10230,7 @@ export namespace Prisma {
   export type UserAddressMinAggregateOutputType = {
     id: string | null
     user_id: string | null
+    name: string | null
     street: string | null
     number: string | null
     district: string | null
@@ -11311,12 +10241,12 @@ export namespace Prisma {
     zip_code: string | null
     created_at: Date | null
     updated_at: Date | null
-    addressId: string | null
   }
 
   export type UserAddressMaxAggregateOutputType = {
     id: string | null
     user_id: string | null
+    name: string | null
     street: string | null
     number: string | null
     district: string | null
@@ -11327,12 +10257,12 @@ export namespace Prisma {
     zip_code: string | null
     created_at: Date | null
     updated_at: Date | null
-    addressId: string | null
   }
 
   export type UserAddressCountAggregateOutputType = {
     id: number
     user_id: number
+    name: number
     street: number
     number: number
     district: number
@@ -11343,7 +10273,6 @@ export namespace Prisma {
     zip_code: number
     created_at: number
     updated_at: number
-    addressId: number
     _all: number
   }
 
@@ -11351,6 +10280,7 @@ export namespace Prisma {
   export type UserAddressMinAggregateInputType = {
     id?: true
     user_id?: true
+    name?: true
     street?: true
     number?: true
     district?: true
@@ -11361,12 +10291,12 @@ export namespace Prisma {
     zip_code?: true
     created_at?: true
     updated_at?: true
-    addressId?: true
   }
 
   export type UserAddressMaxAggregateInputType = {
     id?: true
     user_id?: true
+    name?: true
     street?: true
     number?: true
     district?: true
@@ -11377,12 +10307,12 @@ export namespace Prisma {
     zip_code?: true
     created_at?: true
     updated_at?: true
-    addressId?: true
   }
 
   export type UserAddressCountAggregateInputType = {
     id?: true
     user_id?: true
+    name?: true
     street?: true
     number?: true
     district?: true
@@ -11393,7 +10323,6 @@ export namespace Prisma {
     zip_code?: true
     created_at?: true
     updated_at?: true
-    addressId?: true
     _all?: true
   }
 
@@ -11478,6 +10407,7 @@ export namespace Prisma {
   export type UserAddressGroupByOutputType = {
     id: string
     user_id: string
+    name: string | null
     street: string
     number: string
     district: string
@@ -11488,7 +10418,6 @@ export namespace Prisma {
     zip_code: string
     created_at: Date
     updated_at: Date
-    addressId: string
     _count: UserAddressCountAggregateOutputType | null
     _min: UserAddressMinAggregateOutputType | null
     _max: UserAddressMaxAggregateOutputType | null
@@ -11512,6 +10441,7 @@ export namespace Prisma {
     id?: boolean
     user_id?: boolean
     user?: boolean | UserArgs
+    name?: boolean
     street?: boolean
     number?: boolean
     district?: boolean
@@ -11523,15 +10453,12 @@ export namespace Prisma {
     orders?: boolean | OrderFindManyArgs
     created_at?: boolean
     updated_at?: boolean
-    Address?: boolean | AddressArgs
-    addressId?: boolean
     _count?: boolean | UserAddressCountOutputTypeArgs
   }
 
   export type UserAddressInclude = {
     user?: boolean | UserArgs
     orders?: boolean | OrderFindManyArgs
-    Address?: boolean | AddressArgs
     _count?: boolean | UserAddressCountOutputTypeArgs
   }
 
@@ -11548,7 +10475,6 @@ export namespace Prisma {
     [P in TrueKeys<S['include']>]:
         P extends 'user' ? UserGetPayload<Exclude<S['include'], undefined | null>[P]> :
         P extends 'orders' ? Array < OrderGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
-        P extends 'Address' ? AddressGetPayload<Exclude<S['include'], undefined | null>[P]> :
         P extends '_count' ? UserAddressCountOutputTypeGetPayload<Exclude<S['include'], undefined | null>[P]> :  never
   } 
     : 'select' extends U
@@ -11556,7 +10482,6 @@ export namespace Prisma {
     [P in TrueKeys<S['select']>]:
         P extends 'user' ? UserGetPayload<Exclude<S['select'], undefined | null>[P]> :
         P extends 'orders' ? Array < OrderGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
-        P extends 'Address' ? AddressGetPayload<Exclude<S['select'], undefined | null>[P]> :
         P extends '_count' ? UserAddressCountOutputTypeGetPayload<Exclude<S['select'], undefined | null>[P]> :  P extends keyof UserAddress ? UserAddress[P] : never
   } 
     : UserAddress
@@ -11935,8 +10860,6 @@ export namespace Prisma {
     user<T extends UserArgs = {}>(args?: Subset<T, UserArgs>): CheckSelect<T, Prisma__UserClient<User | Null>, Prisma__UserClient<UserGetPayload<T> | Null>>;
 
     orders<T extends OrderFindManyArgs = {}>(args?: Subset<T, OrderFindManyArgs>): CheckSelect<T, PrismaPromise<Array<Order>| Null>, PrismaPromise<Array<OrderGetPayload<T>>| Null>>;
-
-    Address<T extends AddressArgs = {}>(args?: Subset<T, AddressArgs>): CheckSelect<T, Prisma__AddressClient<Address | Null>, Prisma__AddressClient<AddressGetPayload<T> | Null>>;
 
     private get _document();
     /**
@@ -31805,6 +30728,7 @@ export namespace Prisma {
     origin_registration: CustomerOriginRegistration | null
     cpf_cnpj: string | null
     note: string | null
+    converted: boolean | null
   }
 
   export type CustomerMaxAggregateOutputType = {
@@ -31819,6 +30743,7 @@ export namespace Prisma {
     origin_registration: CustomerOriginRegistration | null
     cpf_cnpj: string | null
     note: string | null
+    converted: boolean | null
   }
 
   export type CustomerCountAggregateOutputType = {
@@ -31833,6 +30758,7 @@ export namespace Prisma {
     origin_registration: number
     cpf_cnpj: number
     note: number
+    converted: number
     _all: number
   }
 
@@ -31849,6 +30775,7 @@ export namespace Prisma {
     origin_registration?: true
     cpf_cnpj?: true
     note?: true
+    converted?: true
   }
 
   export type CustomerMaxAggregateInputType = {
@@ -31863,6 +30790,7 @@ export namespace Prisma {
     origin_registration?: true
     cpf_cnpj?: true
     note?: true
+    converted?: true
   }
 
   export type CustomerCountAggregateInputType = {
@@ -31877,6 +30805,7 @@ export namespace Prisma {
     origin_registration?: true
     cpf_cnpj?: true
     note?: true
+    converted?: true
     _all?: true
   }
 
@@ -31970,6 +30899,7 @@ export namespace Prisma {
     origin_registration: CustomerOriginRegistration
     cpf_cnpj: string
     note: string
+    converted: boolean
     _count: CustomerCountAggregateOutputType | null
     _min: CustomerMinAggregateOutputType | null
     _max: CustomerMaxAggregateOutputType | null
@@ -32002,6 +30932,7 @@ export namespace Prisma {
     origin_registration?: boolean
     cpf_cnpj?: boolean
     note?: boolean
+    converted?: boolean
   }
 
   export type CustomerInclude = {
@@ -47357,24 +46288,6 @@ export namespace Prisma {
   export type ActivitiesScalarFieldEnum = (typeof ActivitiesScalarFieldEnum)[keyof typeof ActivitiesScalarFieldEnum]
 
 
-  export const AddressScalarFieldEnum: {
-    id: 'id',
-    street: 'street',
-    number: 'number',
-    district: 'district',
-    state: 'state',
-    complement: 'complement',
-    additionalInformation: 'additionalInformation',
-    city: 'city',
-    zipcode: 'zipcode',
-    type_address: 'type_address',
-    created_at: 'created_at',
-    updated_at: 'updated_at'
-  };
-
-  export type AddressScalarFieldEnum = (typeof AddressScalarFieldEnum)[keyof typeof AddressScalarFieldEnum]
-
-
   export const CampaignScalarFieldEnum: {
     id: 'id',
     external_id: 'external_id',
@@ -47457,7 +46370,8 @@ export namespace Prisma {
     updated_at: 'updated_at',
     origin_registration: 'origin_registration',
     cpf_cnpj: 'cpf_cnpj',
-    note: 'note'
+    note: 'note',
+    converted: 'converted'
   };
 
   export type CustomerScalarFieldEnum = (typeof CustomerScalarFieldEnum)[keyof typeof CustomerScalarFieldEnum]
@@ -47843,6 +46757,7 @@ export namespace Prisma {
   export const UserAddressScalarFieldEnum: {
     id: 'id',
     user_id: 'user_id',
+    name: 'name',
     street: 'street',
     number: 'number',
     district: 'district',
@@ -47852,8 +46767,7 @@ export namespace Prisma {
     city: 'city',
     zip_code: 'zip_code',
     created_at: 'created_at',
-    updated_at: 'updated_at',
-    addressId: 'addressId'
+    updated_at: 'updated_at'
   };
 
   export type UserAddressScalarFieldEnum = (typeof UserAddressScalarFieldEnum)[keyof typeof UserAddressScalarFieldEnum]
@@ -48428,81 +47342,6 @@ export namespace Prisma {
     lastLogin?: DateTimeWithAggregatesFilter | Date | string
   }
 
-  export type AddressWhereInput = {
-    AND?: Enumerable<AddressWhereInput>
-    OR?: Enumerable<AddressWhereInput>
-    NOT?: Enumerable<AddressWhereInput>
-    id?: StringFilter | string
-    street?: StringFilter | string
-    number?: StringFilter | string
-    district?: StringFilter | string
-    state?: StringFilter | string
-    complement?: StringNullableFilter | string | null
-    additionalInformation?: StringNullableFilter | string | null
-    city?: StringFilter | string
-    zipcode?: StringFilter | string
-    user_addresses?: UserAddressListRelationFilter
-    type_address?: EnumTypeAddressFilter | TypeAddress
-    created_at?: DateTimeFilter | Date | string
-    updated_at?: DateTimeFilter | Date | string
-  }
-
-  export type AddressOrderByWithRelationInput = {
-    id?: SortOrder
-    street?: SortOrder
-    number?: SortOrder
-    district?: SortOrder
-    state?: SortOrder
-    complement?: SortOrder
-    additionalInformation?: SortOrder
-    city?: SortOrder
-    zipcode?: SortOrder
-    user_addresses?: UserAddressOrderByRelationAggregateInput
-    type_address?: SortOrder
-    created_at?: SortOrder
-    updated_at?: SortOrder
-  }
-
-  export type AddressWhereUniqueInput = {
-    id?: string
-  }
-
-  export type AddressOrderByWithAggregationInput = {
-    id?: SortOrder
-    street?: SortOrder
-    number?: SortOrder
-    district?: SortOrder
-    state?: SortOrder
-    complement?: SortOrder
-    additionalInformation?: SortOrder
-    city?: SortOrder
-    zipcode?: SortOrder
-    type_address?: SortOrder
-    created_at?: SortOrder
-    updated_at?: SortOrder
-    _count?: AddressCountOrderByAggregateInput
-    _max?: AddressMaxOrderByAggregateInput
-    _min?: AddressMinOrderByAggregateInput
-  }
-
-  export type AddressScalarWhereWithAggregatesInput = {
-    AND?: Enumerable<AddressScalarWhereWithAggregatesInput>
-    OR?: Enumerable<AddressScalarWhereWithAggregatesInput>
-    NOT?: Enumerable<AddressScalarWhereWithAggregatesInput>
-    id?: StringWithAggregatesFilter | string
-    street?: StringWithAggregatesFilter | string
-    number?: StringWithAggregatesFilter | string
-    district?: StringWithAggregatesFilter | string
-    state?: StringWithAggregatesFilter | string
-    complement?: StringNullableWithAggregatesFilter | string | null
-    additionalInformation?: StringNullableWithAggregatesFilter | string | null
-    city?: StringWithAggregatesFilter | string
-    zipcode?: StringWithAggregatesFilter | string
-    type_address?: EnumTypeAddressWithAggregatesFilter | TypeAddress
-    created_at?: DateTimeWithAggregatesFilter | Date | string
-    updated_at?: DateTimeWithAggregatesFilter | Date | string
-  }
-
   export type UserAddressWhereInput = {
     AND?: Enumerable<UserAddressWhereInput>
     OR?: Enumerable<UserAddressWhereInput>
@@ -48510,6 +47349,7 @@ export namespace Prisma {
     id?: StringFilter | string
     user_id?: StringFilter | string
     user?: XOR<UserRelationFilter, UserWhereInput>
+    name?: StringNullableFilter | string | null
     street?: StringFilter | string
     number?: StringFilter | string
     district?: StringFilter | string
@@ -48521,14 +47361,13 @@ export namespace Prisma {
     orders?: OrderListRelationFilter
     created_at?: DateTimeFilter | Date | string
     updated_at?: DateTimeFilter | Date | string
-    Address?: XOR<AddressRelationFilter, AddressWhereInput>
-    addressId?: StringFilter | string
   }
 
   export type UserAddressOrderByWithRelationInput = {
     id?: SortOrder
     user_id?: SortOrder
     user?: UserOrderByWithRelationInput
+    name?: SortOrder
     street?: SortOrder
     number?: SortOrder
     district?: SortOrder
@@ -48540,8 +47379,6 @@ export namespace Prisma {
     orders?: OrderOrderByRelationAggregateInput
     created_at?: SortOrder
     updated_at?: SortOrder
-    Address?: AddressOrderByWithRelationInput
-    addressId?: SortOrder
   }
 
   export type UserAddressWhereUniqueInput = {
@@ -48551,6 +47388,7 @@ export namespace Prisma {
   export type UserAddressOrderByWithAggregationInput = {
     id?: SortOrder
     user_id?: SortOrder
+    name?: SortOrder
     street?: SortOrder
     number?: SortOrder
     district?: SortOrder
@@ -48561,7 +47399,6 @@ export namespace Prisma {
     zip_code?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
-    addressId?: SortOrder
     _count?: UserAddressCountOrderByAggregateInput
     _max?: UserAddressMaxOrderByAggregateInput
     _min?: UserAddressMinOrderByAggregateInput
@@ -48573,6 +47410,7 @@ export namespace Prisma {
     NOT?: Enumerable<UserAddressScalarWhereWithAggregatesInput>
     id?: StringWithAggregatesFilter | string
     user_id?: StringWithAggregatesFilter | string
+    name?: StringNullableWithAggregatesFilter | string | null
     street?: StringWithAggregatesFilter | string
     number?: StringWithAggregatesFilter | string
     district?: StringWithAggregatesFilter | string
@@ -48583,7 +47421,6 @@ export namespace Prisma {
     zip_code?: StringWithAggregatesFilter | string
     created_at?: DateTimeWithAggregatesFilter | Date | string
     updated_at?: DateTimeWithAggregatesFilter | Date | string
-    addressId?: StringWithAggregatesFilter | string
   }
 
   export type AccountUserWhereInput = {
@@ -49786,6 +48623,7 @@ export namespace Prisma {
     origin_registration?: EnumCustomerOriginRegistrationFilter | CustomerOriginRegistration
     cpf_cnpj?: StringFilter | string
     note?: StringFilter | string
+    converted?: BoolFilter | boolean
   }
 
   export type CustomerOrderByWithRelationInput = {
@@ -49801,6 +48639,7 @@ export namespace Prisma {
     origin_registration?: SortOrder
     cpf_cnpj?: SortOrder
     note?: SortOrder
+    converted?: SortOrder
   }
 
   export type CustomerWhereUniqueInput = {
@@ -49819,6 +48658,7 @@ export namespace Prisma {
     origin_registration?: SortOrder
     cpf_cnpj?: SortOrder
     note?: SortOrder
+    converted?: SortOrder
     _count?: CustomerCountOrderByAggregateInput
     _max?: CustomerMaxOrderByAggregateInput
     _min?: CustomerMinOrderByAggregateInput
@@ -49839,6 +48679,7 @@ export namespace Prisma {
     origin_registration?: EnumCustomerOriginRegistrationWithAggregatesFilter | CustomerOriginRegistration
     cpf_cnpj?: StringWithAggregatesFilter | string
     note?: StringWithAggregatesFilter | string
+    converted?: BoolWithAggregatesFilter | boolean
   }
 
   export type OrderLabelWhereInput = {
@@ -51428,118 +50269,10 @@ export namespace Prisma {
     lastLogin?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type AddressCreateInput = {
-    id?: string
-    street: string
-    number: string
-    district: string
-    state: string
-    complement?: string | null
-    additionalInformation?: string | null
-    city: string
-    zipcode: string
-    user_addresses?: UserAddressCreateNestedManyWithoutAddressInput
-    type_address: TypeAddress
-    created_at?: Date | string
-    updated_at?: Date | string
-  }
-
-  export type AddressUncheckedCreateInput = {
-    id?: string
-    street: string
-    number: string
-    district: string
-    state: string
-    complement?: string | null
-    additionalInformation?: string | null
-    city: string
-    zipcode: string
-    user_addresses?: UserAddressUncheckedCreateNestedManyWithoutAddressInput
-    type_address: TypeAddress
-    created_at?: Date | string
-    updated_at?: Date | string
-  }
-
-  export type AddressUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    street?: StringFieldUpdateOperationsInput | string
-    number?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
-    complement?: NullableStringFieldUpdateOperationsInput | string | null
-    additionalInformation?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: StringFieldUpdateOperationsInput | string
-    zipcode?: StringFieldUpdateOperationsInput | string
-    user_addresses?: UserAddressUpdateManyWithoutAddressNestedInput
-    type_address?: EnumTypeAddressFieldUpdateOperationsInput | TypeAddress
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type AddressUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    street?: StringFieldUpdateOperationsInput | string
-    number?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
-    complement?: NullableStringFieldUpdateOperationsInput | string | null
-    additionalInformation?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: StringFieldUpdateOperationsInput | string
-    zipcode?: StringFieldUpdateOperationsInput | string
-    user_addresses?: UserAddressUncheckedUpdateManyWithoutAddressNestedInput
-    type_address?: EnumTypeAddressFieldUpdateOperationsInput | TypeAddress
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type AddressCreateManyInput = {
-    id?: string
-    street: string
-    number: string
-    district: string
-    state: string
-    complement?: string | null
-    additionalInformation?: string | null
-    city: string
-    zipcode: string
-    type_address: TypeAddress
-    created_at?: Date | string
-    updated_at?: Date | string
-  }
-
-  export type AddressUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    street?: StringFieldUpdateOperationsInput | string
-    number?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
-    complement?: NullableStringFieldUpdateOperationsInput | string | null
-    additionalInformation?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: StringFieldUpdateOperationsInput | string
-    zipcode?: StringFieldUpdateOperationsInput | string
-    type_address?: EnumTypeAddressFieldUpdateOperationsInput | TypeAddress
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type AddressUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    street?: StringFieldUpdateOperationsInput | string
-    number?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
-    complement?: NullableStringFieldUpdateOperationsInput | string | null
-    additionalInformation?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: StringFieldUpdateOperationsInput | string
-    zipcode?: StringFieldUpdateOperationsInput | string
-    type_address?: EnumTypeAddressFieldUpdateOperationsInput | TypeAddress
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
   export type UserAddressCreateInput = {
     id?: string
     user: UserCreateNestedOneWithoutUser_addressesInput
+    name?: string | null
     street: string
     number: string
     district: string
@@ -51551,12 +50284,12 @@ export namespace Prisma {
     orders?: OrderCreateNestedManyWithoutUser_addressInput
     created_at?: Date | string
     updated_at?: Date | string
-    Address: AddressCreateNestedOneWithoutUser_addressesInput
   }
 
   export type UserAddressUncheckedCreateInput = {
     id?: string
     user_id: string
+    name?: string | null
     street: string
     number: string
     district: string
@@ -51568,12 +50301,12 @@ export namespace Prisma {
     orders?: OrderUncheckedCreateNestedManyWithoutUser_addressInput
     created_at?: Date | string
     updated_at?: Date | string
-    addressId: string
   }
 
   export type UserAddressUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     user?: UserUpdateOneRequiredWithoutUser_addressesNestedInput
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
     district?: StringFieldUpdateOperationsInput | string
@@ -51585,12 +50318,12 @@ export namespace Prisma {
     orders?: OrderUpdateManyWithoutUser_addressNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    Address?: AddressUpdateOneRequiredWithoutUser_addressesNestedInput
   }
 
   export type UserAddressUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
     district?: StringFieldUpdateOperationsInput | string
@@ -51602,12 +50335,12 @@ export namespace Prisma {
     orders?: OrderUncheckedUpdateManyWithoutUser_addressNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    addressId?: StringFieldUpdateOperationsInput | string
   }
 
   export type UserAddressCreateManyInput = {
     id?: string
     user_id: string
+    name?: string | null
     street: string
     number: string
     district: string
@@ -51618,11 +50351,11 @@ export namespace Prisma {
     zip_code: string
     created_at?: Date | string
     updated_at?: Date | string
-    addressId: string
   }
 
   export type UserAddressUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
     district?: StringFieldUpdateOperationsInput | string
@@ -51638,6 +50371,7 @@ export namespace Prisma {
   export type UserAddressUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
     district?: StringFieldUpdateOperationsInput | string
@@ -51648,7 +50382,6 @@ export namespace Prisma {
     zip_code?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    addressId?: StringFieldUpdateOperationsInput | string
   }
 
   export type AccountUserCreateInput = {
@@ -53090,6 +51823,7 @@ export namespace Prisma {
     origin_registration: CustomerOriginRegistration
     cpf_cnpj: string
     note: string
+    converted?: boolean
   }
 
   export type CustomerUncheckedCreateInput = {
@@ -53104,6 +51838,7 @@ export namespace Prisma {
     origin_registration: CustomerOriginRegistration
     cpf_cnpj: string
     note: string
+    converted?: boolean
   }
 
   export type CustomerUpdateInput = {
@@ -53118,6 +51853,7 @@ export namespace Prisma {
     origin_registration?: EnumCustomerOriginRegistrationFieldUpdateOperationsInput | CustomerOriginRegistration
     cpf_cnpj?: StringFieldUpdateOperationsInput | string
     note?: StringFieldUpdateOperationsInput | string
+    converted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type CustomerUncheckedUpdateInput = {
@@ -53132,6 +51868,7 @@ export namespace Prisma {
     origin_registration?: EnumCustomerOriginRegistrationFieldUpdateOperationsInput | CustomerOriginRegistration
     cpf_cnpj?: StringFieldUpdateOperationsInput | string
     note?: StringFieldUpdateOperationsInput | string
+    converted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type CustomerCreateManyInput = {
@@ -53146,6 +51883,7 @@ export namespace Prisma {
     origin_registration: CustomerOriginRegistration
     cpf_cnpj: string
     note: string
+    converted?: boolean
   }
 
   export type CustomerUpdateManyMutationInput = {
@@ -53159,6 +51897,7 @@ export namespace Prisma {
     origin_registration?: EnumCustomerOriginRegistrationFieldUpdateOperationsInput | CustomerOriginRegistration
     cpf_cnpj?: StringFieldUpdateOperationsInput | string
     note?: StringFieldUpdateOperationsInput | string
+    converted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type CustomerUncheckedUpdateManyInput = {
@@ -53173,6 +51912,7 @@ export namespace Prisma {
     origin_registration?: EnumCustomerOriginRegistrationFieldUpdateOperationsInput | CustomerOriginRegistration
     cpf_cnpj?: StringFieldUpdateOperationsInput | string
     note?: StringFieldUpdateOperationsInput | string
+    converted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type OrderLabelCreateInput = {
@@ -54929,81 +53669,15 @@ export namespace Prisma {
     _max?: NestedBoolNullableFilter
   }
 
-  export type EnumTypeAddressFilter = {
-    equals?: TypeAddress
-    in?: Enumerable<TypeAddress>
-    notIn?: Enumerable<TypeAddress>
-    not?: NestedEnumTypeAddressFilter | TypeAddress
-  }
-
-  export type AddressCountOrderByAggregateInput = {
-    id?: SortOrder
-    street?: SortOrder
-    number?: SortOrder
-    district?: SortOrder
-    state?: SortOrder
-    complement?: SortOrder
-    additionalInformation?: SortOrder
-    city?: SortOrder
-    zipcode?: SortOrder
-    type_address?: SortOrder
-    created_at?: SortOrder
-    updated_at?: SortOrder
-  }
-
-  export type AddressMaxOrderByAggregateInput = {
-    id?: SortOrder
-    street?: SortOrder
-    number?: SortOrder
-    district?: SortOrder
-    state?: SortOrder
-    complement?: SortOrder
-    additionalInformation?: SortOrder
-    city?: SortOrder
-    zipcode?: SortOrder
-    type_address?: SortOrder
-    created_at?: SortOrder
-    updated_at?: SortOrder
-  }
-
-  export type AddressMinOrderByAggregateInput = {
-    id?: SortOrder
-    street?: SortOrder
-    number?: SortOrder
-    district?: SortOrder
-    state?: SortOrder
-    complement?: SortOrder
-    additionalInformation?: SortOrder
-    city?: SortOrder
-    zipcode?: SortOrder
-    type_address?: SortOrder
-    created_at?: SortOrder
-    updated_at?: SortOrder
-  }
-
-  export type EnumTypeAddressWithAggregatesFilter = {
-    equals?: TypeAddress
-    in?: Enumerable<TypeAddress>
-    notIn?: Enumerable<TypeAddress>
-    not?: NestedEnumTypeAddressWithAggregatesFilter | TypeAddress
-    _count?: NestedIntFilter
-    _min?: NestedEnumTypeAddressFilter
-    _max?: NestedEnumTypeAddressFilter
-  }
-
   export type UserRelationFilter = {
     is?: UserWhereInput
     isNot?: UserWhereInput
   }
 
-  export type AddressRelationFilter = {
-    is?: AddressWhereInput
-    isNot?: AddressWhereInput
-  }
-
   export type UserAddressCountOrderByAggregateInput = {
     id?: SortOrder
     user_id?: SortOrder
+    name?: SortOrder
     street?: SortOrder
     number?: SortOrder
     district?: SortOrder
@@ -55014,12 +53688,12 @@ export namespace Prisma {
     zip_code?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
-    addressId?: SortOrder
   }
 
   export type UserAddressMaxOrderByAggregateInput = {
     id?: SortOrder
     user_id?: SortOrder
+    name?: SortOrder
     street?: SortOrder
     number?: SortOrder
     district?: SortOrder
@@ -55030,12 +53704,12 @@ export namespace Prisma {
     zip_code?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
-    addressId?: SortOrder
   }
 
   export type UserAddressMinOrderByAggregateInput = {
     id?: SortOrder
     user_id?: SortOrder
+    name?: SortOrder
     street?: SortOrder
     number?: SortOrder
     district?: SortOrder
@@ -55046,7 +53720,6 @@ export namespace Prisma {
     zip_code?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
-    addressId?: SortOrder
   }
 
   export type RoleRelationFilter = {
@@ -56069,6 +54742,7 @@ export namespace Prisma {
     origin_registration?: SortOrder
     cpf_cnpj?: SortOrder
     note?: SortOrder
+    converted?: SortOrder
   }
 
   export type CustomerMaxOrderByAggregateInput = {
@@ -56083,6 +54757,7 @@ export namespace Prisma {
     origin_registration?: SortOrder
     cpf_cnpj?: SortOrder
     note?: SortOrder
+    converted?: SortOrder
   }
 
   export type CustomerMinOrderByAggregateInput = {
@@ -56097,6 +54772,7 @@ export namespace Prisma {
     origin_registration?: SortOrder
     cpf_cnpj?: SortOrder
     note?: SortOrder
+    converted?: SortOrder
   }
 
   export type EnumCustomerOriginRegistrationWithAggregatesFilter = {
@@ -57683,52 +56359,6 @@ export namespace Prisma {
     deleteMany?: Enumerable<UserAddressScalarWhereInput>
   }
 
-  export type UserAddressCreateNestedManyWithoutAddressInput = {
-    create?: XOR<Enumerable<UserAddressCreateWithoutAddressInput>, Enumerable<UserAddressUncheckedCreateWithoutAddressInput>>
-    connectOrCreate?: Enumerable<UserAddressCreateOrConnectWithoutAddressInput>
-    createMany?: UserAddressCreateManyAddressInputEnvelope
-    connect?: Enumerable<UserAddressWhereUniqueInput>
-  }
-
-  export type UserAddressUncheckedCreateNestedManyWithoutAddressInput = {
-    create?: XOR<Enumerable<UserAddressCreateWithoutAddressInput>, Enumerable<UserAddressUncheckedCreateWithoutAddressInput>>
-    connectOrCreate?: Enumerable<UserAddressCreateOrConnectWithoutAddressInput>
-    createMany?: UserAddressCreateManyAddressInputEnvelope
-    connect?: Enumerable<UserAddressWhereUniqueInput>
-  }
-
-  export type UserAddressUpdateManyWithoutAddressNestedInput = {
-    create?: XOR<Enumerable<UserAddressCreateWithoutAddressInput>, Enumerable<UserAddressUncheckedCreateWithoutAddressInput>>
-    connectOrCreate?: Enumerable<UserAddressCreateOrConnectWithoutAddressInput>
-    upsert?: Enumerable<UserAddressUpsertWithWhereUniqueWithoutAddressInput>
-    createMany?: UserAddressCreateManyAddressInputEnvelope
-    set?: Enumerable<UserAddressWhereUniqueInput>
-    disconnect?: Enumerable<UserAddressWhereUniqueInput>
-    delete?: Enumerable<UserAddressWhereUniqueInput>
-    connect?: Enumerable<UserAddressWhereUniqueInput>
-    update?: Enumerable<UserAddressUpdateWithWhereUniqueWithoutAddressInput>
-    updateMany?: Enumerable<UserAddressUpdateManyWithWhereWithoutAddressInput>
-    deleteMany?: Enumerable<UserAddressScalarWhereInput>
-  }
-
-  export type EnumTypeAddressFieldUpdateOperationsInput = {
-    set?: TypeAddress
-  }
-
-  export type UserAddressUncheckedUpdateManyWithoutAddressNestedInput = {
-    create?: XOR<Enumerable<UserAddressCreateWithoutAddressInput>, Enumerable<UserAddressUncheckedCreateWithoutAddressInput>>
-    connectOrCreate?: Enumerable<UserAddressCreateOrConnectWithoutAddressInput>
-    upsert?: Enumerable<UserAddressUpsertWithWhereUniqueWithoutAddressInput>
-    createMany?: UserAddressCreateManyAddressInputEnvelope
-    set?: Enumerable<UserAddressWhereUniqueInput>
-    disconnect?: Enumerable<UserAddressWhereUniqueInput>
-    delete?: Enumerable<UserAddressWhereUniqueInput>
-    connect?: Enumerable<UserAddressWhereUniqueInput>
-    update?: Enumerable<UserAddressUpdateWithWhereUniqueWithoutAddressInput>
-    updateMany?: Enumerable<UserAddressUpdateManyWithWhereWithoutAddressInput>
-    deleteMany?: Enumerable<UserAddressScalarWhereInput>
-  }
-
   export type UserCreateNestedOneWithoutUser_addressesInput = {
     create?: XOR<UserCreateWithoutUser_addressesInput, UserUncheckedCreateWithoutUser_addressesInput>
     connectOrCreate?: UserCreateOrConnectWithoutUser_addressesInput
@@ -57740,12 +56370,6 @@ export namespace Prisma {
     connectOrCreate?: Enumerable<OrderCreateOrConnectWithoutUser_addressInput>
     createMany?: OrderCreateManyUser_addressInputEnvelope
     connect?: Enumerable<OrderWhereUniqueInput>
-  }
-
-  export type AddressCreateNestedOneWithoutUser_addressesInput = {
-    create?: XOR<AddressCreateWithoutUser_addressesInput, AddressUncheckedCreateWithoutUser_addressesInput>
-    connectOrCreate?: AddressCreateOrConnectWithoutUser_addressesInput
-    connect?: AddressWhereUniqueInput
   }
 
   export type OrderUncheckedCreateNestedManyWithoutUser_addressInput = {
@@ -57775,14 +56399,6 @@ export namespace Prisma {
     update?: Enumerable<OrderUpdateWithWhereUniqueWithoutUser_addressInput>
     updateMany?: Enumerable<OrderUpdateManyWithWhereWithoutUser_addressInput>
     deleteMany?: Enumerable<OrderScalarWhereInput>
-  }
-
-  export type AddressUpdateOneRequiredWithoutUser_addressesNestedInput = {
-    create?: XOR<AddressCreateWithoutUser_addressesInput, AddressUncheckedCreateWithoutUser_addressesInput>
-    connectOrCreate?: AddressCreateOrConnectWithoutUser_addressesInput
-    upsert?: AddressUpsertWithoutUser_addressesInput
-    connect?: AddressWhereUniqueInput
-    update?: XOR<AddressUpdateWithoutUser_addressesInput, AddressUncheckedUpdateWithoutUser_addressesInput>
   }
 
   export type OrderUncheckedUpdateManyWithoutUser_addressNestedInput = {
@@ -60272,23 +58888,6 @@ export namespace Prisma {
     _max?: NestedBoolNullableFilter
   }
 
-  export type NestedEnumTypeAddressFilter = {
-    equals?: TypeAddress
-    in?: Enumerable<TypeAddress>
-    notIn?: Enumerable<TypeAddress>
-    not?: NestedEnumTypeAddressFilter | TypeAddress
-  }
-
-  export type NestedEnumTypeAddressWithAggregatesFilter = {
-    equals?: TypeAddress
-    in?: Enumerable<TypeAddress>
-    notIn?: Enumerable<TypeAddress>
-    not?: NestedEnumTypeAddressWithAggregatesFilter | TypeAddress
-    _count?: NestedIntFilter
-    _min?: NestedEnumTypeAddressFilter
-    _max?: NestedEnumTypeAddressFilter
-  }
-
   export type NestedFloatNullableWithAggregatesFilter = {
     equals?: number | null
     in?: Enumerable<number> | null
@@ -60870,6 +59469,7 @@ export namespace Prisma {
     origin_registration: CustomerOriginRegistration
     cpf_cnpj: string
     note: string
+    converted?: boolean
   }
 
   export type CustomerUncheckedCreateWithoutAccountInput = {
@@ -60883,6 +59483,7 @@ export namespace Prisma {
     origin_registration: CustomerOriginRegistration
     cpf_cnpj: string
     note: string
+    converted?: boolean
   }
 
   export type CustomerCreateOrConnectWithoutAccountInput = {
@@ -61283,6 +59884,7 @@ export namespace Prisma {
     origin_registration?: EnumCustomerOriginRegistrationFilter | CustomerOriginRegistration
     cpf_cnpj?: StringFilter | string
     note?: StringFilter | string
+    converted?: BoolFilter | boolean
   }
 
   export type AccountCreateWithoutAccount_configurationInput = {
@@ -62077,6 +60679,7 @@ export namespace Prisma {
 
   export type UserAddressCreateWithoutUserInput = {
     id?: string
+    name?: string | null
     street: string
     number: string
     district: string
@@ -62088,11 +60691,11 @@ export namespace Prisma {
     orders?: OrderCreateNestedManyWithoutUser_addressInput
     created_at?: Date | string
     updated_at?: Date | string
-    Address: AddressCreateNestedOneWithoutUser_addressesInput
   }
 
   export type UserAddressUncheckedCreateWithoutUserInput = {
     id?: string
+    name?: string | null
     street: string
     number: string
     district: string
@@ -62104,7 +60707,6 @@ export namespace Prisma {
     orders?: OrderUncheckedCreateNestedManyWithoutUser_addressInput
     created_at?: Date | string
     updated_at?: Date | string
-    addressId: string
   }
 
   export type UserAddressCreateOrConnectWithoutUserInput = {
@@ -62197,6 +60799,7 @@ export namespace Prisma {
     NOT?: Enumerable<UserAddressScalarWhereInput>
     id?: StringFilter | string
     user_id?: StringFilter | string
+    name?: StringNullableFilter | string | null
     street?: StringFilter | string
     number?: StringFilter | string
     district?: StringFilter | string
@@ -62207,65 +60810,6 @@ export namespace Prisma {
     zip_code?: StringFilter | string
     created_at?: DateTimeFilter | Date | string
     updated_at?: DateTimeFilter | Date | string
-    addressId?: StringFilter | string
-  }
-
-  export type UserAddressCreateWithoutAddressInput = {
-    id?: string
-    user: UserCreateNestedOneWithoutUser_addressesInput
-    street: string
-    number: string
-    district: string
-    state: string
-    complement?: string | null
-    additional_information?: string | null
-    city: string
-    zip_code: string
-    orders?: OrderCreateNestedManyWithoutUser_addressInput
-    created_at?: Date | string
-    updated_at?: Date | string
-  }
-
-  export type UserAddressUncheckedCreateWithoutAddressInput = {
-    id?: string
-    user_id: string
-    street: string
-    number: string
-    district: string
-    state: string
-    complement?: string | null
-    additional_information?: string | null
-    city: string
-    zip_code: string
-    orders?: OrderUncheckedCreateNestedManyWithoutUser_addressInput
-    created_at?: Date | string
-    updated_at?: Date | string
-  }
-
-  export type UserAddressCreateOrConnectWithoutAddressInput = {
-    where: UserAddressWhereUniqueInput
-    create: XOR<UserAddressCreateWithoutAddressInput, UserAddressUncheckedCreateWithoutAddressInput>
-  }
-
-  export type UserAddressCreateManyAddressInputEnvelope = {
-    data: Enumerable<UserAddressCreateManyAddressInput>
-    skipDuplicates?: boolean
-  }
-
-  export type UserAddressUpsertWithWhereUniqueWithoutAddressInput = {
-    where: UserAddressWhereUniqueInput
-    update: XOR<UserAddressUpdateWithoutAddressInput, UserAddressUncheckedUpdateWithoutAddressInput>
-    create: XOR<UserAddressCreateWithoutAddressInput, UserAddressUncheckedCreateWithoutAddressInput>
-  }
-
-  export type UserAddressUpdateWithWhereUniqueWithoutAddressInput = {
-    where: UserAddressWhereUniqueInput
-    data: XOR<UserAddressUpdateWithoutAddressInput, UserAddressUncheckedUpdateWithoutAddressInput>
-  }
-
-  export type UserAddressUpdateManyWithWhereWithoutAddressInput = {
-    where: UserAddressScalarWhereInput
-    data: XOR<UserAddressUpdateManyMutationInput, UserAddressUncheckedUpdateManyWithoutUser_addressesInput>
   }
 
   export type UserCreateWithoutUser_addressesInput = {
@@ -62365,41 +60909,6 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type AddressCreateWithoutUser_addressesInput = {
-    id?: string
-    street: string
-    number: string
-    district: string
-    state: string
-    complement?: string | null
-    additionalInformation?: string | null
-    city: string
-    zipcode: string
-    type_address: TypeAddress
-    created_at?: Date | string
-    updated_at?: Date | string
-  }
-
-  export type AddressUncheckedCreateWithoutUser_addressesInput = {
-    id?: string
-    street: string
-    number: string
-    district: string
-    state: string
-    complement?: string | null
-    additionalInformation?: string | null
-    city: string
-    zipcode: string
-    type_address: TypeAddress
-    created_at?: Date | string
-    updated_at?: Date | string
-  }
-
-  export type AddressCreateOrConnectWithoutUser_addressesInput = {
-    where: AddressWhereUniqueInput
-    create: XOR<AddressCreateWithoutUser_addressesInput, AddressUncheckedCreateWithoutUser_addressesInput>
-  }
-
   export type UserUpsertWithoutUser_addressesInput = {
     update: XOR<UserUpdateWithoutUser_addressesInput, UserUncheckedUpdateWithoutUser_addressesInput>
     create: XOR<UserCreateWithoutUser_addressesInput, UserUncheckedCreateWithoutUser_addressesInput>
@@ -62467,41 +60976,6 @@ export namespace Prisma {
   export type OrderUpdateManyWithWhereWithoutUser_addressInput = {
     where: OrderScalarWhereInput
     data: XOR<OrderUpdateManyMutationInput, OrderUncheckedUpdateManyWithoutOrdersInput>
-  }
-
-  export type AddressUpsertWithoutUser_addressesInput = {
-    update: XOR<AddressUpdateWithoutUser_addressesInput, AddressUncheckedUpdateWithoutUser_addressesInput>
-    create: XOR<AddressCreateWithoutUser_addressesInput, AddressUncheckedCreateWithoutUser_addressesInput>
-  }
-
-  export type AddressUpdateWithoutUser_addressesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    street?: StringFieldUpdateOperationsInput | string
-    number?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
-    complement?: NullableStringFieldUpdateOperationsInput | string | null
-    additionalInformation?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: StringFieldUpdateOperationsInput | string
-    zipcode?: StringFieldUpdateOperationsInput | string
-    type_address?: EnumTypeAddressFieldUpdateOperationsInput | TypeAddress
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type AddressUncheckedUpdateWithoutUser_addressesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    street?: StringFieldUpdateOperationsInput | string
-    number?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
-    complement?: NullableStringFieldUpdateOperationsInput | string | null
-    additionalInformation?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: StringFieldUpdateOperationsInput | string
-    zipcode?: StringFieldUpdateOperationsInput | string
-    type_address?: EnumTypeAddressFieldUpdateOperationsInput | TypeAddress
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AccountCreateWithoutAccount_usersInput = {
@@ -65609,6 +64083,7 @@ export namespace Prisma {
   export type UserAddressCreateWithoutOrdersInput = {
     id?: string
     user: UserCreateNestedOneWithoutUser_addressesInput
+    name?: string | null
     street: string
     number: string
     district: string
@@ -65619,12 +64094,12 @@ export namespace Prisma {
     zip_code: string
     created_at?: Date | string
     updated_at?: Date | string
-    Address: AddressCreateNestedOneWithoutUser_addressesInput
   }
 
   export type UserAddressUncheckedCreateWithoutOrdersInput = {
     id?: string
     user_id: string
+    name?: string | null
     street: string
     number: string
     district: string
@@ -65635,7 +64110,6 @@ export namespace Prisma {
     zip_code: string
     created_at?: Date | string
     updated_at?: Date | string
-    addressId: string
   }
 
   export type UserAddressCreateOrConnectWithoutOrdersInput = {
@@ -65934,6 +64408,7 @@ export namespace Prisma {
   export type UserAddressUpdateWithoutOrdersInput = {
     id?: StringFieldUpdateOperationsInput | string
     user?: UserUpdateOneRequiredWithoutUser_addressesNestedInput
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
     district?: StringFieldUpdateOperationsInput | string
@@ -65944,12 +64419,12 @@ export namespace Prisma {
     zip_code?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    Address?: AddressUpdateOneRequiredWithoutUser_addressesNestedInput
   }
 
   export type UserAddressUncheckedUpdateWithoutOrdersInput = {
     id?: StringFieldUpdateOperationsInput | string
     user_id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
     district?: StringFieldUpdateOperationsInput | string
@@ -65960,7 +64435,6 @@ export namespace Prisma {
     zip_code?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    addressId?: StringFieldUpdateOperationsInput | string
   }
 
   export type OrderStatusUpsertWithoutOrdersInput = {
@@ -68932,6 +67406,7 @@ export namespace Prisma {
     origin_registration: CustomerOriginRegistration
     cpf_cnpj: string
     note: string
+    converted?: boolean
   }
 
   export type CampaignUpdateWithoutAccountInput = {
@@ -69280,6 +67755,7 @@ export namespace Prisma {
     origin_registration?: EnumCustomerOriginRegistrationFieldUpdateOperationsInput | CustomerOriginRegistration
     cpf_cnpj?: StringFieldUpdateOperationsInput | string
     note?: StringFieldUpdateOperationsInput | string
+    converted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type CustomerUncheckedUpdateWithoutAccountInput = {
@@ -69293,6 +67769,7 @@ export namespace Prisma {
     origin_registration?: EnumCustomerOriginRegistrationFieldUpdateOperationsInput | CustomerOriginRegistration
     cpf_cnpj?: StringFieldUpdateOperationsInput | string
     note?: StringFieldUpdateOperationsInput | string
+    converted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type CustomerUncheckedUpdateManyWithoutCustomersInput = {
@@ -69306,6 +67783,7 @@ export namespace Prisma {
     origin_registration?: EnumCustomerOriginRegistrationFieldUpdateOperationsInput | CustomerOriginRegistration
     cpf_cnpj?: StringFieldUpdateOperationsInput | string
     note?: StringFieldUpdateOperationsInput | string
+    converted?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type AccountActivitiesCreateManyActivitiesInput = {
@@ -69373,6 +67851,7 @@ export namespace Prisma {
 
   export type UserAddressCreateManyUserInput = {
     id?: string
+    name?: string | null
     street: string
     number: string
     district: string
@@ -69383,7 +67862,6 @@ export namespace Prisma {
     zip_code: string
     created_at?: Date | string
     updated_at?: Date | string
-    addressId: string
   }
 
   export type DeviceUserUpdateWithoutUserInput = {
@@ -69473,6 +67951,7 @@ export namespace Prisma {
 
   export type UserAddressUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
     district?: StringFieldUpdateOperationsInput | string
@@ -69484,11 +67963,11 @@ export namespace Prisma {
     orders?: OrderUpdateManyWithoutUser_addressNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    Address?: AddressUpdateOneRequiredWithoutUser_addressesNestedInput
   }
 
   export type UserAddressUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
     district?: StringFieldUpdateOperationsInput | string
@@ -69500,11 +67979,11 @@ export namespace Prisma {
     orders?: OrderUncheckedUpdateManyWithoutUser_addressNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    addressId?: StringFieldUpdateOperationsInput | string
   }
 
   export type UserAddressUncheckedUpdateManyWithoutUser_addressesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
     street?: StringFieldUpdateOperationsInput | string
     number?: StringFieldUpdateOperationsInput | string
     district?: StringFieldUpdateOperationsInput | string
@@ -69513,54 +67992,6 @@ export namespace Prisma {
     additional_information?: NullableStringFieldUpdateOperationsInput | string | null
     city?: StringFieldUpdateOperationsInput | string
     zip_code?: StringFieldUpdateOperationsInput | string
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    addressId?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type UserAddressCreateManyAddressInput = {
-    id?: string
-    user_id: string
-    street: string
-    number: string
-    district: string
-    state: string
-    complement?: string | null
-    additional_information?: string | null
-    city: string
-    zip_code: string
-    created_at?: Date | string
-    updated_at?: Date | string
-  }
-
-  export type UserAddressUpdateWithoutAddressInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    user?: UserUpdateOneRequiredWithoutUser_addressesNestedInput
-    street?: StringFieldUpdateOperationsInput | string
-    number?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
-    complement?: NullableStringFieldUpdateOperationsInput | string | null
-    additional_information?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: StringFieldUpdateOperationsInput | string
-    zip_code?: StringFieldUpdateOperationsInput | string
-    orders?: OrderUpdateManyWithoutUser_addressNestedInput
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type UserAddressUncheckedUpdateWithoutAddressInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    user_id?: StringFieldUpdateOperationsInput | string
-    street?: StringFieldUpdateOperationsInput | string
-    number?: StringFieldUpdateOperationsInput | string
-    district?: StringFieldUpdateOperationsInput | string
-    state?: StringFieldUpdateOperationsInput | string
-    complement?: NullableStringFieldUpdateOperationsInput | string | null
-    additional_information?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: StringFieldUpdateOperationsInput | string
-    zip_code?: StringFieldUpdateOperationsInput | string
-    orders?: OrderUncheckedUpdateManyWithoutUser_addressNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }

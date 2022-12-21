@@ -647,18 +647,15 @@ export class MigrateRepository {
         phone: account.fone,
         user_addresses: {
           create: {
-            address: {
-              create: {
-                city: account.users?.city || '',
-                state: account.users?.state || '',
-                zipcode: account.users?.address_cep || '',
-                complement: account.users?.address_complement,
-                number: account.users?.address_number || '',
-                district: account.users?.address_neighborhood || '',
-                street: account.users?.address_street || '',
-                type_address: 'PRINCIPAL',
-              },
-            },
+            city: account.users?.city || '',
+            state: account.users?.state || '',
+            complement: account.users?.address_complement,
+            number: account.users?.address_number || '',
+            district: account.users?.address_neighborhood || '',
+            street: account.users?.address_street || '',
+            zip_code: account.users?.address_cep || '',
+            additional_information: account.users?.address_complement || '',
+            name: null,
           },
         },
         password: account.users?.password || '',
@@ -714,18 +711,15 @@ export class MigrateRepository {
           phone: account.fone,
           user_addresses: {
             create: {
-              address: {
-                create: {
-                  city: account.users?.city || '',
-                  state: account.users?.state || '',
-                  zipcode: account.users?.address_cep || '',
-                  complement: account.users?.address_complement,
-                  number: account.users?.address_number || '',
-                  district: account.users?.address_neighborhood || '',
-                  street: account.users?.address_street || '',
-                  type_address: 'PRINCIPAL',
-                },
-              },
+              city: account.users?.city || '',
+              state: account.users?.state || '',
+              complement: account.users?.address_complement,
+              number: account.users?.address_number || '',
+              district: account.users?.address_neighborhood || '',
+              street: account.users?.address_street || '',
+              zip_code: account.users?.address_cep || '',
+              name: null,
+              additional_information: account.users?.address_complement || '',
             },
           },
           password: account.users?.password || '',
@@ -842,6 +836,7 @@ export class MigrateRepository {
               external_id: order.id,
               is_read: order.status,
               order_status_id: orderStatusFinished.id,
+              user_address_id: userCreated.user_addresses[0].id,
             },
           })
           for (const orderLabel of order.pedidos_indicacoes) {
@@ -884,6 +879,9 @@ export class MigrateRepository {
       where: {
         email: order.email,
       },
+      include: {
+        user_addresses: true,
+      },
     })
     if (userAlreadyExist) {
       return userAlreadyExist
@@ -895,23 +893,23 @@ export class MigrateRepository {
         phone: order.telefone_celular,
         user_addresses: {
           create: {
-            address: {
-              create: {
-                city: order.cidade || '',
-                state: order.estado || '',
-                zipcode: order.cep || '',
-                complement: order.complemento,
-                number: order.numero || '',
-                district: order.bairro || '',
-                street: order.endereco || '',
-                type_address: 'PRINCIPAL',
-              },
-            },
+            city: order.cidade || '',
+            state: order.estado || '',
+            zip_code: order.cep || '',
+            complement: order.complemento,
+            number: order.numero || '',
+            district: order.bairro || '',
+            street: order.endereco || '',
+            name: null,
+            additional_information: order.obs_endereco || '',
           },
         },
         password: '',
         gender: 'ND' as GenderType,
         whatsapp: order.telefone_celular,
+      },
+      include: {
+        user_addresses: true,
       },
     })
   }

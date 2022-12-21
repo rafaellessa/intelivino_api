@@ -119,27 +119,10 @@ CREATE TABLE `users` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `address` (
-    `id` VARCHAR(191) NOT NULL,
-    `street` VARCHAR(191) NOT NULL,
-    `number` VARCHAR(191) NOT NULL,
-    `district` VARCHAR(191) NOT NULL,
-    `state` VARCHAR(191) NOT NULL,
-    `complement` VARCHAR(191) NULL,
-    `additionalInformation` VARCHAR(191) NULL,
-    `city` VARCHAR(191) NOT NULL,
-    `zipcode` VARCHAR(191) NOT NULL,
-    `type_address` ENUM('PRINCIPAL', 'DELIVERY') NOT NULL,
-    `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updated_at` TIMESTAMP(3) NOT NULL,
-
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
 CREATE TABLE `user_addresses` (
     `id` VARCHAR(191) NOT NULL,
     `user_id` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(191) NULL,
     `street` VARCHAR(191) NOT NULL,
     `number` VARCHAR(191) NOT NULL,
     `district` VARCHAR(191) NOT NULL,
@@ -150,7 +133,6 @@ CREATE TABLE `user_addresses` (
     `zip_code` VARCHAR(191) NOT NULL,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
-    `addressId` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -440,6 +422,7 @@ CREATE TABLE `customers` (
     `origin_registration` ENUM('SINGLE_REGISTRATION', 'CAMPAIGN', 'MAIN_CATALOG') NOT NULL,
     `cpf_cnpj` VARCHAR(191) NOT NULL,
     `note` TEXT NOT NULL,
+    `converted` BOOLEAN NOT NULL DEFAULT true,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -666,9 +649,6 @@ ALTER TABLE `account_deliveries` ADD CONSTRAINT `account_deliveries_delivery_id_
 
 -- AddForeignKey
 ALTER TABLE `user_addresses` ADD CONSTRAINT `user_addresses_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `user_addresses` ADD CONSTRAINT `user_addresses_addressId_fkey` FOREIGN KEY (`addressId`) REFERENCES `address`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `account_user` ADD CONSTRAINT `account_user_account_id_fkey` FOREIGN KEY (`account_id`) REFERENCES `account`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

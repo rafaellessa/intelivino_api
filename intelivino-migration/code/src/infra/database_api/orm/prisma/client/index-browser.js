@@ -156,21 +156,6 @@ exports.Prisma.ActivitiesScalarFieldEnum = makeEnum({
   updated_at: 'updated_at'
 });
 
-exports.Prisma.AddressScalarFieldEnum = makeEnum({
-  id: 'id',
-  street: 'street',
-  number: 'number',
-  district: 'district',
-  state: 'state',
-  complement: 'complement',
-  additionalInformation: 'additionalInformation',
-  city: 'city',
-  zipcode: 'zipcode',
-  type_address: 'type_address',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
-});
-
 exports.Prisma.CampaignScalarFieldEnum = makeEnum({
   id: 'id',
   external_id: 'external_id',
@@ -238,7 +223,8 @@ exports.Prisma.CustomerScalarFieldEnum = makeEnum({
   updated_at: 'updated_at',
   origin_registration: 'origin_registration',
   cpf_cnpj: 'cpf_cnpj',
-  note: 'note'
+  note: 'note',
+  converted: 'converted'
 });
 
 exports.Prisma.DeliveryScalarFieldEnum = makeEnum({
@@ -531,6 +517,7 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
 exports.Prisma.UserAddressScalarFieldEnum = makeEnum({
   id: 'id',
   user_id: 'user_id',
+  name: 'name',
   street: 'street',
   number: 'number',
   district: 'district',
@@ -540,8 +527,7 @@ exports.Prisma.UserAddressScalarFieldEnum = makeEnum({
   city: 'city',
   zip_code: 'zip_code',
   created_at: 'created_at',
-  updated_at: 'updated_at',
-  addressId: 'addressId'
+  updated_at: 'updated_at'
 });
 
 exports.Prisma.UserScalarFieldEnum = makeEnum({
@@ -619,11 +605,6 @@ exports.PlatformType = makeEnum({
   ios: 'ios'
 });
 
-exports.TypeAddress = makeEnum({
-  PRINCIPAL: 'PRINCIPAL',
-  DELIVERY: 'DELIVERY'
-});
-
 exports.TypeNotification = makeEnum({
   email: 'email',
   sms: 'sms',
@@ -638,7 +619,6 @@ exports.Prisma.ModelName = makeEnum({
   Delivery: 'Delivery',
   AccountDelivery: 'AccountDelivery',
   User: 'User',
-  Address: 'Address',
   UserAddress: 'UserAddress',
   AccountUser: 'AccountUser',
   Permision: 'Permision',

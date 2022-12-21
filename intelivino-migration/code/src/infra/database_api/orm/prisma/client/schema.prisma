@@ -141,28 +141,11 @@ model User {
   @@map("users")
 }
 
-model Address {
-  id                    String        @id @default(uuid())
-  street                String
-  number                String
-  district              String
-  state                 String
-  complement            String?
-  additionalInformation String?
-  city                  String
-  zipcode               String
-  user_addresses        UserAddress[]
-  type_address          TypeAddress
-  created_at            DateTime      @default(now()) @db.Timestamp(3)
-  updated_at            DateTime      @updatedAt @db.Timestamp(3)
-
-  @@map("address")
-}
-
 model UserAddress {
   id                     String   @id @default(uuid())
   user_id                String
   user                   User     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  name                   String?
   street                 String
   number                 String
   district               String
@@ -174,8 +157,6 @@ model UserAddress {
   orders                 Order[]
   created_at             DateTime @default(now()) @db.Timestamp(3)
   updated_at             DateTime @updatedAt @db.Timestamp(3)
-  Address                Address  @relation(fields: [addressId], references: [id])
-  addressId              String
 
   @@map("user_addresses")
 }
@@ -513,6 +494,7 @@ model Customer {
   origin_registration CustomerOriginRegistration
   cpf_cnpj            String
   note                String                     @db.Text
+  converted           Boolean                    @default(true)
 
   @@map("customers")
 }
