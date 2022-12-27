@@ -133,10 +133,16 @@ model campaigns {
   created_at                            DateTime?              @db.Timestamp(0)
   updated_at                            DateTime?              @db.Timestamp(0)
   type                                  Int?
+  presentation                          String?                @db.VarChar(500)
+  on_confirmation_end                   String?                @db.VarChar(500)
+  coupon                                String?                @db.VarChar(30)
+  ask_for_address                       Int?                   @default(0) @db.TinyInt
+  ask_for_catalog                       Int?                   @default(0) @db.TinyInt
   campaigns_types                       campaigns_types?       @relation(fields: [type], references: [id], onUpdate: NoAction, map: "campaigns_type_foreign")
   users_campaigns_user_idTousers        users?                 @relation("campaigns_user_idTousers", fields: [user_id], references: [id], onUpdate: NoAction, map: "campaigns_user_id_foreign")
   users_campaigns_user_id_parentTousers users?                 @relation("campaigns_user_id_parentTousers", fields: [user_id_parent], references: [id], onUpdate: NoAction, map: "campaigns_user_id_parent_foreign")
   campaigns_indicacoes                  campaigns_indicacoes[]
+  order                                 order[]
 
   @@index([type], map: "campaigns_type_foreign")
   @@index([user_id], map: "campaigns_user_id_foreign")
@@ -341,6 +347,7 @@ model indicacoes {
   campaigns_indicacoes    campaigns_indicacoes[]
   experiencias_indicacoes experiencias_indicacoes[]
   indicacoes_uvas         indicacoes_uvas[]
+  order_items             order_items[]
   pedidos_indicacoes      pedidos_indicacoes[]
   pratos_indicacoes       pratos_indicacoes[]
   valores_indicacoes      valores_indicacoes[]
@@ -725,6 +732,8 @@ model users {
   campaigns_campaigns_user_id_parentTousers campaigns[]        @relation("campaigns_user_id_parentTousers")
   categories_users                          categories_users[]
   history                                   history[]
+  lead                                      lead[]
+  order                                     order[]
   pedidos                                   pedidos[]
   planos_users                              planos_users[]
   sorteios_users                            sorteios_users[]
@@ -789,6 +798,84 @@ model vinicolas {
   nome       String    @db.VarChar(255)
   created_at DateTime? @db.Timestamp(0)
   updated_at DateTime? @db.Timestamp(0)
+}
+
+model lead {
+  id                  Int            @id @default(autoincrement())
+  user_id             Int            @db.UnsignedInt
+  name                String?        @db.VarChar(80)
+  mail                String         @db.VarChar(255)
+  mobile_phone        String?        @db.VarChar(30)
+  phone               String?        @db.VarChar(60)
+  is_active           Int            @default(1) @db.TinyInt
+  created_at          DateTime?      @db.Timestamp(0)
+  updated_at          DateTime?      @db.Timestamp(0)
+  origin_registration Int            @default(1) @db.TinyInt
+  cpf_cnpj            String?        @db.VarChar(20)
+  type                String?        @db.VarChar(2)
+  note                String?        @db.VarChar(255)
+  users               users          @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "lead_user_id_foreign")
+  lead_address        lead_address[]
+  converted Boolean @default(true)
+  order               order[]
+
+  @@index([id], map: "id")
+  @@index([user_id], map: "lead_user_id_foreign")
+}
+
+model lead_address {
+  id                 Int       @id @default(autoincrement())
+  lead_id            Int
+  address_name       String?   @db.VarChar(50)
+  address_zip_code   String?   @db.VarChar(10)
+  address_state      String?   @db.VarChar(30)
+  address_city       String?   @db.VarChar(100)
+  address_district   String?   @db.VarChar(150)
+  address_street     String?   @db.VarChar(300)
+  address_number     String?   @db.VarChar(9)
+  address_complement String?   @db.VarChar(300)
+  created_at         DateTime? @db.Timestamp(0)
+  updated_at         DateTime? @db.Timestamp(0)
+  lead               lead      @relation(fields: [lead_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "lead_address")
+  order              order[]
+
+  @@index([lead_id], map: "lead_address")
+}
+
+model order {
+  id              Int           @id @default(autoincrement())
+  user_id         Int           @db.UnsignedInt
+  lead_id         Int
+  campaign_id     Int?          @db.UnsignedInt
+  lead_address_id Int
+  created_at      DateTime?     @db.Timestamp(0)
+  updated_at      DateTime?     @db.Timestamp(0)
+  campaigns       campaigns?    @relation(fields: [campaign_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "order_campaign")
+  lead            lead          @relation(fields: [lead_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "order_lead")
+  lead_address    lead_address  @relation(fields: [lead_address_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "order_lead_address_id")
+  users           users         @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "order_user_id_foreign")
+  order_items     order_items[]
+
+  @@index([campaign_id], map: "order_campaign")
+  @@index([lead_id], map: "order_lead")
+  @@index([lead_address_id], map: "order_lead_address_id")
+  @@index([user_id], map: "order_user_id_foreign")
+}
+
+model order_items {
+  id           Int        @id @default(autoincrement())
+  indicacao_id Int        @db.UnsignedInt
+  order_id     Int
+  quantity     Int?
+  price        Decimal?   @db.Decimal(8, 2)
+  total        Decimal?   @db.Decimal(8, 2)
+  created_at   DateTime?  @db.Timestamp(0)
+  updated_at   DateTime?  @db.Timestamp(0)
+  indicacoes   indicacoes @relation(fields: [indicacao_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "order_items_indicacao_id_foreign")
+  order        order      @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "order_items_pedido_id_foreign")
+
+  @@index([indicacao_id], map: "order_items_indicacao_id_foreign")
+  @@index([order_id], map: "order_items_pedido_id_foreign")
 }
 
 model Coupon {
