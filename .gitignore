@@ -3,3 +3,4 @@ intelivino-api/code/coverage
 intelivino-api/code/provision
 .env
 intelivino-api/provision
+/intelivino-migration/provision

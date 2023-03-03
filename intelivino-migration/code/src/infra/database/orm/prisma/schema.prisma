@@ -120,28 +120,29 @@ model business {
 }
 
 model campaigns {
-  id                                    Int                    @id @default(autoincrement()) @db.UnsignedInt
-  name                                  String?                @db.VarChar(255)
-  info                                  String?                @db.VarChar(5000)
-  description                           String?                @db.VarChar(255)
-  discount                              Decimal?               @db.Decimal(8, 2)
-  date_start                            DateTime?              @db.Date
-  date_end                              DateTime?              @db.Date
+  id                                    Int                          @id @default(autoincrement()) @db.UnsignedInt
+  name                                  String?                      @db.VarChar(255)
+  info                                  String?                      @db.VarChar(5000)
+  description                           String?                      @db.VarChar(255)
+  discount                              Decimal?                     @db.Decimal(8, 2)
+  date_start                            DateTime?                    @db.Date
+  date_end                              DateTime?                    @db.Date
   status                                Boolean?
-  user_id                               Int?                   @db.UnsignedInt
-  user_id_parent                        Int?                   @db.UnsignedInt
-  created_at                            DateTime?              @db.Timestamp(0)
-  updated_at                            DateTime?              @db.Timestamp(0)
+  user_id                               Int?                         @db.UnsignedInt
+  user_id_parent                        Int?                         @db.UnsignedInt
+  created_at                            DateTime?                    @db.Timestamp(0)
+  updated_at                            DateTime?                    @db.Timestamp(0)
   type                                  Int?
-  presentation                          String?                @db.VarChar(500)
-  on_confirmation_end                   String?                @db.VarChar(500)
-  coupon                                String?                @db.VarChar(30)
-  ask_for_address                       Int?                   @default(0) @db.TinyInt
-  ask_for_catalog                       Int?                   @default(0) @db.TinyInt
-  campaigns_types                       campaigns_types?       @relation(fields: [type], references: [id], onUpdate: NoAction, map: "campaigns_type_foreign")
-  users_campaigns_user_idTousers        users?                 @relation("campaigns_user_idTousers", fields: [user_id], references: [id], onUpdate: NoAction, map: "campaigns_user_id_foreign")
-  users_campaigns_user_id_parentTousers users?                 @relation("campaigns_user_id_parentTousers", fields: [user_id_parent], references: [id], onUpdate: NoAction, map: "campaigns_user_id_parent_foreign")
+  presentation                          String?                      @db.VarChar(500)
+  on_confirmation_end                   String?                      @db.VarChar(500)
+  coupon                                String?                      @db.VarChar(30)
+  ask_for_address                       Int?                         @default(0) @db.TinyInt
+  ask_for_catalog                       Int?                         @default(0) @db.TinyInt
+  campaigns_types                       campaigns_types?             @relation(fields: [type], references: [id], onUpdate: NoAction, map: "campaigns_type_foreign")
+  users_campaigns_user_idTousers        users?                       @relation("campaigns_user_idTousers", fields: [user_id], references: [id], onUpdate: NoAction, map: "campaigns_user_id_foreign")
+  users_campaigns_user_id_parentTousers users?                       @relation("campaigns_user_id_parentTousers", fields: [user_id_parent], references: [id], onUpdate: NoAction, map: "campaigns_user_id_parent_foreign")
   campaigns_indicacoes                  campaigns_indicacoes[]
+  lead_converted_by_campaign            lead_converted_by_campaign[]
   order                                 order[]
 
   @@index([type], map: "campaigns_type_foreign")
@@ -222,6 +223,26 @@ model categories_users {
   users       users?    @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "categories_users_user_id_foreign")
 
   @@index([user_id], map: "categories_users_user_id_foreign")
+}
+
+model coupon {
+  id              Int                   @id @default(autoincrement()) @db.UnsignedInt
+  code            String
+  user_id         Int                   @db.UnsignedInt
+  discount_type   coupon_discount_type
+  discount_value  Float
+  couponUse_type  coupon_couponUse_type
+  initial_date    DateTime              @default(now()) @db.Timestamp(3)
+  expiration_date DateTime?
+  min_value       Float?
+  max_value       Float?
+  created_at      DateTime              @default(now()) @db.Timestamp(3)
+  updated_at      DateTime              @default(now()) @db.Timestamp(3)
+  users           users                 @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  pedidos         pedidos[]
+
+  @@unique([user_id, code])
+  @@index([code, user_id])
 }
 
 model deliveries {
@@ -377,6 +398,62 @@ model indicacoes_uvas {
   @@index([uva_id], map: "indicacoes_uvas_uva_id_foreign")
 }
 
+model lead {
+  id                         Int                          @id @default(autoincrement())
+  user_id                    Int                          @db.UnsignedInt
+  name                       String?                      @db.VarChar(80)
+  mail                       String                       @db.VarChar(255)
+  mobile_phone               String?                      @db.VarChar(30)
+  phone                      String?                      @db.VarChar(60)
+  is_active                  Int                          @default(1) @db.TinyInt
+  created_at                 DateTime?                    @db.Timestamp(0)
+  updated_at                 DateTime?                    @db.Timestamp(0)
+  origin_registration        Int                          @default(1) @db.TinyInt
+  cpf_cnpj                   String?                      @db.VarChar(20)
+  type                       String?                      @db.VarChar(2)
+  note                       String?                      @db.VarChar(255)
+  converted                  Int                          @default(1) @db.TinyInt
+  users                      users                        @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "lead_user_id_foreign")
+  lead_address               lead_address[]
+  lead_converted_by_campaign lead_converted_by_campaign[]
+  order                      order[]
+
+  @@index([id], map: "id")
+  @@index([user_id], map: "lead_user_id_foreign")
+}
+
+model lead_address {
+  id                 Int       @id @default(autoincrement())
+  lead_id            Int
+  address_name       String?   @db.VarChar(50)
+  address_zip_code   String?   @db.VarChar(10)
+  address_state      String?   @db.VarChar(30)
+  address_city       String?   @db.VarChar(100)
+  address_district   String?   @db.VarChar(150)
+  address_street     String?   @db.VarChar(300)
+  address_number     String?   @db.VarChar(9)
+  address_complement String?   @db.VarChar(300)
+  created_at         DateTime? @db.Timestamp(0)
+  updated_at         DateTime? @db.Timestamp(0)
+  lead               lead      @relation(fields: [lead_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "lead_address")
+  order              order[]
+
+  @@index([lead_id], map: "lead_address")
+}
+
+model lead_converted_by_campaign {
+  id          Int        @id @default(autoincrement())
+  lead_id     Int
+  campaign_id Int?       @db.UnsignedInt
+  created_at  DateTime?  @db.Timestamp(0)
+  updated_at  DateTime?  @db.Timestamp(0)
+  campaigns   campaigns? @relation(fields: [campaign_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "lead_converted_campaign")
+  lead        lead       @relation(fields: [lead_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "lead_converted_lead")
+
+  @@index([campaign_id], map: "lead_converted_campaign")
+  @@index([lead_id], map: "lead_converted_lead")
+}
+
 model lojas {
   id         Int       @id @default(autoincrement()) @db.UnsignedInt
   nome       String    @db.VarChar(255)
@@ -494,42 +571,111 @@ model motores_vendas {
   updated_at DateTime? @db.Timestamp(0)
 }
 
+model notification_v2 {
+  id                Int                  @id @default(autoincrement())
+  type              notification_v2_type
+  subject           String
+  body              String
+  to                String
+  from              String
+  clicked           Int?
+  opened            Int?
+  delivered         Int?
+  sent              Int?
+  failed            Int?
+  error_description String?
+  message_id        String?
+  error_code        Int?
+  created_at        DateTime?            @db.Timestamp(0)
+  updated_at        DateTime?            @db.Timestamp(0)
+  order_id          Int?                 @db.UnsignedInt
+  pedidos           pedidos?             @relation(fields: [order_id], references: [id], onDelete: Cascade)
+
+  @@index([order_id], map: "notification_v2_order_id_fkey")
+}
+
 model notifications {
   id                    Int                     @id @default(autoincrement()) @db.UnsignedInt
-  category_id           Int?                    @db.UnsignedInt
-  post_id               Int?                    @db.UnsignedInt
   title                 String                  @db.VarChar(255)
   message               String                  @db.VarChar(255)
   created_at            DateTime?               @db.Timestamp(0)
   updated_at            DateTime?               @db.Timestamp(0)
+  order_id              Int
+  type                  notifications_type
   devices_notifications devices_notifications[]
 }
 
+model order {
+  id              Int                  @id @default(autoincrement())
+  user_id         Int                  @db.UnsignedInt
+  lead_id         Int
+  campaign_id     Int?                 @db.UnsignedInt
+  lead_address_id Int
+  created_at      DateTime?            @db.Timestamp(0)
+  updated_at      DateTime?            @db.Timestamp(0)
+  coupon_id       Int?                 @db.UnsignedInt
+  discount        Float                @default(0)
+  discount_type   order_discount_type?
+  total           Float                @default(0)
+  campaigns       campaigns?           @relation(fields: [campaign_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "order_campaign")
+  lead            lead                 @relation(fields: [lead_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "order_lead")
+  lead_address    lead_address         @relation(fields: [lead_address_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "order_lead_address_id")
+  users           users                @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "order_user_id_foreign")
+  order_items     order_items[]
+
+  @@index([campaign_id], map: "order_campaign")
+  @@index([lead_id], map: "order_lead")
+  @@index([lead_address_id], map: "order_lead_address_id")
+  @@index([user_id], map: "order_user_id_foreign")
+}
+
+model order_items {
+  id           Int        @id @default(autoincrement())
+  indicacao_id Int        @db.UnsignedInt
+  order_id     Int
+  quantity     Int?
+  price        Decimal?   @db.Decimal(8, 2)
+  total        Decimal?   @db.Decimal(8, 2)
+  created_at   DateTime?  @db.Timestamp(0)
+  updated_at   DateTime?  @db.Timestamp(0)
+  indicacoes   indicacoes @relation(fields: [indicacao_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "order_items_indicacao_id_foreign")
+  order        order      @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "order_items_pedido_id_foreign")
+
+  @@index([indicacao_id], map: "order_items_indicacao_id_foreign")
+  @@index([order_id], map: "order_items_pedido_id_foreign")
+}
+
 model pedidos {
-  id                 Int                  @id @default(autoincrement()) @db.UnsignedInt
-  user_id            Int?                 @db.UnsignedInt
-  nome               String?              @db.VarChar(255)
-  email              String?              @db.VarChar(255)
-  telefone_celular   String?              @db.VarChar(255)
-  telefone_fixo      String?              @db.VarChar(255)
-  cep                String?              @db.VarChar(255)
-  estado             String?              @db.VarChar(255)
-  cidade             String?              @db.VarChar(255)
-  bairro             String?              @db.VarChar(255)
-  endereco           String?              @db.VarChar(255)
-  numero             String?              @db.VarChar(255)
-  complemento        String?              @db.VarChar(255)
-  obs_endereco       String?              @db.VarChar(255)
-  obs_gerais         String?              @db.VarChar(255)
-  status             Boolean              @default(true)
+  id                 Int                    @id @default(autoincrement()) @db.UnsignedInt
+  user_id            Int?                   @db.UnsignedInt
+  nome               String?                @db.VarChar(255)
+  email              String?                @db.VarChar(255)
+  telefone_celular   String?                @db.VarChar(255)
+  telefone_fixo      String?                @db.VarChar(255)
+  cep                String?                @db.VarChar(255)
+  estado             String?                @db.VarChar(255)
+  cidade             String?                @db.VarChar(255)
+  bairro             String?                @db.VarChar(255)
+  endereco           String?                @db.VarChar(255)
+  numero             String?                @db.VarChar(255)
+  complemento        String?                @db.VarChar(255)
+  obs_endereco       String?                @db.VarChar(255)
+  obs_gerais         String?                @db.VarChar(255)
+  status             Boolean                @default(true)
   uid                Int?
-  created_at         DateTime?            @db.Timestamp(0)
-  updated_at         DateTime?            @db.Timestamp(0)
-  coupon_id          Int?                 @db.UnsignedInt
-  coupon             Coupon?              @relation(fields: [coupon_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  users              users?               @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "pedidos_user_id_foreign")
+  created_at         DateTime?              @db.Timestamp(0)
+  updated_at         DateTime?              @db.Timestamp(0)
+  campaign_id        Int?                   @db.UnsignedInt
+  coupon_id          Int?                   @db.UnsignedInt
+  discount           Float                  @default(0)
+  discount_type      pedidos_discount_type?
+  total              Float                  @default(0)
+  coupon             coupon?                @relation(fields: [coupon_id], references: [id])
+  users              users?                 @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "pedidos_user_id_foreign")
+  notification_v2    notification_v2[]
   pedidos_indicacoes pedidos_indicacoes[]
 
+  @@index([coupon_id], map: "pedidos_coupon_id_fkey")
   @@index([user_id], map: "pedidos_user_id_foreign")
 }
 
@@ -731,6 +877,7 @@ model users {
   campaigns_campaigns_user_idTousers        campaigns[]        @relation("campaigns_user_idTousers")
   campaigns_campaigns_user_id_parentTousers campaigns[]        @relation("campaigns_user_id_parentTousers")
   categories_users                          categories_users[]
+  coupon                                    coupon[]
   history                                   history[]
   lead                                      lead[]
   order                                     order[]
@@ -738,7 +885,6 @@ model users {
   planos_users                              planos_users[]
   sorteios_users                            sorteios_users[]
   users_roles                               users_roles[]
-  coupons                                   Coupon[]
 }
 
 model users_roles {
@@ -800,111 +946,34 @@ model vinicolas {
   updated_at DateTime? @db.Timestamp(0)
 }
 
-model lead {
-  id                  Int            @id @default(autoincrement())
-  user_id             Int            @db.UnsignedInt
-  name                String?        @db.VarChar(80)
-  mail                String         @db.VarChar(255)
-  mobile_phone        String?        @db.VarChar(30)
-  phone               String?        @db.VarChar(60)
-  is_active           Int            @default(1) @db.TinyInt
-  created_at          DateTime?      @db.Timestamp(0)
-  updated_at          DateTime?      @db.Timestamp(0)
-  origin_registration Int            @default(1) @db.TinyInt
-  cpf_cnpj            String?        @db.VarChar(20)
-  type                String?        @db.VarChar(2)
-  note                String?        @db.VarChar(255)
-  users               users          @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "lead_user_id_foreign")
-  lead_address        lead_address[]
-  converted Boolean @default(true)
-  order               order[]
-
-  @@index([id], map: "id")
-  @@index([user_id], map: "lead_user_id_foreign")
+enum notification_v2_type {
+  EMAIL
+  SMS
+  PUSH
 }
 
-model lead_address {
-  id                 Int       @id @default(autoincrement())
-  lead_id            Int
-  address_name       String?   @db.VarChar(50)
-  address_zip_code   String?   @db.VarChar(10)
-  address_state      String?   @db.VarChar(30)
-  address_city       String?   @db.VarChar(100)
-  address_district   String?   @db.VarChar(150)
-  address_street     String?   @db.VarChar(300)
-  address_number     String?   @db.VarChar(9)
-  address_complement String?   @db.VarChar(300)
-  created_at         DateTime? @db.Timestamp(0)
-  updated_at         DateTime? @db.Timestamp(0)
-  lead               lead      @relation(fields: [lead_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "lead_address")
-  order              order[]
-
-  @@index([lead_id], map: "lead_address")
-}
-
-model order {
-  id              Int           @id @default(autoincrement())
-  user_id         Int           @db.UnsignedInt
-  lead_id         Int
-  campaign_id     Int?          @db.UnsignedInt
-  lead_address_id Int
-  created_at      DateTime?     @db.Timestamp(0)
-  updated_at      DateTime?     @db.Timestamp(0)
-  campaigns       campaigns?    @relation(fields: [campaign_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "order_campaign")
-  lead            lead          @relation(fields: [lead_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "order_lead")
-  lead_address    lead_address  @relation(fields: [lead_address_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "order_lead_address_id")
-  users           users         @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "order_user_id_foreign")
-  order_items     order_items[]
-
-  @@index([campaign_id], map: "order_campaign")
-  @@index([lead_id], map: "order_lead")
-  @@index([lead_address_id], map: "order_lead_address_id")
-  @@index([user_id], map: "order_user_id_foreign")
-}
-
-model order_items {
-  id           Int        @id @default(autoincrement())
-  indicacao_id Int        @db.UnsignedInt
-  order_id     Int
-  quantity     Int?
-  price        Decimal?   @db.Decimal(8, 2)
-  total        Decimal?   @db.Decimal(8, 2)
-  created_at   DateTime?  @db.Timestamp(0)
-  updated_at   DateTime?  @db.Timestamp(0)
-  indicacoes   indicacoes @relation(fields: [indicacao_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "order_items_indicacao_id_foreign")
-  order        order      @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "order_items_pedido_id_foreign")
-
-  @@index([indicacao_id], map: "order_items_indicacao_id_foreign")
-  @@index([order_id], map: "order_items_pedido_id_foreign")
-}
-
-model Coupon {
-  id              Int                @id @default(autoincrement()) @db.UnsignedInt
-  code            String             @unique
-  user_id         Int                @db.UnsignedInt
-  user            users              @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  discount_type   CouponDiscountType
-  discount_value  Float
-  couponUse_type  CouponUseType
-  initial_date    DateTime           @default(now()) @db.Timestamp(3)
-  expiration_date DateTime?
-  min_value       Float?
-  max_value       Float?
-  created_at      DateTime           @default(now()) @db.Timestamp(3)
-  updated_at      DateTime           @updatedAt @db.Timestamp(3)
-  orders          pedidos[]
-
-  @@index([code, user_id])
-  @@map("coupon")
-}
-
-enum CouponDiscountType {
+enum coupon_discount_type {
   PERCENTAGE
   VALUE
 }
 
-enum CouponUseType {
+enum coupon_couponUse_type {
   UNLIMITED
   UNIQUE_BY_USER
   UNIQUE
+}
+
+enum notifications_type {
+  SMS
+  EMAIL
+}
+
+enum order_discount_type {
+  PERCENTAGE
+  VALUE
+}
+
+enum pedidos_discount_type {
+  PERCENTAGE
+  VALUE
 }
