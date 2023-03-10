@@ -13,8 +13,8 @@ import {
 import {
   Account,
   GenderType,
-  Label,
   PersonType,
+  Item,
   PrismaClient as PrismaClientDbProd,
 } from '../database_api/orm/prisma/client'
 import { slugGenerator } from '../utils/slug_generator'
@@ -146,7 +146,7 @@ export class MigrateRepository {
       let page = 1
       const perPage = 50
       let itemsPaginated = 0
-      await this.prismaDbProd.labelType.deleteMany({})
+      await this.prismaDbProd.itemType.deleteMany({})
       do {
         itemsPaginated = 0
         const labelTypes = await this.prismaDbOlder.tipos_indicacoes.findMany({
@@ -154,7 +154,7 @@ export class MigrateRepository {
           skip: this.calculatePage(page, perPage),
         })
         for (const type of labelTypes) {
-          await this.prismaDbProd.labelType.create({
+          await this.prismaDbProd.itemType.create({
             data: {
               name: type.nome,
               external_id: type.id,
@@ -404,7 +404,7 @@ export class MigrateRepository {
     await this.prismaDbProd.account.deleteMany({})
     await this.prismaDbProd.user.deleteMany({})
     await this.prismaDbProd.accountUser.deleteMany({})
-    await this.prismaDbProd.label.deleteMany({})
+    await this.prismaDbProd.item.deleteMany({})
     await this.prismaDbProd.campaign.deleteMany({})
     await this.prismaDbProd.order.deleteMany({})
     do {
@@ -774,8 +774,9 @@ export class MigrateRepository {
               account_id: newAccount.id,
               expiration_date: campaign.type === 1 ? campaign.date_end : null,
               start_date: campaign.type === 1 ? campaign.date_start : null,
-              percentage_discount: Number(campaign.discount),
-              type_id: campaignType?.id!,
+              discount_type: 'PERCENTAGE',
+              discount_value: Number(campaign.discount),
+              campaign_type_id: campaignType?.id!,
             },
           })
         }
@@ -840,7 +841,7 @@ export class MigrateRepository {
             },
           })
           for (const orderLabel of order.pedidos_indicacoes) {
-            const label = await this.prismaDbProd.label.findUnique({
+            const label = await this.prismaDbProd.item.findUnique({
               where: {
                 external_id: orderLabel.id,
               },
@@ -848,10 +849,10 @@ export class MigrateRepository {
             if (!label) {
               continue
             }
-            await this.prismaDbProd.orderLabel.create({
+            await this.prismaDbProd.orderItem.create({
               data: {
                 order_id: orderCreated.id,
-                label_id: label.id,
+                item_id: label.id,
                 price: Number(orderLabel.valor),
                 quantity: orderLabel.qtd!,
               },
@@ -964,7 +965,7 @@ export class MigrateRepository {
             : null
           const labelType = await this.getLabelType(label.tipo_indicacao_id!)
           console.log(photoUrl)
-          const responseCreateLabels = await this.prismaDbProd.label.create({
+          const responseCreateLabels = await this.prismaDbProd.item.create({
             data: {
               name: label.nome || '',
               price: Number(label.preco),
@@ -999,10 +1000,10 @@ export class MigrateRepository {
             if (!campaign) {
               continue
             }
-            await this.prismaDbProd.labelCampaign.create({
+            await this.prismaDbProd.campaignItem.create({
               data: {
                 campaign_id: campaign.id,
-                label_id: responseCreateLabels.id,
+                item_id: responseCreateLabels.id,
               },
             })
           }
@@ -1021,7 +1022,7 @@ export class MigrateRepository {
       campaigns_indicacoes: campaigns_indicacoes[]
       indicacoes_uvas: indicacoes_uvas[]
     },
-    newLabel: Label
+    newLabel: Item
   ) {
     for (const grape of label.indicacoes_uvas) {
       const grapeLabel = await this.prismaDbProd.grape.findUnique({
@@ -1029,9 +1030,9 @@ export class MigrateRepository {
           external_id: grape.uva_id!,
         },
       })
-      await this.prismaDbProd.labelGrape.create({
+      await this.prismaDbProd.itemGrape.create({
         data: {
-          label_id: newLabel.id,
+          item_id: newLabel.id,
           grape_id: grapeLabel?.id || '',
         },
       })
@@ -1043,23 +1044,24 @@ export class MigrateRepository {
       campaigns_indicacoes: campaigns_indicacoes[]
       indicacoes_uvas: indicacoes_uvas[]
     },
-    newLabel: Label,
+    newLabel: Item,
     newAccount: Account
   ) {
     if (label.estoque && label.estoque > 0) {
-      await this.prismaDbProd.stockLabel.create({
+      await this.prismaDbProd.stockItem.create({
         data: {
-          label_id: newLabel.id,
+          item_id: newLabel.id,
           account_id: newAccount.id,
           quantity: label.estoque,
         },
       })
       await this.prismaDbProd.stockHistory.create({
         data: {
-          label_id: newLabel.id,
+          item_id: newLabel.id,
           date: new Date(),
           quantity: label.estoque,
           reason: 'insert',
+          operation: 'INPUT',
         },
       })
     }
@@ -1082,7 +1084,7 @@ export class MigrateRepository {
   }
 
   async getLabelType(labelType: number) {
-    return await this.prismaDbProd.labelType.findUnique({
+    return await this.prismaDbProd.itemType.findUnique({
       where: {
         external_id: labelType,
       },

@@ -179,10 +179,11 @@ CREATE TABLE `campaign` (
     `external_id` INTEGER NULL,
     `name` VARCHAR(191) NOT NULL,
     `description` VARCHAR(255) NULL,
-    `percentage_discount` DOUBLE NULL,
+    `discount_value` DOUBLE NULL,
+    `discount_type` ENUM('PERCENTAGE', 'VALUE') NULL,
     `start_date` DATETIME(3) NULL,
     `expiration_date` DATETIME(3) NULL,
-    `type_id` VARCHAR(191) NOT NULL,
+    `campaign_type_id` VARCHAR(191) NOT NULL,
     `account_id` VARCHAR(191) NOT NULL,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
@@ -221,7 +222,7 @@ CREATE TABLE `coupon` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `label` (
+CREATE TABLE `item` (
     `id` VARCHAR(191) NOT NULL,
     `external_id` INTEGER NULL,
     `name` VARCHAR(191) NOT NULL,
@@ -243,28 +244,66 @@ CREATE TABLE `label` (
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
 
-    UNIQUE INDEX `label_external_id_key`(`external_id`),
+    UNIQUE INDEX `item_external_id_key`(`external_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `label_campaign` (
-    `label_id` VARCHAR(191) NOT NULL,
+CREATE TABLE `item_type` (
+    `id` VARCHAR(191) NOT NULL,
+    `external_id` INTEGER NULL,
+    `name` VARCHAR(191) NOT NULL,
+    `description` VARCHAR(191) NULL,
+    `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` TIMESTAMP(3) NOT NULL,
+
+    UNIQUE INDEX `item_type_external_id_key`(`external_id`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `tags` (
+    `id` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(191) NOT NULL,
+    `description` VARCHAR(191) NULL,
+    `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` TIMESTAMP(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `item_tags` (
+    `item_id` VARCHAR(191) NOT NULL,
+    `tag_id` VARCHAR(191) NOT NULL,
+    `slug` VARCHAR(191) NOT NULL,
+    `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` TIMESTAMP(3) NOT NULL,
+
+    UNIQUE INDEX `item_tags_slug_key`(`slug`),
+    INDEX `item_tags_item_id_tag_id_idx`(`item_id`, `tag_id`),
+    PRIMARY KEY (`item_id`, `tag_id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `campaign_items` (
+    `item_id` VARCHAR(191) NOT NULL,
     `campaign_id` VARCHAR(191) NOT NULL,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
 
-    PRIMARY KEY (`label_id`, `campaign_id`)
+    INDEX `campaign_items_item_id_campaign_id_idx`(`item_id`, `campaign_id`),
+    PRIMARY KEY (`item_id`, `campaign_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `label_grape` (
-    `label_id` VARCHAR(191) NOT NULL,
+CREATE TABLE `item_grape` (
+    `item_id` VARCHAR(191) NOT NULL,
     `grape_id` VARCHAR(191) NOT NULL,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
 
-    PRIMARY KEY (`label_id`, `grape_id`)
+    PRIMARY KEY (`item_id`, `grape_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
@@ -276,18 +315,6 @@ CREATE TABLE `grape` (
     `updatedAt` TIMESTAMP(3) NOT NULL,
 
     UNIQUE INDEX `grape_external_id_key`(`external_id`),
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
-CREATE TABLE `label_type` (
-    `id` VARCHAR(191) NOT NULL,
-    `external_id` INTEGER NULL,
-    `name` VARCHAR(191) NOT NULL,
-    `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updated_at` TIMESTAMP(3) NOT NULL,
-
-    UNIQUE INDEX `label_type_external_id_key`(`external_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -428,15 +455,15 @@ CREATE TABLE `customers` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `order_label` (
+CREATE TABLE `order_item` (
     `order_id` VARCHAR(191) NOT NULL,
-    `label_id` VARCHAR(191) NOT NULL,
+    `item_id` VARCHAR(191) NOT NULL,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
     `price` DOUBLE NOT NULL,
     `quantity` INTEGER NOT NULL,
 
-    PRIMARY KEY (`order_id`, `label_id`)
+    PRIMARY KEY (`order_id`, `item_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
@@ -594,21 +621,22 @@ CREATE TABLE `subscription` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `stock_labels` (
-    `label_id` VARCHAR(191) NOT NULL,
+CREATE TABLE `stock_items` (
+    `item_id` VARCHAR(191) NOT NULL,
     `account_id` VARCHAR(191) NOT NULL,
     `quantity` INTEGER NOT NULL,
     `min_quantity` INTEGER NOT NULL DEFAULT 5,
     `max_quantity` INTEGER NOT NULL DEFAULT 100,
 
-    PRIMARY KEY (`label_id`, `account_id`)
+    PRIMARY KEY (`item_id`, `account_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `stock_history` (
     `id` VARCHAR(191) NOT NULL,
-    `label_id` VARCHAR(191) NOT NULL,
-    `reason` VARCHAR(191) NOT NULL,
+    `item_id` VARCHAR(191) NOT NULL,
+    `reason` VARCHAR(191) NULL,
+    `operation` ENUM('INPUT', 'OUTPUT') NOT NULL,
     `quantity` INTEGER NOT NULL,
     `date` DATETIME(3) NOT NULL,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -666,7 +694,7 @@ ALTER TABLE `role_permissions` ADD CONSTRAINT `role_permissions_role_id_fkey` FO
 ALTER TABLE `role_permissions` ADD CONSTRAINT `role_permissions_permission_id_fkey` FOREIGN KEY (`permission_id`) REFERENCES `permissions`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `campaign` ADD CONSTRAINT `campaign_type_id_fkey` FOREIGN KEY (`type_id`) REFERENCES `campaign_type`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `campaign` ADD CONSTRAINT `campaign_campaign_type_id_fkey` FOREIGN KEY (`campaign_type_id`) REFERENCES `campaign_type`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `campaign` ADD CONSTRAINT `campaign_account_id_fkey` FOREIGN KEY (`account_id`) REFERENCES `account`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -675,34 +703,40 @@ ALTER TABLE `campaign` ADD CONSTRAINT `campaign_account_id_fkey` FOREIGN KEY (`a
 ALTER TABLE `coupon` ADD CONSTRAINT `coupon_account_id_fkey` FOREIGN KEY (`account_id`) REFERENCES `account`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `label` ADD CONSTRAINT `label_type_id_fkey` FOREIGN KEY (`type_id`) REFERENCES `label_type`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `item` ADD CONSTRAINT `item_type_id_fkey` FOREIGN KEY (`type_id`) REFERENCES `item_type`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `label` ADD CONSTRAINT `label_country_id_fkey` FOREIGN KEY (`country_id`) REFERENCES `country`(`id`) ON DELETE CASCADE ON UPDATE SET NULL;
+ALTER TABLE `item` ADD CONSTRAINT `item_country_id_fkey` FOREIGN KEY (`country_id`) REFERENCES `country`(`id`) ON DELETE CASCADE ON UPDATE SET NULL;
 
 -- AddForeignKey
-ALTER TABLE `label` ADD CONSTRAINT `label_region_id_fkey` FOREIGN KEY (`region_id`) REFERENCES `region`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `item` ADD CONSTRAINT `item_region_id_fkey` FOREIGN KEY (`region_id`) REFERENCES `region`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `label` ADD CONSTRAINT `label_winery_id_fkey` FOREIGN KEY (`winery_id`) REFERENCES `winery`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `item` ADD CONSTRAINT `item_winery_id_fkey` FOREIGN KEY (`winery_id`) REFERENCES `winery`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `label` ADD CONSTRAINT `label_wine_type_id_fkey` FOREIGN KEY (`wine_type_id`) REFERENCES `wine_type`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `item` ADD CONSTRAINT `item_wine_type_id_fkey` FOREIGN KEY (`wine_type_id`) REFERENCES `wine_type`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `label` ADD CONSTRAINT `label_account_id_fkey` FOREIGN KEY (`account_id`) REFERENCES `account`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `item` ADD CONSTRAINT `item_account_id_fkey` FOREIGN KEY (`account_id`) REFERENCES `account`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `label_campaign` ADD CONSTRAINT `label_campaign_label_id_fkey` FOREIGN KEY (`label_id`) REFERENCES `label`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `item_tags` ADD CONSTRAINT `item_tags_item_id_fkey` FOREIGN KEY (`item_id`) REFERENCES `item`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `label_campaign` ADD CONSTRAINT `label_campaign_campaign_id_fkey` FOREIGN KEY (`campaign_id`) REFERENCES `campaign`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `item_tags` ADD CONSTRAINT `item_tags_tag_id_fkey` FOREIGN KEY (`tag_id`) REFERENCES `tags`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `label_grape` ADD CONSTRAINT `label_grape_label_id_fkey` FOREIGN KEY (`label_id`) REFERENCES `label`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `campaign_items` ADD CONSTRAINT `campaign_items_item_id_fkey` FOREIGN KEY (`item_id`) REFERENCES `item`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `label_grape` ADD CONSTRAINT `label_grape_grape_id_fkey` FOREIGN KEY (`grape_id`) REFERENCES `grape`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `campaign_items` ADD CONSTRAINT `campaign_items_campaign_id_fkey` FOREIGN KEY (`campaign_id`) REFERENCES `campaign`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `item_grape` ADD CONSTRAINT `item_grape_item_id_fkey` FOREIGN KEY (`item_id`) REFERENCES `item`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `item_grape` ADD CONSTRAINT `item_grape_grape_id_fkey` FOREIGN KEY (`grape_id`) REFERENCES `grape`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `state` ADD CONSTRAINT `state_country_id_fkey` FOREIGN KEY (`country_id`) REFERENCES `country`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -738,10 +772,10 @@ ALTER TABLE `order` ADD CONSTRAINT `order_campaign_id_fkey` FOREIGN KEY (`campai
 ALTER TABLE `customers` ADD CONSTRAINT `customers_account_id_fkey` FOREIGN KEY (`account_id`) REFERENCES `account`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `order_label` ADD CONSTRAINT `order_label_order_id_fkey` FOREIGN KEY (`order_id`) REFERENCES `order`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `order_item` ADD CONSTRAINT `order_item_order_id_fkey` FOREIGN KEY (`order_id`) REFERENCES `order`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `order_label` ADD CONSTRAINT `order_label_label_id_fkey` FOREIGN KEY (`label_id`) REFERENCES `label`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `order_item` ADD CONSTRAINT `order_item_item_id_fkey` FOREIGN KEY (`item_id`) REFERENCES `item`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `invoice` ADD CONSTRAINT `invoice_order_id_fkey` FOREIGN KEY (`order_id`) REFERENCES `order`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -786,10 +820,10 @@ ALTER TABLE `subscription` ADD CONSTRAINT `subscription_plan_id_fkey` FOREIGN KE
 ALTER TABLE `subscription` ADD CONSTRAINT `subscription_account_id_fkey` FOREIGN KEY (`account_id`) REFERENCES `account`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `stock_labels` ADD CONSTRAINT `stock_labels_label_id_fkey` FOREIGN KEY (`label_id`) REFERENCES `label`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `stock_items` ADD CONSTRAINT `stock_items_item_id_fkey` FOREIGN KEY (`item_id`) REFERENCES `item`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `stock_labels` ADD CONSTRAINT `stock_labels_account_id_fkey` FOREIGN KEY (`account_id`) REFERENCES `account`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `stock_items` ADD CONSTRAINT `stock_items_account_id_fkey` FOREIGN KEY (`account_id`) REFERENCES `account`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `stock_history` ADD CONSTRAINT `stock_history_label_id_fkey` FOREIGN KEY (`label_id`) REFERENCES `label`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `stock_history` ADD CONSTRAINT `stock_history_item_id_fkey` FOREIGN KEY (`item_id`) REFERENCES `item`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

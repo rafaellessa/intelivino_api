@@ -48,8 +48,8 @@ model Account {
   account_users         AccountUser[]
   invoices              Invoice[]
   domain                String                @unique
-  stock_label           StockLabel[]
-  labels                Label[]
+  stock_items           StockItem[]
+  items                 Item[]
   coupons               Coupon[]
   account_configuration AccountConfiguration?
   customers             Customer[]
@@ -218,22 +218,23 @@ enum GenderType {
 }
 
 model Campaign {
-  id                  String       @id @default(uuid())
-  external_id         Int?         @unique
-  name                String
-  description         String?      @db.VarChar(255)
-  percentage_discount Float?
-  start_date          DateTime?
-  expiration_date     DateTime?
-  type_id             String
-  campaign_type       CampaignType @relation(fields: [type_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  account             Account      @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  account_id          String
-  created_at          DateTime     @default(now()) @db.Timestamp(3)
-  updated_at          DateTime     @updatedAt @db.Timestamp(3)
-  orders              Order[]
+  id               String                @id @default(uuid())
+  external_id      Int?                  @unique
+  name             String
+  description      String?               @db.VarChar(255)
+  discount_value   Float?
+  discount_type    CampaignTypeDiscount?
+  start_date       DateTime?
+  expiration_date  DateTime?
+  campaign_type_id String
+  campaign_type    CampaignType          @relation(fields: [campaign_type_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  account          Account               @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  account_id       String
+  created_at       DateTime              @default(now()) @db.Timestamp(3)
+  updated_at       DateTime              @updatedAt @db.Timestamp(3)
+  orders           Order[]
 
-  label_campaign LabelCampaign[]
+  campaign_items CampaignItem[]
 
   @@map("campaign")
 }
@@ -278,13 +279,13 @@ enum CouponUseType {
   UNIQUE
 }
 
-model Label {
+model Item {
   id                 String    @id @default(uuid())
   external_id        Int?      @unique
   name               String
   description        String?   @db.Text
   type_id            String
-  label_type         LabelType @relation(fields: [type_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  item_type          ItemType  @relation(fields: [type_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   country_id         String?
   country            Country?  @relation(fields: [country_id], references: [id], onUpdate: SetNull, onDelete: Cascade)
   region_id          String?
@@ -306,59 +307,92 @@ model Label {
   created_at         DateTime  @default(now()) @db.Timestamp(3)
   updated_at         DateTime  @updatedAt @db.Timestamp(3)
 
-  label_grape    LabelGrape[]
-  order_label    OrderLabel[]
-  label_campaign LabelCampaign[]
-  stock_label    StockLabel[]
+  item_grape     ItemGrape[]
+  order_items    OrderItem[]
+  campaign_items CampaignItem[]
+  stock_items    StockItem[]
   stock_history  StockHistory[]
+  ItemTag        ItemTag[]
 
-  @@map("label")
+  @@map("item")
 }
 
-model LabelCampaign {
-  label_id    String
-  label       Label    @relation(fields: [label_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+model ItemType {
+  id          String   @id @default(uuid())
+  external_id Int?     @unique
+  name        String
+  description String?
+  created_at  DateTime @default(now()) @db.Timestamp(3)
+  updated_at  DateTime @updatedAt @db.Timestamp(3)
+  items       Item[]
+
+  @@map("item_type")
+}
+
+model Tag {
+  id          String    @id @default(uuid())
+  name        String
+  description String?
+  created_at  DateTime  @default(now()) @db.Timestamp(3)
+  updated_at  DateTime  @updatedAt @db.Timestamp(3)
+  ItemTag     ItemTag[]
+
+  @@map("tags")
+}
+
+model ItemTag {
+  item_id    String
+  item       Item     @relation(fields: [item_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  tag_id     String
+  tag        Tag      @relation(fields: [tag_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  slug       String   @unique
+  created_at DateTime @default(now()) @db.Timestamp(3)
+  updated_at DateTime @updatedAt @db.Timestamp(3)
+
+  @@id([item_id, tag_id])
+  @@index([item_id, tag_id])
+  @@map("item_tags")
+}
+
+model CampaignItem {
+  item_id     String
+  item        Item     @relation(fields: [item_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   campaign_id String
   campaign    Campaign @relation(fields: [campaign_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   created_at  DateTime @default(now()) @db.Timestamp(3)
   updated_at  DateTime @updatedAt @db.Timestamp(3)
 
-  @@id([label_id, campaign_id])
-  @@map("label_campaign")
+  @@id([item_id, campaign_id])
+  @@index([item_id, campaign_id])
+  @@map("campaign_items")
 }
 
-model LabelGrape {
-  label_id   String
-  label      Label    @relation(fields: [label_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+enum CampaignTypeDiscount {
+  PERCENTAGE
+  VALUE
+}
+
+model ItemGrape {
+  item_id    String
+  item       Item     @relation(fields: [item_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   grape_id   String
   grape      Grape    @relation(fields: [grape_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   created_at DateTime @default(now()) @db.Timestamp(3)
   updated_at DateTime @updatedAt @db.Timestamp(3)
 
-  @@id([label_id, grape_id])
-  @@map("label_grape")
+  @@id([item_id, grape_id])
+  @@map("item_grape")
 }
 
 model Grape {
-  id          String       @id @default(uuid())
-  external_id Int?         @unique
+  id          String      @id @default(uuid())
+  external_id Int?        @unique
   name        String
-  LabelGrape  LabelGrape[]
-  created_at  DateTime     @default(now()) @db.Timestamp(3)
-  updatedAt   DateTime     @updatedAt @db.Timestamp(3)
+  item_grape  ItemGrape[]
+  created_at  DateTime    @default(now()) @db.Timestamp(3)
+  updatedAt   DateTime    @updatedAt @db.Timestamp(3)
 
   @@map("grape")
-}
-
-model LabelType {
-  id          String   @id @default(uuid())
-  external_id Int?     @unique
-  name        String
-  labels      Label[]
-  created_at  DateTime @default(now()) @db.Timestamp(3)
-  updated_at  DateTime @updatedAt @db.Timestamp(3)
-
-  @@map("label_type")
 }
 
 model Country {
@@ -368,7 +402,7 @@ model Country {
   slug        String
   value       String
   states      State[]
-  labels      Label[]
+  items       Item[]
   created_at  DateTime @default(now()) @db.Timestamp(3)
   updated_at  DateTime @updatedAt @db.Timestamp(3)
 
@@ -411,7 +445,7 @@ model Region {
   name        String
   slug        String
   subregion   SubRegion[]
-  labels      Label[]
+  items       Item[]
   created_at  DateTime    @default(now()) @db.Timestamp(3)
   updated_at  DateTime    @updatedAt @db.Timestamp(3)
 
@@ -436,7 +470,7 @@ model WineType {
   external_id Int?     @unique
   name        String
   slug        String
-  labels      Label[]
+  items       Item[]
   created_at  DateTime @default(now()) @db.Timestamp(3)
   updated_at  DateTime @updatedAt @db.Timestamp(3)
 
@@ -464,7 +498,7 @@ model Order {
   created_at      DateTime    @default(now()) @db.Timestamp(3)
   updated_at      DateTime    @updatedAt @db.Timestamp(3)
 
-  order_label OrderLabel[]
+  order_items OrderItem[]
   invoice     Invoice[]
 
   @@map("order")
@@ -505,18 +539,18 @@ enum CustomerOriginRegistration {
   MAIN_CATALOG
 }
 
-model OrderLabel {
+model OrderItem {
   order_id   String
   order      Order    @relation(fields: [order_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  label_id   String
-  label      Label    @relation(fields: [label_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  item_id    String
+  item       Item     @relation(fields: [item_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   created_at DateTime @default(now()) @db.Timestamp(3)
   updated_at DateTime @updatedAt @db.Timestamp(3)
   price      Float
   quantity   Int
 
-  @@id([order_id, label_id])
-  @@map("order_label")
+  @@id([order_id, item_id])
+  @@map("order_item")
 }
 
 model Invoice {
@@ -705,30 +739,36 @@ model Subscription {
   @@map("subscription")
 }
 
-model StockLabel {
-  label_id     String
-  labels       Label   @relation(fields: [label_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+model StockItem {
+  item_id      String
+  item         Item    @relation(fields: [item_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   account_id   String
   account      Account @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   quantity     Int
   min_quantity Int     @default(5)
   max_quantity Int     @default(100)
 
-  @@id([label_id, account_id])
-  @@map("stock_labels")
+  @@id([item_id, account_id])
+  @@map("stock_items")
 }
 
 model StockHistory {
-  id         String   @id @default(uuid())
-  label_id   String
-  labels     Label    @relation(fields: [label_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  reason     String
+  id         String           @id @default(uuid())
+  item_id    String
+  item       Item             @relation(fields: [item_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  reason     String?
+  operation  StockHistoryType
   quantity   Int
   date       DateTime
-  created_at DateTime @default(now()) @db.Timestamp(3)
-  updated_at DateTime @updatedAt @db.Timestamp(3)
+  created_at DateTime         @default(now()) @db.Timestamp(3)
+  updated_at DateTime         @updatedAt @db.Timestamp(3)
 
   @@map("stock_history")
+}
+
+enum StockHistoryType {
+  INPUT
+  OUTPUT
 }
 
 model Winery {
@@ -738,7 +778,7 @@ model Winery {
   created_at  DateTime @default(now()) @db.Timestamp(3)
   updated_at  DateTime @updatedAt @db.Timestamp(3)
 
-  labels Label[]
+  items Item[]
 
   @@map("winery")
 }
