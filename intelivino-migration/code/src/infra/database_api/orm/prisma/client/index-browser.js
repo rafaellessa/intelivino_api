@@ -208,6 +208,7 @@ exports.Prisma.CountryScalarFieldEnum = makeEnum({
 exports.Prisma.CouponScalarFieldEnum = makeEnum({
   id: 'id',
   code: 'code',
+  external_id: 'external_id',
   account_id: 'account_id',
   dicount_type: 'dicount_type',
   discount_value: 'discount_value',
@@ -220,9 +221,25 @@ exports.Prisma.CouponScalarFieldEnum = makeEnum({
   updated_at: 'updated_at'
 });
 
+exports.Prisma.CustomerAddressScalarFieldEnum = makeEnum({
+  id: 'id',
+  costumer_id: 'costumer_id',
+  address_name: 'address_name',
+  address_zip_code: 'address_zip_code',
+  address_state: 'address_state',
+  address_city: 'address_city',
+  address_district: 'address_district',
+  address_street: 'address_street',
+  address_number: 'address_number',
+  address_complement: 'address_complement',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+});
+
 exports.Prisma.CustomerScalarFieldEnum = makeEnum({
   id: 'id',
   account_id: 'account_id',
+  name: 'name',
   email: 'email',
   mobile_phone: 'mobile_phone',
   phone: 'phone',
@@ -232,7 +249,8 @@ exports.Prisma.CustomerScalarFieldEnum = makeEnum({
   origin_registration: 'origin_registration',
   cpf_cnpj: 'cpf_cnpj',
   note: 'note',
-  converted: 'converted'
+  converted: 'converted',
+  user_id: 'user_id'
 });
 
 exports.Prisma.DeliveryScalarFieldEnum = makeEnum({
@@ -338,7 +356,6 @@ exports.Prisma.ItemScalarFieldEnum = makeEnum({
 exports.Prisma.ItemTagScalarFieldEnum = makeEnum({
   item_id: 'item_id',
   tag_id: 'tag_id',
-  slug: 'slug',
   created_at: 'created_at',
   updated_at: 'updated_at'
 });
@@ -375,15 +392,18 @@ exports.Prisma.OrderScalarFieldEnum = makeEnum({
   external_id: 'external_id',
   code: 'code',
   account_id: 'account_id',
-  total: 'total',
   coupon_id: 'coupon_id',
-  user_id: 'user_id',
-  user_address_id: 'user_address_id',
+  customer_id: 'customer_id',
+  customer_address_id: 'customer_address_id',
   is_read: 'is_read',
   order_status_id: 'order_status_id',
   campaign_id: 'campaign_id',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
+  userId: 'userId',
+  total: 'total',
+  discount: 'discount',
+  discoun_type: 'discoun_type'
 });
 
 exports.Prisma.OrderStatusScalarFieldEnum = makeEnum({
@@ -521,6 +541,7 @@ exports.Prisma.SubscriptionScalarFieldEnum = makeEnum({
 exports.Prisma.TagScalarFieldEnum = makeEnum({
   id: 'id',
   name: 'name',
+  external_id: 'external_id',
   description: 'description',
   created_at: 'created_at',
   updated_at: 'updated_at'
@@ -604,8 +625,8 @@ exports.CouponUseType = makeEnum({
 
 exports.CustomerOriginRegistration = makeEnum({
   SINGLE_REGISTRATION: 'SINGLE_REGISTRATION',
-  CAMPAIGN: 'CAMPAIGN',
-  MAIN_CATALOG: 'MAIN_CATALOG'
+  CAMPAIGN_LEAD: 'CAMPAIGN_LEAD',
+  ORDER: 'ORDER'
 });
 
 exports.EmailTypeNotification = makeEnum({
@@ -617,6 +638,11 @@ exports.GenderType = makeEnum({
   F: 'F',
   M: 'M',
   ND: 'ND'
+});
+
+exports.OrderDiscountType = makeEnum({
+  PERCENTAGE: 'PERCENTAGE',
+  VALUE: 'VALUE'
 });
 
 exports.PersonType = makeEnum({
@@ -672,6 +698,7 @@ exports.Prisma.ModelName = makeEnum({
   Order: 'Order',
   OrderStatus: 'OrderStatus',
   Customer: 'Customer',
+  CustomerAddress: 'CustomerAddress',
   OrderItem: 'OrderItem',
   Invoice: 'Invoice',
   Device: 'Device',

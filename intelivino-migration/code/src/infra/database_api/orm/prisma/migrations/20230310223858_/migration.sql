@@ -36,13 +36,13 @@ CREATE TABLE `account` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `AccountConfiguration` (
+CREATE TABLE `account_configuration` (
     `id` VARCHAR(191) NOT NULL,
     `account_id` VARCHAR(191) NOT NULL,
     `banner_market_url` VARCHAR(191) NULL,
     `header_color` VARCHAR(191) NULL,
 
-    UNIQUE INDEX `AccountConfiguration_account_id_key`(`account_id`),
+    UNIQUE INDEX `account_configuration_account_id_key`(`account_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -207,6 +207,7 @@ CREATE TABLE `campaign_type` (
 CREATE TABLE `coupon` (
     `id` VARCHAR(191) NOT NULL,
     `code` VARCHAR(191) NOT NULL,
+    `external_id` INTEGER NULL,
     `account_id` VARCHAR(191) NOT NULL,
     `dicount_type` ENUM('PERCENTAGE', 'VALUE') NOT NULL,
     `discount_value` DOUBLE NOT NULL,
@@ -218,6 +219,7 @@ CREATE TABLE `coupon` (
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
 
+    UNIQUE INDEX `coupon_external_id_key`(`external_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -265,10 +267,12 @@ CREATE TABLE `item_type` (
 CREATE TABLE `tags` (
     `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
+    `external_id` INTEGER NULL,
     `description` VARCHAR(191) NULL,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
 
+    UNIQUE INDEX `tags_external_id_key`(`external_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -276,12 +280,9 @@ CREATE TABLE `tags` (
 CREATE TABLE `item_tags` (
     `item_id` VARCHAR(191) NOT NULL,
     `tag_id` VARCHAR(191) NOT NULL,
-    `slug` VARCHAR(191) NOT NULL,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
 
-    UNIQUE INDEX `item_tags_slug_key`(`slug`),
-    INDEX `item_tags_item_id_tag_id_idx`(`item_id`, `tag_id`),
     PRIMARY KEY (`item_id`, `tag_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -409,15 +410,18 @@ CREATE TABLE `order` (
     `external_id` INTEGER NULL,
     `code` VARCHAR(191) NOT NULL,
     `account_id` VARCHAR(191) NOT NULL,
-    `total` DOUBLE NOT NULL,
     `coupon_id` VARCHAR(191) NULL,
-    `user_id` VARCHAR(191) NOT NULL,
-    `user_address_id` VARCHAR(191) NOT NULL,
+    `customer_id` VARCHAR(191) NOT NULL,
+    `customer_address_id` VARCHAR(191) NOT NULL,
     `is_read` BOOLEAN NOT NULL DEFAULT false,
     `order_status_id` VARCHAR(191) NOT NULL,
     `campaign_id` VARCHAR(191) NULL,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
+    `userId` VARCHAR(191) NULL,
+    `total` DOUBLE NOT NULL DEFAULT 0,
+    `discount` DOUBLE NOT NULL DEFAULT 0,
+    `discoun_type` ENUM('PERCENTAGE', 'VALUE') NULL,
 
     UNIQUE INDEX `order_external_id_key`(`external_id`),
     UNIQUE INDEX `order_code_key`(`code`),
@@ -440,16 +444,37 @@ CREATE TABLE `order_status` (
 CREATE TABLE `customers` (
     `id` VARCHAR(191) NOT NULL,
     `account_id` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(80) NULL,
     `email` VARCHAR(191) NOT NULL,
     `mobile_phone` VARCHAR(191) NOT NULL,
-    `phone` VARCHAR(191) NOT NULL,
+    `phone` VARCHAR(191) NULL,
     `is_active` BOOLEAN NOT NULL DEFAULT true,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
-    `origin_registration` ENUM('SINGLE_REGISTRATION', 'CAMPAIGN', 'MAIN_CATALOG') NOT NULL,
-    `cpf_cnpj` VARCHAR(191) NOT NULL,
+    `origin_registration` ENUM('SINGLE_REGISTRATION', 'CAMPAIGN_LEAD', 'ORDER') NOT NULL,
+    `cpf_cnpj` VARCHAR(20) NULL,
     `note` TEXT NOT NULL,
     `converted` BOOLEAN NOT NULL DEFAULT true,
+    `user_id` VARCHAR(191) NULL,
+
+    UNIQUE INDEX `customers_email_account_id_mobile_phone_key`(`email`, `account_id`, `mobile_phone`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `customer_address` (
+    `id` VARCHAR(191) NOT NULL,
+    `costumer_id` VARCHAR(191) NOT NULL,
+    `address_name` VARCHAR(50) NULL,
+    `address_zip_code` VARCHAR(10) NULL,
+    `address_state` VARCHAR(30) NULL,
+    `address_city` VARCHAR(100) NULL,
+    `address_district` VARCHAR(150) NULL,
+    `address_street` VARCHAR(300) NULL,
+    `address_number` VARCHAR(20) NULL,
+    `address_complement` VARCHAR(300) NULL,
+    `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` TIMESTAMP(3) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -661,7 +686,7 @@ CREATE TABLE `winery` (
 ALTER TABLE `account` ADD CONSTRAINT `account_plan_id_fkey` FOREIGN KEY (`plan_id`) REFERENCES `plan`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `AccountConfiguration` ADD CONSTRAINT `AccountConfiguration_account_id_fkey` FOREIGN KEY (`account_id`) REFERENCES `account`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `account_configuration` ADD CONSTRAINT `account_configuration_account_id_fkey` FOREIGN KEY (`account_id`) REFERENCES `account`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `account_activities` ADD CONSTRAINT `account_activities_account_id_fkey` FOREIGN KEY (`account_id`) REFERENCES `account`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -757,10 +782,10 @@ ALTER TABLE `order` ADD CONSTRAINT `order_account_id_fkey` FOREIGN KEY (`account
 ALTER TABLE `order` ADD CONSTRAINT `order_coupon_id_fkey` FOREIGN KEY (`coupon_id`) REFERENCES `coupon`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `order` ADD CONSTRAINT `order_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `order` ADD CONSTRAINT `order_customer_id_fkey` FOREIGN KEY (`customer_id`) REFERENCES `customers`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `order` ADD CONSTRAINT `order_user_address_id_fkey` FOREIGN KEY (`user_address_id`) REFERENCES `user_addresses`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `order` ADD CONSTRAINT `order_customer_address_id_fkey` FOREIGN KEY (`customer_address_id`) REFERENCES `customer_address`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `order` ADD CONSTRAINT `order_order_status_id_fkey` FOREIGN KEY (`order_status_id`) REFERENCES `order_status`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -769,7 +794,16 @@ ALTER TABLE `order` ADD CONSTRAINT `order_order_status_id_fkey` FOREIGN KEY (`or
 ALTER TABLE `order` ADD CONSTRAINT `order_campaign_id_fkey` FOREIGN KEY (`campaign_id`) REFERENCES `campaign`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE `order` ADD CONSTRAINT `order_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `customers` ADD CONSTRAINT `customers_account_id_fkey` FOREIGN KEY (`account_id`) REFERENCES `account`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `customers` ADD CONSTRAINT `customers_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `customer_address` ADD CONSTRAINT `customer_address_costumer_id_fkey` FOREIGN KEY (`costumer_id`) REFERENCES `customers`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `order_item` ADD CONSTRAINT `order_item_order_id_fkey` FOREIGN KEY (`order_id`) REFERENCES `order`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

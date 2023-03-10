@@ -64,6 +64,8 @@ model AccountConfiguration {
   account           Account @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   banner_market_url String?
   header_color      String?
+
+  @@map("account_configuration")
 }
 
 model AccountActivities {
@@ -137,6 +139,7 @@ model User {
   account_user    AccountUser[]
   orders          Order[]
   user_addresses  UserAddress[]
+  customer        Customer[]
 
   @@map("users")
 }
@@ -154,7 +157,6 @@ model UserAddress {
   additional_information String?
   city                   String
   zip_code               String
-  orders                 Order[]
   created_at             DateTime @default(now()) @db.Timestamp(3)
   updated_at             DateTime @updatedAt @db.Timestamp(3)
 
@@ -252,6 +254,7 @@ model CampaignType {
 model Coupon {
   id              String             @id @default(uuid())
   code            String
+  external_id     Int?               @unique
   account_id      String
   account         Account            @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   dicount_type    CouponDiscountType
@@ -312,7 +315,7 @@ model Item {
   campaign_items CampaignItem[]
   stock_items    StockItem[]
   stock_history  StockHistory[]
-  ItemTag        ItemTag[]
+  item_tag        ItemTag[]
 
   @@map("item")
 }
@@ -332,6 +335,7 @@ model ItemType {
 model Tag {
   id          String    @id @default(uuid())
   name        String
+  external_id Int?     @unique
   description String?
   created_at  DateTime  @default(now()) @db.Timestamp(3)
   updated_at  DateTime  @updatedAt @db.Timestamp(3)
@@ -345,12 +349,10 @@ model ItemTag {
   item       Item     @relation(fields: [item_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   tag_id     String
   tag        Tag      @relation(fields: [tag_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  slug       String   @unique
   created_at DateTime @default(now()) @db.Timestamp(3)
   updated_at DateTime @updatedAt @db.Timestamp(3)
 
   @@id([item_id, tag_id])
-  @@index([item_id, tag_id])
   @@map("item_tags")
 }
 
@@ -478,30 +480,38 @@ model WineType {
 }
 
 model Order {
-  id              String      @id @default(uuid())
-  external_id     Int?        @unique
-  code            String      @unique
-  account_id      String
-  account         Account     @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  total           Float
-  coupon_id       String?
-  coupon          Coupon?     @relation(fields: [coupon_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  user_id         String
-  user            User        @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  user_address_id String
-  user_address    UserAddress @relation(fields: [user_address_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  is_read         Boolean     @default(false)
-  order_status_id String
-  order_status    OrderStatus @relation(fields: [order_status_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  campaign_id     String?
-  campaign        Campaign?   @relation(fields: [campaign_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  created_at      DateTime    @default(now()) @db.Timestamp(3)
-  updated_at      DateTime    @updatedAt @db.Timestamp(3)
-
-  order_items OrderItem[]
-  invoice     Invoice[]
+  id                  String            @id @default(uuid())
+  external_id         Int?              @unique
+  code                String            @unique
+  account_id          String
+  account             Account           @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  coupon_id           String?
+  coupon              Coupon?           @relation(fields: [coupon_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  customer_id         String
+  customer            Customer          @relation(fields: [customer_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  customer_address_id String
+  customer_address    CustomerAddress   @relation(fields: [customer_address_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  is_read             Boolean           @default(false)
+  order_status_id     String
+  order_status        OrderStatus       @relation(fields: [order_status_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  campaign_id         String?
+  campaign            Campaign?         @relation(fields: [campaign_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  created_at          DateTime          @default(now()) @db.Timestamp(3)
+  updated_at          DateTime          @updatedAt @db.Timestamp(3)
+  order_items         OrderItem[]
+  invoice             Invoice[]
+  User                User?             @relation(fields: [userId], references: [id])
+  userId              String?
+  total               Float @default(0)
+  discount            Float @default(0)
+  discoun_type        OrderDiscountType?
 
   @@map("order")
+}
+
+enum OrderDiscountType {
+  PERCENTAGE
+  VALUE
 }
 
 model OrderStatus {
@@ -519,24 +529,49 @@ model Customer {
   id                  String                     @id @default(uuid())
   account_id          String
   account             Account                    @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  name                String?                    @db.VarChar(80)
   email               String
   mobile_phone        String
-  phone               String
+  phone               String?
   is_active           Boolean                    @default(true)
   created_at          DateTime                   @default(now()) @db.Timestamp(3)
   updated_at          DateTime                   @updatedAt @db.Timestamp(3)
   origin_registration CustomerOriginRegistration
-  cpf_cnpj            String
+  cpf_cnpj            String?                    @db.VarChar(20)
   note                String                     @db.Text
   converted           Boolean                    @default(true)
+  user_id             String?
+  user                User?                      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  orders              Order[]
+  customer_address    CustomerAddress[]
 
+  @@unique([email, account_id, mobile_phone])
   @@map("customers")
+}
+
+model CustomerAddress {
+  id                 String   @id @default(uuid())
+  costumer_id        String
+  address_name       String?  @db.VarChar(50)
+  address_zip_code   String?  @db.VarChar(10)
+  address_state      String?  @db.VarChar(30)
+  address_city       String?  @db.VarChar(100)
+  address_district   String?  @db.VarChar(150)
+  address_street     String?  @db.VarChar(300)
+  address_number     String?  @db.VarChar(20)
+  address_complement String?  @db.VarChar(300)
+  created_at         DateTime @default(now()) @db.Timestamp(3)
+  updated_at         DateTime @updatedAt @db.Timestamp(3)
+  customer           Customer @relation(fields: [costumer_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  order              Order[]
+
+  @@map("customer_address")
 }
 
 enum CustomerOriginRegistration {
   SINGLE_REGISTRATION
-  CAMPAIGN
-  MAIN_CATALOG
+  CAMPAIGN_LEAD
+  ORDER
 }
 
 model OrderItem {

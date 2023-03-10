@@ -3,6 +3,7 @@ import {
   activities_business,
   business,
   campaigns_indicacoes,
+  coupon_couponUse_type,
   indicacoes,
   indicacoes_uvas,
   pedidos,
@@ -147,6 +148,7 @@ export class MigrateRepository {
       const perPage = 50
       let itemsPaginated = 0
       await this.prismaDbProd.itemType.deleteMany({})
+      await this.prismaDbProd.tag.deleteMany({})
       do {
         itemsPaginated = 0
         const labelTypes = await this.prismaDbOlder.tipos_indicacoes.findMany({
@@ -154,12 +156,22 @@ export class MigrateRepository {
           skip: this.calculatePage(page, perPage),
         })
         for (const type of labelTypes) {
-          await this.prismaDbProd.itemType.create({
-            data: {
-              name: type.nome,
-              external_id: type.id,
-            },
-          })
+          if (type.id === 3 || type.id === 4) {
+            await this.prismaDbProd.itemType.create({
+              data: {
+                name: type.nome,
+                external_id: type.id,
+              },
+            })
+          } else {
+            await this.prismaDbProd.tag.create({
+              data: {
+                name: type.nome,
+                description: cleanString(type.nome),
+                external_id: type.id,
+              },
+            })
+          }
         }
         itemsPaginated = labelTypes.length
         page++
@@ -414,6 +426,7 @@ export class MigrateRepository {
         : await this.getAccounts(page, perPage)
       for (const account of accounts) {
         const responseCreateAccount = await this.createAccount(account)
+        await this.migrateCoupons(responseCreateAccount)
         await this.migrateCampaigns(account.user_id!, responseCreateAccount)
         await this.createAccountActivities(account, responseCreateAccount)
         await this.createAccountUser(account, responseCreateAccount)
@@ -429,6 +442,46 @@ export class MigrateRepository {
       itemsPaginated = accounts.length
       page++
     } while (itemsPaginated === perPage)
+  }
+
+  async migrateCoupons(account: Account) {
+    try {
+      let page = 1
+      const perPage = 50
+      let itemsPaginated = 0
+      do {
+        itemsPaginated = 0
+        const couponsDb = await this.prismaDbOlder.coupon.findMany({
+          take: perPage,
+          skip: this.calculatePage(page, perPage),
+          where: {
+            user_id: account.external_id!,
+          },
+        })
+        for (const item of couponsDb) {
+          console.log({ coupon: item })
+          await this.prismaDbProd.coupon.create({
+            data: {
+              code: item.code,
+              couponUse_type: item.couponUse_type,
+              dicount_type: item.discount_type,
+              discount_value: item.discount_value,
+              account_id: account.id,
+              external_id: item.id,
+              expiration_date: item.expiration_date,
+              inital_date: item.initial_date,
+              max_value: item.max_value,
+              min_value: item.min_value,
+            },
+          })
+        }
+        itemsPaginated = couponsDb.length
+        page++
+      } while (itemsPaginated === perPage)
+    } catch (error) {
+      console.log('Deu merda')
+      throw new Error((error as Error).message)
+    }
   }
 
   async getRole(roleName: string) {
@@ -799,6 +852,7 @@ export class MigrateRepository {
         const orders = await this.prismaDbOlder.pedidos.findMany({
           include: {
             pedidos_indicacoes: true,
+            coupon: true,
           },
           where: {
             user_id: accountId,
@@ -818,7 +872,7 @@ export class MigrateRepository {
           for (const item of order.pedidos_indicacoes) {
             orderTotal += Number(item.total)
           }
-          const userCreated = await this.createOrderUser(order)
+          const customerCreated = await this.createOrderCustomer(order)
           const orderStatusFinished =
             await this.prismaDbProd.orderStatus.findUnique({
               where: {
@@ -828,16 +882,39 @@ export class MigrateRepository {
           if (!orderStatusFinished) {
             throw new Error('order status not found')
           }
+          let orderCoupon = null
+          let orderCampaign = null
+          if (order.coupon_id) {
+            const coupon = await this.prismaDbProd.coupon.findUnique({
+              where: {
+                external_id: order.coupon_id,
+              },
+            })
+            orderCoupon = coupon?.id
+          }
+          if (order.campaign_id) {
+            const campaign = await this.prismaDbProd.campaign.findUnique({
+              where: {
+                external_id: order.campaign_id,
+              },
+            })
+            orderCampaign = campaign?.id
+          }
           const orderCreated = await this.prismaDbProd.order.create({
             data: {
               code: `${order.id}`,
               total: orderTotal,
               account_id: newAccount.id,
-              user_id: userCreated.id,
+              customer_id: customerCreated.id,
               external_id: order.id,
               is_read: order.status,
               order_status_id: orderStatusFinished.id,
-              user_address_id: userCreated.user_addresses[0].id,
+              customer_address_id: customerCreated.customer_address[0].id,
+              discoun_type: order.discount_type,
+              discount: Number(order.discount),
+              coupon_id: orderCoupon,
+              campaign_id: orderCampaign,
+              userId: customerCreated.user_id,
             },
           })
           for (const orderLabel of order.pedidos_indicacoes) {
@@ -868,7 +945,7 @@ export class MigrateRepository {
     }
   }
 
-  async createOrderUser(
+  async createOrderCustomer(
     order: pedidos & {
       pedidos_indicacoes: pedidos_indicacoes[]
     }
@@ -876,41 +953,54 @@ export class MigrateRepository {
     if (!order.email) {
       throw new Error('email not found')
     }
-    const userAlreadyExist = await this.prismaDbProd.user.findUnique({
+    const account = await this.prismaDbProd.account.findUnique({
       where: {
-        email: order.email,
-      },
-      include: {
-        user_addresses: true,
+        external_id: order.user_id!,
       },
     })
-    if (userAlreadyExist) {
-      return userAlreadyExist
+    if (!account) {
+      throw new Error('account not found')
     }
-    return await this.prismaDbProd.user.create({
-      data: {
-        name: order.nome || '',
-        email: order.email || '',
-        phone: order.telefone_celular,
-        user_addresses: {
-          create: {
-            city: order.cidade || '',
-            state: order.estado || '',
-            zip_code: order.cep || '',
-            complement: order.complemento,
-            number: order.numero || '',
-            district: order.bairro || '',
-            street: order.endereco || '',
-            name: null,
-            additional_information: order.obs_endereco || '',
-          },
+    const customerAlreadyExists = await this.prismaDbProd.customer.findUnique({
+      where: {
+        email_account_id_mobile_phone: {
+          account_id: account.id,
+          email: order.email,
+          mobile_phone: order.telefone_celular!,
         },
-        password: '',
-        gender: 'ND' as GenderType,
-        whatsapp: order.telefone_celular,
       },
       include: {
-        user_addresses: true,
+        customer_address: true,
+      },
+    })
+    if (customerAlreadyExists) {
+      return customerAlreadyExists
+    }
+    return await this.prismaDbProd.customer.create({
+      data: {
+        name: order.nome,
+        email: order.email,
+        mobile_phone: order.telefone_celular!,
+        customer_address: {
+          create: {
+            address_city: order.cidade || '',
+            address_state: order.estado || '',
+            address_zip_code: order.cep || '',
+            address_complement: order.complemento,
+            address_number: order.numero || '',
+            address_district: order.bairro || '',
+            address_street: order.endereco || '',
+            address_name: null,
+          },
+        },
+        converted: true,
+        account_id: account.id,
+        origin_registration: 'ORDER',
+        note: order.obs_gerais || '',
+        phone: order.telefone_celular!,
+      },
+      include: {
+        customer_address: true,
       },
     })
   }
@@ -986,6 +1076,7 @@ export class MigrateRepository {
               control_stock: true,
             },
           })
+          await this.generateLabelTags(label, responseCreateLabels)
           await this.generateLabelStock(label, responseCreateLabels, newAccount)
           await this.createLabelGrape(label, responseCreateLabels)
           for (const labelCampaign of label.campaigns_indicacoes) {
@@ -1039,6 +1130,29 @@ export class MigrateRepository {
     }
   }
 
+  async generateLabelTags(
+    label: indicacoes & {
+      campaigns_indicacoes: campaigns_indicacoes[]
+      indicacoes_uvas: indicacoes_uvas[]
+    },
+    newLabel: Item
+  ) {
+    if (label.tipo_indicacao_id === 1 || label.tipo_indicacao_id === 2) {
+      const tag = await this.prismaDbProd.tag.findUnique({
+        where: {
+          external_id: label.tipo_indicacao_id,
+        },
+      })
+      console.log({ tag })
+      await this.prismaDbProd.itemTag.create({
+        data: {
+          tag_id: tag!.id,
+          item_id: newLabel.id,
+        },
+      })
+    }
+  }
+
   async generateLabelStock(
     label: indicacoes & {
       campaigns_indicacoes: campaigns_indicacoes[]
@@ -1086,7 +1200,7 @@ export class MigrateRepository {
   async getLabelType(labelType: number) {
     return await this.prismaDbProd.itemType.findUnique({
       where: {
-        external_id: labelType,
+        external_id: labelType === 1 || labelType === 2 ? 3 : labelType,
       },
     })
   }
