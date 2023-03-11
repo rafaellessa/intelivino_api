@@ -669,9 +669,10 @@ CREATE TABLE `stock_history` (
 CREATE TABLE `winery` (
     `id` VARCHAR(191) NOT NULL,
     `external_id` INTEGER NULL,
-    `name` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(255) NOT NULL,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
+    `account_id` VARCHAR(191) NULL,
 
     UNIQUE INDEX `winery_external_id_key`(`external_id`),
     PRIMARY KEY (`id`)
@@ -856,3 +857,6 @@ ALTER TABLE `stock_items` ADD CONSTRAINT `stock_items_account_id_fkey` FOREIGN K
 
 -- AddForeignKey
 ALTER TABLE `stock_history` ADD CONSTRAINT `stock_history_item_id_fkey` FOREIGN KEY (`item_id`) REFERENCES `item`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `winery` ADD CONSTRAINT `winery_account_id_fkey` FOREIGN KEY (`account_id`) REFERENCES `account`(`id`) ON DELETE SET NULL ON UPDATE SET NULL;

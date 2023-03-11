@@ -602,7 +602,8 @@ exports.Prisma.WineryScalarFieldEnum = makeEnum({
   external_id: 'external_id',
   name: 'name',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
+  account_id: 'account_id'
 });
 exports.CampaignTypeDiscount = makeEnum({
   PERCENTAGE: 'PERCENTAGE',

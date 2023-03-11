@@ -40,7 +40,6 @@ export class MigrateRepository {
       await this.migratePlans()
       await this.migrateActivities()
       await this.migrateDeliveries()
-      await this.migrateWinery()
       await this.migrateWineType()
       await this.migrateLabelType()
       await this.migrateTypeCampaigns()
@@ -80,31 +79,54 @@ export class MigrateRepository {
     }
   }
 
-  async migrateWinery() {
+  async migrateWinery(account?: Account) {
     try {
       let page = 1
       const perPage = 50
       let itemsPaginated = 0
-      await this.prismaDbProd.winery.deleteMany({})
       do {
         itemsPaginated = 0
-        const wineries = await this.prismaDbOlder.vinicolas.findMany({
-          take: perPage,
-          skip: this.calculatePage(page, perPage),
-        })
-        for (const winery of wineries) {
-          if (winery.nome.length > 200) {
-            continue
-          }
-          await this.prismaDbProd.winery.create({
-            data: {
-              name: winery.nome,
-              external_id: winery.id,
+        if (account) {
+          const wineries = await this.prismaDbOlder.vinicolas.findMany({
+            take: perPage,
+            skip: this.calculatePage(page, perPage),
+            where: {
+              user_id: account.external_id,
             },
           })
+          for (const winery of wineries) {
+            await this.prismaDbProd.winery.create({
+              data: {
+                name:
+                  winery.nome.length > 200
+                    ? winery.nome.substring(0, 200)
+                    : winery.nome,
+                external_id: winery.id,
+                account_id: account.id,
+              },
+            })
+          }
+          itemsPaginated = wineries.length
+          page++
+        } else {
+          const wineries = await this.prismaDbOlder.vinicolas.findMany({
+            take: perPage,
+            skip: this.calculatePage(page, perPage),
+          })
+          for (const winery of wineries) {
+            await this.prismaDbProd.winery.create({
+              data: {
+                name:
+                  winery.nome.length > 200
+                    ? winery.nome.substring(0, 200)
+                    : winery.nome,
+                external_id: winery.id,
+              },
+            })
+          }
+          itemsPaginated = wineries.length
+          page++
         }
-        itemsPaginated = wineries.length
-        page++
       } while (itemsPaginated === perPage)
     } catch (error) {
       console.log('Deu merda')
@@ -419,6 +441,7 @@ export class MigrateRepository {
     await this.prismaDbProd.item.deleteMany({})
     await this.prismaDbProd.campaign.deleteMany({})
     await this.prismaDbProd.order.deleteMany({})
+    await this.prismaDbProd.winery.deleteMany({})
     do {
       itemsPaginated = 0
       const accounts = accountIds
@@ -432,6 +455,7 @@ export class MigrateRepository {
         await this.createAccountUser(account, responseCreateAccount)
         await this.createAccountSeller(account.user_id!)
         await this.createAccountDeliveries(account, responseCreateAccount)
+        await this.migrateWinery(responseCreateAccount)
       }
       for (const account of accounts) {
         await this.migrateLabels(account)
@@ -442,6 +466,7 @@ export class MigrateRepository {
       itemsPaginated = accounts.length
       page++
     } while (itemsPaginated === perPage)
+    await this.migrateWinery()
   }
 
   async migrateCoupons(account: Account) {
