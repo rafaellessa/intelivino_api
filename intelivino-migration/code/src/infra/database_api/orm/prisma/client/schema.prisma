@@ -135,7 +135,7 @@ model User {
   created_at      DateTime      @default(now()) @db.Timestamp(3)
   updated_at      DateTime      @updatedAt @db.Timestamp(3)
   lastLogin       DateTime      @default(now()) @db.Timestamp(3)
-  device_user     DeviceUser[]
+  device          Device[]
   account_user    AccountUser[]
   orders          Order[]
   user_addresses  UserAddress[]
@@ -315,7 +315,7 @@ model Item {
   campaign_items CampaignItem[]
   stock_items    StockItem[]
   stock_history  StockHistory[]
-  item_tag        ItemTag[]
+  item_tag       ItemTag[]
 
   @@map("item")
 }
@@ -335,7 +335,7 @@ model ItemType {
 model Tag {
   id          String    @id @default(uuid())
   name        String
-  external_id Int?     @unique
+  external_id Int?      @unique
   description String?
   created_at  DateTime  @default(now()) @db.Timestamp(3)
   updated_at  DateTime  @updatedAt @db.Timestamp(3)
@@ -480,31 +480,32 @@ model WineType {
 }
 
 model Order {
-  id                  String            @id @default(uuid())
-  external_id         Int?              @unique
-  code                String            @unique
+  id                  String             @id @default(uuid())
+  external_id         Int?               @unique
+  code                String             @unique
   account_id          String
-  account             Account           @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  account             Account            @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   coupon_id           String?
-  coupon              Coupon?           @relation(fields: [coupon_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  coupon              Coupon?            @relation(fields: [coupon_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
   customer_id         String
-  customer            Customer          @relation(fields: [customer_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  customer            Customer           @relation(fields: [customer_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   customer_address_id String
-  customer_address    CustomerAddress   @relation(fields: [customer_address_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  is_read             Boolean           @default(false)
+  customer_address    CustomerAddress    @relation(fields: [customer_address_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  is_read             Boolean            @default(false)
   order_status_id     String
-  order_status        OrderStatus       @relation(fields: [order_status_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  order_status        OrderStatus        @relation(fields: [order_status_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   campaign_id         String?
-  campaign            Campaign?         @relation(fields: [campaign_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  created_at          DateTime          @default(now()) @db.Timestamp(3)
-  updated_at          DateTime          @updatedAt @db.Timestamp(3)
+  campaign            Campaign?          @relation(fields: [campaign_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  created_at          DateTime           @default(now()) @db.Timestamp(3)
+  updated_at          DateTime           @updatedAt @db.Timestamp(3)
   order_items         OrderItem[]
   invoice             Invoice[]
-  User                User?             @relation(fields: [userId], references: [id])
+  User                User?              @relation(fields: [userId], references: [id])
   userId              String?
-  total               Float @default(0)
-  discount            Float @default(0)
+  total               Float              @default(0)
+  discount            Float              @default(0)
   discoun_type        OrderDiscountType?
+  notifications       Notifications[]
 
   @@map("order")
 }
@@ -601,16 +602,16 @@ model Invoice {
 }
 
 model Device {
-  id                 String       @id @default(uuid())
-  external_id        Int?         @unique
-  device_physical_id String       @unique
-  platform           PlatformType
-  version            String
-  token_notification String
-  created_at         DateTime     @default(now()) @db.Timestamp(3)
-  updated_at         DateTime     @updatedAt @db.Timestamp(3)
-
-  device_user         DeviceUser[]
+  id                  String               @id @default(uuid())
+  external_id         Int?                 @unique
+  device_physical_id  String               @unique
+  platform            PlatformType
+  version             String
+  token_notification  String
+  created_at          DateTime             @default(now()) @db.Timestamp(3)
+  updated_at          DateTime             @updatedAt @db.Timestamp(3)
+  user_id             String?
+  user                User?                @relation(fields: [user_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
   push_notification   PushNotification[]
   sms_notification    SmsNotification[]
   device_notification DeviceNotification[]
@@ -623,25 +624,14 @@ enum PlatformType {
   ios
 }
 
-model DeviceUser {
-  device_id  String
-  device     Device   @relation(fields: [device_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  user_id    String
-  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  created_at DateTime @default(now()) @db.Timestamp(3)
-  updated_at DateTime @updatedAt @db.Timestamp(3)
-
-  @@id([device_id, user_id])
-  @@map("device_user")
-}
-
 model Notifications {
-  id         String   @id @default(uuid())
-  title      String
-  message    String
-  created_at DateTime @default(now()) @db.Timestamp(3)
-  updated_at DateTime @updatedAt @db.Timestamp(3)
-
+  id                  String               @id @default(uuid())
+  title               String
+  message             String
+  created_at          DateTime             @default(now()) @db.Timestamp(3)
+  updated_at          DateTime             @updatedAt @db.Timestamp(3)
+  order_id            String?
+  order               Order?               @relation(fields: [order_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   type                TypeNotification
   sms_notification    SmsNotification[]
   email_notification  EmailNotification[]
@@ -668,6 +658,8 @@ model EmailNotification {
   clicked           String?
   failed            String?
   error_description String?
+  error_code String?
+  message_id  String? @unique
   created_at        DateTime              @default(now()) @db.Timestamp(3)
   updated_at        DateTime              @updatedAt @db.Timestamp(3)
 

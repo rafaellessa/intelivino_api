@@ -512,20 +512,11 @@ CREATE TABLE `device` (
     `token_notification` VARCHAR(191) NOT NULL,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
+    `user_id` VARCHAR(191) NULL,
 
     UNIQUE INDEX `device_external_id_key`(`external_id`),
     UNIQUE INDEX `device_device_physical_id_key`(`device_physical_id`),
     PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
-CREATE TABLE `device_user` (
-    `device_id` VARCHAR(191) NOT NULL,
-    `user_id` VARCHAR(191) NOT NULL,
-    `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updated_at` TIMESTAMP(3) NOT NULL,
-
-    PRIMARY KEY (`device_id`, `user_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
@@ -535,6 +526,7 @@ CREATE TABLE `notification` (
     `message` VARCHAR(191) NOT NULL,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
+    `order_id` VARCHAR(191) NULL,
     `type` ENUM('email', 'sms', 'push') NOT NULL,
 
     PRIMARY KEY (`id`)
@@ -557,9 +549,12 @@ CREATE TABLE `email_notification` (
     `clicked` VARCHAR(191) NULL,
     `failed` VARCHAR(191) NULL,
     `error_description` VARCHAR(191) NULL,
+    `error_code` VARCHAR(191) NULL,
+    `message_id` VARCHAR(191) NULL,
     `created_at` TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` TIMESTAMP(3) NOT NULL,
 
+    UNIQUE INDEX `email_notification_message_id_key`(`message_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -818,10 +813,10 @@ ALTER TABLE `invoice` ADD CONSTRAINT `invoice_order_id_fkey` FOREIGN KEY (`order
 ALTER TABLE `invoice` ADD CONSTRAINT `invoice_account_id_fkey` FOREIGN KEY (`account_id`) REFERENCES `account`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `device_user` ADD CONSTRAINT `device_user_device_id_fkey` FOREIGN KEY (`device_id`) REFERENCES `device`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `device` ADD CONSTRAINT `device_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `device_user` ADD CONSTRAINT `device_user_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `notification` ADD CONSTRAINT `notification_order_id_fkey` FOREIGN KEY (`order_id`) REFERENCES `order`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `email_notification` ADD CONSTRAINT `email_notification_notification_id_fkey` FOREIGN KEY (`notification_id`) REFERENCES `notification`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

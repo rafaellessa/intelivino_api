@@ -675,6 +675,19 @@ export class MigrateRepository {
     }
   }
 
+  async getDevicesAccount(accountId: number) {
+    const device = await this.prismaDbOlder.devices.findFirst({
+      where: {
+        user_id: accountId,
+        token_notification: {
+          not: '',
+        },
+      },
+    })
+
+    return device
+  }
+
   async createAccountUser(
     account: business & {
       activities_business: activities_business[]
@@ -683,11 +696,12 @@ export class MigrateRepository {
     accountCreated: Account
   ) {
     const roleBusiness = await this.getRole('Business')
+    const device = await this.getDevicesAccount(account.id)
     const { cpfCnpj } = this.getAccountCpfAndPersonType(account)
     if (!roleBusiness) {
       throw new Error('Business role not found')
     }
-    await this.prismaDbProd.user.create({
+    const user = await this.prismaDbProd.user.create({
       data: {
         account_user: {
           create: {
@@ -724,6 +738,20 @@ export class MigrateRepository {
         rd_station_sync: account.users?.rdstation_sync === null ? false : true,
       },
     })
+
+    if (device) {
+      await this.prismaDbProd.device.create({
+        data: {
+          device_physical_id: device.installation_id,
+          platform: device.platform === 'ios' ? 'ios' : 'android',
+          token_notification: device.token_notification,
+          version: device.version!,
+          external_id: device.id,
+          user_id: user.id,
+        },
+      })
+    }
+    return user
   }
 
   async createAccountSeller(accountId: number) {

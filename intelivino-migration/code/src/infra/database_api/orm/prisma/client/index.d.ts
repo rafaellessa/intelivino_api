@@ -533,17 +533,7 @@ export type Device = {
   token_notification: string
   created_at: Date
   updated_at: Date
-}
-
-/**
- * Model DeviceUser
- * 
- */
-export type DeviceUser = {
-  device_id: string
-  user_id: string
-  created_at: Date
-  updated_at: Date
+  user_id: string | null
 }
 
 /**
@@ -556,6 +546,7 @@ export type Notifications = {
   message: string
   created_at: Date
   updated_at: Date
+  order_id: string | null
   type: TypeNotification
 }
 
@@ -579,6 +570,8 @@ export type EmailNotification = {
   clicked: string | null
   failed: string | null
   error_description: string | null
+  error_code: string | null
+  message_id: string | null
   created_at: Date
   updated_at: Date
 }
@@ -1299,16 +1292,6 @@ export class PrismaClient<
   get device(): Prisma.DeviceDelegate<GlobalReject>;
 
   /**
-   * `prisma.deviceUser`: Exposes CRUD operations for the **DeviceUser** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more DeviceUsers
-    * const deviceUsers = await prisma.deviceUser.findMany()
-    * ```
-    */
-  get deviceUser(): Prisma.DeviceUserDelegate<GlobalReject>;
-
-  /**
    * `prisma.notifications`: Exposes CRUD operations for the **Notifications** model.
     * Example usage:
     * ```ts
@@ -1940,7 +1923,6 @@ export namespace Prisma {
     OrderItem: 'OrderItem',
     Invoice: 'Invoice',
     Device: 'Device',
-    DeviceUser: 'DeviceUser',
     Notifications: 'Notifications',
     EmailNotification: 'EmailNotification',
     SmsNotification: 'SmsNotification',
@@ -2283,7 +2265,7 @@ export namespace Prisma {
 
 
   export type UserCountOutputType = {
-    device_user: number
+    device: number
     account_user: number
     orders: number
     user_addresses: number
@@ -2291,7 +2273,7 @@ export namespace Prisma {
   }
 
   export type UserCountOutputTypeSelect = {
-    device_user?: boolean
+    device?: boolean
     account_user?: boolean
     orders?: boolean
     user_addresses?: boolean
@@ -2999,11 +2981,13 @@ export namespace Prisma {
   export type OrderCountOutputType = {
     order_items: number
     invoice: number
+    notifications: number
   }
 
   export type OrderCountOutputTypeSelect = {
     order_items?: boolean
     invoice?: boolean
+    notifications?: boolean
   }
 
   export type OrderCountOutputTypeGetPayload<
@@ -3197,14 +3181,12 @@ export namespace Prisma {
 
 
   export type DeviceCountOutputType = {
-    device_user: number
     push_notification: number
     sms_notification: number
     device_notification: number
   }
 
   export type DeviceCountOutputTypeSelect = {
-    device_user?: boolean
     push_notification?: boolean
     sms_notification?: boolean
     device_notification?: boolean
@@ -9653,7 +9635,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     lastLogin?: boolean
-    device_user?: boolean | DeviceUserFindManyArgs
+    device?: boolean | DeviceFindManyArgs
     account_user?: boolean | AccountUserFindManyArgs
     orders?: boolean | OrderFindManyArgs
     user_addresses?: boolean | UserAddressFindManyArgs
@@ -9662,7 +9644,7 @@ export namespace Prisma {
   }
 
   export type UserInclude = {
-    device_user?: boolean | DeviceUserFindManyArgs
+    device?: boolean | DeviceFindManyArgs
     account_user?: boolean | AccountUserFindManyArgs
     orders?: boolean | OrderFindManyArgs
     user_addresses?: boolean | UserAddressFindManyArgs
@@ -9681,7 +9663,7 @@ export namespace Prisma {
     ?'include' extends U
     ? User  & {
     [P in TrueKeys<S['include']>]:
-        P extends 'device_user' ? Array < DeviceUserGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
+        P extends 'device' ? Array < DeviceGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
         P extends 'account_user' ? Array < AccountUserGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
         P extends 'orders' ? Array < OrderGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
         P extends 'user_addresses' ? Array < UserAddressGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
@@ -9691,7 +9673,7 @@ export namespace Prisma {
     : 'select' extends U
     ? {
     [P in TrueKeys<S['select']>]:
-        P extends 'device_user' ? Array < DeviceUserGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
+        P extends 'device' ? Array < DeviceGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
         P extends 'account_user' ? Array < AccountUserGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
         P extends 'orders' ? Array < OrderGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
         P extends 'user_addresses' ? Array < UserAddressGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
@@ -10071,7 +10053,7 @@ export namespace Prisma {
     constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
     readonly [Symbol.toStringTag]: 'PrismaClientPromise';
 
-    device_user<T extends DeviceUserFindManyArgs = {}>(args?: Subset<T, DeviceUserFindManyArgs>): CheckSelect<T, PrismaPromise<Array<DeviceUser>| Null>, PrismaPromise<Array<DeviceUserGetPayload<T>>| Null>>;
+    device<T extends DeviceFindManyArgs = {}>(args?: Subset<T, DeviceFindManyArgs>): CheckSelect<T, PrismaPromise<Array<Device>| Null>, PrismaPromise<Array<DeviceGetPayload<T>>| Null>>;
 
     account_user<T extends AccountUserFindManyArgs = {}>(args?: Subset<T, AccountUserFindManyArgs>): CheckSelect<T, PrismaPromise<Array<AccountUser>| Null>, PrismaPromise<Array<AccountUserGetPayload<T>>| Null>>;
 
@@ -31150,6 +31132,7 @@ export namespace Prisma {
     total?: boolean
     discount?: boolean
     discoun_type?: boolean
+    notifications?: boolean | NotificationsFindManyArgs
     _count?: boolean | OrderCountOutputTypeArgs
   }
 
@@ -31163,6 +31146,7 @@ export namespace Prisma {
     order_items?: boolean | OrderItemFindManyArgs
     invoice?: boolean | InvoiceFindManyArgs
     User?: boolean | UserArgs
+    notifications?: boolean | NotificationsFindManyArgs
     _count?: boolean | OrderCountOutputTypeArgs
   }
 
@@ -31186,6 +31170,7 @@ export namespace Prisma {
         P extends 'order_items' ? Array < OrderItemGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
         P extends 'invoice' ? Array < InvoiceGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
         P extends 'User' ? UserGetPayload<Exclude<S['include'], undefined | null>[P]> | null :
+        P extends 'notifications' ? Array < NotificationsGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
         P extends '_count' ? OrderCountOutputTypeGetPayload<Exclude<S['include'], undefined | null>[P]> :  never
   } 
     : 'select' extends U
@@ -31200,6 +31185,7 @@ export namespace Prisma {
         P extends 'order_items' ? Array < OrderItemGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
         P extends 'invoice' ? Array < InvoiceGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
         P extends 'User' ? UserGetPayload<Exclude<S['select'], undefined | null>[P]> | null :
+        P extends 'notifications' ? Array < NotificationsGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
         P extends '_count' ? OrderCountOutputTypeGetPayload<Exclude<S['select'], undefined | null>[P]> :  P extends keyof Order ? Order[P] : never
   } 
     : Order
@@ -31592,6 +31578,8 @@ export namespace Prisma {
     invoice<T extends InvoiceFindManyArgs = {}>(args?: Subset<T, InvoiceFindManyArgs>): CheckSelect<T, PrismaPromise<Array<Invoice>| Null>, PrismaPromise<Array<InvoiceGetPayload<T>>| Null>>;
 
     User<T extends UserArgs = {}>(args?: Subset<T, UserArgs>): CheckSelect<T, Prisma__UserClient<User | Null>, Prisma__UserClient<UserGetPayload<T> | Null>>;
+
+    notifications<T extends NotificationsFindManyArgs = {}>(args?: Subset<T, NotificationsFindManyArgs>): CheckSelect<T, PrismaPromise<Array<Notifications>| Null>, PrismaPromise<Array<NotificationsGetPayload<T>>| Null>>;
 
     private get _document();
     /**
@@ -36824,6 +36812,7 @@ export namespace Prisma {
     token_notification: string | null
     created_at: Date | null
     updated_at: Date | null
+    user_id: string | null
   }
 
   export type DeviceMaxAggregateOutputType = {
@@ -36835,6 +36824,7 @@ export namespace Prisma {
     token_notification: string | null
     created_at: Date | null
     updated_at: Date | null
+    user_id: string | null
   }
 
   export type DeviceCountAggregateOutputType = {
@@ -36846,6 +36836,7 @@ export namespace Prisma {
     token_notification: number
     created_at: number
     updated_at: number
+    user_id: number
     _all: number
   }
 
@@ -36867,6 +36858,7 @@ export namespace Prisma {
     token_notification?: true
     created_at?: true
     updated_at?: true
+    user_id?: true
   }
 
   export type DeviceMaxAggregateInputType = {
@@ -36878,6 +36870,7 @@ export namespace Prisma {
     token_notification?: true
     created_at?: true
     updated_at?: true
+    user_id?: true
   }
 
   export type DeviceCountAggregateInputType = {
@@ -36889,6 +36882,7 @@ export namespace Prisma {
     token_notification?: true
     created_at?: true
     updated_at?: true
+    user_id?: true
     _all?: true
   }
 
@@ -36993,6 +36987,7 @@ export namespace Prisma {
     token_notification: string
     created_at: Date
     updated_at: Date
+    user_id: string | null
     _count: DeviceCountAggregateOutputType | null
     _avg: DeviceAvgAggregateOutputType | null
     _sum: DeviceSumAggregateOutputType | null
@@ -37023,7 +37018,8 @@ export namespace Prisma {
     token_notification?: boolean
     created_at?: boolean
     updated_at?: boolean
-    device_user?: boolean | DeviceUserFindManyArgs
+    user_id?: boolean
+    user?: boolean | UserArgs
     push_notification?: boolean | PushNotificationFindManyArgs
     sms_notification?: boolean | SmsNotificationFindManyArgs
     device_notification?: boolean | DeviceNotificationFindManyArgs
@@ -37031,7 +37027,7 @@ export namespace Prisma {
   }
 
   export type DeviceInclude = {
-    device_user?: boolean | DeviceUserFindManyArgs
+    user?: boolean | UserArgs
     push_notification?: boolean | PushNotificationFindManyArgs
     sms_notification?: boolean | SmsNotificationFindManyArgs
     device_notification?: boolean | DeviceNotificationFindManyArgs
@@ -37049,7 +37045,7 @@ export namespace Prisma {
     ?'include' extends U
     ? Device  & {
     [P in TrueKeys<S['include']>]:
-        P extends 'device_user' ? Array < DeviceUserGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
+        P extends 'user' ? UserGetPayload<Exclude<S['include'], undefined | null>[P]> | null :
         P extends 'push_notification' ? Array < PushNotificationGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
         P extends 'sms_notification' ? Array < SmsNotificationGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
         P extends 'device_notification' ? Array < DeviceNotificationGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
@@ -37058,7 +37054,7 @@ export namespace Prisma {
     : 'select' extends U
     ? {
     [P in TrueKeys<S['select']>]:
-        P extends 'device_user' ? Array < DeviceUserGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
+        P extends 'user' ? UserGetPayload<Exclude<S['select'], undefined | null>[P]> | null :
         P extends 'push_notification' ? Array < PushNotificationGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
         P extends 'sms_notification' ? Array < SmsNotificationGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
         P extends 'device_notification' ? Array < DeviceNotificationGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
@@ -37437,7 +37433,7 @@ export namespace Prisma {
     constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
     readonly [Symbol.toStringTag]: 'PrismaClientPromise';
 
-    device_user<T extends DeviceUserFindManyArgs = {}>(args?: Subset<T, DeviceUserFindManyArgs>): CheckSelect<T, PrismaPromise<Array<DeviceUser>| Null>, PrismaPromise<Array<DeviceUserGetPayload<T>>| Null>>;
+    user<T extends UserArgs = {}>(args?: Subset<T, UserArgs>): CheckSelect<T, Prisma__UserClient<User | Null>, Prisma__UserClient<UserGetPayload<T> | Null>>;
 
     push_notification<T extends PushNotificationFindManyArgs = {}>(args?: Subset<T, PushNotificationFindManyArgs>): CheckSelect<T, PrismaPromise<Array<PushNotification>| Null>, PrismaPromise<Array<PushNotificationGetPayload<T>>| Null>>;
 
@@ -37800,929 +37796,6 @@ export namespace Prisma {
 
 
   /**
-   * Model DeviceUser
-   */
-
-
-  export type AggregateDeviceUser = {
-    _count: DeviceUserCountAggregateOutputType | null
-    _min: DeviceUserMinAggregateOutputType | null
-    _max: DeviceUserMaxAggregateOutputType | null
-  }
-
-  export type DeviceUserMinAggregateOutputType = {
-    device_id: string | null
-    user_id: string | null
-    created_at: Date | null
-    updated_at: Date | null
-  }
-
-  export type DeviceUserMaxAggregateOutputType = {
-    device_id: string | null
-    user_id: string | null
-    created_at: Date | null
-    updated_at: Date | null
-  }
-
-  export type DeviceUserCountAggregateOutputType = {
-    device_id: number
-    user_id: number
-    created_at: number
-    updated_at: number
-    _all: number
-  }
-
-
-  export type DeviceUserMinAggregateInputType = {
-    device_id?: true
-    user_id?: true
-    created_at?: true
-    updated_at?: true
-  }
-
-  export type DeviceUserMaxAggregateInputType = {
-    device_id?: true
-    user_id?: true
-    created_at?: true
-    updated_at?: true
-  }
-
-  export type DeviceUserCountAggregateInputType = {
-    device_id?: true
-    user_id?: true
-    created_at?: true
-    updated_at?: true
-    _all?: true
-  }
-
-  export type DeviceUserAggregateArgs = {
-    /**
-     * Filter which DeviceUser to aggregate.
-     * 
-    **/
-    where?: DeviceUserWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of DeviceUsers to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<DeviceUserOrderByWithRelationInput>
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     * 
-    **/
-    cursor?: DeviceUserWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` DeviceUsers from the position of the cursor.
-     * 
-    **/
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` DeviceUsers.
-     * 
-    **/
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned DeviceUsers
-    **/
-    _count?: true | DeviceUserCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: DeviceUserMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: DeviceUserMaxAggregateInputType
-  }
-
-  export type GetDeviceUserAggregateType<T extends DeviceUserAggregateArgs> = {
-        [P in keyof T & keyof AggregateDeviceUser]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateDeviceUser[P]>
-      : GetScalarType<T[P], AggregateDeviceUser[P]>
-  }
-
-
-
-
-  export type DeviceUserGroupByArgs = {
-    where?: DeviceUserWhereInput
-    orderBy?: Enumerable<DeviceUserOrderByWithAggregationInput>
-    by: Array<DeviceUserScalarFieldEnum>
-    having?: DeviceUserScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: DeviceUserCountAggregateInputType | true
-    _min?: DeviceUserMinAggregateInputType
-    _max?: DeviceUserMaxAggregateInputType
-  }
-
-
-  export type DeviceUserGroupByOutputType = {
-    device_id: string
-    user_id: string
-    created_at: Date
-    updated_at: Date
-    _count: DeviceUserCountAggregateOutputType | null
-    _min: DeviceUserMinAggregateOutputType | null
-    _max: DeviceUserMaxAggregateOutputType | null
-  }
-
-  type GetDeviceUserGroupByPayload<T extends DeviceUserGroupByArgs> = PrismaPromise<
-    Array<
-      PickArray<DeviceUserGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof DeviceUserGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], DeviceUserGroupByOutputType[P]>
-            : GetScalarType<T[P], DeviceUserGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type DeviceUserSelect = {
-    device_id?: boolean
-    device?: boolean | DeviceArgs
-    user_id?: boolean
-    user?: boolean | UserArgs
-    created_at?: boolean
-    updated_at?: boolean
-  }
-
-  export type DeviceUserInclude = {
-    device?: boolean | DeviceArgs
-    user?: boolean | UserArgs
-  }
-
-  export type DeviceUserGetPayload<
-    S extends boolean | null | undefined | DeviceUserArgs,
-    U = keyof S
-      > = S extends true
-        ? DeviceUser
-    : S extends undefined
-    ? never
-    : S extends DeviceUserArgs | DeviceUserFindManyArgs
-    ?'include' extends U
-    ? DeviceUser  & {
-    [P in TrueKeys<S['include']>]:
-        P extends 'device' ? DeviceGetPayload<Exclude<S['include'], undefined | null>[P]> :
-        P extends 'user' ? UserGetPayload<Exclude<S['include'], undefined | null>[P]> :  never
-  } 
-    : 'select' extends U
-    ? {
-    [P in TrueKeys<S['select']>]:
-        P extends 'device' ? DeviceGetPayload<Exclude<S['select'], undefined | null>[P]> :
-        P extends 'user' ? UserGetPayload<Exclude<S['select'], undefined | null>[P]> :  P extends keyof DeviceUser ? DeviceUser[P] : never
-  } 
-    : DeviceUser
-  : DeviceUser
-
-
-  type DeviceUserCountArgs = Merge<
-    Omit<DeviceUserFindManyArgs, 'select' | 'include'> & {
-      select?: DeviceUserCountAggregateInputType | true
-    }
-  >
-
-  export interface DeviceUserDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
-    /**
-     * Find zero or one DeviceUser that matches the filter.
-     * @param {DeviceUserFindUniqueArgs} args - Arguments to find a DeviceUser
-     * @example
-     * // Get one DeviceUser
-     * const deviceUser = await prisma.deviceUser.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findUnique<T extends DeviceUserFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args: SelectSubset<T, DeviceUserFindUniqueArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'DeviceUser'> extends True ? CheckSelect<T, Prisma__DeviceUserClient<DeviceUser>, Prisma__DeviceUserClient<DeviceUserGetPayload<T>>> : CheckSelect<T, Prisma__DeviceUserClient<DeviceUser | null, null>, Prisma__DeviceUserClient<DeviceUserGetPayload<T> | null, null>>
-
-    /**
-     * Find the first DeviceUser that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {DeviceUserFindFirstArgs} args - Arguments to find a DeviceUser
-     * @example
-     * // Get one DeviceUser
-     * const deviceUser = await prisma.deviceUser.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findFirst<T extends DeviceUserFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
-      args?: SelectSubset<T, DeviceUserFindFirstArgs>
-    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'DeviceUser'> extends True ? CheckSelect<T, Prisma__DeviceUserClient<DeviceUser>, Prisma__DeviceUserClient<DeviceUserGetPayload<T>>> : CheckSelect<T, Prisma__DeviceUserClient<DeviceUser | null, null>, Prisma__DeviceUserClient<DeviceUserGetPayload<T> | null, null>>
-
-    /**
-     * Find zero or more DeviceUsers that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {DeviceUserFindManyArgs=} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all DeviceUsers
-     * const deviceUsers = await prisma.deviceUser.findMany()
-     * 
-     * // Get first 10 DeviceUsers
-     * const deviceUsers = await prisma.deviceUser.findMany({ take: 10 })
-     * 
-     * // Only select the `device_id`
-     * const deviceUserWithDevice_idOnly = await prisma.deviceUser.findMany({ select: { device_id: true } })
-     * 
-    **/
-    findMany<T extends DeviceUserFindManyArgs>(
-      args?: SelectSubset<T, DeviceUserFindManyArgs>
-    ): CheckSelect<T, PrismaPromise<Array<DeviceUser>>, PrismaPromise<Array<DeviceUserGetPayload<T>>>>
-
-    /**
-     * Create a DeviceUser.
-     * @param {DeviceUserCreateArgs} args - Arguments to create a DeviceUser.
-     * @example
-     * // Create one DeviceUser
-     * const DeviceUser = await prisma.deviceUser.create({
-     *   data: {
-     *     // ... data to create a DeviceUser
-     *   }
-     * })
-     * 
-    **/
-    create<T extends DeviceUserCreateArgs>(
-      args: SelectSubset<T, DeviceUserCreateArgs>
-    ): CheckSelect<T, Prisma__DeviceUserClient<DeviceUser>, Prisma__DeviceUserClient<DeviceUserGetPayload<T>>>
-
-    /**
-     * Create many DeviceUsers.
-     *     @param {DeviceUserCreateManyArgs} args - Arguments to create many DeviceUsers.
-     *     @example
-     *     // Create many DeviceUsers
-     *     const deviceUser = await prisma.deviceUser.createMany({
-     *       data: {
-     *         // ... provide data here
-     *       }
-     *     })
-     *     
-    **/
-    createMany<T extends DeviceUserCreateManyArgs>(
-      args?: SelectSubset<T, DeviceUserCreateManyArgs>
-    ): PrismaPromise<BatchPayload>
-
-    /**
-     * Delete a DeviceUser.
-     * @param {DeviceUserDeleteArgs} args - Arguments to delete one DeviceUser.
-     * @example
-     * // Delete one DeviceUser
-     * const DeviceUser = await prisma.deviceUser.delete({
-     *   where: {
-     *     // ... filter to delete one DeviceUser
-     *   }
-     * })
-     * 
-    **/
-    delete<T extends DeviceUserDeleteArgs>(
-      args: SelectSubset<T, DeviceUserDeleteArgs>
-    ): CheckSelect<T, Prisma__DeviceUserClient<DeviceUser>, Prisma__DeviceUserClient<DeviceUserGetPayload<T>>>
-
-    /**
-     * Update one DeviceUser.
-     * @param {DeviceUserUpdateArgs} args - Arguments to update one DeviceUser.
-     * @example
-     * // Update one DeviceUser
-     * const deviceUser = await prisma.deviceUser.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-    **/
-    update<T extends DeviceUserUpdateArgs>(
-      args: SelectSubset<T, DeviceUserUpdateArgs>
-    ): CheckSelect<T, Prisma__DeviceUserClient<DeviceUser>, Prisma__DeviceUserClient<DeviceUserGetPayload<T>>>
-
-    /**
-     * Delete zero or more DeviceUsers.
-     * @param {DeviceUserDeleteManyArgs} args - Arguments to filter DeviceUsers to delete.
-     * @example
-     * // Delete a few DeviceUsers
-     * const { count } = await prisma.deviceUser.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-    **/
-    deleteMany<T extends DeviceUserDeleteManyArgs>(
-      args?: SelectSubset<T, DeviceUserDeleteManyArgs>
-    ): PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more DeviceUsers.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {DeviceUserUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many DeviceUsers
-     * const deviceUser = await prisma.deviceUser.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-    **/
-    updateMany<T extends DeviceUserUpdateManyArgs>(
-      args: SelectSubset<T, DeviceUserUpdateManyArgs>
-    ): PrismaPromise<BatchPayload>
-
-    /**
-     * Create or update one DeviceUser.
-     * @param {DeviceUserUpsertArgs} args - Arguments to update or create a DeviceUser.
-     * @example
-     * // Update or create a DeviceUser
-     * const deviceUser = await prisma.deviceUser.upsert({
-     *   create: {
-     *     // ... data to create a DeviceUser
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the DeviceUser we want to update
-     *   }
-     * })
-    **/
-    upsert<T extends DeviceUserUpsertArgs>(
-      args: SelectSubset<T, DeviceUserUpsertArgs>
-    ): CheckSelect<T, Prisma__DeviceUserClient<DeviceUser>, Prisma__DeviceUserClient<DeviceUserGetPayload<T>>>
-
-    /**
-     * Find one DeviceUser that matches the filter or throw
-     * `NotFoundError` if no matches were found.
-     * @param {DeviceUserFindUniqueOrThrowArgs} args - Arguments to find a DeviceUser
-     * @example
-     * // Get one DeviceUser
-     * const deviceUser = await prisma.deviceUser.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findUniqueOrThrow<T extends DeviceUserFindUniqueOrThrowArgs>(
-      args?: SelectSubset<T, DeviceUserFindUniqueOrThrowArgs>
-    ): CheckSelect<T, Prisma__DeviceUserClient<DeviceUser>, Prisma__DeviceUserClient<DeviceUserGetPayload<T>>>
-
-    /**
-     * Find the first DeviceUser that matches the filter or
-     * throw `NotFoundError` if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {DeviceUserFindFirstOrThrowArgs} args - Arguments to find a DeviceUser
-     * @example
-     * // Get one DeviceUser
-     * const deviceUser = await prisma.deviceUser.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findFirstOrThrow<T extends DeviceUserFindFirstOrThrowArgs>(
-      args?: SelectSubset<T, DeviceUserFindFirstOrThrowArgs>
-    ): CheckSelect<T, Prisma__DeviceUserClient<DeviceUser>, Prisma__DeviceUserClient<DeviceUserGetPayload<T>>>
-
-    /**
-     * Count the number of DeviceUsers.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {DeviceUserCountArgs} args - Arguments to filter DeviceUsers to count.
-     * @example
-     * // Count the number of DeviceUsers
-     * const count = await prisma.deviceUser.count({
-     *   where: {
-     *     // ... the filter for the DeviceUsers we want to count
-     *   }
-     * })
-    **/
-    count<T extends DeviceUserCountArgs>(
-      args?: Subset<T, DeviceUserCountArgs>,
-    ): PrismaPromise<
-      T extends _Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], DeviceUserCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a DeviceUser.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {DeviceUserAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends DeviceUserAggregateArgs>(args: Subset<T, DeviceUserAggregateArgs>): PrismaPromise<GetDeviceUserAggregateType<T>>
-
-    /**
-     * Group by DeviceUser.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {DeviceUserGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends DeviceUserGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: DeviceUserGroupByArgs['orderBy'] }
-        : { orderBy?: DeviceUserGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends TupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, DeviceUserGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDeviceUserGroupByPayload<T> : PrismaPromise<InputErrors>
-
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for DeviceUser.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export class Prisma__DeviceUserClient<T, Null = never> implements PrismaPromise<T> {
-    [prisma]: true;
-    private readonly _dmmf;
-    private readonly _fetcher;
-    private readonly _queryType;
-    private readonly _rootField;
-    private readonly _clientMethod;
-    private readonly _args;
-    private readonly _dataPath;
-    private readonly _errorFormat;
-    private readonly _measurePerformance?;
-    private _isList;
-    private _callsite;
-    private _requestPromise?;
-    constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
-    readonly [Symbol.toStringTag]: 'PrismaClientPromise';
-
-    device<T extends DeviceArgs = {}>(args?: Subset<T, DeviceArgs>): CheckSelect<T, Prisma__DeviceClient<Device | Null>, Prisma__DeviceClient<DeviceGetPayload<T> | Null>>;
-
-    user<T extends UserArgs = {}>(args?: Subset<T, UserArgs>): CheckSelect<T, Prisma__UserClient<User | Null>, Prisma__UserClient<UserGetPayload<T> | Null>>;
-
-    private get _document();
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<T | TResult>;
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): Promise<T>;
-  }
-
-
-
-  // Custom InputTypes
-
-  /**
-   * DeviceUser base type for findUnique actions
-   */
-  export type DeviceUserFindUniqueArgsBase = {
-    /**
-     * Select specific fields to fetch from the DeviceUser
-     * 
-    **/
-    select?: DeviceUserSelect | null
-    /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: DeviceUserInclude | null
-    /**
-     * Filter, which DeviceUser to fetch.
-     * 
-    **/
-    where: DeviceUserWhereUniqueInput
-  }
-
-  /**
-   * DeviceUser: findUnique
-   */
-  export interface DeviceUserFindUniqueArgs extends DeviceUserFindUniqueArgsBase {
-   /**
-    * Throw an Error if query returns no results
-    * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
-    */
-    rejectOnNotFound?: RejectOnNotFound
-  }
-      
-
-  /**
-   * DeviceUser base type for findFirst actions
-   */
-  export type DeviceUserFindFirstArgsBase = {
-    /**
-     * Select specific fields to fetch from the DeviceUser
-     * 
-    **/
-    select?: DeviceUserSelect | null
-    /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: DeviceUserInclude | null
-    /**
-     * Filter, which DeviceUser to fetch.
-     * 
-    **/
-    where?: DeviceUserWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of DeviceUsers to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<DeviceUserOrderByWithRelationInput>
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for DeviceUsers.
-     * 
-    **/
-    cursor?: DeviceUserWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` DeviceUsers from the position of the cursor.
-     * 
-    **/
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` DeviceUsers.
-     * 
-    **/
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of DeviceUsers.
-     * 
-    **/
-    distinct?: Enumerable<DeviceUserScalarFieldEnum>
-  }
-
-  /**
-   * DeviceUser: findFirst
-   */
-  export interface DeviceUserFindFirstArgs extends DeviceUserFindFirstArgsBase {
-   /**
-    * Throw an Error if query returns no results
-    * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
-    */
-    rejectOnNotFound?: RejectOnNotFound
-  }
-      
-
-  /**
-   * DeviceUser findMany
-   */
-  export type DeviceUserFindManyArgs = {
-    /**
-     * Select specific fields to fetch from the DeviceUser
-     * 
-    **/
-    select?: DeviceUserSelect | null
-    /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: DeviceUserInclude | null
-    /**
-     * Filter, which DeviceUsers to fetch.
-     * 
-    **/
-    where?: DeviceUserWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of DeviceUsers to fetch.
-     * 
-    **/
-    orderBy?: Enumerable<DeviceUserOrderByWithRelationInput>
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing DeviceUsers.
-     * 
-    **/
-    cursor?: DeviceUserWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` DeviceUsers from the position of the cursor.
-     * 
-    **/
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` DeviceUsers.
-     * 
-    **/
-    skip?: number
-    distinct?: Enumerable<DeviceUserScalarFieldEnum>
-  }
-
-
-  /**
-   * DeviceUser create
-   */
-  export type DeviceUserCreateArgs = {
-    /**
-     * Select specific fields to fetch from the DeviceUser
-     * 
-    **/
-    select?: DeviceUserSelect | null
-    /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: DeviceUserInclude | null
-    /**
-     * The data needed to create a DeviceUser.
-     * 
-    **/
-    data: XOR<DeviceUserCreateInput, DeviceUserUncheckedCreateInput>
-  }
-
-
-  /**
-   * DeviceUser createMany
-   */
-  export type DeviceUserCreateManyArgs = {
-    /**
-     * The data used to create many DeviceUsers.
-     * 
-    **/
-    data: Enumerable<DeviceUserCreateManyInput>
-    skipDuplicates?: boolean
-  }
-
-
-  /**
-   * DeviceUser update
-   */
-  export type DeviceUserUpdateArgs = {
-    /**
-     * Select specific fields to fetch from the DeviceUser
-     * 
-    **/
-    select?: DeviceUserSelect | null
-    /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: DeviceUserInclude | null
-    /**
-     * The data needed to update a DeviceUser.
-     * 
-    **/
-    data: XOR<DeviceUserUpdateInput, DeviceUserUncheckedUpdateInput>
-    /**
-     * Choose, which DeviceUser to update.
-     * 
-    **/
-    where: DeviceUserWhereUniqueInput
-  }
-
-
-  /**
-   * DeviceUser updateMany
-   */
-  export type DeviceUserUpdateManyArgs = {
-    /**
-     * The data used to update DeviceUsers.
-     * 
-    **/
-    data: XOR<DeviceUserUpdateManyMutationInput, DeviceUserUncheckedUpdateManyInput>
-    /**
-     * Filter which DeviceUsers to update
-     * 
-    **/
-    where?: DeviceUserWhereInput
-  }
-
-
-  /**
-   * DeviceUser upsert
-   */
-  export type DeviceUserUpsertArgs = {
-    /**
-     * Select specific fields to fetch from the DeviceUser
-     * 
-    **/
-    select?: DeviceUserSelect | null
-    /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: DeviceUserInclude | null
-    /**
-     * The filter to search for the DeviceUser to update in case it exists.
-     * 
-    **/
-    where: DeviceUserWhereUniqueInput
-    /**
-     * In case the DeviceUser found by the `where` argument doesn't exist, create a new DeviceUser with this data.
-     * 
-    **/
-    create: XOR<DeviceUserCreateInput, DeviceUserUncheckedCreateInput>
-    /**
-     * In case the DeviceUser was found with the provided `where` argument, update it with this data.
-     * 
-    **/
-    update: XOR<DeviceUserUpdateInput, DeviceUserUncheckedUpdateInput>
-  }
-
-
-  /**
-   * DeviceUser delete
-   */
-  export type DeviceUserDeleteArgs = {
-    /**
-     * Select specific fields to fetch from the DeviceUser
-     * 
-    **/
-    select?: DeviceUserSelect | null
-    /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: DeviceUserInclude | null
-    /**
-     * Filter which DeviceUser to delete.
-     * 
-    **/
-    where: DeviceUserWhereUniqueInput
-  }
-
-
-  /**
-   * DeviceUser deleteMany
-   */
-  export type DeviceUserDeleteManyArgs = {
-    /**
-     * Filter which DeviceUsers to delete
-     * 
-    **/
-    where?: DeviceUserWhereInput
-  }
-
-
-  /**
-   * DeviceUser: findUniqueOrThrow
-   */
-  export type DeviceUserFindUniqueOrThrowArgs = DeviceUserFindUniqueArgsBase
-      
-
-  /**
-   * DeviceUser: findFirstOrThrow
-   */
-  export type DeviceUserFindFirstOrThrowArgs = DeviceUserFindFirstArgsBase
-      
-
-  /**
-   * DeviceUser without action
-   */
-  export type DeviceUserArgs = {
-    /**
-     * Select specific fields to fetch from the DeviceUser
-     * 
-    **/
-    select?: DeviceUserSelect | null
-    /**
-     * Choose, which related nodes to fetch as well.
-     * 
-    **/
-    include?: DeviceUserInclude | null
-  }
-
-
-
-  /**
    * Model Notifications
    */
 
@@ -38739,6 +37812,7 @@ export namespace Prisma {
     message: string | null
     created_at: Date | null
     updated_at: Date | null
+    order_id: string | null
     type: TypeNotification | null
   }
 
@@ -38748,6 +37822,7 @@ export namespace Prisma {
     message: string | null
     created_at: Date | null
     updated_at: Date | null
+    order_id: string | null
     type: TypeNotification | null
   }
 
@@ -38757,6 +37832,7 @@ export namespace Prisma {
     message: number
     created_at: number
     updated_at: number
+    order_id: number
     type: number
     _all: number
   }
@@ -38768,6 +37844,7 @@ export namespace Prisma {
     message?: true
     created_at?: true
     updated_at?: true
+    order_id?: true
     type?: true
   }
 
@@ -38777,6 +37854,7 @@ export namespace Prisma {
     message?: true
     created_at?: true
     updated_at?: true
+    order_id?: true
     type?: true
   }
 
@@ -38786,6 +37864,7 @@ export namespace Prisma {
     message?: true
     created_at?: true
     updated_at?: true
+    order_id?: true
     type?: true
     _all?: true
   }
@@ -38874,6 +37953,7 @@ export namespace Prisma {
     message: string
     created_at: Date
     updated_at: Date
+    order_id: string | null
     type: TypeNotification
     _count: NotificationsCountAggregateOutputType | null
     _min: NotificationsMinAggregateOutputType | null
@@ -38900,6 +37980,8 @@ export namespace Prisma {
     message?: boolean
     created_at?: boolean
     updated_at?: boolean
+    order_id?: boolean
+    order?: boolean | OrderArgs
     type?: boolean
     sms_notification?: boolean | SmsNotificationFindManyArgs
     email_notification?: boolean | EmailNotificationFindManyArgs
@@ -38909,6 +37991,7 @@ export namespace Prisma {
   }
 
   export type NotificationsInclude = {
+    order?: boolean | OrderArgs
     sms_notification?: boolean | SmsNotificationFindManyArgs
     email_notification?: boolean | EmailNotificationFindManyArgs
     push_notification?: boolean | PushNotificationFindManyArgs
@@ -38927,6 +38010,7 @@ export namespace Prisma {
     ?'include' extends U
     ? Notifications  & {
     [P in TrueKeys<S['include']>]:
+        P extends 'order' ? OrderGetPayload<Exclude<S['include'], undefined | null>[P]> | null :
         P extends 'sms_notification' ? Array < SmsNotificationGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
         P extends 'email_notification' ? Array < EmailNotificationGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
         P extends 'push_notification' ? Array < PushNotificationGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
@@ -38936,6 +38020,7 @@ export namespace Prisma {
     : 'select' extends U
     ? {
     [P in TrueKeys<S['select']>]:
+        P extends 'order' ? OrderGetPayload<Exclude<S['select'], undefined | null>[P]> | null :
         P extends 'sms_notification' ? Array < SmsNotificationGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
         P extends 'email_notification' ? Array < EmailNotificationGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
         P extends 'push_notification' ? Array < PushNotificationGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
@@ -39314,6 +38399,8 @@ export namespace Prisma {
     private _requestPromise?;
     constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
     readonly [Symbol.toStringTag]: 'PrismaClientPromise';
+
+    order<T extends OrderArgs = {}>(args?: Subset<T, OrderArgs>): CheckSelect<T, Prisma__OrderClient<Order | Null>, Prisma__OrderClient<OrderGetPayload<T> | Null>>;
 
     sms_notification<T extends SmsNotificationFindManyArgs = {}>(args?: Subset<T, SmsNotificationFindManyArgs>): CheckSelect<T, PrismaPromise<Array<SmsNotification>| Null>, PrismaPromise<Array<SmsNotificationGetPayload<T>>| Null>>;
 
@@ -39704,6 +38791,8 @@ export namespace Prisma {
     clicked: string | null
     failed: string | null
     error_description: string | null
+    error_code: string | null
+    message_id: string | null
     created_at: Date | null
     updated_at: Date | null
   }
@@ -39724,6 +38813,8 @@ export namespace Prisma {
     clicked: string | null
     failed: string | null
     error_description: string | null
+    error_code: string | null
+    message_id: string | null
     created_at: Date | null
     updated_at: Date | null
   }
@@ -39744,6 +38835,8 @@ export namespace Prisma {
     clicked: number
     failed: number
     error_description: number
+    error_code: number
+    message_id: number
     created_at: number
     updated_at: number
     _all: number
@@ -39766,6 +38859,8 @@ export namespace Prisma {
     clicked?: true
     failed?: true
     error_description?: true
+    error_code?: true
+    message_id?: true
     created_at?: true
     updated_at?: true
   }
@@ -39786,6 +38881,8 @@ export namespace Prisma {
     clicked?: true
     failed?: true
     error_description?: true
+    error_code?: true
+    message_id?: true
     created_at?: true
     updated_at?: true
   }
@@ -39806,6 +38903,8 @@ export namespace Prisma {
     clicked?: true
     failed?: true
     error_description?: true
+    error_code?: true
+    message_id?: true
     created_at?: true
     updated_at?: true
     _all?: true
@@ -39905,6 +39004,8 @@ export namespace Prisma {
     clicked: string | null
     failed: string | null
     error_description: string | null
+    error_code: string | null
+    message_id: string | null
     created_at: Date
     updated_at: Date
     _count: EmailNotificationCountAggregateOutputType | null
@@ -39943,6 +39044,8 @@ export namespace Prisma {
     clicked?: boolean
     failed?: boolean
     error_description?: boolean
+    error_code?: boolean
+    message_id?: boolean
     created_at?: boolean
     updated_at?: boolean
   }
@@ -49647,20 +48750,11 @@ export namespace Prisma {
     version: 'version',
     token_notification: 'token_notification',
     created_at: 'created_at',
-    updated_at: 'updated_at'
+    updated_at: 'updated_at',
+    user_id: 'user_id'
   };
 
   export type DeviceScalarFieldEnum = (typeof DeviceScalarFieldEnum)[keyof typeof DeviceScalarFieldEnum]
-
-
-  export const DeviceUserScalarFieldEnum: {
-    device_id: 'device_id',
-    user_id: 'user_id',
-    created_at: 'created_at',
-    updated_at: 'updated_at'
-  };
-
-  export type DeviceUserScalarFieldEnum = (typeof DeviceUserScalarFieldEnum)[keyof typeof DeviceUserScalarFieldEnum]
 
 
   export const EmailNotificationScalarFieldEnum: {
@@ -49679,6 +48773,8 @@ export namespace Prisma {
     clicked: 'clicked',
     failed: 'failed',
     error_description: 'error_description',
+    error_code: 'error_code',
+    message_id: 'message_id',
     created_at: 'created_at',
     updated_at: 'updated_at'
   };
@@ -49772,6 +48868,7 @@ export namespace Prisma {
     message: 'message',
     created_at: 'created_at',
     updated_at: 'updated_at',
+    order_id: 'order_id',
     type: 'type'
   };
 
@@ -50514,7 +49611,7 @@ export namespace Prisma {
     created_at?: DateTimeFilter | Date | string
     updated_at?: DateTimeFilter | Date | string
     lastLogin?: DateTimeFilter | Date | string
-    device_user?: DeviceUserListRelationFilter
+    device?: DeviceListRelationFilter
     account_user?: AccountUserListRelationFilter
     orders?: OrderListRelationFilter
     user_addresses?: UserAddressListRelationFilter
@@ -50540,7 +49637,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     lastLogin?: SortOrder
-    device_user?: DeviceUserOrderByRelationAggregateInput
+    device?: DeviceOrderByRelationAggregateInput
     account_user?: AccountUserOrderByRelationAggregateInput
     orders?: OrderOrderByRelationAggregateInput
     user_addresses?: UserAddressOrderByRelationAggregateInput
@@ -51862,6 +50959,7 @@ export namespace Prisma {
     total?: FloatFilter | number
     discount?: FloatFilter | number
     discoun_type?: EnumOrderDiscountTypeNullableFilter | OrderDiscountType | null
+    notifications?: NotificationsListRelationFilter
   }
 
   export type OrderOrderByWithRelationInput = {
@@ -51890,6 +50988,7 @@ export namespace Prisma {
     total?: SortOrder
     discount?: SortOrder
     discoun_type?: SortOrder
+    notifications?: NotificationsOrderByRelationAggregateInput
   }
 
   export type OrderWhereUniqueInput = {
@@ -52275,7 +51374,8 @@ export namespace Prisma {
     token_notification?: StringFilter | string
     created_at?: DateTimeFilter | Date | string
     updated_at?: DateTimeFilter | Date | string
-    device_user?: DeviceUserListRelationFilter
+    user_id?: StringNullableFilter | string | null
+    user?: XOR<UserRelationFilter, UserWhereInput> | null
     push_notification?: PushNotificationListRelationFilter
     sms_notification?: SmsNotificationListRelationFilter
     device_notification?: DeviceNotificationListRelationFilter
@@ -52290,7 +51390,8 @@ export namespace Prisma {
     token_notification?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
-    device_user?: DeviceUserOrderByRelationAggregateInput
+    user_id?: SortOrder
+    user?: UserOrderByWithRelationInput
     push_notification?: PushNotificationOrderByRelationAggregateInput
     sms_notification?: SmsNotificationOrderByRelationAggregateInput
     device_notification?: DeviceNotificationOrderByRelationAggregateInput
@@ -52311,6 +51412,7 @@ export namespace Prisma {
     token_notification?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    user_id?: SortOrder
     _count?: DeviceCountOrderByAggregateInput
     _avg?: DeviceAvgOrderByAggregateInput
     _max?: DeviceMaxOrderByAggregateInput
@@ -52330,51 +51432,7 @@ export namespace Prisma {
     token_notification?: StringWithAggregatesFilter | string
     created_at?: DateTimeWithAggregatesFilter | Date | string
     updated_at?: DateTimeWithAggregatesFilter | Date | string
-  }
-
-  export type DeviceUserWhereInput = {
-    AND?: Enumerable<DeviceUserWhereInput>
-    OR?: Enumerable<DeviceUserWhereInput>
-    NOT?: Enumerable<DeviceUserWhereInput>
-    device_id?: StringFilter | string
-    device?: XOR<DeviceRelationFilter, DeviceWhereInput>
-    user_id?: StringFilter | string
-    user?: XOR<UserRelationFilter, UserWhereInput>
-    created_at?: DateTimeFilter | Date | string
-    updated_at?: DateTimeFilter | Date | string
-  }
-
-  export type DeviceUserOrderByWithRelationInput = {
-    device_id?: SortOrder
-    device?: DeviceOrderByWithRelationInput
-    user_id?: SortOrder
-    user?: UserOrderByWithRelationInput
-    created_at?: SortOrder
-    updated_at?: SortOrder
-  }
-
-  export type DeviceUserWhereUniqueInput = {
-    device_id_user_id?: DeviceUserDevice_idUser_idCompoundUniqueInput
-  }
-
-  export type DeviceUserOrderByWithAggregationInput = {
-    device_id?: SortOrder
-    user_id?: SortOrder
-    created_at?: SortOrder
-    updated_at?: SortOrder
-    _count?: DeviceUserCountOrderByAggregateInput
-    _max?: DeviceUserMaxOrderByAggregateInput
-    _min?: DeviceUserMinOrderByAggregateInput
-  }
-
-  export type DeviceUserScalarWhereWithAggregatesInput = {
-    AND?: Enumerable<DeviceUserScalarWhereWithAggregatesInput>
-    OR?: Enumerable<DeviceUserScalarWhereWithAggregatesInput>
-    NOT?: Enumerable<DeviceUserScalarWhereWithAggregatesInput>
-    device_id?: StringWithAggregatesFilter | string
-    user_id?: StringWithAggregatesFilter | string
-    created_at?: DateTimeWithAggregatesFilter | Date | string
-    updated_at?: DateTimeWithAggregatesFilter | Date | string
+    user_id?: StringNullableWithAggregatesFilter | string | null
   }
 
   export type NotificationsWhereInput = {
@@ -52386,6 +51444,8 @@ export namespace Prisma {
     message?: StringFilter | string
     created_at?: DateTimeFilter | Date | string
     updated_at?: DateTimeFilter | Date | string
+    order_id?: StringNullableFilter | string | null
+    order?: XOR<OrderRelationFilter, OrderWhereInput> | null
     type?: EnumTypeNotificationFilter | TypeNotification
     sms_notification?: SmsNotificationListRelationFilter
     email_notification?: EmailNotificationListRelationFilter
@@ -52399,6 +51459,8 @@ export namespace Prisma {
     message?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    order_id?: SortOrder
+    order?: OrderOrderByWithRelationInput
     type?: SortOrder
     sms_notification?: SmsNotificationOrderByRelationAggregateInput
     email_notification?: EmailNotificationOrderByRelationAggregateInput
@@ -52416,6 +51478,7 @@ export namespace Prisma {
     message?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    order_id?: SortOrder
     type?: SortOrder
     _count?: NotificationsCountOrderByAggregateInput
     _max?: NotificationsMaxOrderByAggregateInput
@@ -52431,6 +51494,7 @@ export namespace Prisma {
     message?: StringWithAggregatesFilter | string
     created_at?: DateTimeWithAggregatesFilter | Date | string
     updated_at?: DateTimeWithAggregatesFilter | Date | string
+    order_id?: StringNullableWithAggregatesFilter | string | null
     type?: EnumTypeNotificationWithAggregatesFilter | TypeNotification
   }
 
@@ -52454,6 +51518,8 @@ export namespace Prisma {
     clicked?: StringNullableFilter | string | null
     failed?: StringNullableFilter | string | null
     error_description?: StringNullableFilter | string | null
+    error_code?: StringNullableFilter | string | null
+    message_id?: StringNullableFilter | string | null
     created_at?: DateTimeFilter | Date | string
     updated_at?: DateTimeFilter | Date | string
   }
@@ -52475,12 +51541,15 @@ export namespace Prisma {
     clicked?: SortOrder
     failed?: SortOrder
     error_description?: SortOrder
+    error_code?: SortOrder
+    message_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
 
   export type EmailNotificationWhereUniqueInput = {
     id?: string
+    message_id?: string
   }
 
   export type EmailNotificationOrderByWithAggregationInput = {
@@ -52499,6 +51568,8 @@ export namespace Prisma {
     clicked?: SortOrder
     failed?: SortOrder
     error_description?: SortOrder
+    error_code?: SortOrder
+    message_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     _count?: EmailNotificationCountOrderByAggregateInput
@@ -52525,6 +51596,8 @@ export namespace Prisma {
     clicked?: StringNullableWithAggregatesFilter | string | null
     failed?: StringNullableWithAggregatesFilter | string | null
     error_description?: StringNullableWithAggregatesFilter | string | null
+    error_code?: StringNullableWithAggregatesFilter | string | null
+    message_id?: StringNullableWithAggregatesFilter | string | null
     created_at?: DateTimeWithAggregatesFilter | Date | string
     updated_at?: DateTimeWithAggregatesFilter | Date | string
   }
@@ -53606,7 +52679,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     lastLogin?: Date | string
-    device_user?: DeviceUserCreateNestedManyWithoutUserInput
+    device?: DeviceCreateNestedManyWithoutUserInput
     account_user?: AccountUserCreateNestedManyWithoutUserInput
     orders?: OrderCreateNestedManyWithoutUserInput
     user_addresses?: UserAddressCreateNestedManyWithoutUserInput
@@ -53632,7 +52705,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     lastLogin?: Date | string
-    device_user?: DeviceUserUncheckedCreateNestedManyWithoutUserInput
+    device?: DeviceUncheckedCreateNestedManyWithoutUserInput
     account_user?: AccountUserUncheckedCreateNestedManyWithoutUserInput
     orders?: OrderUncheckedCreateNestedManyWithoutUserInput
     user_addresses?: UserAddressUncheckedCreateNestedManyWithoutUserInput
@@ -53658,7 +52731,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLogin?: DateTimeFieldUpdateOperationsInput | Date | string
-    device_user?: DeviceUserUpdateManyWithoutUserNestedInput
+    device?: DeviceUpdateManyWithoutUserNestedInput
     account_user?: AccountUserUpdateManyWithoutUserNestedInput
     orders?: OrderUpdateManyWithoutUserNestedInput
     user_addresses?: UserAddressUpdateManyWithoutUserNestedInput
@@ -53684,7 +52757,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLogin?: DateTimeFieldUpdateOperationsInput | Date | string
-    device_user?: DeviceUserUncheckedUpdateManyWithoutUserNestedInput
+    device?: DeviceUncheckedUpdateManyWithoutUserNestedInput
     account_user?: AccountUserUncheckedUpdateManyWithoutUserNestedInput
     orders?: OrderUncheckedUpdateManyWithoutUserNestedInput
     user_addresses?: UserAddressUncheckedUpdateManyWithoutUserNestedInput
@@ -55276,6 +54349,7 @@ export namespace Prisma {
     total?: number
     discount?: number
     discoun_type?: OrderDiscountType | null
+    notifications?: NotificationsCreateNestedManyWithoutOrderInput
   }
 
   export type OrderUncheckedCreateInput = {
@@ -55297,6 +54371,7 @@ export namespace Prisma {
     total?: number
     discount?: number
     discoun_type?: OrderDiscountType | null
+    notifications?: NotificationsUncheckedCreateNestedManyWithoutOrderInput
   }
 
   export type OrderUpdateInput = {
@@ -55318,6 +54393,7 @@ export namespace Prisma {
     total?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     discoun_type?: NullableEnumOrderDiscountTypeFieldUpdateOperationsInput | OrderDiscountType | null
+    notifications?: NotificationsUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateInput = {
@@ -55339,6 +54415,7 @@ export namespace Prisma {
     total?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     discoun_type?: NullableEnumOrderDiscountTypeFieldUpdateOperationsInput | OrderDiscountType | null
+    notifications?: NotificationsUncheckedUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderCreateManyInput = {
@@ -55808,7 +54885,7 @@ export namespace Prisma {
     token_notification: string
     created_at?: Date | string
     updated_at?: Date | string
-    device_user?: DeviceUserCreateNestedManyWithoutDeviceInput
+    user?: UserCreateNestedOneWithoutDeviceInput
     push_notification?: PushNotificationCreateNestedManyWithoutDeviceInput
     sms_notification?: SmsNotificationCreateNestedManyWithoutDeviceInput
     device_notification?: DeviceNotificationCreateNestedManyWithoutDeviceInput
@@ -55823,7 +54900,7 @@ export namespace Prisma {
     token_notification: string
     created_at?: Date | string
     updated_at?: Date | string
-    device_user?: DeviceUserUncheckedCreateNestedManyWithoutDeviceInput
+    user_id?: string | null
     push_notification?: PushNotificationUncheckedCreateNestedManyWithoutDeviceInput
     sms_notification?: SmsNotificationUncheckedCreateNestedManyWithoutDeviceInput
     device_notification?: DeviceNotificationUncheckedCreateNestedManyWithoutDeviceInput
@@ -55838,7 +54915,7 @@ export namespace Prisma {
     token_notification?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    device_user?: DeviceUserUpdateManyWithoutDeviceNestedInput
+    user?: UserUpdateOneWithoutDeviceNestedInput
     push_notification?: PushNotificationUpdateManyWithoutDeviceNestedInput
     sms_notification?: SmsNotificationUpdateManyWithoutDeviceNestedInput
     device_notification?: DeviceNotificationUpdateManyWithoutDeviceNestedInput
@@ -55853,7 +54930,7 @@ export namespace Prisma {
     token_notification?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    device_user?: DeviceUserUncheckedUpdateManyWithoutDeviceNestedInput
+    user_id?: NullableStringFieldUpdateOperationsInput | string | null
     push_notification?: PushNotificationUncheckedUpdateManyWithoutDeviceNestedInput
     sms_notification?: SmsNotificationUncheckedUpdateManyWithoutDeviceNestedInput
     device_notification?: DeviceNotificationUncheckedUpdateManyWithoutDeviceNestedInput
@@ -55868,6 +54945,7 @@ export namespace Prisma {
     token_notification: string
     created_at?: Date | string
     updated_at?: Date | string
+    user_id?: string | null
   }
 
   export type DeviceUpdateManyMutationInput = {
@@ -55890,53 +54968,7 @@ export namespace Prisma {
     token_notification?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type DeviceUserCreateInput = {
-    device: DeviceCreateNestedOneWithoutDevice_userInput
-    user: UserCreateNestedOneWithoutDevice_userInput
-    created_at?: Date | string
-    updated_at?: Date | string
-  }
-
-  export type DeviceUserUncheckedCreateInput = {
-    device_id: string
-    user_id: string
-    created_at?: Date | string
-    updated_at?: Date | string
-  }
-
-  export type DeviceUserUpdateInput = {
-    device?: DeviceUpdateOneRequiredWithoutDevice_userNestedInput
-    user?: UserUpdateOneRequiredWithoutDevice_userNestedInput
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type DeviceUserUncheckedUpdateInput = {
-    device_id?: StringFieldUpdateOperationsInput | string
-    user_id?: StringFieldUpdateOperationsInput | string
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type DeviceUserCreateManyInput = {
-    device_id: string
-    user_id: string
-    created_at?: Date | string
-    updated_at?: Date | string
-  }
-
-  export type DeviceUserUpdateManyMutationInput = {
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type DeviceUserUncheckedUpdateManyInput = {
-    device_id?: StringFieldUpdateOperationsInput | string
-    user_id?: StringFieldUpdateOperationsInput | string
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    user_id?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type NotificationsCreateInput = {
@@ -55945,6 +54977,7 @@ export namespace Prisma {
     message: string
     created_at?: Date | string
     updated_at?: Date | string
+    order?: OrderCreateNestedOneWithoutNotificationsInput
     type: TypeNotification
     sms_notification?: SmsNotificationCreateNestedManyWithoutNotificationInput
     email_notification?: EmailNotificationCreateNestedManyWithoutNotificationInput
@@ -55958,6 +54991,7 @@ export namespace Prisma {
     message: string
     created_at?: Date | string
     updated_at?: Date | string
+    order_id?: string | null
     type: TypeNotification
     sms_notification?: SmsNotificationUncheckedCreateNestedManyWithoutNotificationInput
     email_notification?: EmailNotificationUncheckedCreateNestedManyWithoutNotificationInput
@@ -55971,6 +55005,7 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    order?: OrderUpdateOneWithoutNotificationsNestedInput
     type?: EnumTypeNotificationFieldUpdateOperationsInput | TypeNotification
     sms_notification?: SmsNotificationUpdateManyWithoutNotificationNestedInput
     email_notification?: EmailNotificationUpdateManyWithoutNotificationNestedInput
@@ -55984,6 +55019,7 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    order_id?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumTypeNotificationFieldUpdateOperationsInput | TypeNotification
     sms_notification?: SmsNotificationUncheckedUpdateManyWithoutNotificationNestedInput
     email_notification?: EmailNotificationUncheckedUpdateManyWithoutNotificationNestedInput
@@ -55997,6 +55033,7 @@ export namespace Prisma {
     message: string
     created_at?: Date | string
     updated_at?: Date | string
+    order_id?: string | null
     type: TypeNotification
   }
 
@@ -56015,6 +55052,7 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    order_id?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumTypeNotificationFieldUpdateOperationsInput | TypeNotification
   }
 
@@ -56034,6 +55072,8 @@ export namespace Prisma {
     clicked?: string | null
     failed?: string | null
     error_description?: string | null
+    error_code?: string | null
+    message_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -56054,6 +55094,8 @@ export namespace Prisma {
     clicked?: string | null
     failed?: string | null
     error_description?: string | null
+    error_code?: string | null
+    message_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -56074,6 +55116,8 @@ export namespace Prisma {
     clicked?: NullableStringFieldUpdateOperationsInput | string | null
     failed?: NullableStringFieldUpdateOperationsInput | string | null
     error_description?: NullableStringFieldUpdateOperationsInput | string | null
+    error_code?: NullableStringFieldUpdateOperationsInput | string | null
+    message_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -56094,6 +55138,8 @@ export namespace Prisma {
     clicked?: NullableStringFieldUpdateOperationsInput | string | null
     failed?: NullableStringFieldUpdateOperationsInput | string | null
     error_description?: NullableStringFieldUpdateOperationsInput | string | null
+    error_code?: NullableStringFieldUpdateOperationsInput | string | null
+    message_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -56114,6 +55160,8 @@ export namespace Prisma {
     clicked?: string | null
     failed?: string | null
     error_description?: string | null
+    error_code?: string | null
+    message_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -56133,6 +55181,8 @@ export namespace Prisma {
     clicked?: NullableStringFieldUpdateOperationsInput | string | null
     failed?: NullableStringFieldUpdateOperationsInput | string | null
     error_description?: NullableStringFieldUpdateOperationsInput | string | null
+    error_code?: NullableStringFieldUpdateOperationsInput | string | null
+    message_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -56153,6 +55203,8 @@ export namespace Prisma {
     clicked?: NullableStringFieldUpdateOperationsInput | string | null
     failed?: NullableStringFieldUpdateOperationsInput | string | null
     error_description?: NullableStringFieldUpdateOperationsInput | string | null
+    error_code?: NullableStringFieldUpdateOperationsInput | string | null
+    message_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -57340,10 +56392,10 @@ export namespace Prisma {
     not?: NestedBoolNullableFilter | boolean | null
   }
 
-  export type DeviceUserListRelationFilter = {
-    every?: DeviceUserWhereInput
-    some?: DeviceUserWhereInput
-    none?: DeviceUserWhereInput
+  export type DeviceListRelationFilter = {
+    every?: DeviceWhereInput
+    some?: DeviceWhereInput
+    none?: DeviceWhereInput
   }
 
   export type UserAddressListRelationFilter = {
@@ -57352,7 +56404,7 @@ export namespace Prisma {
     none?: UserAddressWhereInput
   }
 
-  export type DeviceUserOrderByRelationAggregateInput = {
+  export type DeviceOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -57446,8 +56498,8 @@ export namespace Prisma {
   }
 
   export type UserRelationFilter = {
-    is?: UserWhereInput
-    isNot?: UserWhereInput
+    is?: UserWhereInput | null
+    isNot?: UserWhereInput | null
   }
 
   export type UserAddressCountOrderByAggregateInput = {
@@ -58533,6 +57585,16 @@ export namespace Prisma {
     not?: NestedEnumOrderDiscountTypeNullableFilter | OrderDiscountType | null
   }
 
+  export type NotificationsListRelationFilter = {
+    every?: NotificationsWhereInput
+    some?: NotificationsWhereInput
+    none?: NotificationsWhereInput
+  }
+
+  export type NotificationsOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type OrderCountOrderByAggregateInput = {
     id?: SortOrder
     external_id?: SortOrder
@@ -58766,8 +57828,8 @@ export namespace Prisma {
   }
 
   export type OrderRelationFilter = {
-    is?: OrderWhereInput
-    isNot?: OrderWhereInput
+    is?: OrderWhereInput | null
+    isNot?: OrderWhereInput | null
   }
 
   export type IntFilter = {
@@ -58909,6 +57971,7 @@ export namespace Prisma {
     token_notification?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    user_id?: SortOrder
   }
 
   export type DeviceAvgOrderByAggregateInput = {
@@ -58924,6 +57987,7 @@ export namespace Prisma {
     token_notification?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    user_id?: SortOrder
   }
 
   export type DeviceMinOrderByAggregateInput = {
@@ -58935,6 +57999,7 @@ export namespace Prisma {
     token_notification?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    user_id?: SortOrder
   }
 
   export type DeviceSumOrderByAggregateInput = {
@@ -58949,37 +58014,6 @@ export namespace Prisma {
     _count?: NestedIntFilter
     _min?: NestedEnumPlatformTypeFilter
     _max?: NestedEnumPlatformTypeFilter
-  }
-
-  export type DeviceRelationFilter = {
-    is?: DeviceWhereInput
-    isNot?: DeviceWhereInput
-  }
-
-  export type DeviceUserDevice_idUser_idCompoundUniqueInput = {
-    device_id: string
-    user_id: string
-  }
-
-  export type DeviceUserCountOrderByAggregateInput = {
-    device_id?: SortOrder
-    user_id?: SortOrder
-    created_at?: SortOrder
-    updated_at?: SortOrder
-  }
-
-  export type DeviceUserMaxOrderByAggregateInput = {
-    device_id?: SortOrder
-    user_id?: SortOrder
-    created_at?: SortOrder
-    updated_at?: SortOrder
-  }
-
-  export type DeviceUserMinOrderByAggregateInput = {
-    device_id?: SortOrder
-    user_id?: SortOrder
-    created_at?: SortOrder
-    updated_at?: SortOrder
   }
 
   export type EnumTypeNotificationFilter = {
@@ -59005,6 +58039,7 @@ export namespace Prisma {
     message?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    order_id?: SortOrder
     type?: SortOrder
   }
 
@@ -59014,6 +58049,7 @@ export namespace Prisma {
     message?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    order_id?: SortOrder
     type?: SortOrder
   }
 
@@ -59023,6 +58059,7 @@ export namespace Prisma {
     message?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    order_id?: SortOrder
     type?: SortOrder
   }
 
@@ -59064,6 +58101,8 @@ export namespace Prisma {
     clicked?: SortOrder
     failed?: SortOrder
     error_description?: SortOrder
+    error_code?: SortOrder
+    message_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -59084,6 +58123,8 @@ export namespace Prisma {
     clicked?: SortOrder
     failed?: SortOrder
     error_description?: SortOrder
+    error_code?: SortOrder
+    message_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -59104,6 +58145,8 @@ export namespace Prisma {
     clicked?: SortOrder
     failed?: SortOrder
     error_description?: SortOrder
+    error_code?: SortOrder
+    message_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -59116,6 +58159,11 @@ export namespace Prisma {
     _count?: NestedIntFilter
     _min?: NestedEnumEmailTypeNotificationFilter
     _max?: NestedEnumEmailTypeNotificationFilter
+  }
+
+  export type DeviceRelationFilter = {
+    is?: DeviceWhereInput
+    isNot?: DeviceWhereInput
   }
 
   export type SmsNotificationCountOrderByAggregateInput = {
@@ -60183,11 +59231,11 @@ export namespace Prisma {
     update?: XOR<DeliveryUpdateWithoutAccount_deliveriesInput, DeliveryUncheckedUpdateWithoutAccount_deliveriesInput>
   }
 
-  export type DeviceUserCreateNestedManyWithoutUserInput = {
-    create?: XOR<Enumerable<DeviceUserCreateWithoutUserInput>, Enumerable<DeviceUserUncheckedCreateWithoutUserInput>>
-    connectOrCreate?: Enumerable<DeviceUserCreateOrConnectWithoutUserInput>
-    createMany?: DeviceUserCreateManyUserInputEnvelope
-    connect?: Enumerable<DeviceUserWhereUniqueInput>
+  export type DeviceCreateNestedManyWithoutUserInput = {
+    create?: XOR<Enumerable<DeviceCreateWithoutUserInput>, Enumerable<DeviceUncheckedCreateWithoutUserInput>>
+    connectOrCreate?: Enumerable<DeviceCreateOrConnectWithoutUserInput>
+    createMany?: DeviceCreateManyUserInputEnvelope
+    connect?: Enumerable<DeviceWhereUniqueInput>
   }
 
   export type AccountUserCreateNestedManyWithoutUserInput = {
@@ -60218,11 +59266,11 @@ export namespace Prisma {
     connect?: Enumerable<CustomerWhereUniqueInput>
   }
 
-  export type DeviceUserUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<Enumerable<DeviceUserCreateWithoutUserInput>, Enumerable<DeviceUserUncheckedCreateWithoutUserInput>>
-    connectOrCreate?: Enumerable<DeviceUserCreateOrConnectWithoutUserInput>
-    createMany?: DeviceUserCreateManyUserInputEnvelope
-    connect?: Enumerable<DeviceUserWhereUniqueInput>
+  export type DeviceUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<Enumerable<DeviceCreateWithoutUserInput>, Enumerable<DeviceUncheckedCreateWithoutUserInput>>
+    connectOrCreate?: Enumerable<DeviceCreateOrConnectWithoutUserInput>
+    createMany?: DeviceCreateManyUserInputEnvelope
+    connect?: Enumerable<DeviceWhereUniqueInput>
   }
 
   export type AccountUserUncheckedCreateNestedManyWithoutUserInput = {
@@ -60261,18 +59309,18 @@ export namespace Prisma {
     set?: boolean | null
   }
 
-  export type DeviceUserUpdateManyWithoutUserNestedInput = {
-    create?: XOR<Enumerable<DeviceUserCreateWithoutUserInput>, Enumerable<DeviceUserUncheckedCreateWithoutUserInput>>
-    connectOrCreate?: Enumerable<DeviceUserCreateOrConnectWithoutUserInput>
-    upsert?: Enumerable<DeviceUserUpsertWithWhereUniqueWithoutUserInput>
-    createMany?: DeviceUserCreateManyUserInputEnvelope
-    set?: Enumerable<DeviceUserWhereUniqueInput>
-    disconnect?: Enumerable<DeviceUserWhereUniqueInput>
-    delete?: Enumerable<DeviceUserWhereUniqueInput>
-    connect?: Enumerable<DeviceUserWhereUniqueInput>
-    update?: Enumerable<DeviceUserUpdateWithWhereUniqueWithoutUserInput>
-    updateMany?: Enumerable<DeviceUserUpdateManyWithWhereWithoutUserInput>
-    deleteMany?: Enumerable<DeviceUserScalarWhereInput>
+  export type DeviceUpdateManyWithoutUserNestedInput = {
+    create?: XOR<Enumerable<DeviceCreateWithoutUserInput>, Enumerable<DeviceUncheckedCreateWithoutUserInput>>
+    connectOrCreate?: Enumerable<DeviceCreateOrConnectWithoutUserInput>
+    upsert?: Enumerable<DeviceUpsertWithWhereUniqueWithoutUserInput>
+    createMany?: DeviceCreateManyUserInputEnvelope
+    set?: Enumerable<DeviceWhereUniqueInput>
+    disconnect?: Enumerable<DeviceWhereUniqueInput>
+    delete?: Enumerable<DeviceWhereUniqueInput>
+    connect?: Enumerable<DeviceWhereUniqueInput>
+    update?: Enumerable<DeviceUpdateWithWhereUniqueWithoutUserInput>
+    updateMany?: Enumerable<DeviceUpdateManyWithWhereWithoutUserInput>
+    deleteMany?: Enumerable<DeviceScalarWhereInput>
   }
 
   export type AccountUserUpdateManyWithoutUserNestedInput = {
@@ -60331,18 +59379,18 @@ export namespace Prisma {
     deleteMany?: Enumerable<CustomerScalarWhereInput>
   }
 
-  export type DeviceUserUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<Enumerable<DeviceUserCreateWithoutUserInput>, Enumerable<DeviceUserUncheckedCreateWithoutUserInput>>
-    connectOrCreate?: Enumerable<DeviceUserCreateOrConnectWithoutUserInput>
-    upsert?: Enumerable<DeviceUserUpsertWithWhereUniqueWithoutUserInput>
-    createMany?: DeviceUserCreateManyUserInputEnvelope
-    set?: Enumerable<DeviceUserWhereUniqueInput>
-    disconnect?: Enumerable<DeviceUserWhereUniqueInput>
-    delete?: Enumerable<DeviceUserWhereUniqueInput>
-    connect?: Enumerable<DeviceUserWhereUniqueInput>
-    update?: Enumerable<DeviceUserUpdateWithWhereUniqueWithoutUserInput>
-    updateMany?: Enumerable<DeviceUserUpdateManyWithWhereWithoutUserInput>
-    deleteMany?: Enumerable<DeviceUserScalarWhereInput>
+  export type DeviceUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<Enumerable<DeviceCreateWithoutUserInput>, Enumerable<DeviceUncheckedCreateWithoutUserInput>>
+    connectOrCreate?: Enumerable<DeviceCreateOrConnectWithoutUserInput>
+    upsert?: Enumerable<DeviceUpsertWithWhereUniqueWithoutUserInput>
+    createMany?: DeviceCreateManyUserInputEnvelope
+    set?: Enumerable<DeviceWhereUniqueInput>
+    disconnect?: Enumerable<DeviceWhereUniqueInput>
+    delete?: Enumerable<DeviceWhereUniqueInput>
+    connect?: Enumerable<DeviceWhereUniqueInput>
+    update?: Enumerable<DeviceUpdateWithWhereUniqueWithoutUserInput>
+    updateMany?: Enumerable<DeviceUpdateManyWithWhereWithoutUserInput>
+    deleteMany?: Enumerable<DeviceScalarWhereInput>
   }
 
   export type AccountUserUncheckedUpdateManyWithoutUserNestedInput = {
@@ -61817,6 +60865,13 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type NotificationsCreateNestedManyWithoutOrderInput = {
+    create?: XOR<Enumerable<NotificationsCreateWithoutOrderInput>, Enumerable<NotificationsUncheckedCreateWithoutOrderInput>>
+    connectOrCreate?: Enumerable<NotificationsCreateOrConnectWithoutOrderInput>
+    createMany?: NotificationsCreateManyOrderInputEnvelope
+    connect?: Enumerable<NotificationsWhereUniqueInput>
+  }
+
   export type OrderItemUncheckedCreateNestedManyWithoutOrderInput = {
     create?: XOR<Enumerable<OrderItemCreateWithoutOrderInput>, Enumerable<OrderItemUncheckedCreateWithoutOrderInput>>
     connectOrCreate?: Enumerable<OrderItemCreateOrConnectWithoutOrderInput>
@@ -61829,6 +60884,13 @@ export namespace Prisma {
     connectOrCreate?: Enumerable<InvoiceCreateOrConnectWithoutOrderInput>
     createMany?: InvoiceCreateManyOrderInputEnvelope
     connect?: Enumerable<InvoiceWhereUniqueInput>
+  }
+
+  export type NotificationsUncheckedCreateNestedManyWithoutOrderInput = {
+    create?: XOR<Enumerable<NotificationsCreateWithoutOrderInput>, Enumerable<NotificationsUncheckedCreateWithoutOrderInput>>
+    connectOrCreate?: Enumerable<NotificationsCreateOrConnectWithoutOrderInput>
+    createMany?: NotificationsCreateManyOrderInputEnvelope
+    connect?: Enumerable<NotificationsWhereUniqueInput>
   }
 
   export type AccountUpdateOneRequiredWithoutOrderNestedInput = {
@@ -61925,6 +60987,20 @@ export namespace Prisma {
     set?: OrderDiscountType | null
   }
 
+  export type NotificationsUpdateManyWithoutOrderNestedInput = {
+    create?: XOR<Enumerable<NotificationsCreateWithoutOrderInput>, Enumerable<NotificationsUncheckedCreateWithoutOrderInput>>
+    connectOrCreate?: Enumerable<NotificationsCreateOrConnectWithoutOrderInput>
+    upsert?: Enumerable<NotificationsUpsertWithWhereUniqueWithoutOrderInput>
+    createMany?: NotificationsCreateManyOrderInputEnvelope
+    set?: Enumerable<NotificationsWhereUniqueInput>
+    disconnect?: Enumerable<NotificationsWhereUniqueInput>
+    delete?: Enumerable<NotificationsWhereUniqueInput>
+    connect?: Enumerable<NotificationsWhereUniqueInput>
+    update?: Enumerable<NotificationsUpdateWithWhereUniqueWithoutOrderInput>
+    updateMany?: Enumerable<NotificationsUpdateManyWithWhereWithoutOrderInput>
+    deleteMany?: Enumerable<NotificationsScalarWhereInput>
+  }
+
   export type OrderItemUncheckedUpdateManyWithoutOrderNestedInput = {
     create?: XOR<Enumerable<OrderItemCreateWithoutOrderInput>, Enumerable<OrderItemUncheckedCreateWithoutOrderInput>>
     connectOrCreate?: Enumerable<OrderItemCreateOrConnectWithoutOrderInput>
@@ -61951,6 +61027,20 @@ export namespace Prisma {
     update?: Enumerable<InvoiceUpdateWithWhereUniqueWithoutOrderInput>
     updateMany?: Enumerable<InvoiceUpdateManyWithWhereWithoutOrderInput>
     deleteMany?: Enumerable<InvoiceScalarWhereInput>
+  }
+
+  export type NotificationsUncheckedUpdateManyWithoutOrderNestedInput = {
+    create?: XOR<Enumerable<NotificationsCreateWithoutOrderInput>, Enumerable<NotificationsUncheckedCreateWithoutOrderInput>>
+    connectOrCreate?: Enumerable<NotificationsCreateOrConnectWithoutOrderInput>
+    upsert?: Enumerable<NotificationsUpsertWithWhereUniqueWithoutOrderInput>
+    createMany?: NotificationsCreateManyOrderInputEnvelope
+    set?: Enumerable<NotificationsWhereUniqueInput>
+    disconnect?: Enumerable<NotificationsWhereUniqueInput>
+    delete?: Enumerable<NotificationsWhereUniqueInput>
+    connect?: Enumerable<NotificationsWhereUniqueInput>
+    update?: Enumerable<NotificationsUpdateWithWhereUniqueWithoutOrderInput>
+    updateMany?: Enumerable<NotificationsUpdateManyWithWhereWithoutOrderInput>
+    deleteMany?: Enumerable<NotificationsScalarWhereInput>
   }
 
   export type OrderCreateNestedManyWithoutOrder_statusInput = {
@@ -62233,11 +61323,10 @@ export namespace Prisma {
     update?: XOR<AccountUpdateWithoutInvoicesInput, AccountUncheckedUpdateWithoutInvoicesInput>
   }
 
-  export type DeviceUserCreateNestedManyWithoutDeviceInput = {
-    create?: XOR<Enumerable<DeviceUserCreateWithoutDeviceInput>, Enumerable<DeviceUserUncheckedCreateWithoutDeviceInput>>
-    connectOrCreate?: Enumerable<DeviceUserCreateOrConnectWithoutDeviceInput>
-    createMany?: DeviceUserCreateManyDeviceInputEnvelope
-    connect?: Enumerable<DeviceUserWhereUniqueInput>
+  export type UserCreateNestedOneWithoutDeviceInput = {
+    create?: XOR<UserCreateWithoutDeviceInput, UserUncheckedCreateWithoutDeviceInput>
+    connectOrCreate?: UserCreateOrConnectWithoutDeviceInput
+    connect?: UserWhereUniqueInput
   }
 
   export type PushNotificationCreateNestedManyWithoutDeviceInput = {
@@ -62259,13 +61348,6 @@ export namespace Prisma {
     connectOrCreate?: Enumerable<DeviceNotificationCreateOrConnectWithoutDeviceInput>
     createMany?: DeviceNotificationCreateManyDeviceInputEnvelope
     connect?: Enumerable<DeviceNotificationWhereUniqueInput>
-  }
-
-  export type DeviceUserUncheckedCreateNestedManyWithoutDeviceInput = {
-    create?: XOR<Enumerable<DeviceUserCreateWithoutDeviceInput>, Enumerable<DeviceUserUncheckedCreateWithoutDeviceInput>>
-    connectOrCreate?: Enumerable<DeviceUserCreateOrConnectWithoutDeviceInput>
-    createMany?: DeviceUserCreateManyDeviceInputEnvelope
-    connect?: Enumerable<DeviceUserWhereUniqueInput>
   }
 
   export type PushNotificationUncheckedCreateNestedManyWithoutDeviceInput = {
@@ -62293,18 +61375,14 @@ export namespace Prisma {
     set?: PlatformType
   }
 
-  export type DeviceUserUpdateManyWithoutDeviceNestedInput = {
-    create?: XOR<Enumerable<DeviceUserCreateWithoutDeviceInput>, Enumerable<DeviceUserUncheckedCreateWithoutDeviceInput>>
-    connectOrCreate?: Enumerable<DeviceUserCreateOrConnectWithoutDeviceInput>
-    upsert?: Enumerable<DeviceUserUpsertWithWhereUniqueWithoutDeviceInput>
-    createMany?: DeviceUserCreateManyDeviceInputEnvelope
-    set?: Enumerable<DeviceUserWhereUniqueInput>
-    disconnect?: Enumerable<DeviceUserWhereUniqueInput>
-    delete?: Enumerable<DeviceUserWhereUniqueInput>
-    connect?: Enumerable<DeviceUserWhereUniqueInput>
-    update?: Enumerable<DeviceUserUpdateWithWhereUniqueWithoutDeviceInput>
-    updateMany?: Enumerable<DeviceUserUpdateManyWithWhereWithoutDeviceInput>
-    deleteMany?: Enumerable<DeviceUserScalarWhereInput>
+  export type UserUpdateOneWithoutDeviceNestedInput = {
+    create?: XOR<UserCreateWithoutDeviceInput, UserUncheckedCreateWithoutDeviceInput>
+    connectOrCreate?: UserCreateOrConnectWithoutDeviceInput
+    upsert?: UserUpsertWithoutDeviceInput
+    disconnect?: boolean
+    delete?: boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<UserUpdateWithoutDeviceInput, UserUncheckedUpdateWithoutDeviceInput>
   }
 
   export type PushNotificationUpdateManyWithoutDeviceNestedInput = {
@@ -62349,20 +61427,6 @@ export namespace Prisma {
     deleteMany?: Enumerable<DeviceNotificationScalarWhereInput>
   }
 
-  export type DeviceUserUncheckedUpdateManyWithoutDeviceNestedInput = {
-    create?: XOR<Enumerable<DeviceUserCreateWithoutDeviceInput>, Enumerable<DeviceUserUncheckedCreateWithoutDeviceInput>>
-    connectOrCreate?: Enumerable<DeviceUserCreateOrConnectWithoutDeviceInput>
-    upsert?: Enumerable<DeviceUserUpsertWithWhereUniqueWithoutDeviceInput>
-    createMany?: DeviceUserCreateManyDeviceInputEnvelope
-    set?: Enumerable<DeviceUserWhereUniqueInput>
-    disconnect?: Enumerable<DeviceUserWhereUniqueInput>
-    delete?: Enumerable<DeviceUserWhereUniqueInput>
-    connect?: Enumerable<DeviceUserWhereUniqueInput>
-    update?: Enumerable<DeviceUserUpdateWithWhereUniqueWithoutDeviceInput>
-    updateMany?: Enumerable<DeviceUserUpdateManyWithWhereWithoutDeviceInput>
-    deleteMany?: Enumerable<DeviceUserScalarWhereInput>
-  }
-
   export type PushNotificationUncheckedUpdateManyWithoutDeviceNestedInput = {
     create?: XOR<Enumerable<PushNotificationCreateWithoutDeviceInput>, Enumerable<PushNotificationUncheckedCreateWithoutDeviceInput>>
     connectOrCreate?: Enumerable<PushNotificationCreateOrConnectWithoutDeviceInput>
@@ -62405,32 +61469,10 @@ export namespace Prisma {
     deleteMany?: Enumerable<DeviceNotificationScalarWhereInput>
   }
 
-  export type DeviceCreateNestedOneWithoutDevice_userInput = {
-    create?: XOR<DeviceCreateWithoutDevice_userInput, DeviceUncheckedCreateWithoutDevice_userInput>
-    connectOrCreate?: DeviceCreateOrConnectWithoutDevice_userInput
-    connect?: DeviceWhereUniqueInput
-  }
-
-  export type UserCreateNestedOneWithoutDevice_userInput = {
-    create?: XOR<UserCreateWithoutDevice_userInput, UserUncheckedCreateWithoutDevice_userInput>
-    connectOrCreate?: UserCreateOrConnectWithoutDevice_userInput
-    connect?: UserWhereUniqueInput
-  }
-
-  export type DeviceUpdateOneRequiredWithoutDevice_userNestedInput = {
-    create?: XOR<DeviceCreateWithoutDevice_userInput, DeviceUncheckedCreateWithoutDevice_userInput>
-    connectOrCreate?: DeviceCreateOrConnectWithoutDevice_userInput
-    upsert?: DeviceUpsertWithoutDevice_userInput
-    connect?: DeviceWhereUniqueInput
-    update?: XOR<DeviceUpdateWithoutDevice_userInput, DeviceUncheckedUpdateWithoutDevice_userInput>
-  }
-
-  export type UserUpdateOneRequiredWithoutDevice_userNestedInput = {
-    create?: XOR<UserCreateWithoutDevice_userInput, UserUncheckedCreateWithoutDevice_userInput>
-    connectOrCreate?: UserCreateOrConnectWithoutDevice_userInput
-    upsert?: UserUpsertWithoutDevice_userInput
-    connect?: UserWhereUniqueInput
-    update?: XOR<UserUpdateWithoutDevice_userInput, UserUncheckedUpdateWithoutDevice_userInput>
+  export type OrderCreateNestedOneWithoutNotificationsInput = {
+    create?: XOR<OrderCreateWithoutNotificationsInput, OrderUncheckedCreateWithoutNotificationsInput>
+    connectOrCreate?: OrderCreateOrConnectWithoutNotificationsInput
+    connect?: OrderWhereUniqueInput
   }
 
   export type SmsNotificationCreateNestedManyWithoutNotificationInput = {
@@ -62487,6 +61529,16 @@ export namespace Prisma {
     connectOrCreate?: Enumerable<DeviceNotificationCreateOrConnectWithoutNotificationInput>
     createMany?: DeviceNotificationCreateManyNotificationInputEnvelope
     connect?: Enumerable<DeviceNotificationWhereUniqueInput>
+  }
+
+  export type OrderUpdateOneWithoutNotificationsNestedInput = {
+    create?: XOR<OrderCreateWithoutNotificationsInput, OrderUncheckedCreateWithoutNotificationsInput>
+    connectOrCreate?: OrderCreateOrConnectWithoutNotificationsInput
+    upsert?: OrderUpsertWithoutNotificationsInput
+    disconnect?: boolean
+    delete?: boolean
+    connect?: OrderWhereUniqueInput
+    update?: XOR<OrderUpdateWithoutNotificationsInput, OrderUncheckedUpdateWithoutNotificationsInput>
   }
 
   export type EnumTypeNotificationFieldUpdateOperationsInput = {
@@ -63546,6 +62598,7 @@ export namespace Prisma {
     total?: number
     discount?: number
     discoun_type?: OrderDiscountType | null
+    notifications?: NotificationsCreateNestedManyWithoutOrderInput
   }
 
   export type OrderUncheckedCreateWithoutAccountInput = {
@@ -63566,6 +62619,7 @@ export namespace Prisma {
     total?: number
     discount?: number
     discoun_type?: OrderDiscountType | null
+    notifications?: NotificationsUncheckedCreateNestedManyWithoutOrderInput
   }
 
   export type OrderCreateOrConnectWithoutAccountInput = {
@@ -64963,25 +64017,41 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type DeviceUserCreateWithoutUserInput = {
-    device: DeviceCreateNestedOneWithoutDevice_userInput
+  export type DeviceCreateWithoutUserInput = {
+    id?: string
+    external_id?: number | null
+    device_physical_id: string
+    platform: PlatformType
+    version: string
+    token_notification: string
     created_at?: Date | string
     updated_at?: Date | string
+    push_notification?: PushNotificationCreateNestedManyWithoutDeviceInput
+    sms_notification?: SmsNotificationCreateNestedManyWithoutDeviceInput
+    device_notification?: DeviceNotificationCreateNestedManyWithoutDeviceInput
   }
 
-  export type DeviceUserUncheckedCreateWithoutUserInput = {
-    device_id: string
+  export type DeviceUncheckedCreateWithoutUserInput = {
+    id?: string
+    external_id?: number | null
+    device_physical_id: string
+    platform: PlatformType
+    version: string
+    token_notification: string
     created_at?: Date | string
     updated_at?: Date | string
+    push_notification?: PushNotificationUncheckedCreateNestedManyWithoutDeviceInput
+    sms_notification?: SmsNotificationUncheckedCreateNestedManyWithoutDeviceInput
+    device_notification?: DeviceNotificationUncheckedCreateNestedManyWithoutDeviceInput
   }
 
-  export type DeviceUserCreateOrConnectWithoutUserInput = {
-    where: DeviceUserWhereUniqueInput
-    create: XOR<DeviceUserCreateWithoutUserInput, DeviceUserUncheckedCreateWithoutUserInput>
+  export type DeviceCreateOrConnectWithoutUserInput = {
+    where: DeviceWhereUniqueInput
+    create: XOR<DeviceCreateWithoutUserInput, DeviceUncheckedCreateWithoutUserInput>
   }
 
-  export type DeviceUserCreateManyUserInputEnvelope = {
-    data: Enumerable<DeviceUserCreateManyUserInput>
+  export type DeviceCreateManyUserInputEnvelope = {
+    data: Enumerable<DeviceCreateManyUserInput>
     skipDuplicates?: boolean
   }
 
@@ -65025,6 +64095,7 @@ export namespace Prisma {
     total?: number
     discount?: number
     discoun_type?: OrderDiscountType | null
+    notifications?: NotificationsCreateNestedManyWithoutOrderInput
   }
 
   export type OrderUncheckedCreateWithoutUserInput = {
@@ -65045,6 +64116,7 @@ export namespace Prisma {
     total?: number
     discount?: number
     discoun_type?: OrderDiscountType | null
+    notifications?: NotificationsUncheckedCreateNestedManyWithoutOrderInput
   }
 
   export type OrderCreateOrConnectWithoutUserInput = {
@@ -65143,30 +64215,35 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type DeviceUserUpsertWithWhereUniqueWithoutUserInput = {
-    where: DeviceUserWhereUniqueInput
-    update: XOR<DeviceUserUpdateWithoutUserInput, DeviceUserUncheckedUpdateWithoutUserInput>
-    create: XOR<DeviceUserCreateWithoutUserInput, DeviceUserUncheckedCreateWithoutUserInput>
+  export type DeviceUpsertWithWhereUniqueWithoutUserInput = {
+    where: DeviceWhereUniqueInput
+    update: XOR<DeviceUpdateWithoutUserInput, DeviceUncheckedUpdateWithoutUserInput>
+    create: XOR<DeviceCreateWithoutUserInput, DeviceUncheckedCreateWithoutUserInput>
   }
 
-  export type DeviceUserUpdateWithWhereUniqueWithoutUserInput = {
-    where: DeviceUserWhereUniqueInput
-    data: XOR<DeviceUserUpdateWithoutUserInput, DeviceUserUncheckedUpdateWithoutUserInput>
+  export type DeviceUpdateWithWhereUniqueWithoutUserInput = {
+    where: DeviceWhereUniqueInput
+    data: XOR<DeviceUpdateWithoutUserInput, DeviceUncheckedUpdateWithoutUserInput>
   }
 
-  export type DeviceUserUpdateManyWithWhereWithoutUserInput = {
-    where: DeviceUserScalarWhereInput
-    data: XOR<DeviceUserUpdateManyMutationInput, DeviceUserUncheckedUpdateManyWithoutDevice_userInput>
+  export type DeviceUpdateManyWithWhereWithoutUserInput = {
+    where: DeviceScalarWhereInput
+    data: XOR<DeviceUpdateManyMutationInput, DeviceUncheckedUpdateManyWithoutDeviceInput>
   }
 
-  export type DeviceUserScalarWhereInput = {
-    AND?: Enumerable<DeviceUserScalarWhereInput>
-    OR?: Enumerable<DeviceUserScalarWhereInput>
-    NOT?: Enumerable<DeviceUserScalarWhereInput>
-    device_id?: StringFilter | string
-    user_id?: StringFilter | string
+  export type DeviceScalarWhereInput = {
+    AND?: Enumerable<DeviceScalarWhereInput>
+    OR?: Enumerable<DeviceScalarWhereInput>
+    NOT?: Enumerable<DeviceScalarWhereInput>
+    id?: StringFilter | string
+    external_id?: IntNullableFilter | number | null
+    device_physical_id?: StringFilter | string
+    platform?: EnumPlatformTypeFilter | PlatformType
+    version?: StringFilter | string
+    token_notification?: StringFilter | string
     created_at?: DateTimeFilter | Date | string
     updated_at?: DateTimeFilter | Date | string
+    user_id?: StringNullableFilter | string | null
   }
 
   export type AccountUserUpsertWithWhereUniqueWithoutUserInput = {
@@ -65271,7 +64348,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     lastLogin?: Date | string
-    device_user?: DeviceUserCreateNestedManyWithoutUserInput
+    device?: DeviceCreateNestedManyWithoutUserInput
     account_user?: AccountUserCreateNestedManyWithoutUserInput
     orders?: OrderCreateNestedManyWithoutUserInput
     customer?: CustomerCreateNestedManyWithoutUserInput
@@ -65296,7 +64373,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     lastLogin?: Date | string
-    device_user?: DeviceUserUncheckedCreateNestedManyWithoutUserInput
+    device?: DeviceUncheckedCreateNestedManyWithoutUserInput
     account_user?: AccountUserUncheckedCreateNestedManyWithoutUserInput
     orders?: OrderUncheckedCreateNestedManyWithoutUserInput
     customer?: CustomerUncheckedCreateNestedManyWithoutUserInput
@@ -65331,7 +64408,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLogin?: DateTimeFieldUpdateOperationsInput | Date | string
-    device_user?: DeviceUserUpdateManyWithoutUserNestedInput
+    device?: DeviceUpdateManyWithoutUserNestedInput
     account_user?: AccountUserUpdateManyWithoutUserNestedInput
     orders?: OrderUpdateManyWithoutUserNestedInput
     customer?: CustomerUpdateManyWithoutUserNestedInput
@@ -65356,7 +64433,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLogin?: DateTimeFieldUpdateOperationsInput | Date | string
-    device_user?: DeviceUserUncheckedUpdateManyWithoutUserNestedInput
+    device?: DeviceUncheckedUpdateManyWithoutUserNestedInput
     account_user?: AccountUserUncheckedUpdateManyWithoutUserNestedInput
     orders?: OrderUncheckedUpdateManyWithoutUserNestedInput
     customer?: CustomerUncheckedUpdateManyWithoutUserNestedInput
@@ -65470,7 +64547,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     lastLogin?: Date | string
-    device_user?: DeviceUserCreateNestedManyWithoutUserInput
+    device?: DeviceCreateNestedManyWithoutUserInput
     orders?: OrderCreateNestedManyWithoutUserInput
     user_addresses?: UserAddressCreateNestedManyWithoutUserInput
     customer?: CustomerCreateNestedManyWithoutUserInput
@@ -65495,7 +64572,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     lastLogin?: Date | string
-    device_user?: DeviceUserUncheckedCreateNestedManyWithoutUserInput
+    device?: DeviceUncheckedCreateNestedManyWithoutUserInput
     orders?: OrderUncheckedCreateNestedManyWithoutUserInput
     user_addresses?: UserAddressUncheckedCreateNestedManyWithoutUserInput
     customer?: CustomerUncheckedCreateNestedManyWithoutUserInput
@@ -65636,7 +64713,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLogin?: DateTimeFieldUpdateOperationsInput | Date | string
-    device_user?: DeviceUserUpdateManyWithoutUserNestedInput
+    device?: DeviceUpdateManyWithoutUserNestedInput
     orders?: OrderUpdateManyWithoutUserNestedInput
     user_addresses?: UserAddressUpdateManyWithoutUserNestedInput
     customer?: CustomerUpdateManyWithoutUserNestedInput
@@ -65661,7 +64738,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLogin?: DateTimeFieldUpdateOperationsInput | Date | string
-    device_user?: DeviceUserUncheckedUpdateManyWithoutUserNestedInput
+    device?: DeviceUncheckedUpdateManyWithoutUserNestedInput
     orders?: OrderUncheckedUpdateManyWithoutUserNestedInput
     user_addresses?: UserAddressUncheckedUpdateManyWithoutUserNestedInput
     customer?: CustomerUncheckedUpdateManyWithoutUserNestedInput
@@ -65988,6 +65065,7 @@ export namespace Prisma {
     total?: number
     discount?: number
     discoun_type?: OrderDiscountType | null
+    notifications?: NotificationsCreateNestedManyWithoutOrderInput
   }
 
   export type OrderUncheckedCreateWithoutCampaignInput = {
@@ -66008,6 +65086,7 @@ export namespace Prisma {
     total?: number
     discount?: number
     discoun_type?: OrderDiscountType | null
+    notifications?: NotificationsUncheckedCreateNestedManyWithoutOrderInput
   }
 
   export type OrderCreateOrConnectWithoutCampaignInput = {
@@ -66357,6 +65436,7 @@ export namespace Prisma {
     total?: number
     discount?: number
     discoun_type?: OrderDiscountType | null
+    notifications?: NotificationsCreateNestedManyWithoutOrderInput
   }
 
   export type OrderUncheckedCreateWithoutCouponInput = {
@@ -66377,6 +65457,7 @@ export namespace Prisma {
     total?: number
     discount?: number
     discoun_type?: OrderDiscountType | null
+    notifications?: NotificationsUncheckedCreateNestedManyWithoutOrderInput
   }
 
   export type OrderCreateOrConnectWithoutCouponInput = {
@@ -68915,7 +67996,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     lastLogin?: Date | string
-    device_user?: DeviceUserCreateNestedManyWithoutUserInput
+    device?: DeviceCreateNestedManyWithoutUserInput
     account_user?: AccountUserCreateNestedManyWithoutUserInput
     user_addresses?: UserAddressCreateNestedManyWithoutUserInput
     customer?: CustomerCreateNestedManyWithoutUserInput
@@ -68940,7 +68021,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     lastLogin?: Date | string
-    device_user?: DeviceUserUncheckedCreateNestedManyWithoutUserInput
+    device?: DeviceUncheckedCreateNestedManyWithoutUserInput
     account_user?: AccountUserUncheckedCreateNestedManyWithoutUserInput
     user_addresses?: UserAddressUncheckedCreateNestedManyWithoutUserInput
     customer?: CustomerUncheckedCreateNestedManyWithoutUserInput
@@ -68949,6 +68030,42 @@ export namespace Prisma {
   export type UserCreateOrConnectWithoutOrdersInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutOrdersInput, UserUncheckedCreateWithoutOrdersInput>
+  }
+
+  export type NotificationsCreateWithoutOrderInput = {
+    id?: string
+    title: string
+    message: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    type: TypeNotification
+    sms_notification?: SmsNotificationCreateNestedManyWithoutNotificationInput
+    email_notification?: EmailNotificationCreateNestedManyWithoutNotificationInput
+    push_notification?: PushNotificationCreateNestedManyWithoutNotificationInput
+    device_notification?: DeviceNotificationCreateNestedManyWithoutNotificationInput
+  }
+
+  export type NotificationsUncheckedCreateWithoutOrderInput = {
+    id?: string
+    title: string
+    message: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    type: TypeNotification
+    sms_notification?: SmsNotificationUncheckedCreateNestedManyWithoutNotificationInput
+    email_notification?: EmailNotificationUncheckedCreateNestedManyWithoutNotificationInput
+    push_notification?: PushNotificationUncheckedCreateNestedManyWithoutNotificationInput
+    device_notification?: DeviceNotificationUncheckedCreateNestedManyWithoutNotificationInput
+  }
+
+  export type NotificationsCreateOrConnectWithoutOrderInput = {
+    where: NotificationsWhereUniqueInput
+    create: XOR<NotificationsCreateWithoutOrderInput, NotificationsUncheckedCreateWithoutOrderInput>
+  }
+
+  export type NotificationsCreateManyOrderInputEnvelope = {
+    data: Enumerable<NotificationsCreateManyOrderInput>
+    skipDuplicates?: boolean
   }
 
   export type AccountUpsertWithoutOrderInput = {
@@ -69267,7 +68384,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLogin?: DateTimeFieldUpdateOperationsInput | Date | string
-    device_user?: DeviceUserUpdateManyWithoutUserNestedInput
+    device?: DeviceUpdateManyWithoutUserNestedInput
     account_user?: AccountUserUpdateManyWithoutUserNestedInput
     user_addresses?: UserAddressUpdateManyWithoutUserNestedInput
     customer?: CustomerUpdateManyWithoutUserNestedInput
@@ -69292,10 +68409,39 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLogin?: DateTimeFieldUpdateOperationsInput | Date | string
-    device_user?: DeviceUserUncheckedUpdateManyWithoutUserNestedInput
+    device?: DeviceUncheckedUpdateManyWithoutUserNestedInput
     account_user?: AccountUserUncheckedUpdateManyWithoutUserNestedInput
     user_addresses?: UserAddressUncheckedUpdateManyWithoutUserNestedInput
     customer?: CustomerUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type NotificationsUpsertWithWhereUniqueWithoutOrderInput = {
+    where: NotificationsWhereUniqueInput
+    update: XOR<NotificationsUpdateWithoutOrderInput, NotificationsUncheckedUpdateWithoutOrderInput>
+    create: XOR<NotificationsCreateWithoutOrderInput, NotificationsUncheckedCreateWithoutOrderInput>
+  }
+
+  export type NotificationsUpdateWithWhereUniqueWithoutOrderInput = {
+    where: NotificationsWhereUniqueInput
+    data: XOR<NotificationsUpdateWithoutOrderInput, NotificationsUncheckedUpdateWithoutOrderInput>
+  }
+
+  export type NotificationsUpdateManyWithWhereWithoutOrderInput = {
+    where: NotificationsScalarWhereInput
+    data: XOR<NotificationsUpdateManyMutationInput, NotificationsUncheckedUpdateManyWithoutNotificationsInput>
+  }
+
+  export type NotificationsScalarWhereInput = {
+    AND?: Enumerable<NotificationsScalarWhereInput>
+    OR?: Enumerable<NotificationsScalarWhereInput>
+    NOT?: Enumerable<NotificationsScalarWhereInput>
+    id?: StringFilter | string
+    title?: StringFilter | string
+    message?: StringFilter | string
+    created_at?: DateTimeFilter | Date | string
+    updated_at?: DateTimeFilter | Date | string
+    order_id?: StringNullableFilter | string | null
+    type?: EnumTypeNotificationFilter | TypeNotification
   }
 
   export type OrderCreateWithoutOrder_statusInput = {
@@ -69316,6 +68462,7 @@ export namespace Prisma {
     total?: number
     discount?: number
     discoun_type?: OrderDiscountType | null
+    notifications?: NotificationsCreateNestedManyWithoutOrderInput
   }
 
   export type OrderUncheckedCreateWithoutOrder_statusInput = {
@@ -69336,6 +68483,7 @@ export namespace Prisma {
     total?: number
     discount?: number
     discoun_type?: OrderDiscountType | null
+    notifications?: NotificationsUncheckedCreateNestedManyWithoutOrderInput
   }
 
   export type OrderCreateOrConnectWithoutOrder_statusInput = {
@@ -69472,7 +68620,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     lastLogin?: Date | string
-    device_user?: DeviceUserCreateNestedManyWithoutUserInput
+    device?: DeviceCreateNestedManyWithoutUserInput
     account_user?: AccountUserCreateNestedManyWithoutUserInput
     orders?: OrderCreateNestedManyWithoutUserInput
     user_addresses?: UserAddressCreateNestedManyWithoutUserInput
@@ -69497,7 +68645,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     lastLogin?: Date | string
-    device_user?: DeviceUserUncheckedCreateNestedManyWithoutUserInput
+    device?: DeviceUncheckedCreateNestedManyWithoutUserInput
     account_user?: AccountUserUncheckedCreateNestedManyWithoutUserInput
     orders?: OrderUncheckedCreateNestedManyWithoutUserInput
     user_addresses?: UserAddressUncheckedCreateNestedManyWithoutUserInput
@@ -69526,6 +68674,7 @@ export namespace Prisma {
     total?: number
     discount?: number
     discoun_type?: OrderDiscountType | null
+    notifications?: NotificationsCreateNestedManyWithoutOrderInput
   }
 
   export type OrderUncheckedCreateWithoutCustomerInput = {
@@ -69546,6 +68695,7 @@ export namespace Prisma {
     total?: number
     discount?: number
     discoun_type?: OrderDiscountType | null
+    notifications?: NotificationsUncheckedCreateNestedManyWithoutOrderInput
   }
 
   export type OrderCreateOrConnectWithoutCustomerInput = {
@@ -69711,7 +68861,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLogin?: DateTimeFieldUpdateOperationsInput | Date | string
-    device_user?: DeviceUserUpdateManyWithoutUserNestedInput
+    device?: DeviceUpdateManyWithoutUserNestedInput
     account_user?: AccountUserUpdateManyWithoutUserNestedInput
     orders?: OrderUpdateManyWithoutUserNestedInput
     user_addresses?: UserAddressUpdateManyWithoutUserNestedInput
@@ -69736,7 +68886,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLogin?: DateTimeFieldUpdateOperationsInput | Date | string
-    device_user?: DeviceUserUncheckedUpdateManyWithoutUserNestedInput
+    device?: DeviceUncheckedUpdateManyWithoutUserNestedInput
     account_user?: AccountUserUncheckedUpdateManyWithoutUserNestedInput
     orders?: OrderUncheckedUpdateManyWithoutUserNestedInput
     user_addresses?: UserAddressUncheckedUpdateManyWithoutUserNestedInput
@@ -69851,6 +69001,7 @@ export namespace Prisma {
     total?: number
     discount?: number
     discoun_type?: OrderDiscountType | null
+    notifications?: NotificationsCreateNestedManyWithoutOrderInput
   }
 
   export type OrderUncheckedCreateWithoutCustomer_addressInput = {
@@ -69871,6 +69022,7 @@ export namespace Prisma {
     total?: number
     discount?: number
     discoun_type?: OrderDiscountType | null
+    notifications?: NotificationsUncheckedCreateNestedManyWithoutOrderInput
   }
 
   export type OrderCreateOrConnectWithoutCustomer_addressInput = {
@@ -69958,6 +69110,7 @@ export namespace Prisma {
     total?: number
     discount?: number
     discoun_type?: OrderDiscountType | null
+    notifications?: NotificationsCreateNestedManyWithoutOrderInput
   }
 
   export type OrderUncheckedCreateWithoutOrder_itemsInput = {
@@ -69978,6 +69131,7 @@ export namespace Prisma {
     total?: number
     discount?: number
     discoun_type?: OrderDiscountType | null
+    notifications?: NotificationsUncheckedCreateNestedManyWithoutOrderInput
   }
 
   export type OrderCreateOrConnectWithoutOrder_itemsInput = {
@@ -70069,6 +69223,7 @@ export namespace Prisma {
     total?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     discoun_type?: NullableEnumOrderDiscountTypeFieldUpdateOperationsInput | OrderDiscountType | null
+    notifications?: NotificationsUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateWithoutOrder_itemsInput = {
@@ -70089,6 +69244,7 @@ export namespace Prisma {
     total?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     discoun_type?: NullableEnumOrderDiscountTypeFieldUpdateOperationsInput | OrderDiscountType | null
+    notifications?: NotificationsUncheckedUpdateManyWithoutOrderNestedInput
   }
 
   export type ItemUpsertWithoutOrder_itemsInput = {
@@ -70170,6 +69326,7 @@ export namespace Prisma {
     total?: number
     discount?: number
     discoun_type?: OrderDiscountType | null
+    notifications?: NotificationsCreateNestedManyWithoutOrderInput
   }
 
   export type OrderUncheckedCreateWithoutInvoiceInput = {
@@ -70190,6 +69347,7 @@ export namespace Prisma {
     total?: number
     discount?: number
     discoun_type?: OrderDiscountType | null
+    notifications?: NotificationsUncheckedCreateNestedManyWithoutOrderInput
   }
 
   export type OrderCreateOrConnectWithoutInvoiceInput = {
@@ -70309,6 +69467,7 @@ export namespace Prisma {
     total?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     discoun_type?: NullableEnumOrderDiscountTypeFieldUpdateOperationsInput | OrderDiscountType | null
+    notifications?: NotificationsUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateWithoutInvoiceInput = {
@@ -70329,6 +69488,7 @@ export namespace Prisma {
     total?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     discoun_type?: NullableEnumOrderDiscountTypeFieldUpdateOperationsInput | OrderDiscountType | null
+    notifications?: NotificationsUncheckedUpdateManyWithoutOrderNestedInput
   }
 
   export type AccountUpsertWithoutInvoicesInput = {
@@ -70420,26 +69580,59 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
   }
 
-  export type DeviceUserCreateWithoutDeviceInput = {
-    user: UserCreateNestedOneWithoutDevice_userInput
+  export type UserCreateWithoutDeviceInput = {
+    id?: string
+    name: string
+    email: string
+    password: string
+    whatsapp?: string | null
+    phone?: string | null
+    cpf_cnpj?: string | null
+    photo?: string | null
+    gender?: GenderType
+    birthdate?: Date | string | null
+    google_id?: string | null
+    apple_id?: string | null
+    facebook_id?: string | null
+    rd_station_id?: string | null
+    rd_station_sync?: boolean | null
     created_at?: Date | string
     updated_at?: Date | string
+    lastLogin?: Date | string
+    account_user?: AccountUserCreateNestedManyWithoutUserInput
+    orders?: OrderCreateNestedManyWithoutUserInput
+    user_addresses?: UserAddressCreateNestedManyWithoutUserInput
+    customer?: CustomerCreateNestedManyWithoutUserInput
   }
 
-  export type DeviceUserUncheckedCreateWithoutDeviceInput = {
-    user_id: string
+  export type UserUncheckedCreateWithoutDeviceInput = {
+    id?: string
+    name: string
+    email: string
+    password: string
+    whatsapp?: string | null
+    phone?: string | null
+    cpf_cnpj?: string | null
+    photo?: string | null
+    gender?: GenderType
+    birthdate?: Date | string | null
+    google_id?: string | null
+    apple_id?: string | null
+    facebook_id?: string | null
+    rd_station_id?: string | null
+    rd_station_sync?: boolean | null
     created_at?: Date | string
     updated_at?: Date | string
+    lastLogin?: Date | string
+    account_user?: AccountUserUncheckedCreateNestedManyWithoutUserInput
+    orders?: OrderUncheckedCreateNestedManyWithoutUserInput
+    user_addresses?: UserAddressUncheckedCreateNestedManyWithoutUserInput
+    customer?: CustomerUncheckedCreateNestedManyWithoutUserInput
   }
 
-  export type DeviceUserCreateOrConnectWithoutDeviceInput = {
-    where: DeviceUserWhereUniqueInput
-    create: XOR<DeviceUserCreateWithoutDeviceInput, DeviceUserUncheckedCreateWithoutDeviceInput>
-  }
-
-  export type DeviceUserCreateManyDeviceInputEnvelope = {
-    data: Enumerable<DeviceUserCreateManyDeviceInput>
-    skipDuplicates?: boolean
+  export type UserCreateOrConnectWithoutDeviceInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutDeviceInput, UserUncheckedCreateWithoutDeviceInput>
   }
 
   export type PushNotificationCreateWithoutDeviceInput = {
@@ -70526,20 +69719,59 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type DeviceUserUpsertWithWhereUniqueWithoutDeviceInput = {
-    where: DeviceUserWhereUniqueInput
-    update: XOR<DeviceUserUpdateWithoutDeviceInput, DeviceUserUncheckedUpdateWithoutDeviceInput>
-    create: XOR<DeviceUserCreateWithoutDeviceInput, DeviceUserUncheckedCreateWithoutDeviceInput>
+  export type UserUpsertWithoutDeviceInput = {
+    update: XOR<UserUpdateWithoutDeviceInput, UserUncheckedUpdateWithoutDeviceInput>
+    create: XOR<UserCreateWithoutDeviceInput, UserUncheckedCreateWithoutDeviceInput>
   }
 
-  export type DeviceUserUpdateWithWhereUniqueWithoutDeviceInput = {
-    where: DeviceUserWhereUniqueInput
-    data: XOR<DeviceUserUpdateWithoutDeviceInput, DeviceUserUncheckedUpdateWithoutDeviceInput>
+  export type UserUpdateWithoutDeviceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    google_id?: NullableStringFieldUpdateOperationsInput | string | null
+    apple_id?: NullableStringFieldUpdateOperationsInput | string | null
+    facebook_id?: NullableStringFieldUpdateOperationsInput | string | null
+    rd_station_id?: NullableStringFieldUpdateOperationsInput | string | null
+    rd_station_sync?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLogin?: DateTimeFieldUpdateOperationsInput | Date | string
+    account_user?: AccountUserUpdateManyWithoutUserNestedInput
+    orders?: OrderUpdateManyWithoutUserNestedInput
+    user_addresses?: UserAddressUpdateManyWithoutUserNestedInput
+    customer?: CustomerUpdateManyWithoutUserNestedInput
   }
 
-  export type DeviceUserUpdateManyWithWhereWithoutDeviceInput = {
-    where: DeviceUserScalarWhereInput
-    data: XOR<DeviceUserUpdateManyMutationInput, DeviceUserUncheckedUpdateManyWithoutDevice_userInput>
+  export type UserUncheckedUpdateWithoutDeviceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    google_id?: NullableStringFieldUpdateOperationsInput | string | null
+    apple_id?: NullableStringFieldUpdateOperationsInput | string | null
+    facebook_id?: NullableStringFieldUpdateOperationsInput | string | null
+    rd_station_id?: NullableStringFieldUpdateOperationsInput | string | null
+    rd_station_sync?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastLogin?: DateTimeFieldUpdateOperationsInput | Date | string
+    account_user?: AccountUserUncheckedUpdateManyWithoutUserNestedInput
+    orders?: OrderUncheckedUpdateManyWithoutUserNestedInput
+    user_addresses?: UserAddressUncheckedUpdateManyWithoutUserNestedInput
+    customer?: CustomerUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type PushNotificationUpsertWithWhereUniqueWithoutDeviceInput = {
@@ -70629,180 +69861,51 @@ export namespace Prisma {
     updated_at?: DateTimeFilter | Date | string
   }
 
-  export type DeviceCreateWithoutDevice_userInput = {
+  export type OrderCreateWithoutNotificationsInput = {
     id?: string
     external_id?: number | null
-    device_physical_id: string
-    platform: PlatformType
-    version: string
-    token_notification: string
+    code: string
+    account: AccountCreateNestedOneWithoutOrderInput
+    coupon?: CouponCreateNestedOneWithoutOrdersInput
+    customer: CustomerCreateNestedOneWithoutOrdersInput
+    customer_address: CustomerAddressCreateNestedOneWithoutOrderInput
+    is_read?: boolean
+    order_status: OrderStatusCreateNestedOneWithoutOrdersInput
+    campaign?: CampaignCreateNestedOneWithoutOrdersInput
     created_at?: Date | string
     updated_at?: Date | string
-    push_notification?: PushNotificationCreateNestedManyWithoutDeviceInput
-    sms_notification?: SmsNotificationCreateNestedManyWithoutDeviceInput
-    device_notification?: DeviceNotificationCreateNestedManyWithoutDeviceInput
+    order_items?: OrderItemCreateNestedManyWithoutOrderInput
+    invoice?: InvoiceCreateNestedManyWithoutOrderInput
+    User?: UserCreateNestedOneWithoutOrdersInput
+    total?: number
+    discount?: number
+    discoun_type?: OrderDiscountType | null
   }
 
-  export type DeviceUncheckedCreateWithoutDevice_userInput = {
+  export type OrderUncheckedCreateWithoutNotificationsInput = {
     id?: string
     external_id?: number | null
-    device_physical_id: string
-    platform: PlatformType
-    version: string
-    token_notification: string
+    code: string
+    account_id: string
+    coupon_id?: string | null
+    customer_id: string
+    customer_address_id: string
+    is_read?: boolean
+    order_status_id: string
+    campaign_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
-    push_notification?: PushNotificationUncheckedCreateNestedManyWithoutDeviceInput
-    sms_notification?: SmsNotificationUncheckedCreateNestedManyWithoutDeviceInput
-    device_notification?: DeviceNotificationUncheckedCreateNestedManyWithoutDeviceInput
+    order_items?: OrderItemUncheckedCreateNestedManyWithoutOrderInput
+    invoice?: InvoiceUncheckedCreateNestedManyWithoutOrderInput
+    userId?: string | null
+    total?: number
+    discount?: number
+    discoun_type?: OrderDiscountType | null
   }
 
-  export type DeviceCreateOrConnectWithoutDevice_userInput = {
-    where: DeviceWhereUniqueInput
-    create: XOR<DeviceCreateWithoutDevice_userInput, DeviceUncheckedCreateWithoutDevice_userInput>
-  }
-
-  export type UserCreateWithoutDevice_userInput = {
-    id?: string
-    name: string
-    email: string
-    password: string
-    whatsapp?: string | null
-    phone?: string | null
-    cpf_cnpj?: string | null
-    photo?: string | null
-    gender?: GenderType
-    birthdate?: Date | string | null
-    google_id?: string | null
-    apple_id?: string | null
-    facebook_id?: string | null
-    rd_station_id?: string | null
-    rd_station_sync?: boolean | null
-    created_at?: Date | string
-    updated_at?: Date | string
-    lastLogin?: Date | string
-    account_user?: AccountUserCreateNestedManyWithoutUserInput
-    orders?: OrderCreateNestedManyWithoutUserInput
-    user_addresses?: UserAddressCreateNestedManyWithoutUserInput
-    customer?: CustomerCreateNestedManyWithoutUserInput
-  }
-
-  export type UserUncheckedCreateWithoutDevice_userInput = {
-    id?: string
-    name: string
-    email: string
-    password: string
-    whatsapp?: string | null
-    phone?: string | null
-    cpf_cnpj?: string | null
-    photo?: string | null
-    gender?: GenderType
-    birthdate?: Date | string | null
-    google_id?: string | null
-    apple_id?: string | null
-    facebook_id?: string | null
-    rd_station_id?: string | null
-    rd_station_sync?: boolean | null
-    created_at?: Date | string
-    updated_at?: Date | string
-    lastLogin?: Date | string
-    account_user?: AccountUserUncheckedCreateNestedManyWithoutUserInput
-    orders?: OrderUncheckedCreateNestedManyWithoutUserInput
-    user_addresses?: UserAddressUncheckedCreateNestedManyWithoutUserInput
-    customer?: CustomerUncheckedCreateNestedManyWithoutUserInput
-  }
-
-  export type UserCreateOrConnectWithoutDevice_userInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutDevice_userInput, UserUncheckedCreateWithoutDevice_userInput>
-  }
-
-  export type DeviceUpsertWithoutDevice_userInput = {
-    update: XOR<DeviceUpdateWithoutDevice_userInput, DeviceUncheckedUpdateWithoutDevice_userInput>
-    create: XOR<DeviceCreateWithoutDevice_userInput, DeviceUncheckedCreateWithoutDevice_userInput>
-  }
-
-  export type DeviceUpdateWithoutDevice_userInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    external_id?: NullableIntFieldUpdateOperationsInput | number | null
-    device_physical_id?: StringFieldUpdateOperationsInput | string
-    platform?: EnumPlatformTypeFieldUpdateOperationsInput | PlatformType
-    version?: StringFieldUpdateOperationsInput | string
-    token_notification?: StringFieldUpdateOperationsInput | string
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    push_notification?: PushNotificationUpdateManyWithoutDeviceNestedInput
-    sms_notification?: SmsNotificationUpdateManyWithoutDeviceNestedInput
-    device_notification?: DeviceNotificationUpdateManyWithoutDeviceNestedInput
-  }
-
-  export type DeviceUncheckedUpdateWithoutDevice_userInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    external_id?: NullableIntFieldUpdateOperationsInput | number | null
-    device_physical_id?: StringFieldUpdateOperationsInput | string
-    platform?: EnumPlatformTypeFieldUpdateOperationsInput | PlatformType
-    version?: StringFieldUpdateOperationsInput | string
-    token_notification?: StringFieldUpdateOperationsInput | string
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    push_notification?: PushNotificationUncheckedUpdateManyWithoutDeviceNestedInput
-    sms_notification?: SmsNotificationUncheckedUpdateManyWithoutDeviceNestedInput
-    device_notification?: DeviceNotificationUncheckedUpdateManyWithoutDeviceNestedInput
-  }
-
-  export type UserUpsertWithoutDevice_userInput = {
-    update: XOR<UserUpdateWithoutDevice_userInput, UserUncheckedUpdateWithoutDevice_userInput>
-    create: XOR<UserCreateWithoutDevice_userInput, UserUncheckedCreateWithoutDevice_userInput>
-  }
-
-  export type UserUpdateWithoutDevice_userInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
-    photo?: NullableStringFieldUpdateOperationsInput | string | null
-    gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
-    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    google_id?: NullableStringFieldUpdateOperationsInput | string | null
-    apple_id?: NullableStringFieldUpdateOperationsInput | string | null
-    facebook_id?: NullableStringFieldUpdateOperationsInput | string | null
-    rd_station_id?: NullableStringFieldUpdateOperationsInput | string | null
-    rd_station_sync?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    lastLogin?: DateTimeFieldUpdateOperationsInput | Date | string
-    account_user?: AccountUserUpdateManyWithoutUserNestedInput
-    orders?: OrderUpdateManyWithoutUserNestedInput
-    user_addresses?: UserAddressUpdateManyWithoutUserNestedInput
-    customer?: CustomerUpdateManyWithoutUserNestedInput
-  }
-
-  export type UserUncheckedUpdateWithoutDevice_userInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    whatsapp?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    cpf_cnpj?: NullableStringFieldUpdateOperationsInput | string | null
-    photo?: NullableStringFieldUpdateOperationsInput | string | null
-    gender?: EnumGenderTypeFieldUpdateOperationsInput | GenderType
-    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    google_id?: NullableStringFieldUpdateOperationsInput | string | null
-    apple_id?: NullableStringFieldUpdateOperationsInput | string | null
-    facebook_id?: NullableStringFieldUpdateOperationsInput | string | null
-    rd_station_id?: NullableStringFieldUpdateOperationsInput | string | null
-    rd_station_sync?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    lastLogin?: DateTimeFieldUpdateOperationsInput | Date | string
-    account_user?: AccountUserUncheckedUpdateManyWithoutUserNestedInput
-    orders?: OrderUncheckedUpdateManyWithoutUserNestedInput
-    user_addresses?: UserAddressUncheckedUpdateManyWithoutUserNestedInput
-    customer?: CustomerUncheckedUpdateManyWithoutUserNestedInput
+  export type OrderCreateOrConnectWithoutNotificationsInput = {
+    where: OrderWhereUniqueInput
+    create: XOR<OrderCreateWithoutNotificationsInput, OrderUncheckedCreateWithoutNotificationsInput>
   }
 
   export type SmsNotificationCreateWithoutNotificationInput = {
@@ -70852,6 +69955,8 @@ export namespace Prisma {
     clicked?: string | null
     failed?: string | null
     error_description?: string | null
+    error_code?: string | null
+    message_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -70871,6 +69976,8 @@ export namespace Prisma {
     clicked?: string | null
     failed?: string | null
     error_description?: string | null
+    error_code?: string | null
+    message_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -70937,6 +70044,53 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type OrderUpsertWithoutNotificationsInput = {
+    update: XOR<OrderUpdateWithoutNotificationsInput, OrderUncheckedUpdateWithoutNotificationsInput>
+    create: XOR<OrderCreateWithoutNotificationsInput, OrderUncheckedCreateWithoutNotificationsInput>
+  }
+
+  export type OrderUpdateWithoutNotificationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
+    code?: StringFieldUpdateOperationsInput | string
+    account?: AccountUpdateOneRequiredWithoutOrderNestedInput
+    coupon?: CouponUpdateOneWithoutOrdersNestedInput
+    customer?: CustomerUpdateOneRequiredWithoutOrdersNestedInput
+    customer_address?: CustomerAddressUpdateOneRequiredWithoutOrderNestedInput
+    is_read?: BoolFieldUpdateOperationsInput | boolean
+    order_status?: OrderStatusUpdateOneRequiredWithoutOrdersNestedInput
+    campaign?: CampaignUpdateOneWithoutOrdersNestedInput
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    order_items?: OrderItemUpdateManyWithoutOrderNestedInput
+    invoice?: InvoiceUpdateManyWithoutOrderNestedInput
+    User?: UserUpdateOneWithoutOrdersNestedInput
+    total?: FloatFieldUpdateOperationsInput | number
+    discount?: FloatFieldUpdateOperationsInput | number
+    discoun_type?: NullableEnumOrderDiscountTypeFieldUpdateOperationsInput | OrderDiscountType | null
+  }
+
+  export type OrderUncheckedUpdateWithoutNotificationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
+    code?: StringFieldUpdateOperationsInput | string
+    account_id?: StringFieldUpdateOperationsInput | string
+    coupon_id?: NullableStringFieldUpdateOperationsInput | string | null
+    customer_id?: StringFieldUpdateOperationsInput | string
+    customer_address_id?: StringFieldUpdateOperationsInput | string
+    is_read?: BoolFieldUpdateOperationsInput | boolean
+    order_status_id?: StringFieldUpdateOperationsInput | string
+    campaign_id?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    order_items?: OrderItemUncheckedUpdateManyWithoutOrderNestedInput
+    invoice?: InvoiceUncheckedUpdateManyWithoutOrderNestedInput
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    total?: FloatFieldUpdateOperationsInput | number
+    discount?: FloatFieldUpdateOperationsInput | number
+    discoun_type?: NullableEnumOrderDiscountTypeFieldUpdateOperationsInput | OrderDiscountType | null
+  }
+
   export type SmsNotificationUpsertWithWhereUniqueWithoutNotificationInput = {
     where: SmsNotificationWhereUniqueInput
     update: XOR<SmsNotificationUpdateWithoutNotificationInput, SmsNotificationUncheckedUpdateWithoutNotificationInput>
@@ -70988,6 +70142,8 @@ export namespace Prisma {
     clicked?: StringNullableFilter | string | null
     failed?: StringNullableFilter | string | null
     error_description?: StringNullableFilter | string | null
+    error_code?: StringNullableFilter | string | null
+    message_id?: StringNullableFilter | string | null
     created_at?: DateTimeFilter | Date | string
     updated_at?: DateTimeFilter | Date | string
   }
@@ -71030,6 +70186,7 @@ export namespace Prisma {
     message: string
     created_at?: Date | string
     updated_at?: Date | string
+    order?: OrderCreateNestedOneWithoutNotificationsInput
     type: TypeNotification
     sms_notification?: SmsNotificationCreateNestedManyWithoutNotificationInput
     push_notification?: PushNotificationCreateNestedManyWithoutNotificationInput
@@ -71042,6 +70199,7 @@ export namespace Prisma {
     message: string
     created_at?: Date | string
     updated_at?: Date | string
+    order_id?: string | null
     type: TypeNotification
     sms_notification?: SmsNotificationUncheckedCreateNestedManyWithoutNotificationInput
     push_notification?: PushNotificationUncheckedCreateNestedManyWithoutNotificationInput
@@ -71064,6 +70222,7 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    order?: OrderUpdateOneWithoutNotificationsNestedInput
     type?: EnumTypeNotificationFieldUpdateOperationsInput | TypeNotification
     sms_notification?: SmsNotificationUpdateManyWithoutNotificationNestedInput
     push_notification?: PushNotificationUpdateManyWithoutNotificationNestedInput
@@ -71076,6 +70235,7 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    order_id?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumTypeNotificationFieldUpdateOperationsInput | TypeNotification
     sms_notification?: SmsNotificationUncheckedUpdateManyWithoutNotificationNestedInput
     push_notification?: PushNotificationUncheckedUpdateManyWithoutNotificationNestedInput
@@ -71088,6 +70248,7 @@ export namespace Prisma {
     message: string
     created_at?: Date | string
     updated_at?: Date | string
+    order?: OrderCreateNestedOneWithoutNotificationsInput
     type: TypeNotification
     email_notification?: EmailNotificationCreateNestedManyWithoutNotificationInput
     push_notification?: PushNotificationCreateNestedManyWithoutNotificationInput
@@ -71100,6 +70261,7 @@ export namespace Prisma {
     message: string
     created_at?: Date | string
     updated_at?: Date | string
+    order_id?: string | null
     type: TypeNotification
     email_notification?: EmailNotificationUncheckedCreateNestedManyWithoutNotificationInput
     push_notification?: PushNotificationUncheckedCreateNestedManyWithoutNotificationInput
@@ -71120,7 +70282,7 @@ export namespace Prisma {
     token_notification: string
     created_at?: Date | string
     updated_at?: Date | string
-    device_user?: DeviceUserCreateNestedManyWithoutDeviceInput
+    user?: UserCreateNestedOneWithoutDeviceInput
     push_notification?: PushNotificationCreateNestedManyWithoutDeviceInput
     device_notification?: DeviceNotificationCreateNestedManyWithoutDeviceInput
   }
@@ -71134,7 +70296,7 @@ export namespace Prisma {
     token_notification: string
     created_at?: Date | string
     updated_at?: Date | string
-    device_user?: DeviceUserUncheckedCreateNestedManyWithoutDeviceInput
+    user_id?: string | null
     push_notification?: PushNotificationUncheckedCreateNestedManyWithoutDeviceInput
     device_notification?: DeviceNotificationUncheckedCreateNestedManyWithoutDeviceInput
   }
@@ -71155,6 +70317,7 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    order?: OrderUpdateOneWithoutNotificationsNestedInput
     type?: EnumTypeNotificationFieldUpdateOperationsInput | TypeNotification
     email_notification?: EmailNotificationUpdateManyWithoutNotificationNestedInput
     push_notification?: PushNotificationUpdateManyWithoutNotificationNestedInput
@@ -71167,6 +70330,7 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    order_id?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumTypeNotificationFieldUpdateOperationsInput | TypeNotification
     email_notification?: EmailNotificationUncheckedUpdateManyWithoutNotificationNestedInput
     push_notification?: PushNotificationUncheckedUpdateManyWithoutNotificationNestedInput
@@ -71187,7 +70351,7 @@ export namespace Prisma {
     token_notification?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    device_user?: DeviceUserUpdateManyWithoutDeviceNestedInput
+    user?: UserUpdateOneWithoutDeviceNestedInput
     push_notification?: PushNotificationUpdateManyWithoutDeviceNestedInput
     device_notification?: DeviceNotificationUpdateManyWithoutDeviceNestedInput
   }
@@ -71201,7 +70365,7 @@ export namespace Prisma {
     token_notification?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    device_user?: DeviceUserUncheckedUpdateManyWithoutDeviceNestedInput
+    user_id?: NullableStringFieldUpdateOperationsInput | string | null
     push_notification?: PushNotificationUncheckedUpdateManyWithoutDeviceNestedInput
     device_notification?: DeviceNotificationUncheckedUpdateManyWithoutDeviceNestedInput
   }
@@ -71212,6 +70376,7 @@ export namespace Prisma {
     message: string
     created_at?: Date | string
     updated_at?: Date | string
+    order?: OrderCreateNestedOneWithoutNotificationsInput
     type: TypeNotification
     sms_notification?: SmsNotificationCreateNestedManyWithoutNotificationInput
     email_notification?: EmailNotificationCreateNestedManyWithoutNotificationInput
@@ -71224,6 +70389,7 @@ export namespace Prisma {
     message: string
     created_at?: Date | string
     updated_at?: Date | string
+    order_id?: string | null
     type: TypeNotification
     sms_notification?: SmsNotificationUncheckedCreateNestedManyWithoutNotificationInput
     email_notification?: EmailNotificationUncheckedCreateNestedManyWithoutNotificationInput
@@ -71244,7 +70410,7 @@ export namespace Prisma {
     token_notification: string
     created_at?: Date | string
     updated_at?: Date | string
-    device_user?: DeviceUserCreateNestedManyWithoutDeviceInput
+    user?: UserCreateNestedOneWithoutDeviceInput
     sms_notification?: SmsNotificationCreateNestedManyWithoutDeviceInput
     device_notification?: DeviceNotificationCreateNestedManyWithoutDeviceInput
   }
@@ -71258,7 +70424,7 @@ export namespace Prisma {
     token_notification: string
     created_at?: Date | string
     updated_at?: Date | string
-    device_user?: DeviceUserUncheckedCreateNestedManyWithoutDeviceInput
+    user_id?: string | null
     sms_notification?: SmsNotificationUncheckedCreateNestedManyWithoutDeviceInput
     device_notification?: DeviceNotificationUncheckedCreateNestedManyWithoutDeviceInput
   }
@@ -71279,6 +70445,7 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    order?: OrderUpdateOneWithoutNotificationsNestedInput
     type?: EnumTypeNotificationFieldUpdateOperationsInput | TypeNotification
     sms_notification?: SmsNotificationUpdateManyWithoutNotificationNestedInput
     email_notification?: EmailNotificationUpdateManyWithoutNotificationNestedInput
@@ -71291,6 +70458,7 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    order_id?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumTypeNotificationFieldUpdateOperationsInput | TypeNotification
     sms_notification?: SmsNotificationUncheckedUpdateManyWithoutNotificationNestedInput
     email_notification?: EmailNotificationUncheckedUpdateManyWithoutNotificationNestedInput
@@ -71311,7 +70479,7 @@ export namespace Prisma {
     token_notification?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    device_user?: DeviceUserUpdateManyWithoutDeviceNestedInput
+    user?: UserUpdateOneWithoutDeviceNestedInput
     sms_notification?: SmsNotificationUpdateManyWithoutDeviceNestedInput
     device_notification?: DeviceNotificationUpdateManyWithoutDeviceNestedInput
   }
@@ -71325,7 +70493,7 @@ export namespace Prisma {
     token_notification?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    device_user?: DeviceUserUncheckedUpdateManyWithoutDeviceNestedInput
+    user_id?: NullableStringFieldUpdateOperationsInput | string | null
     sms_notification?: SmsNotificationUncheckedUpdateManyWithoutDeviceNestedInput
     device_notification?: DeviceNotificationUncheckedUpdateManyWithoutDeviceNestedInput
   }
@@ -71339,7 +70507,7 @@ export namespace Prisma {
     token_notification: string
     created_at?: Date | string
     updated_at?: Date | string
-    device_user?: DeviceUserCreateNestedManyWithoutDeviceInput
+    user?: UserCreateNestedOneWithoutDeviceInput
     push_notification?: PushNotificationCreateNestedManyWithoutDeviceInput
     sms_notification?: SmsNotificationCreateNestedManyWithoutDeviceInput
   }
@@ -71353,7 +70521,7 @@ export namespace Prisma {
     token_notification: string
     created_at?: Date | string
     updated_at?: Date | string
-    device_user?: DeviceUserUncheckedCreateNestedManyWithoutDeviceInput
+    user_id?: string | null
     push_notification?: PushNotificationUncheckedCreateNestedManyWithoutDeviceInput
     sms_notification?: SmsNotificationUncheckedCreateNestedManyWithoutDeviceInput
   }
@@ -71369,6 +70537,7 @@ export namespace Prisma {
     message: string
     created_at?: Date | string
     updated_at?: Date | string
+    order?: OrderCreateNestedOneWithoutNotificationsInput
     type: TypeNotification
     sms_notification?: SmsNotificationCreateNestedManyWithoutNotificationInput
     email_notification?: EmailNotificationCreateNestedManyWithoutNotificationInput
@@ -71381,6 +70550,7 @@ export namespace Prisma {
     message: string
     created_at?: Date | string
     updated_at?: Date | string
+    order_id?: string | null
     type: TypeNotification
     sms_notification?: SmsNotificationUncheckedCreateNestedManyWithoutNotificationInput
     email_notification?: EmailNotificationUncheckedCreateNestedManyWithoutNotificationInput
@@ -71406,7 +70576,7 @@ export namespace Prisma {
     token_notification?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    device_user?: DeviceUserUpdateManyWithoutDeviceNestedInput
+    user?: UserUpdateOneWithoutDeviceNestedInput
     push_notification?: PushNotificationUpdateManyWithoutDeviceNestedInput
     sms_notification?: SmsNotificationUpdateManyWithoutDeviceNestedInput
   }
@@ -71420,7 +70590,7 @@ export namespace Prisma {
     token_notification?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    device_user?: DeviceUserUncheckedUpdateManyWithoutDeviceNestedInput
+    user_id?: NullableStringFieldUpdateOperationsInput | string | null
     push_notification?: PushNotificationUncheckedUpdateManyWithoutDeviceNestedInput
     sms_notification?: SmsNotificationUncheckedUpdateManyWithoutDeviceNestedInput
   }
@@ -71436,6 +70606,7 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    order?: OrderUpdateOneWithoutNotificationsNestedInput
     type?: EnumTypeNotificationFieldUpdateOperationsInput | TypeNotification
     sms_notification?: SmsNotificationUpdateManyWithoutNotificationNestedInput
     email_notification?: EmailNotificationUpdateManyWithoutNotificationNestedInput
@@ -71448,6 +70619,7 @@ export namespace Prisma {
     message?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    order_id?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumTypeNotificationFieldUpdateOperationsInput | TypeNotification
     sms_notification?: SmsNotificationUncheckedUpdateManyWithoutNotificationNestedInput
     email_notification?: EmailNotificationUncheckedUpdateManyWithoutNotificationNestedInput
@@ -72726,6 +71898,7 @@ export namespace Prisma {
     total?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     discoun_type?: NullableEnumOrderDiscountTypeFieldUpdateOperationsInput | OrderDiscountType | null
+    notifications?: NotificationsUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateWithoutAccountInput = {
@@ -72746,6 +71919,7 @@ export namespace Prisma {
     total?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     discoun_type?: NullableEnumOrderDiscountTypeFieldUpdateOperationsInput | OrderDiscountType | null
+    notifications?: NotificationsUncheckedUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateManyWithoutOrderInput = {
@@ -73075,8 +72249,13 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type DeviceUserCreateManyUserInput = {
-    device_id: string
+  export type DeviceCreateManyUserInput = {
+    id?: string
+    external_id?: number | null
+    device_physical_id: string
+    platform: PlatformType
+    version: string
+    token_notification: string
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -73136,20 +72315,41 @@ export namespace Prisma {
     converted?: boolean
   }
 
-  export type DeviceUserUpdateWithoutUserInput = {
-    device?: DeviceUpdateOneRequiredWithoutDevice_userNestedInput
+  export type DeviceUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
+    device_physical_id?: StringFieldUpdateOperationsInput | string
+    platform?: EnumPlatformTypeFieldUpdateOperationsInput | PlatformType
+    version?: StringFieldUpdateOperationsInput | string
+    token_notification?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    push_notification?: PushNotificationUpdateManyWithoutDeviceNestedInput
+    sms_notification?: SmsNotificationUpdateManyWithoutDeviceNestedInput
+    device_notification?: DeviceNotificationUpdateManyWithoutDeviceNestedInput
   }
 
-  export type DeviceUserUncheckedUpdateWithoutUserInput = {
-    device_id?: StringFieldUpdateOperationsInput | string
+  export type DeviceUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
+    device_physical_id?: StringFieldUpdateOperationsInput | string
+    platform?: EnumPlatformTypeFieldUpdateOperationsInput | PlatformType
+    version?: StringFieldUpdateOperationsInput | string
+    token_notification?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    push_notification?: PushNotificationUncheckedUpdateManyWithoutDeviceNestedInput
+    sms_notification?: SmsNotificationUncheckedUpdateManyWithoutDeviceNestedInput
+    device_notification?: DeviceNotificationUncheckedUpdateManyWithoutDeviceNestedInput
   }
 
-  export type DeviceUserUncheckedUpdateManyWithoutDevice_userInput = {
-    device_id?: StringFieldUpdateOperationsInput | string
+  export type DeviceUncheckedUpdateManyWithoutDeviceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    external_id?: NullableIntFieldUpdateOperationsInput | number | null
+    device_physical_id?: StringFieldUpdateOperationsInput | string
+    platform?: EnumPlatformTypeFieldUpdateOperationsInput | PlatformType
+    version?: StringFieldUpdateOperationsInput | string
+    token_notification?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -73190,6 +72390,7 @@ export namespace Prisma {
     total?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     discoun_type?: NullableEnumOrderDiscountTypeFieldUpdateOperationsInput | OrderDiscountType | null
+    notifications?: NotificationsUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateWithoutUserInput = {
@@ -73210,6 +72411,7 @@ export namespace Prisma {
     total?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     discoun_type?: NullableEnumOrderDiscountTypeFieldUpdateOperationsInput | OrderDiscountType | null
+    notifications?: NotificationsUncheckedUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateManyWithoutOrdersInput = {
@@ -73421,6 +72623,7 @@ export namespace Prisma {
     total?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     discoun_type?: NullableEnumOrderDiscountTypeFieldUpdateOperationsInput | OrderDiscountType | null
+    notifications?: NotificationsUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateWithoutCampaignInput = {
@@ -73441,6 +72644,7 @@ export namespace Prisma {
     total?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     discoun_type?: NullableEnumOrderDiscountTypeFieldUpdateOperationsInput | OrderDiscountType | null
+    notifications?: NotificationsUncheckedUpdateManyWithoutOrderNestedInput
   }
 
   export type CampaignItemUpdateWithoutCampaignInput = {
@@ -73543,6 +72747,7 @@ export namespace Prisma {
     total?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     discoun_type?: NullableEnumOrderDiscountTypeFieldUpdateOperationsInput | OrderDiscountType | null
+    notifications?: NotificationsUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateWithoutCouponInput = {
@@ -73563,6 +72768,7 @@ export namespace Prisma {
     total?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     discoun_type?: NullableEnumOrderDiscountTypeFieldUpdateOperationsInput | OrderDiscountType | null
+    notifications?: NotificationsUncheckedUpdateManyWithoutOrderNestedInput
   }
 
   export type ItemGrapeCreateManyItemInput = {
@@ -74245,6 +73451,15 @@ export namespace Prisma {
     updated_at?: Date | string
   }
 
+  export type NotificationsCreateManyOrderInput = {
+    id?: string
+    title: string
+    message: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    type: TypeNotification
+  }
+
   export type OrderItemUpdateWithoutOrderInput = {
     item?: ItemUpdateOneRequiredWithoutOrder_itemsNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -74280,6 +73495,41 @@ export namespace Prisma {
     account_id?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NotificationsUpdateWithoutOrderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: EnumTypeNotificationFieldUpdateOperationsInput | TypeNotification
+    sms_notification?: SmsNotificationUpdateManyWithoutNotificationNestedInput
+    email_notification?: EmailNotificationUpdateManyWithoutNotificationNestedInput
+    push_notification?: PushNotificationUpdateManyWithoutNotificationNestedInput
+    device_notification?: DeviceNotificationUpdateManyWithoutNotificationNestedInput
+  }
+
+  export type NotificationsUncheckedUpdateWithoutOrderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: EnumTypeNotificationFieldUpdateOperationsInput | TypeNotification
+    sms_notification?: SmsNotificationUncheckedUpdateManyWithoutNotificationNestedInput
+    email_notification?: EmailNotificationUncheckedUpdateManyWithoutNotificationNestedInput
+    push_notification?: PushNotificationUncheckedUpdateManyWithoutNotificationNestedInput
+    device_notification?: DeviceNotificationUncheckedUpdateManyWithoutNotificationNestedInput
+  }
+
+  export type NotificationsUncheckedUpdateManyWithoutNotificationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: EnumTypeNotificationFieldUpdateOperationsInput | TypeNotification
   }
 
   export type OrderCreateManyOrder_statusInput = {
@@ -74318,6 +73568,7 @@ export namespace Prisma {
     total?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     discoun_type?: NullableEnumOrderDiscountTypeFieldUpdateOperationsInput | OrderDiscountType | null
+    notifications?: NotificationsUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateWithoutOrder_statusInput = {
@@ -74338,6 +73589,7 @@ export namespace Prisma {
     total?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     discoun_type?: NullableEnumOrderDiscountTypeFieldUpdateOperationsInput | OrderDiscountType | null
+    notifications?: NotificationsUncheckedUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderCreateManyCustomerInput = {
@@ -74390,6 +73642,7 @@ export namespace Prisma {
     total?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     discoun_type?: NullableEnumOrderDiscountTypeFieldUpdateOperationsInput | OrderDiscountType | null
+    notifications?: NotificationsUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateWithoutCustomerInput = {
@@ -74410,6 +73663,7 @@ export namespace Prisma {
     total?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     discoun_type?: NullableEnumOrderDiscountTypeFieldUpdateOperationsInput | OrderDiscountType | null
+    notifications?: NotificationsUncheckedUpdateManyWithoutOrderNestedInput
   }
 
   export type CustomerAddressUpdateWithoutCustomerInput = {
@@ -74492,6 +73746,7 @@ export namespace Prisma {
     total?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     discoun_type?: NullableEnumOrderDiscountTypeFieldUpdateOperationsInput | OrderDiscountType | null
+    notifications?: NotificationsUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateWithoutCustomer_addressInput = {
@@ -74512,12 +73767,7 @@ export namespace Prisma {
     total?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     discoun_type?: NullableEnumOrderDiscountTypeFieldUpdateOperationsInput | OrderDiscountType | null
-  }
-
-  export type DeviceUserCreateManyDeviceInput = {
-    user_id: string
-    created_at?: Date | string
-    updated_at?: Date | string
+    notifications?: NotificationsUncheckedUpdateManyWithoutOrderNestedInput
   }
 
   export type PushNotificationCreateManyDeviceInput = {
@@ -74545,18 +73795,6 @@ export namespace Prisma {
     notification_id: string
     created_at?: Date | string
     updated_at?: Date | string
-  }
-
-  export type DeviceUserUpdateWithoutDeviceInput = {
-    user?: UserUpdateOneRequiredWithoutDevice_userNestedInput
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type DeviceUserUncheckedUpdateWithoutDeviceInput = {
-    user_id?: StringFieldUpdateOperationsInput | string
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type PushNotificationUpdateWithoutDeviceInput = {
@@ -74666,6 +73904,8 @@ export namespace Prisma {
     clicked?: string | null
     failed?: string | null
     error_description?: string | null
+    error_code?: string | null
+    message_id?: string | null
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -74723,6 +73963,8 @@ export namespace Prisma {
     clicked?: NullableStringFieldUpdateOperationsInput | string | null
     failed?: NullableStringFieldUpdateOperationsInput | string | null
     error_description?: NullableStringFieldUpdateOperationsInput | string | null
+    error_code?: NullableStringFieldUpdateOperationsInput | string | null
+    message_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -74742,6 +73984,8 @@ export namespace Prisma {
     clicked?: NullableStringFieldUpdateOperationsInput | string | null
     failed?: NullableStringFieldUpdateOperationsInput | string | null
     error_description?: NullableStringFieldUpdateOperationsInput | string | null
+    error_code?: NullableStringFieldUpdateOperationsInput | string | null
+    message_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -74761,6 +74005,8 @@ export namespace Prisma {
     clicked?: NullableStringFieldUpdateOperationsInput | string | null
     failed?: NullableStringFieldUpdateOperationsInput | string | null
     error_description?: NullableStringFieldUpdateOperationsInput | string | null
+    error_code?: NullableStringFieldUpdateOperationsInput | string | null
+    message_id?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }

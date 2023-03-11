@@ -277,14 +277,8 @@ exports.Prisma.DeviceScalarFieldEnum = makeEnum({
   version: 'version',
   token_notification: 'token_notification',
   created_at: 'created_at',
-  updated_at: 'updated_at'
-});
-
-exports.Prisma.DeviceUserScalarFieldEnum = makeEnum({
-  device_id: 'device_id',
-  user_id: 'user_id',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
+  user_id: 'user_id'
 });
 
 exports.Prisma.EmailNotificationScalarFieldEnum = makeEnum({
@@ -303,6 +297,8 @@ exports.Prisma.EmailNotificationScalarFieldEnum = makeEnum({
   clicked: 'clicked',
   failed: 'failed',
   error_description: 'error_description',
+  error_code: 'error_code',
+  message_id: 'message_id',
   created_at: 'created_at',
   updated_at: 'updated_at'
 });
@@ -375,6 +371,7 @@ exports.Prisma.NotificationsScalarFieldEnum = makeEnum({
   message: 'message',
   created_at: 'created_at',
   updated_at: 'updated_at',
+  order_id: 'order_id',
   type: 'type'
 });
 
@@ -702,7 +699,6 @@ exports.Prisma.ModelName = makeEnum({
   OrderItem: 'OrderItem',
   Invoice: 'Invoice',
   Device: 'Device',
-  DeviceUser: 'DeviceUser',
   Notifications: 'Notifications',
   EmailNotification: 'EmailNotification',
   SmsNotification: 'SmsNotification',
