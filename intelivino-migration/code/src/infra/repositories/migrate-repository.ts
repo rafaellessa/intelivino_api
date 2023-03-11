@@ -114,6 +114,9 @@ export class MigrateRepository {
             skip: this.calculatePage(page, perPage),
           })
           for (const winery of wineries) {
+            if (winery.user_id) {
+              continue
+            }
             await this.prismaDbProd.winery.create({
               data: {
                 name:
