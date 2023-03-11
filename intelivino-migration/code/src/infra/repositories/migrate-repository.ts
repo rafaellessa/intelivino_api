@@ -584,6 +584,15 @@ export class MigrateRepository {
         },
       })
     }
+    const bannerUrl = await this.prismaDbOlder.albums.findFirst({
+      where: {
+        type: 'businness_banner',
+        type_id: account.id,
+      },
+      include: {
+        photos: true,
+      },
+    })
     return await this.prismaDbProd.account.create({
       data: {
         external_id: account.user_id!,
@@ -614,7 +623,7 @@ export class MigrateRepository {
         account_configuration: {
           create: {
             header_color: account.cor_texto_cabecalho,
-            banner_market_url: account.banner_catalogo_url,
+            banner_market_url: bannerUrl?.photos[0].photo_url,
           },
         },
       },
