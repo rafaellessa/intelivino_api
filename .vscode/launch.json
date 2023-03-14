@@ -1,0 +1,24 @@
+{
+  "configurations": [
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Intelivino Debug Monitor - Migration",
+      "localRoot": "${workspaceRoot}/intelivino-migration/code",
+      "remoteRoot": "/opt/node_app/app",
+      "port": 9231,
+      "address": "localhost",
+      "protocol":"inspector"
+    },
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Intelivino Debug Monitor - Api",
+      "localRoot": "${workspaceRoot}/intelivino-api/code",
+      "remoteRoot": "/opt/node_app/app",
+      "port": 9230,
+      "address": "localhost",
+      "protocol":"inspector"
+    }
+  ]
+}

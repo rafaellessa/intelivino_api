@@ -1,0 +1,49 @@
+{
+  "name": "intelivino_api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest",
+    "coverage": "vitest run --coverage",
+    "dev": "ts-node-dev -r tsconfig-paths/register --respawn --ignore-watch node_modules src/external/server.ts",
+    "dev2": "nodemon --watch 'src/' --exec 'ts-node-dev --inspect=0.0.0.0 --exit-child -r tsconfig-paths/register src/external/server.ts' -e ts"
+  },
+  "prisma": {
+    "schema": "./src/infra/database/orm/prisma/schema.prisma",
+    "seed": "ts-node ./src/infra/database/orm/prisma/seeds/seed.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "4.2.1",
+    "axios": "^0.27.2",
+    "express": "^4.18.1",
+    "nodemon": "^2.0.19",
+    "prisma": "^4.2.1",
+    "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^4.1.0",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^7.4.0",
+    "@types/axios": "^0.14.0",
+    "@types/express": "^4.17.13",
+    "@types/node": "^18.11.12",
+    "@types/supertest": "^2.0.12",
+    "@types/uuid": "^8.3.4",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "eslint": "^8.0.1",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-standard-with-typescript": "^22.0.0",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-n": "^15.0.0",
+    "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-sonar": "^0.9.1",
+    "supertest": "^6.2.4",
+    "ts-node": "^10.9.1",
+    "typescript": "*",
+    "vitest": "^0.24.0"
+  }
+}

@@ -2,7 +2,7 @@ version: "3.8"
 services:
   intelivino_api:
     build:
-      context: .
+      context: ./intelivino-api
       dockerfile: ./Dockerfile
       target: ${TARGET:-dev}
     environment:
@@ -13,17 +13,48 @@ services:
       DB_PASSWORD: ${MYSQL_PASSWORD}
       DB_DATABASE: ${MYSQL_DATABASE}
       DATABASE_URL_OLDDER: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@intelivino_mysql:3306/${MYSQL_DATABASE_OLDER}?connection_limit=100&pool_timeout=10
-      DATABASE_URL_UPGRADED: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@intelivino_mysql:3306/${MYSQL_DATABASE_UPDGRADED}?connection_limit=100&pool_timeout=10
+      DATABASE_URL_WP: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@intelivino_mysql:3306/${MYSQL_DATABASE_WP}?connection_limit=100&pool_timeout=10
       DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@intelivino_mysql:3306/${MYSQL_DATABASE}?connection_limit=100&pool_timeout=10
       RABBITMQ_HOST: intelivino_rabbitmq
       RABBITMQ_PORT: 5672
       RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
       RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
     volumes:
-      - ./app:/opt/node_app/app:delegated
+      - ./intelivino-api/code:/opt/node_app/app:delegated
     ports:
       - ${API_PORT:-8000}:${API_PORT:-8000}
-      - ${PRISMA_STUDIO_PORT:-5555}:${PRISMA_STUDIO_PORT:-5555}
+      - ${PRISMA_STUDIO_PORT:-5556}:${PRISMA_STUDIO_PORT:-5556}
+      - "9230:9229"
+    depends_on:
+      - intelivino_mysql
+    networks:
+      - "intelivino_network"
+
+  intelivino_migration:
+    build:
+      context: ./intelivino-migration
+      dockerfile: ./Dockerfile
+      target: ${TARGET:-dev}
+    environment:
+      API_PORT: ${API_MIGRATION_PORT}
+      DB_SERVER: intelivino_mysql
+      DB_PORT: 3306
+      DB_USER: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+      DB_DATABASE: ${MYSQL_DATABASE}
+      DATABASE_URL_OLDDER: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@intelivino_mysql:3306/${MYSQL_DATABASE_OLDER}?connection_limit=100&pool_timeout=10
+      DATABASE_URL_WP: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@intelivino_mysql:3306/${MYSQL_DATABASE_WP}?connection_limit=100&pool_timeout=10
+      DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@intelivino_mysql:3306/${MYSQL_DATABASE}?connection_limit=100&pool_timeout=10
+      RABBITMQ_HOST: intelivino_rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+    volumes:
+      - ./intelivino-migration/code:/opt/node_app/app:delegated
+    ports:
+      - ${API_MIGRATION_PORT:-8001}:${API_MIGRATION_PORT:-8001}
+      - ${PRISMA_STUDIO_PORT:-5557}:${PRISMA_STUDIO_PORT:-5557}
+      - "9231:9229"
     depends_on:
       - intelivino_mysql
     networks:
@@ -40,6 +71,17 @@ services:
       - intelivino_mysql_volume:/var/lib/mysql
     networks:
       - "intelivino_network"
+
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    container_name: swagger_ui_container
+    ports:
+      - '8002:8080'
+    volumes:
+      - ./intelivino-api/code/src/external/api-docs:/usr/share/nginx/html/doc
+    environment:
+      API_URL: doc/swagger.json
+
 volumes:
   intelivino_mysql_volume:
     driver: local

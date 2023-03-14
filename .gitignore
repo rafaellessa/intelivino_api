@@ -1,3 +1,6 @@
-app/node_modules
-app/coverage
-app/provision
+intelivino-api/code/node_modules
+intelivino-api/code/coverage
+intelivino-api/code/provision
+.env
+intelivino-api/provision
+/intelivino-migration/provision

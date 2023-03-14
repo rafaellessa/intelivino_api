@@ -1,0 +1,399 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Intelivino Api",
+    "description": "Documentação da API do projeto Intelivino",
+    "version": "1.0.0",
+    "contact": {
+      "email": "suporte@intelivino.com.br"
+    }
+  },
+  "paths": {
+    "/administrator": {
+      "get": {
+        "summary": "Retorna a listagem de administradoras",
+        "description": "Este endpoint retorna a listagem de administradoras",
+        "tags": [
+          "Administradora"
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Quantidade de registros por página - (default = 10)",
+            "required": false
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Página para paginação - (default = 1)",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "type": "array",
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AdministratorResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Cadastra uma administradoras",
+        "description": "Este endpoint Cadastra uma administradoras",
+        "tags": [
+          "Administradora"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdministratorCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "type": "object",
+                "schema": {
+                  "$ref": "#/components/schemas/AdministratorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/administrator/{id}": {
+      "get": {
+        "summary": "Retorna uma administradora pelo seu id",
+        "description": "Este endpoint retorna uma administradora pelo seu id",
+        "tags": [
+          "Administradora"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id da administradora",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "type": "object",
+                "schema": {
+                  "$ref": "#/components/schemas/AdministratorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Administrator ${id} not found"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Atualiza uma administradora pelo seu id",
+        "description": "Este endpoint retorna uma administradora pelo seu id",
+        "tags": [
+          "Administradora"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id da administradora",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "400": {
+            "description": "Administrator ${id} not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Apaga uma administradora pelo seu id",
+        "description": "Este endpoint retorna uma administradora pelo seu id",
+        "tags": [
+          "Administradora"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id da administradora",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "400": {
+            "description": "Administrator ${id} not found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AdministratorCreate": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "addressStreet": {
+            "type": "string"
+          },
+          "addressNumber": {
+            "type": "string"
+          },
+          "addressDistrict": {
+            "type": "string"
+          },
+          "addressCity": {
+            "type": "string"
+          },
+          "addressState": {
+            "type": "string"
+          },
+          "addressCountry": {
+            "type": "string",
+            "nullable": true
+          },
+          "addressZipcode": {
+            "type": "string"
+          },
+          "addressComplement": {
+            "type": "string",
+            "nullable": true
+          },
+          "additionalInformation": {
+            "type": "string"
+          },
+          "email": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "any_email@example.com"
+            }
+          },
+          "cnpj": {
+            "type": "string"
+          },
+          "configUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "configUrl2": {
+            "type": "string",
+            "nullable": true
+          },
+          "condoUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "condoUrl2": {
+            "type": "string",
+            "nullable": true
+          },
+          "licenseIdentification": {
+            "type": "string",
+            "nullable": true
+          },
+          "user": {
+            "type": "string",
+            "nullable": true
+          },
+          "password": {
+            "type": "string",
+            "nullable": true
+          },
+          "key": {
+            "type": "string",
+            "nullable": true
+          },
+          "administratorErpId": {
+            "type": "number"
+          },
+          "mobileNumber": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "55021996834444"
+            }
+          },
+          "identificationErp": {
+            "type": "string",
+            "example": "ahreas | superlogica"
+          },
+          "gruviId": {
+            "type": "number",
+            "nullable": true
+          },
+          "linkedin": {
+            "type": "string",
+            "nullable": true
+          },
+          "facebook": {
+            "type": "string",
+            "nullable": true
+          },
+          "site": {
+            "type": "string",
+            "nullable": true
+          },
+          "headAdministratorId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Aqui é o id da administradora filial, usar quando for cadastrar uma adm filial"
+          },
+          "isActive": {
+            "type": "boolean",
+            "default": true
+          }
+        }
+      },
+      "AdministratorResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "address": {
+            "type": "object",
+            "properties": {
+              "street": {
+                "type": "string"
+              },
+              "number": {
+                "type": "string"
+              },
+              "district": {
+                "type": "string"
+              },
+              "city": {
+                "type": "string"
+              },
+              "state": {
+                "type": "string"
+              },
+              "country": {
+                "type": "string"
+              },
+              "zipcode": {
+                "type": "string"
+              },
+              "complement": {
+                "type": "string"
+              }
+            }
+          },
+          "constacts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "externalId": {
+                  "type": "string"
+                },
+                "typeContact": {
+                  "type": "string",
+                  "example": "email | mobile_phone"
+                },
+                "value": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "cnpj": {
+            "type": "string"
+          },
+          "configUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "configUrl2": {
+            "type": "string",
+            "nullable": true
+          },
+          "condoUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "condoUrl2": {
+            "type": "string",
+            "nullable": true
+          },
+          "licenseIdentification": {
+            "type": "string",
+            "nullable": true
+          },
+          "user": {
+            "type": "string",
+            "nullable": true
+          },
+          "password": {
+            "type": "string",
+            "nullable": true
+          },
+          "key": {
+            "type": "string",
+            "nullable": true
+          },
+          "administratorErpId": {
+            "type": "number"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "site": {
+            "type": "string",
+            "nullable": true
+          },
+          "logo": {
+            "type": "string",
+            "nullable": true
+          },
+          "headAdministratorId": {
+            "type": "string",
+            "nullable": true
+          },
+          "identificationErp": {
+            "type": "string",
+            "example": "ahreas | superlogica"
+          },
+          "additionalInformation": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

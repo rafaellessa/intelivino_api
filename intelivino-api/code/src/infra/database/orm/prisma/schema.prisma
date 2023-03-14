@@ -1,0 +1,744 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl"]
+  output        = "./client"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                    String                @id @default(uuid())
+  external_id           Int?                  @unique
+  name                  String
+  email                 String                @unique
+  cpf_cnpj              String?
+  market_name           String
+  phone                 String?
+  whatsapp              String?
+  logo                  String?
+  person_type           PersonType
+  site                  String?
+  social_reason         String?
+  facebook_url          String?
+  instagram_url         String?
+  banner                String?
+  gender                GenderType
+  campaign              Campaign[]
+  street                String
+  number                String
+  complement            String?
+  district              String
+  city                  String
+  state                 String
+  zipcode               String
+  plan_id               String?
+  plan                  Plan?                 @relation(fields: [plan_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  subscription          Subscription[]
+  created_at            DateTime              @default(now()) @db.Timestamp(3)
+  updated_at            DateTime              @updatedAt @db.Timestamp(3)
+  order                 Order[]
+  account_activities    AccountActivities[]
+  account_deliveries    AccountDelivery[]
+  account_users         AccountUser[]
+  invoices              Invoice[]
+  domain                String                @unique
+  stock_label           StockLabel[]
+  labels                Label[]
+  coupons               Coupon[]
+  account_configuration AccountConfiguration?
+  customers             Customer[]
+  isActive              Boolean               @default(false)
+
+  @@map("account")
+}
+
+model AccountConfiguration {
+  id                String  @id @default(uuid())
+  account_id        String  @unique
+  account           Account @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  banner_market_url String?
+  header_color      String?
+}
+
+model AccountActivities {
+  account_id    String
+  account       Account    @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  activities_id String
+  activities    Activities @relation(fields: [activities_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  created_at    DateTime   @default(now()) @db.Timestamp(3)
+  updated_at    DateTime   @updatedAt @db.Timestamp(3)
+
+  @@id([account_id, activities_id])
+  @@map("account_activities")
+}
+
+model Activities {
+  id                 String              @id @default(uuid())
+  external_id        Int?                @unique
+  name               String
+  slug               String
+  created_at         DateTime            @default(now()) @db.Timestamp(3)
+  updated_at         DateTime            @updatedAt @db.Timestamp(3)
+  account_activities AccountActivities[]
+
+  @@map("activities")
+}
+
+model Delivery {
+  id                 String            @id @default(uuid())
+  external_id        Int?              @unique
+  name               String
+  slug               String
+  created_at         DateTime          @default(now()) @db.Timestamp(3)
+  updated_at         DateTime          @updatedAt @db.Timestamp(3)
+  account_deliveries AccountDelivery[]
+
+  @@map("deliveries")
+}
+
+model AccountDelivery {
+  account_id  String
+  account     Account  @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  delivery_id String
+  delivery    Delivery @relation(fields: [delivery_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  created_at  DateTime @default(now()) @db.Timestamp(3)
+  updated_at  DateTime @updatedAt @db.Timestamp(3)
+
+  @@id([account_id, delivery_id])
+  @@map("account_deliveries")
+}
+
+model User {
+  id              String        @id @default(uuid())
+  name            String
+  email           String        @unique
+  password        String
+  whatsapp        String?
+  phone           String?
+  cpf_cnpj        String?       @unique
+  photo           String?
+  gender          GenderType    @default(ND)
+  birthdate       DateTime?
+  google_id       String?
+  apple_id        String?
+  facebook_id     String?
+  rd_station_id   String?
+  rd_station_sync Boolean?      @default(false)
+  created_at      DateTime      @default(now()) @db.Timestamp(3)
+  updated_at      DateTime      @updatedAt @db.Timestamp(3)
+  lastLogin       DateTime      @default(now()) @db.Timestamp(3)
+  device_user     DeviceUser[]
+  account_user    AccountUser[]
+  orders          Order[]
+  user_addresses  UserAddress[]
+
+  @@map("users")
+}
+
+model UserAddress {
+  id                     String   @id @default(uuid())
+  user_id                String
+  user                   User     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  name                   String?
+  street                 String
+  number                 String
+  district               String
+  state                  String
+  complement             String?
+  additional_information String?
+  city                   String
+  zip_code               String
+  orders                 Order[]
+  created_at             DateTime @default(now()) @db.Timestamp(3)
+  updated_at             DateTime @updatedAt @db.Timestamp(3)
+
+  @@map("user_addresses")
+}
+
+enum TypeAddress {
+  PRINCIPAL
+  DELIVERY
+}
+
+model AccountUser {
+  id         String  @unique @default(uuid())
+  account_id String
+  account    Account @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user_id    String
+  user       User    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  role_id    String
+  role       Role    @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([account_id, user_id, id])
+  @@map("account_user")
+}
+
+model Permision {
+  id             String           @id @default(uuid())
+  name           String
+  RolePermission RolePermission[]
+
+  @@map("permissions")
+}
+
+model RolePermission {
+  role_id       String
+  role          Role      @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  permission_id String
+  permission    Permision @relation(fields: [permission_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([role_id, permission_id])
+  @@map("role_permissions")
+}
+
+model Role {
+  id             String           @id @default(uuid())
+  name           String           @unique
+  RolePermission RolePermission[]
+  AccountUser    AccountUser[]
+
+  @@map("roles")
+}
+
+enum PersonType {
+  F
+  J
+}
+
+enum GenderType {
+  F
+  M
+  ND
+}
+
+model Campaign {
+  id                  String       @id @default(uuid())
+  external_id         Int?         @unique
+  name                String
+  description         String?      @db.VarChar(255)
+  percentage_discount Float?
+  start_date          DateTime?
+  expiration_date     DateTime?
+  type_id             String
+  campaign_type       CampaignType @relation(fields: [type_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  account             Account      @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  account_id          String
+  created_at          DateTime     @default(now()) @db.Timestamp(3)
+  updated_at          DateTime     @updatedAt @db.Timestamp(3)
+  orders              Order[]
+
+  label_campaign LabelCampaign[]
+
+  @@map("campaign")
+}
+
+model CampaignType {
+  id          String     @id @default(uuid())
+  external_id Int?       @unique
+  name        String
+  slug        String
+  Campaign    Campaign[]
+
+  @@map("campaign_type")
+}
+
+model Coupon {
+  id              String             @id @default(uuid())
+  code            String
+  account_id      String
+  account         Account            @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  dicount_type    CouponDiscountType
+  discount_value  Float
+  couponUse_type  CouponUseType
+  inital_date     DateTime           @default(now()) @db.Timestamp(3)
+  expiration_date DateTime?
+  min_value       Float?
+  max_value       Float?
+  created_at      DateTime           @default(now()) @db.Timestamp(3)
+  updated_at      DateTime           @updatedAt @db.Timestamp(3)
+  orders          Order[]
+
+  @@map("coupon")
+}
+
+enum CouponDiscountType {
+  PERCENTAGE
+  VALUE
+}
+
+enum CouponUseType {
+  UNLIMITED
+  UNIQUE_BY_USER
+  UNIQUE
+}
+
+model Label {
+  id                 String    @id @default(uuid())
+  external_id        Int?      @unique
+  name               String
+  description        String?   @db.Text
+  type_id            String
+  label_type         LabelType @relation(fields: [type_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  country_id         String?
+  country            Country?  @relation(fields: [country_id], references: [id], onUpdate: SetNull, onDelete: Cascade)
+  region_id          String?
+  region             Region?   @relation(fields: [region_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  winery_id          String?
+  winery             Winery?   @relation(fields: [winery_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  harvest            String?
+  no_harvest         Boolean   @default(false)
+  wine_type_id       String?
+  wine_type          WineType? @relation(fields: [wine_type_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  alcohol_percentage Decimal?
+  price              Float
+  promotional_price  Float?
+  photo              String?
+  account_id         String
+  account            Account   @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  is_active          Boolean   @default(true)
+  control_stock      Boolean   @default(true)
+  created_at         DateTime  @default(now()) @db.Timestamp(3)
+  updated_at         DateTime  @updatedAt @db.Timestamp(3)
+
+  label_grape    LabelGrape[]
+  order_label    OrderLabel[]
+  label_campaign LabelCampaign[]
+  stock_label    StockLabel[]
+  stock_history  StockHistory[]
+
+  @@map("label")
+}
+
+model LabelCampaign {
+  label_id    String
+  label       Label    @relation(fields: [label_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  campaign_id String
+  campaign    Campaign @relation(fields: [campaign_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  created_at  DateTime @default(now()) @db.Timestamp(3)
+  updated_at  DateTime @updatedAt @db.Timestamp(3)
+
+  @@id([label_id, campaign_id])
+  @@map("label_campaign")
+}
+
+model LabelGrape {
+  label_id   String
+  label      Label    @relation(fields: [label_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  grape_id   String
+  grape      Grape    @relation(fields: [grape_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  created_at DateTime @default(now()) @db.Timestamp(3)
+  updated_at DateTime @updatedAt @db.Timestamp(3)
+
+  @@id([label_id, grape_id])
+  @@map("label_grape")
+}
+
+model Grape {
+  id          String       @id @default(uuid())
+  external_id Int?         @unique
+  name        String
+  LabelGrape  LabelGrape[]
+  created_at  DateTime     @default(now()) @db.Timestamp(3)
+  updatedAt   DateTime     @updatedAt @db.Timestamp(3)
+
+  @@map("grape")
+}
+
+model LabelType {
+  id          String   @id @default(uuid())
+  external_id Int?     @unique
+  name        String
+  labels      Label[]
+  created_at  DateTime @default(now()) @db.Timestamp(3)
+  updated_at  DateTime @updatedAt @db.Timestamp(3)
+
+  @@map("label_type")
+}
+
+model Country {
+  id          String   @id @default(uuid())
+  external_id Int?     @unique
+  name        String
+  slug        String
+  value       String
+  states      State[]
+  labels      Label[]
+  created_at  DateTime @default(now()) @db.Timestamp(3)
+  updated_at  DateTime @updatedAt @db.Timestamp(3)
+
+  @@map("country")
+}
+
+model State {
+  id          String   @id @default(uuid())
+  external_id Int?     @unique
+  name        String
+  slug        String
+  country_id  String
+  country     Country  @relation(fields: [country_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  regions     Region[]
+  cities      City[]
+  created_at  DateTime @default(now()) @db.Timestamp(3)
+  updated_at  DateTime @updatedAt @db.Timestamp(3)
+
+  @@map("state")
+}
+
+model City {
+  id          String   @id @default(uuid())
+  external_id Int?     @unique
+  name        String
+  slug        String
+  state_id    String
+  state       State    @relation(fields: [state_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  created_at  DateTime @default(now()) @db.Timestamp(3)
+  updated_at  DateTime @updatedAt @db.Timestamp(3)
+
+  @@map("city")
+}
+
+model Region {
+  id          String      @id @default(uuid())
+  external_id Int?        @unique
+  state_id    String
+  state       State       @relation(fields: [state_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  name        String
+  slug        String
+  subregion   SubRegion[]
+  labels      Label[]
+  created_at  DateTime    @default(now()) @db.Timestamp(3)
+  updated_at  DateTime    @updatedAt @db.Timestamp(3)
+
+  @@map("region")
+}
+
+model SubRegion {
+  id          String   @id @default(uuid())
+  external_id Int?     @unique
+  name        String   @unique
+  slug        String   @unique
+  region_id   String
+  region      Region   @relation(fields: [region_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  created_at  DateTime @default(now()) @db.Timestamp(3)
+  updated_at  DateTime @updatedAt @db.Timestamp(3)
+
+  @@map("sub_region")
+}
+
+model WineType {
+  id          String   @id @default(uuid())
+  external_id Int?     @unique
+  name        String
+  slug        String
+  labels      Label[]
+  created_at  DateTime @default(now()) @db.Timestamp(3)
+  updated_at  DateTime @updatedAt @db.Timestamp(3)
+
+  @@map("wine_type")
+}
+
+model Order {
+  id              String      @id @default(uuid())
+  external_id     Int?        @unique
+  code            String      @unique
+  account_id      String
+  account         Account     @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  total           Float
+  coupon_id       String?
+  coupon          Coupon?     @relation(fields: [coupon_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  user_id         String
+  user            User        @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user_address_id String
+  user_address    UserAddress @relation(fields: [user_address_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  is_read         Boolean     @default(false)
+  order_status_id String
+  order_status    OrderStatus @relation(fields: [order_status_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  campaign_id     String?
+  campaign        Campaign?   @relation(fields: [campaign_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  created_at      DateTime    @default(now()) @db.Timestamp(3)
+  updated_at      DateTime    @updatedAt @db.Timestamp(3)
+
+  order_label OrderLabel[]
+  invoice     Invoice[]
+
+  @@map("order")
+}
+
+model OrderStatus {
+  id         String   @id @default(uuid())
+  name       String   @unique
+  slug       String
+  created_at DateTime @default(now()) @db.Timestamp(3)
+  updated_at DateTime @updatedAt @db.Timestamp(3)
+  orders     Order[]
+
+  @@map("order_status")
+}
+
+model Customer {
+  id                  String                     @id @default(uuid())
+  account_id          String
+  account             Account                    @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  email               String
+  mobile_phone        String
+  phone               String
+  is_active           Boolean                    @default(true)
+  created_at          DateTime                   @default(now()) @db.Timestamp(3)
+  updated_at          DateTime                   @updatedAt @db.Timestamp(3)
+  origin_registration CustomerOriginRegistration
+  cpf_cnpj            String
+  note                String                     @db.Text
+  converted           Boolean                    @default(true)
+
+  @@map("customers")
+}
+
+enum CustomerOriginRegistration {
+  SINGLE_REGISTRATION
+  CAMPAIGN
+  MAIN_CATALOG
+}
+
+model OrderLabel {
+  order_id   String
+  order      Order    @relation(fields: [order_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  label_id   String
+  label      Label    @relation(fields: [label_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  created_at DateTime @default(now()) @db.Timestamp(3)
+  updated_at DateTime @updatedAt @db.Timestamp(3)
+  price      Float
+  quantity   Int
+
+  @@id([order_id, label_id])
+  @@map("order_label")
+}
+
+model Invoice {
+  id         String   @id @default(uuid())
+  order_id   String
+  order      Order    @relation(fields: [order_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  account_id String
+  account    Account  @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  created_at DateTime @default(now()) @db.Timestamp(3)
+  updated_at DateTime @updatedAt @db.Timestamp(3)
+
+  @@map("invoice")
+}
+
+model Device {
+  id                 String       @id @default(uuid())
+  external_id        Int?         @unique
+  device_physical_id String       @unique
+  platform           PlatformType
+  version            String
+  token_notification String
+  created_at         DateTime     @default(now()) @db.Timestamp(3)
+  updated_at         DateTime     @updatedAt @db.Timestamp(3)
+
+  device_user         DeviceUser[]
+  push_notification   PushNotification[]
+  sms_notification    SmsNotification[]
+  device_notification DeviceNotification[]
+
+  @@map("device")
+}
+
+enum PlatformType {
+  android
+  ios
+}
+
+model DeviceUser {
+  device_id  String
+  device     Device   @relation(fields: [device_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user_id    String
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  created_at DateTime @default(now()) @db.Timestamp(3)
+  updated_at DateTime @updatedAt @db.Timestamp(3)
+
+  @@id([device_id, user_id])
+  @@map("device_user")
+}
+
+model Notifications {
+  id         String   @id @default(uuid())
+  title      String
+  message    String
+  created_at DateTime @default(now()) @db.Timestamp(3)
+  updated_at DateTime @updatedAt @db.Timestamp(3)
+
+  type                TypeNotification
+  sms_notification    SmsNotification[]
+  email_notification  EmailNotification[]
+  push_notification   PushNotification[]
+  device_notification DeviceNotification[]
+
+  @@map("notification")
+}
+
+model EmailNotification {
+  id                String                @id @default(uuid())
+  notification_id   String
+  notification      Notifications         @relation(fields: [notification_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  to                String
+  from              String
+  from_name         String
+  cc                String?
+  bcc               String?
+  type              EmailTypeNotification
+  subject           String
+  body              String
+  url_callback      String
+  opened            String?
+  clicked           String?
+  failed            String?
+  error_description String?
+  created_at        DateTime              @default(now()) @db.Timestamp(3)
+  updated_at        DateTime              @updatedAt @db.Timestamp(3)
+
+  @@map("email_notification")
+}
+
+model SmsNotification {
+  id              String        @id @default(uuid())
+  notification_id String
+  notification    Notifications @relation(fields: [notification_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  device_id       String
+  device          Device        @relation(fields: [device_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  to              String
+  subject         String
+  body            String
+  send            String?
+  created_at      DateTime      @default(now()) @db.Timestamp(3)
+  updated_at      DateTime      @updatedAt @db.Timestamp(3)
+
+  @@map("sms_notification")
+}
+
+model PushNotification {
+  id              String        @id @default(uuid())
+  notification_id String
+  notification    Notifications @relation(fields: [notification_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  title           String
+  subject         String
+  send            String?
+  device_id       String
+  device          Device        @relation(fields: [device_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  created_at      DateTime      @default(now()) @db.Timestamp(3)
+  updated_at      DateTime      @updatedAt @db.Timestamp(3)
+
+  @@map("push_notification")
+}
+
+enum TypeNotification {
+  email
+  sms
+  push
+}
+
+enum EmailTypeNotification {
+  html
+  text
+}
+
+model DeviceNotification {
+  device_id       String
+  device          Device        @relation(fields: [device_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  notification_id String
+  notification    Notifications @relation(fields: [notification_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  created_at      DateTime      @default(now()) @db.Timestamp(3)
+  updated_at      DateTime      @updatedAt @db.Timestamp(3)
+
+  @@id([device_id, notification_id])
+  @@map("device_notification")
+}
+
+model Plan {
+  id               String       @id @default(uuid())
+  external_id      Int?         @unique
+  name             String
+  description      String
+  slug             String
+  price            Float
+  max_users        Int
+  max_labels       Int
+  payment_cycle_id String
+  payment_cycle    PaymentCycle @relation(fields: [payment_cycle_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  account          Account[]
+  created_at       DateTime     @default(now()) @db.Timestamp(3)
+  updated_at       DateTime     @updatedAt @db.Timestamp(3)
+
+  subscription Subscription[]
+
+  @@map("plan")
+}
+
+model PaymentCycle {
+  id         String   @id @default(uuid())
+  name       String   @unique
+  slug       String
+  created_at DateTime @default(now()) @db.Timestamp(3)
+  updated_at DateTime @updatedAt @db.Timestamp(3)
+
+  plans Plan[]
+
+  @@map("payment_cycle")
+}
+
+model Subscription {
+  id         String   @id @default(uuid())
+  plan_id    String
+  plan       Plan     @relation(fields: [plan_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  account_id String
+  account    Account  @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  due        DateTime
+  price      Float
+  created_at DateTime @default(now()) @db.Timestamp(3)
+  updated_at DateTime @updatedAt @db.Timestamp(3)
+
+  @@map("subscription")
+}
+
+model StockLabel {
+  label_id     String
+  labels       Label   @relation(fields: [label_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  account_id   String
+  account      Account @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  quantity     Int
+  min_quantity Int     @default(5)
+  max_quantity Int     @default(100)
+
+  @@id([label_id, account_id])
+  @@map("stock_labels")
+}
+
+model StockHistory {
+  id         String   @id @default(uuid())
+  label_id   String
+  labels     Label    @relation(fields: [label_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  reason     String
+  quantity   Int
+  date       DateTime
+  created_at DateTime @default(now()) @db.Timestamp(3)
+  updated_at DateTime @updatedAt @db.Timestamp(3)
+
+  @@map("stock_history")
+}
+
+model Winery {
+  id          String   @id @default(uuid())
+  external_id Int?     @unique
+  name        String
+  created_at  DateTime @default(now()) @db.Timestamp(3)
+  updated_at  DateTime @updatedAt @db.Timestamp(3)
+
+  labels Label[]
+
+  @@map("winery")
+}
